@@ -1,0 +1,2 @@
+# capy-ventas
+SISTEMAD DE PUNTO DE VENTAS - POS
