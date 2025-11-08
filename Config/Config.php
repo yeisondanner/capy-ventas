@@ -68,7 +68,7 @@ const METHOD = "AES-256-CBC";
 const SECRET_KEY = "SystemOfPredios2025";
 const SECRET_IV = "@2025BajoNaranjillo";
 //nombre de la sesion
-const SESSION_NAME = "Sistemade-gestion-de-Roles";
+const SESSION_NAME = "Sistema-de-capy-ventas-2025-08-11";
 //Generador de perfiles mediante nombre
 const GENERAR_PERFIL = "https://ui-avatars.com/api/?name=";
 //Variables de la API api.apis.net.pe
