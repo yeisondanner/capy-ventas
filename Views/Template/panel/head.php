@@ -63,7 +63,7 @@
     $pageCssQuery = $pageCssVersion ? '?v=' . $pageCssVersion : '';
     ?>
     <link rel="stylesheet" type="text/css"
-        href="<?= media() ?>/css/app/<?= $pageCssFolder ?>/<?= $pageCssFile ?><?= $pageCssQuery ?>?<?= versionSystem() ?>">
+        href="<?= media() ?>/css/app/Admin/<?= $pageCssFolder ?>/<?= $pageCssFile ?><?= $pageCssQuery ?>?<?= versionSystem() ?>">
     <style>
         :root {
             --color-primary:
@@ -72,7 +72,7 @@
                 <?= (getSystemInfo()) ? getSystemInfo()["c_color_secondary"] : "#004e89"; ?>;
         }
     </style>
-    <?php require_once "./Views/App/" . ucfirst($data["page_container"]) . "/Libraries/head.php"; ?>
+    <?php require_once "./Views/App/Admin/" . ucfirst($data["page_container"]) . "/Libraries/head.php"; ?>
     <script type="text/javascript">
         const getcurrency = "<?= getCurrency(); ?>";
     </script>

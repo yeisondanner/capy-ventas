@@ -24,13 +24,13 @@ class Login extends Controllers
 	{
 		//validamos que el token no sea nulo
 		if (empty($token)) {
-			header("Location: " . base_url() . "/login");
+			header("Location: " . base_url() . "/im/login");
 		}
 		//consultamos la base de datos el token 
 		$rqstUser = $this->model->select_info_user_by_token($token);
 		//validamos si existen informacion de la solicitud
 		if (empty($rqstUser)) {
-			header("Location: " . base_url() . "/login");
+			header("Location: " . base_url() . "/im/login");
 		}
 		//desencriptamos el token
 		$token = decryption($token);
@@ -41,7 +41,7 @@ class Login extends Controllers
 		$fechaRegistro = $token[1];
 		//validamos si el id del token y el id del usuario son iguales
 		if ($userId != $rqstUser['idUser']) {
-			header("Location: " . base_url() . "/login");
+			header("Location: " . base_url() . "/im/login");
 		}
 		//verificamos si el tiempo de duracion del token no expiro los 30 minutos
 		$fechaActual = date("Y-m-d H:i:s");
@@ -198,7 +198,7 @@ class Login extends Controllers
 				"message" => "Hola " . $request["u_fullname"] . ", se completó de manera satisfactoria el inicio de sesión",
 				"type" => "success",
 				"status" => true,
-				"redirection" => base_url() . "/dashboard"
+				"redirection" => base_url() . "/im/dashboard"
 			);
 			//destruimos la variable que contiene la información del usuario
 			unset($request);
@@ -228,7 +228,7 @@ class Login extends Controllers
 				"title" => "Ocurrió un error inesperado",
 				"message" => "Método POST no encontrado",
 				"type" => "error",
-				"redirection" => base_url() . "/login",
+				"redirection" => base_url() . "/im/login",
 				"status" => false
 			);
 			toJson($data);
@@ -244,7 +244,7 @@ class Login extends Controllers
 				"title" => "Ocurrió un error inesperado",
 				"message" => "El correo electrónico no tiene la estructura correcta",
 				"type" => "error",
-				"redirection" => base_url() . "/login",
+				"redirection" => base_url() . "/im/login",
 				"status" => false
 			);
 			toJson($data);
@@ -271,7 +271,7 @@ class Login extends Controllers
 						"title" => "Ocurrió un error inesperado",
 						"message" => "No se puede generar el token, por favor espere {$dateDifference['total_segundos']} segundos",
 						"type" => "error",
-						"redirection" => base_url() . "/login",
+						"redirection" => base_url() . "/im/login",
 						"status" => false
 					);
 					//destruimos la informacion de la variables request
@@ -306,7 +306,7 @@ class Login extends Controllers
 					'compania' => getCompanyName(),
 					'nombreUsuario' => $request['u_fullname'],
 					'email' => decryption($request['u_email']),
-					'url_recovery' => base_url() . "/login/pwreset/" . $encriptedToken,
+					'url_recovery' => base_url() . "/im/login/pwreset/" . $encriptedToken,
 					'url_compania' => base_url()
 				];
 				// Cargar plantilla HTML externa
@@ -324,7 +324,7 @@ class Login extends Controllers
 						"title" => "Ocurrió un error inesperado",
 						"message" => "No se pudo enviar el correo de recuperación de contraseña",
 						"type" => "error",
-						"redirection" => base_url() . "/login",
+						"redirection" => base_url() . "/im/login",
 						"status" => false
 					);
 					toJson($data);
@@ -334,7 +334,7 @@ class Login extends Controllers
 					"title" => "Generación de token correcto",
 					"message" => "Se genero de manera correcta el token de recuperacion de contraseña, por favor revisa tu corre, como tambien en la seccion de spam",
 					"type" => "success",
-					"redirection" => base_url() . "/login",
+					"redirection" => base_url() . "/im/login",
 					"status" => true
 				);
 				//destruimos la informacion de la variables request
@@ -348,7 +348,7 @@ class Login extends Controllers
 					"title" => "Ocurrió un error inesperado",
 					"message" => "No se pudo generar el token de recuperación de contraseña",
 					"type" => "error",
-					"redirection" => base_url() . "/login",
+					"redirection" => base_url() . "/im/login",
 					"status" => false
 				);
 				toJson($data);
@@ -359,7 +359,7 @@ class Login extends Controllers
 				"title" => "Correcto",
 				"message" => "Enlace generado correctamente y enviado al correo electronico",
 				"type" => "success",
-				"redirection" => base_url() . "/login",
+				"redirection" => base_url() . "/im/login",
 				"status" => true
 			);
 			toJson($data);
@@ -399,7 +399,7 @@ class Login extends Controllers
 				"title" => "Ocurrió un error inesperado",
 				"message" => "No se encontro la cuenta asociada al token",
 				"type" => "error",
-				"redirection" => base_url() . "/login",
+				"redirection" => base_url() . "/im/login",
 				"status" => false
 			);
 			toJson($data);
@@ -413,7 +413,7 @@ class Login extends Controllers
 				"title" => "Contraseña actualizada",
 				"message" => "Se actualizo la contraseña de manera exitosa",
 				"type" => "success",
-				"redirection" => base_url() . "/login",
+				"redirection" => base_url() . "/im/login",
 				"status" => true
 			);
 			toJson($data);
@@ -423,7 +423,7 @@ class Login extends Controllers
 				"title" => "Ocurrió un error inesperado",
 				"message" => "No se pudo actualizar la contraseña de manera exitosa",
 				"type" => "error",
-				"redirection" => base_url() . "/login",
+				"redirection" => base_url() . "/im/login",
 				"status" => false
 			);
 			toJson($data);

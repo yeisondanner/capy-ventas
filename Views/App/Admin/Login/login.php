@@ -131,7 +131,7 @@
   <!--Libreria de sweetalert-->
   <script type="text/javascript" src="<?= media() ?>/js/libraries/toastr.min.js"></script>
   <script type="text/javascript">
-    const base_url = "<?= base_url(); ?>";
+    const base_url = "<?= base_url(); ?>/im";
   </script>
   <script
     src="<?= media() ?>/js/app/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js"></script>

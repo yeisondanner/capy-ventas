@@ -10,7 +10,7 @@
         </div>
     </div>
     <ul class="app-menu">
-        <li><a class="app-menu__item <?= activeItem(2, $data["page_id"]) ?>" href="<?= base_url() ?>/dashboard"><i
+        <li><a class="app-menu__item <?= activeItem(2, $data["page_id"]) ?>" href="<?= base_url() ?>/im/dashboard"><i
                     class="app-menu__icon fa fa-dashboard"></i><span class="app-menu__label">Dashboard</span></a></li>
         <?= loadOptions($_SESSION['login_info']['idUser'], $data) ?>
     </ul>

@@ -1,9 +1,13 @@
 <?php
 $controller = ucwords($controller);
-if ($folder === "im") {
-	$controllerFile = "Controllers/Admin/" . $controller . ".php";
-} else if ($folder === "pos") {
-	$controllerFile = "Controllers/POS/" . $controller . ".php";
+if (in_array($folder, $arrayFakeFolder)) {
+	//cambiamos el nombre del sistem ya que viene con un fakename
+	if ($folder === "im") {
+		$folder = "Admin";
+	} else if ($folder === "pos") {
+		$folder = "pos";
+	}
+	$controllerFile = "Controllers/" . $folder . "/" . $controller . ".php";
 } else {
 	$controllerFile = "Controllers/" . $controller . ".php";
 }

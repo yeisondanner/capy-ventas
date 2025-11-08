@@ -596,7 +596,7 @@ function loadOptions(int $id_user, $data = null)
             foreach ($value['interface'] as $key2 => $value2) {
                 if ($value2['i_isOption'] == '0') {
                     if ($value2['i_isListNav'] == '1') {
-                        $sideBar .= ' <li><a class="treeview-item ' . activeItem($value2['idInterface'], $data["page_id"]) . '" href="' . base_url() . '/' . $value2['i_url'] . '"><i class="icon fa fa-circle-o"></i>' . $value2['i_name'] . '</a></li>   ';
+                        $sideBar .= ' <li><a class="treeview-item ' . activeItem($value2['idInterface'], $data["page_id"]) . '" href="' . base_url() . '/im/' . $value2['i_url'] . '"><i class="icon fa fa-circle-o"></i>' . $value2['i_name'] . '</a></li>   ';
                     }
                 }
             }

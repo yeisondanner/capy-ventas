@@ -23,15 +23,11 @@
 <!-- The javascript plugin to display page loading on top-->
 <script src="<?= media() ?>/js/libraries/plugins/pace.min.js?<?= versionSystem() ?>"></script>
 
-
-yeisoncarhuapoma@gmail.com
-
-
 <!--Librerias de la view-->
-<?php require_once "./Views/App/" . ucfirst($data["page_container"]) . "/Libraries/foot.php"; ?>
+<?php require_once "./Views/App/Admin/" . ucfirst($data["page_container"]) . "/Libraries/foot.php"; ?>
 <!-- Page specific javascripts-->
 <script type="text/javascript">
-    const base_url = "<?= base_url(); ?>";
+    const base_url = "<?= base_url(); ?>/im";
 </script>
 <?php
 $pageAssets = $data['page_assets'] ?? [];
@@ -65,7 +61,7 @@ $pageJsFile = "functions_" . $data['page_js_css'] . ".js";
 $pageJsVersion = $pageAssets['js_version'] ?? null;
 $pageJsQuery = $pageJsVersion ? '?v=' . $pageJsVersion : '';
 ?>
-<script src="<?= media() ?>/js/app/<?= $pageJsFolder ?>/<?= $pageJsFile ?><?= $pageJsQuery ?>?<?= versionSystem() ?>"></script>
+<script src="<?= media() ?>/js/app/Admin/<?= $pageJsFolder ?>/<?= $pageJsFile ?><?= $pageJsQuery ?>?<?= versionSystem() ?>"></script>
 
 </body>
 

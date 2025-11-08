@@ -23,9 +23,9 @@
             <ul class="dropdown-menu settings-menu dropdown-menu-right">
                 <li><a class="dropdown-item" href="#" id="sidebarToggle"><i class="fa fa-users fa-lg"></i>
                         Usuarios Activo</a></li>
-                <li><a class="dropdown-item" href="<?= base_url() ?>/users/profile"><i class="fa fa-user fa-lg"></i>
+                <li><a class="dropdown-item" href="<?= base_url() ?>/im/users/profile"><i class="fa fa-user fa-lg"></i>
                         Perfil</a></li>
-                <li><a class="dropdown-item" href="<?= base_url() ?>/LogOut"><i class="fa fa-sign-out fa-lg"></i> Cerrar
+                <li><a class="dropdown-item" href="<?= base_url() ?>/im/LogOut"><i class="fa fa-sign-out fa-lg"></i> Cerrar
                         Sesión</a>
                 </li>
             </ul>
