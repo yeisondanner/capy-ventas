@@ -1,0 +1,190 @@
+.system-module {
+  background-color: #f5f7fb;
+}
+
+.system-intro {
+  border-left: 4px solid var(--color-primary);
+  border-radius: 16px;
+}
+
+.system-sidebar {
+  border-radius: 16px;
+  position: sticky;
+  top: 96px;
+}
+
+.system-sidebar .card-body {
+  padding: 2rem 1.5rem 1.5rem;
+}
+
+.system-logo-wrapper {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(0, 123, 255, 0.08), rgba(0, 123, 255, 0.02));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.system-logo-wrapper img {
+  max-width: 80%;
+  max-height: 80%;
+}
+
+.system-color-palette {
+  gap: 12px;
+}
+
+.system-color-chip {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.system-nav__link {
+  display: flex;
+  align-items: center;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  color: #495057;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  margin-bottom: 0.4rem;
+  border: 1px solid transparent;
+}
+
+.system-nav__link i {
+  width: 20px;
+  text-align: center;
+  margin-right: 0.6rem;
+}
+
+.system-nav__link.active,
+.system-nav__link:hover {
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary), rgba(0, 123, 255, 0.85));
+  box-shadow: 0 8px 18px rgba(0, 123, 255, 0.18);
+  border-color: rgba(0, 0, 0, 0.04);
+  text-decoration: none;
+}
+
+.system-form .card {
+  border-radius: 18px;
+}
+
+.system-section {
+  scroll-margin-top: 90px;
+}
+
+.system-section .card-header {
+  background-color: rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+
+.system-section .card-header h4 {
+  font-weight: 700;
+}
+
+.system-section .card-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+}
+
+.system-section .badge {
+  font-size: 0.75rem;
+  padding: 0.45rem 0.85rem;
+  letter-spacing: 0.04em;
+}
+
+.system-logo-preview {
+  border: 1px dashed rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+  padding: 1rem;
+  display: inline-flex;
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.custom-file-input ~ .custom-file-label::after {
+  content: "Buscar";
+}
+
+.custom-file-label {
+  border-radius: 12px;
+}
+
+.loader-option {
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.loader-option:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.loader-option.selected {
+  border-color: var(--color-primary);
+  box-shadow: 0 14px 28px rgba(0, 123, 255, 0.18);
+}
+
+.loader-title {
+  font-weight: 600;
+  color: #495057;
+}
+
+@media (max-width: 1199.98px) {
+  .system-sidebar {
+    top: 88px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .system-module {
+    background-color: transparent;
+  }
+
+  .system-sidebar {
+    position: static;
+    margin-bottom: 1.5rem;
+  }
+
+  .system-sidebar .card-body {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .system-intro {
+    border-radius: 12px;
+  }
+
+  .system-form .card {
+    border-radius: 14px;
+  }
+
+  .system-section .card-header,
+  .system-section .card-footer {
+    border-radius: 14px;
+  }
+
+  .system-logo-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+}

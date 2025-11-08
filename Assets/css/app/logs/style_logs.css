@@ -1,0 +1,104 @@
+/* Estilos específicos del módulo de logs */
+.log-analytics-card {
+    border-radius: 0.85rem;
+    border: 1px solid rgba(13, 110, 253, 0.12);
+    background: linear-gradient(135deg, rgba(13, 110, 253, 0.08) 0%, rgba(0, 123, 255, 0.03) 65%, #ffffff 100%);
+}
+
+.log-analytics-card .card-header h5 {
+    letter-spacing: 0.03em;
+}
+
+.log-analytics-card .card-body {
+    min-height: 320px;
+}
+
+.log-summary-card {
+    border-radius: 0.85rem;
+    border: 1px solid rgba(13, 202, 240, 0.15);
+    background: linear-gradient(160deg, rgba(13, 202, 240, 0.08) 0%, rgba(23, 162, 184, 0.05) 48%, #ffffff 100%);
+}
+
+.log-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1rem;
+    border-radius: 0.85rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0.75rem 1.5rem rgba(13, 110, 253, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.log-summary-item + .log-summary-item {
+    margin-top: 0.85rem;
+}
+
+.log-summary-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 1rem 2rem rgba(13, 110, 253, 0.15);
+}
+
+.log-summary-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 1.4rem;
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.12);
+}
+
+.log-summary-item--error .log-summary-icon {
+    background: linear-gradient(135deg, #dc3545 0%, #a71d2a 100%);
+}
+
+.log-summary-item--success .log-summary-icon {
+    background: linear-gradient(135deg, #28a745 0%, #0f7b32 100%);
+}
+
+.log-summary-item--info .log-summary-icon {
+    background: linear-gradient(135deg, #17a2b8 0%, #0b7285 100%);
+}
+
+.log-summary-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.log-summary-total {
+    font-weight: 700;
+    font-size: 1.65rem;
+    margin: 0;
+    color: #0b0b0d;
+}
+
+.log-filter-card {
+    border-radius: 0.75rem;
+    border: 1px solid rgba(108, 117, 125, 0.1);
+    background: linear-gradient(145deg, rgba(248, 249, 250, 0.65) 0%, rgba(233, 236, 239, 0.45) 100%);
+}
+
+.log-filter-card label {
+    color: #495057;
+}
+
+.log-filter-card .btn {
+    min-width: 120px;
+}
+
+#logsTrendEmpty {
+    font-size: 0.9rem;
+}
+
+@media (max-width: 1199.98px) {
+    .log-analytics-card .card-body {
+        min-height: 280px;
+    }
+}
