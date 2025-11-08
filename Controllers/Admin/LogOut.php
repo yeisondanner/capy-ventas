@@ -6,7 +6,7 @@ class LogOut extends Controllers
         require_once "./Models/LoginModel.php";
         $obj = new LoginModel();
         session_start(config_sesion());
-        $urlReturn = base_url() . "/login";
+        $urlReturn = base_url() . "/im/login";
         if (!isset($_SESSION["login_info"])) {
             registerLog("Cierre de sesión", "Se cerro de manera forzada la sesion de los usuarios", 2);
             //actualizamos el estado de online del usuario

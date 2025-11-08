@@ -401,12 +401,12 @@ function isSession()
         $_SESSION['login'] = $_COOKIE['login'];
         $_SESSION['login_info'] = json_decode($_COOKIE['login_info'], true);
         registerLog("Informacion sobre sesión de usuario", "El usuario tenia una sesion abierta, de alguna manera se cerro, se procedio a volver a abrirla", 1, $_SESSION['login_info']['idUser']);
-        header("Location: " . base_url() . "/logOut");
+        header("Location: " . base_url() . "/im/logOut");
     } else {
         //obtener ip
         $ip = obtenerIP();
         registerLog("Intento de inicio de interfaz", "No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - {$ip}", 1, 0);
-        header("Location: " . base_url() . "/logOut");
+        header("Location: " . base_url() . "/im/logOut");
     }
 }
 //validacion de login de inicio si existe
@@ -414,7 +414,7 @@ function existLogin()
 {
     //sirve para regresar al dashboard desde el login
     if (isset($_SESSION['login'])) {
-        header("Location: " . base_url() . "/dashboard");
+        header("Location: " . base_url() . "/im/dashboard");
     }
 }
 /**
@@ -608,7 +608,7 @@ function loadOptions(int $id_user, $data = null)
     } else {
         registerLog("Cierre de sesion forzado", "La cuenta del usuario no tiene permisos a niguna funcion, por eso se esta forzando a cerrar session", 3, $_SESSION['login_info']['idUser']);
         //Revisar si se puede mejorar esta ruta, a una interfaz donde diga que la cuenta no tiene permisos, por eso nos fuerza a cerrar sesion
-        echo '<script>window.location.href="' . base_url() . '/LogOut";</script>';
+        echo '<script>window.location.href="' . base_url() . '/im/LogOut";</script>';
     }
     //limpiamos el objeto por seguridad
     unset($obj);
@@ -638,7 +638,7 @@ function permissionInterface(int $idInterface)
     }
     registerLog("Cierre de sesion forzado", "La cuenta no tiene permiso a ingresar en esta vista, por lo que se esta forzando a cerrar sesion", 3, $_SESSION['login_info']['idUser']);
     //Revisar si se puede mejorar esta ruta, a una interfaz donde diga que la cuenta no tiene permisos, por eso nos fuerza a cerrar sesion
-    echo '<script>window.location.href="' . base_url() . '/LogOut";</script>'; // Retorna null si no se encuentra
+    echo '<script>window.location.href="' . base_url() . '/im/LogOut";</script>'; // Retorna null si no se encuentra
 }
 // Funcion que da formato a la fecha
 function dateFormat($date): string
