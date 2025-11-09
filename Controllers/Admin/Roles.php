@@ -95,7 +95,7 @@ class Roles extends Controllers
                  <div class="btn-group btn-group-sm" role="group">
                 <button class="btn btn-success update-item" data-id="' . $value["idRole"] . '" data-name="' . $value["r_name"] . '" data-status="' . $value['r_status'] . '"  data-description="' . $value["r_description"] . '" type="button"><i class="fa fa-pencil"></i></button>
                 <button class="btn btn-info report-item" data-id="' . $value["idRole"] . '" data-name="' . $value["r_name"] . '" data-status="' . $value['r_status'] . '"  data-description="' . $value["r_description"] . '" data-registrationDate="' . dateFormat($value['r_registrationDate']) . '" data-updateDate="' . dateFormat($value['r_updateDate']) . '" type="button"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>
-                  <a href="' . base_url() . '/pdf/rol/' . encryption($value['idRole']) . '" target="_Blank" class="btn btn-warning btn-sm report-pdf">
+                  <a href="' . base_url() . '/im/pdf/rol/' . encryption($value['idRole']) . '" target="_Blank" class="btn btn-warning btn-sm report-pdf">
                         <i class="fa fa-print"></i>
                     </a>
                 <button class="btn btn-secondary permission-item" data-id="' . $value["idRole"] . '" data-name="' . $value["r_name"] . '"   data-description="' . $value["r_description"] . '" type="button"><i class="fa fa-th-list" aria-hidden="true"></i></button>
@@ -107,7 +107,7 @@ class Roles extends Controllers
                  <div class="btn-group btn-group-sm" role="group">
                 <button class="btn btn-success update-item" data-id="' . $value["idRole"] . '" data-name="' . $value["r_name"] . '" data-status="' . $value['r_status'] . '" data-description="' . $value["r_description"] . '" type="button"><i class="fa fa-pencil"></i></button>
                 <button class="btn btn-info report-item" data-id="' . $value["idRole"] . '" data-name="' . $value["r_name"] . '" data-status="' . $value['r_status'] . '" data-description="' . $value["r_description"] . '" data-registrationDate="' . dateFormat($value['r_registrationDate']) . '" data-updateDate="' . dateFormat($value['r_updateDate']) . '"  type="button"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></button> 
-                 <a href="' . base_url() . '/pdf/rol/' . encryption($value['idRole']) . '" target="_Blank" class="btn btn-warning btn-sm report-pdf">
+                 <a href="' . base_url() . '/im/pdf/rol/' . encryption($value['idRole']) . '" target="_Blank" class="btn btn-warning btn-sm report-pdf">
                         <i class="fa fa-print"></i>
                     </a>
                 </div>';

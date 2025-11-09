@@ -231,7 +231,7 @@ class Notification extends Controllers
         if (empty($slctUsers)) {
             registerLog("Informacion de notificacion", "El usuario a seleccionado enviar la notificacion a todos los usuarios", 3, $_SESSION['login_info']['idUser']);
             //creamos un objeto de la clase de users y obtenemos todos los usuarios activos
-            require_once "./models/UsersModel.php";
+            require_once "./models/Admin/UsersModel.php";
             $users = new UsersModel();
             $request = $users->select_users();
             foreach ($request as $key => $value) {
@@ -280,7 +280,7 @@ class Notification extends Controllers
         //recorremos el array de usuarios
         foreach ($arrResult as $key => $value) {
             //consultamos en la base de datos si el usuario existe como tambien se obtiene la informacion
-            require_once "./Models/UsersModel.php";
+            require_once "./Models/Admin/UsersModel.php";
             $objUser = new UsersModel();
             $request = $objUser->select_user_by_Id($value);
 
