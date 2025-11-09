@@ -25,49 +25,85 @@
 
         <div class="login-box">
             <form class="login-form" id="formLogin" autocomplete="off">
-                <h3 class="login-head"><i class="bi bi-person me-2"></i>SIGN IN</h3>
+                <h3 class="login-head"><i class="bi bi-person me-2"></i>Iniciar Sesión</h3>
+
                 <div class="mb-3">
-                    <label class="form-label">USERNAME</label>
-                    <input class="form-control" type="text" placeholder="Email" autofocus>
+                    <label for="txtUser" class="form-label">Usuario o Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                        <input class="form-control" type="text" id="txtUser" name="txtUser"
+                            placeholder="Ingrese su usuario o Email" autofocus>
+                    </div>
                 </div>
+
                 <div class="mb-3">
-                    <label class="form-label">PASSWORD</label>
-                    <input class="form-control" type="password" placeholder="Password">
+                    <label for="txtPassword" class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" name="txtPassword" id="txtPassword"
+                            placeholder="Ingrese su contraseña" required>
+                        <button class="btn btn-outline-primary" type="button" id="togglePassword">
+                            <i class="bi bi-eye-fill" id="iconoPassword"></i>
+                        </button>
+                    </div>
                 </div>
+
                 <div class="mb-3">
                     <div class="utility">
                         <div class="form-check">
                             <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox"><span class="label-text">Stay Signed in</span>
+                                <input class="form-check-input" type="checkbox" id="chbxRemember" name="chbxRemember">
+                                <label class="form-check-label" for="chbxRemember">Recuérdame</label>
                             </label>
                         </div>
-                        <p class="semibold-text mb-2"><a href="#" data-toggle="flip">Forgot Password ?</a></p>
+                        <p class="semibold-text mb-0">
+                            <a href="#" data-toggle="flip">¿Olvidaste tu contraseña?</a>
+                            </p>
                     </div>
                 </div>
+
+
                 <div class="mb-3 btn-container d-grid">
-                    <button class="btn btn-primary btn-block"><i class="bi bi-box-arrow-in-right me-2 fs-5"></i>SIGN IN</button>
+                    <button class="btn btn-primary btn-block"><i class="bi bi-box-arrow-in-right me-2 fs-5"></i>Ingresar</button>
                 </div>
             </form>
-            <form class="forget-form" action="index.html">
-                <h3 class="login-head"><i class="bi bi-person-lock me-2"></i>Forgot Password ?</h3>
+
+
+            <!-- Formulario de recuperar contraseña -->
+            <form class="forget-form" autocomplete="off" id="formReset">
+                <h3 class="login-head"><i class="bi bi-person-lock me-2"></i>¿Olvidaste tu contraseña?</h3>
+
                 <div class="mb-3">
-                    <label class="form-label">EMAIL</label>
-                    <input class="form-control" type="text" placeholder="Email">
+                    <label for="txtEmail" class="form-label">EMAIL</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope-at-fill"></i></span>
+                        <input class="form-control" type="text" placeholder="Correo electrónico" id="txtEmail" name="txtEmail" autocomplete="off">
+                    </div>
                 </div>
+
                 <div class="mb-3 btn-container d-grid">
-                    <button class="btn btn-primary btn-block"><i class="bi bi-unlock me-2 fs-5"></i>RESET</button>
+                    <button class="btn btn-primary btn-block"><i class="bi bi-unlock me-2 fs-5"></i>Reiniciar</button>
                 </div>
+
                 <div class="mb-3 mt-3">
-                    <p class="semibold-text mb-0"><a href="#" data-toggle="flip"><i class="bi bi-chevron-left me-1"></i> Back to Login</a></p>
+                    <p class="semibold-text mb-0"><a href="#" data-toggle="flip"><i class="bi bi-chevron-left me-1"></i> Ir al login</a></p>
                 </div>
             </form>
+
         </div>
     </section>
-    <!-- Essential javascripts for application to work-->
-    <script src="js/jquery-3.7.0.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/main.js"></script>
-   
+    <!-- TODO: Essential javascripts for application to work-->
+    <script src="<?= media() ?>/js/libraries/POS/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>
+    <script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
+    <script src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
+    <script type="text/javascript">
+      // Login Page Flipbox control
+      $('.login-content [data-toggle="flip"]').click(function() {
+      	$('.login-box').toggleClass('flipped');
+      	return false;
+      });
+    </script>
+    <script
+    src="<?= media() ?>/js/app/POS/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
 </body>
 
 </html>

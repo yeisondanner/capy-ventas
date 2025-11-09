@@ -20,6 +20,7 @@ class Login extends Controllers
 		$data['page_js_css'] = "login";
 		$this->views->getView($this, "login", $data);
 	}
+	
 	public function pwreset($token)
 	{
 		//validamos que el token no sea nulo
