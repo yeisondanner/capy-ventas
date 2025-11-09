@@ -6,7 +6,7 @@ $arrUrl = explode("/", $url);
 $folder = $arrUrl[0];
 $arrayFakeFolder = ["im", "pos"];
 //validamos que el folder esta dentro o no del parametro
-if (in_array($folder, $arrayFakeFolder)) {
+if (in_array(strtolower($folder), $arrayFakeFolder)) {
 	$controller = $arrUrl[1];
 	$method = $arrUrl[1];
 

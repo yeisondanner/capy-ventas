@@ -25,6 +25,7 @@ class Login extends Controllers
 	 */
 	public function isLogIn()
 	{
+		header('Content-Type: application/json; charset=utf-8');
 		//validacion del Método POST
 		if (!$_POST) {
 			registerLog("Ocurrió un error inesperado", "Método POST no encontrado, al momento de iniciar session", 1);
@@ -34,7 +35,7 @@ class Login extends Controllers
 				"type" => "error",
 				"status" => false
 			);
-			toJson($data);
+			toJson($data); return;
 		}
 		//validacion de que existan los campos
 		validateFields(["txtUser", "txtPassword"]);
@@ -54,7 +55,7 @@ class Login extends Controllers
 				"type" => "error",
 				"status" => false
 			);
-			toJson($data);
+			toJson($data); return;
 		}
 		//validacion que la contraseña pueda ingresar minimo 8 caracteres
 		if (strlen($txtPassword) < 8) {
@@ -65,20 +66,17 @@ class Login extends Controllers
 				"type" => "error",
 				"status" => false
 			);
-			toJson($data);
+			toJson($data); return;
 		}
-		//Encriptacion de la informacion
-		$txtUser = $txtUser;
-		$txtPassword = $txtPassword;
-		$request = $this->model->selectUserLogin($txtUser, $txtPassword);
+		$request = $this->model->selectUserLogin($txtUser);
 		if ($request) {
 
 			//validamos si la contraseña coinciden
-			if ($txtPassword != $request['password']) {
+			if (password_verify($txtPassword, $request['password'])) {
 
 				//verificamos si la cuenta se encuentra activa
 				if ($request["status"] == "Inactivo") {
-					registerLog("Ocurrió un error inesperado", "El usuario " . $request["u_fullname"] . ", no inicio sesión por motivo de cuenta desactivada", 1, $request["idUser"]);
+					registerLog("Ocurrió un error inesperado", "El usuario " . $request["fullname"] . ", no inicio sesión por motivo de cuenta desactivada", 1, $request["idUserApp"]);
 					$data = array(
 						"title" => "Ocurrió un error inesperado",
 						"message" => "La cuenta del usuario actualmente se encuentra en estado Inactivo",
@@ -86,10 +84,10 @@ class Login extends Controllers
 						"status" => false
 					);
 					unset($request);
-					toJson($data);
+					toJson($data); return;
 				}
 				//creamos las variables de session para el usuario
-				$data_session = array(
+				$_SESSION['user_data_pos'] = array(
 					"idUserApp" => $request["idUserApp"],
 					"idPeople" => $request["idPeople"],
 					"user" => $request["user"],
@@ -97,7 +95,7 @@ class Login extends Controllers
 					"status" => $request["status"]
 				);
 
-				registerLog("Inicio de sesión exitoso", "El usuario " . $request["fullname"] . ", completo de manera satisfactoria el inicio de sesion", 2, $request["idUser"]);
+				registerLog("Inicio de sesión exitoso", "El usuario " . $request["fullname"] . ", completo de manera satisfactoria el inicio de sesion", 2, $request["idUserApp"]);
 				$data = array(
 					"title" => "Inicio de sesion exitoso",
 					"message" => "Hola " . $request["fullname"] . ", se completó de manera satisfactoria el inicio de sesión",
@@ -107,9 +105,9 @@ class Login extends Controllers
 				);
 				//destruimos la variable que contiene la información del usuario
 				unset($request);
-				toJson($data);
+				toJson($data); return;
 			} else {
-				registerLog("Ocurrió un error inesperado", "El usuario {$txtUser} o contraseña {$txtPassword} que esta intentando ingresar no existe", 1);
+				registerLog("Ocurrió un error inesperado", "El usuario {$txtUser} o contraseña que esta intentando ingresar no existe", 1);
 				$data = array(
 					"title" => "Ocurrió un error inesperado",
 					"message" => "La cuenta de usuario no existe",
@@ -117,8 +115,17 @@ class Login extends Controllers
 					"status" => false
 				);
 				unset($request);
-				toJson($data);
+				toJson($data); return;
 			}
 		}
+		registerLog("Ocurrió un error inesperado", "La cuenta de usuario {$txtUser} no existe", 1);
+		$data = array(
+			"title" => "Ocurrió un error inesperado",
+			"message" => "Usuario o contraseña inválidos",
+			"type" => "error",
+			"status" => false
+		);
+		toJson($data);
+		return;
 	}
 }

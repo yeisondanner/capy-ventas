@@ -10,6 +10,8 @@
     <!-- Font-icon css-->
     <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css">
 
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/toastr.min.css?<?= versionSystem() ?>">
+
     <title>Login - Vali Admin</title>
 </head>
 
@@ -93,7 +95,9 @@
     </section>
     <!-- TODO: Essential javascripts for application to work-->
     <script src="<?= media() ?>/js/libraries/POS/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>
+    <script src="<?= media() ?>/js/libraries/POS/popper.min.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
+    
     <script src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
     <script type="text/javascript">
       // Login Page Flipbox control
@@ -102,6 +106,9 @@
       	return false;
       });
     </script>
+    <script type="text/javascript">
+    const base_url = "<?= base_url(); ?>/POS";
+  </script>
     <script
     src="<?= media() ?>/js/app/POS/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
 </body>
