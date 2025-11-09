@@ -56,7 +56,7 @@
       </div>
 
       <div class="astronaut__head">
-        <img src="<?= base_url(); ?>Assets/head-capibara.png"
+        <img src="<?php echo rtrim(base_url(), '/'); ?>/Assets/head-capibara.png"
           alt="Capibara astronauta"
           class="astronaut__head-capibara">
       </div>
@@ -65,7 +65,8 @@
   </div>
 </main>
 
-<link rel="stylesheet" href="<?= base_url(); ?>Assets/css/app/Admin/errors/style_404.css">
-<script src="<?= base_url(); ?>Assets/js/app/Admin/errors/functions_404.js"></script>
+<!-- Enlaces a archivos CSS y JS externos -->
+<link rel="stylesheet" href="<?php echo base_url(); ?>Assets/css/app/Admin/errors/style_404.css">
+<script src="<?php echo base_url(); ?>Assets/js/app/Admin/errors/functions_404.js"></script>
 
 <?= footerAdmin($data) ?>
