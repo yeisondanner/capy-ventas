@@ -297,7 +297,7 @@ function decryption($string): string
 //function que registra logs en la base de datos del sistema
 function registerLog($title, $description, $typeLog, $idUser = 0)
 {
-    require_once "./Models/LogsModel.php";
+    require_once "./Models/Admin/LogsModel.php";
     $obj = new LogsModel();
     $obj->insert_log($title, $description, $typeLog, $idUser);
 }
@@ -579,7 +579,7 @@ function delFolder(string $carpeta, string $val = "*", bool $deleteFolder = fals
 function loadOptions(int $id_user, $data = null)
 {
     //requerimos el modelo userModel
-    require_once "./Models/RolesModel.php";
+    require_once "./Models/Admin/RolesModel.php";
     $obj = new RolesModel();
     $arrData = $obj->select_module_iterface_by_user($id_user);
     $arrDataListNav = $obj->select_module_iterface_by_user_is_not_list_nav($id_user);
@@ -665,7 +665,7 @@ function obtenerIP()
 //Funcion que obtiene la informacion de sistema
 function getSystemInfo()
 {
-    require_once "./Models/SystemModel.php";
+    require_once "./Models/Admin/SystemModel.php";
     $obj = new SystemModel();
     $arrData = $obj->select_info_system();
     unset($obj);
@@ -835,7 +835,7 @@ function calculateDifferenceDates($fechaInicio, $fechaFin, $incluirHoras = false
  */
 function getAllUsersOnline()
 {
-    require_once "./Models/LoginModel.php";
+    require_once "./Models/Admin/LoginModel.php";
     $usersModel = new LoginModel();
     $arrData = $usersModel->select_users_online();
     return $arrData;
@@ -925,7 +925,7 @@ function calculateDifferenceDatesActual($fecha)
 function setNotification(int $iduser, string $title, string $description, int $priority = 1, string $type = "info", string $color = "info", string $icon = "fa-bell", string $link = "")
 {
     //creamos un objeto del modelo de notificaciones
-    require_once "./Models/NotificationModel.php";
+    require_once "./Models/Admin/NotificationModel.php";
     $obj = new NotificationModel();
     $obj->insert_notification($iduser, $title, $description, $priority, $type, $color, $icon, $link);
 }

@@ -4,7 +4,7 @@ class Loadfile extends Controllers
 {
     public function __construct()
     {
-        parent::__construct();
+        parent::__construct("");
     }
 
     /**
@@ -205,5 +205,4 @@ class Loadfile extends Controllers
         http_response_code(404);
         exit;
     }
-
 }

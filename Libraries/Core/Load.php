@@ -12,17 +12,21 @@ if (in_array($folder, $arrayFakeFolder)) {
 	$controllerFile = "Controllers/" . $controller . ".php";
 }
 if (file_exists($controllerFile)) {
+	//instaciamos el controlador
 	require_once($controllerFile);
+	//creamos el objeto
 	$controller = new $controller();
+	//validamos el metodo
 	if (method_exists($controller, $method)) {
+		//ejecutamos el metodo y mandamos el parametro
 		$controller->{$method}($params);
 	} else {
-		//redireccionamos con js al notfound
+		//redireccionamos con js al notfound porque no encontro el metodo
 		echo "<script>window.location.href='" . base_url() . "/im/errors/notfound" . "';</script>";
 		die();
 	}
 } else {
-	//redireccionamos con js al notfound
+	//redireccionamos con js al notfound el archivo
 	echo "<script>window.location.href='" . base_url() . "/im/errors/notfound" . "';</script>";
 	die();
 }

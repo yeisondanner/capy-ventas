@@ -3,7 +3,7 @@ class LogOut extends Controllers
 {
     public function __construct()
     {
-        require_once "./Models/LoginModel.php";
+        require_once "./Models/Admin/LoginModel.php";
         $obj = new LoginModel();
         session_start(config_sesion());
         $urlReturn = base_url() . "/im/login";
