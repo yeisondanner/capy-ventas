@@ -6,9 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Main CSS-->
-    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css">
     <!-- Font-icon css-->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css">
+
     <title>Login - Vali Admin</title>
 </head>
 
@@ -16,12 +17,14 @@
     <section class="material-half-bg">
         <div class="cover"></div>
     </section>
+
     <section class="login-content">
         <div class="logo">
-            <h1>Vali</h1>
+            <h1>CapyVentas</h1>
         </div>
+
         <div class="login-box">
-            <form class="login-form" action="index.html">
+            <form class="login-form" id="formLogin" autocomplete="off">
                 <h3 class="login-head"><i class="bi bi-person me-2"></i>SIGN IN</h3>
                 <div class="mb-3">
                     <label class="form-label">USERNAME</label>
@@ -64,13 +67,7 @@
     <script src="js/jquery-3.7.0.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/main.js"></script>
-    <script type="text/javascript">
-        // Login Page Flipbox control
-        $('.login-content [data-toggle="flip"]').click(function() {
-            $('.login-box').toggleClass('flipped');
-            return false;
-        });
-    </script>
+   
 </body>
 
 </html>

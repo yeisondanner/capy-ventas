@@ -31,7 +31,7 @@ class Pdf extends Controllers
         }
 
         // Cargar modelo de usuario
-        require_once "./Models/UsersModel.php";
+        require_once "./Models/Admin/UsersModel.php";
         $objUser = new UsersModel();
         $request = $objUser->select_user_by_Id($id);
 
@@ -147,7 +147,7 @@ class Pdf extends Controllers
         }
 
         // Cargar modelo de roles
-        require_once "./Models/RolesModel.php";
+        require_once "./Models/Admin/RolesModel.php";
         $objRol = new RolesModel();
 
         // Obtener información del rol y sus permisos
@@ -223,5 +223,4 @@ class Pdf extends Controllers
         // Limpiar memoria
         unset($infRol, $detailRol);
     }
-
 }

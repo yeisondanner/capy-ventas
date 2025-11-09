@@ -40,6 +40,19 @@ function footerAdmin($data = "")
     $view_footer = "./Views/Template/panel/foot.php";
     require_once($view_footer);
 }
+
+function headerPos($data = [])
+{
+   $view_header = "./Views/Template/panelPos/head.php";
+   deleteSessionVariable($data);
+   require_once($view_header);
+}
+function footerPos($data = "")
+{
+   $view_footer = "./Views/Template/panelPos/foot.php";
+   require_once($view_footer);
+}
+
 //Muestra información formateada
 function dep($data)
 {

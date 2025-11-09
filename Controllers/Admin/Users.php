@@ -181,13 +181,13 @@ class Users extends Controllers
                     data-updateDate="' . dateFormat($value["u_updateDate"]) . '"
                     data-attemp="' . $value['u_login_attempts'] . '"
                     data-token="' . $value['u_reset_token_password'] . '"
-                    data-url="' . base_url() . "/login/pwreset/" . $value['u_reset_token_password'] . '"
+                    data-url="' . base_url() . "/im/login/pwreset/" . $value['u_reset_token_password'] . '"
                     data-status-link="' . $statusLink . '"
                     data-folder-name="' . $value['u_personal_folder_name'] . '"
                     data-storage-used="0"
                     data-storage-available="' . $value['u_space_limit'] . '"
                 ><i class="fa fa-user"></i></button>
-                 <a href="' . base_url() . '/pdf/user/' . encryption($value['idUser']) . '" target="_Blank" class="btn btn-warning btn-sm report-pdf">
+                 <a href="' . base_url() . '/im/pdf/user/' . encryption($value['idUser']) . '" target="_Blank" class="btn btn-warning btn-sm report-pdf">
                         <i class="fa fa-print"></i>
                     </a>
                 <button class="btn btn-danger delete-item" data-id="' . $value["idUser"] . '" data-img="' . encryption($value["u_profile"]) . '"  data-fullname="' . $value["u_fullname"] . '" ><i class="fa fa-remove"></i></button>
@@ -234,7 +234,7 @@ class Users extends Controllers
                     data-storage-used="0"
                     data-storage-available="' . $value['u_space_limit'] . '"
                 ><i class="fa fa-user"></i></button>
-                <a href="' . base_url() . '/pdf/user/' . encryption($value['idUser']) . '" target="_Blank" class="btn btn-warning btn-sm report-pdf">
+                <a href="' . base_url() . '/im/pdf/user/' . encryption($value['idUser']) . '" target="_Blank" class="btn btn-warning btn-sm report-pdf">
                         <i class="fa fa-print"></i>
                     </a>
                 ';

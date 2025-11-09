@@ -76,7 +76,7 @@ class Lock extends Controllers
         $txtUser = encryption($txtUser);
         $txtPassword = encryption($txtPassword);
         //requerimos el modelo de login
-        require_once "./Models/LoginModel.php";
+        require_once "./Models/Admin/LoginModel.php";
         $obj = new LoginModel();
         $request = $obj->selectUserLogin($txtUser, $txtPassword);
         if ($request) {
@@ -85,6 +85,16 @@ class Lock extends Controllers
                 $data = array(
                     "title" => "Ocurrió un error inesperado",
                     "message" => "La cuenta del usuario actualmente se encuentra en estado Inactivo",
+                    "type" => "error",
+                    "status" => false
+                );
+                toJson($data);
+            }
+            if ($request["u_password"] !== $txtPassword) {
+                registerLog("Ocurrió un error inesperado", "El usuario " . $request["u_fullname"] . ", ingreso la contrase incorrecta cuando el sistema se bloqueo", 1, $request["idUser"]);
+                $data = array(
+                    "title" => "Ocurrió un error inesperado",
+                    "message" => "Contraseña incorrecta intentalo nuevamente",
                     "type" => "error",
                     "status" => false
                 );
@@ -103,7 +113,11 @@ class Lock extends Controllers
                 "registrationDate" => $request["u_registrationDate"],
                 "updateDate" => $request["u_updateDate"],
                 "role_id" => $request["role_id"],
-                "role" => $request["r_name"]
+                "role" => $request["r_name"],
+                "attempts" => $request["u_login_attempts"],
+                "token_password" => $request["u_reset_token_password"],
+                "space_limit" => $request["u_space_limit"],
+                "folder_name" => $request["u_personal_folder_name"]
             );
             $data_session = json_encode($data_session);
             $_SESSION['login'] = true;
@@ -118,7 +132,7 @@ class Lock extends Controllers
                 "message" => "Hola " . $request["u_fullname"] . ", se completo de manera satisfactoria el desbloqueo del sistema",
                 "type" => "success",
                 "status" => true,
-                "redirection" => base_url() . "/dashboard"
+                "redirection" => base_url() . "/im/dashboard"
             );
             toJson($data);
         } else {
@@ -161,13 +175,12 @@ class Lock extends Controllers
                 registerLog("Información de navegación", "Cuenta de usuario bloqueada por inactividad", 3, $_SESSION['login_info']['idUser']);
                 toJson([
                     "status" => "expired",
-                    "url" => base_url() . "/Lock",
+                    "url" => base_url() . "/im/Lock",
                     "message" => "Sesión expirada por inactividad"
                 ]);
             }
             if (($inactive_duration / 60) >= 1) {
                 registerLog("Tiempo de inactividad", "El usuario ha estado inactivo durante -Tiempo inactivo: " . floor($inactive_duration / 60) . " minutos y " . ($inactive_duration % 60) . " segundos.", 3, $_SESSION['login_info']['idUser']);
-
             }
             echo json_encode([
                 "status" => "active",
