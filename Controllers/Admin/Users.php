@@ -895,15 +895,17 @@ class Users extends Controllers
             }
             //eliminar la imagen anterior
             $ruta = getRoute() . "Profile/Users";
-            if (delFolder($ruta, $strFotoActual)) {
-                registerLog("Atención", "No se pudo eliminar la imagen anterior del usuario durante el proceso de eliminación.", 1, $_SESSION['login_info']['idUser']);
-                $data = array(
-                    "title" => "Ocurrió un error inesperado",
-                    "message" => "No se logró eliminar la imagen de perfil. Verifique si el archivo existe o si hay permisos insuficientes.",
-                    "type" => "error",
-                    "status" => false
-                );
-                toJson($data);
+            if (!empty($strFotoActual)) {
+                if (delFolder($ruta, $strFotoActual)) {
+                    registerLog("Atención", "No se pudo eliminar la imagen anterior del usuario durante el proceso de eliminación.", 1, $_SESSION['login_info']['idUser']);
+                    $data = array(
+                        "title" => "Ocurrió un error inesperado",
+                        "message" => "No se logró eliminar la imagen de perfil. Verifique si el archivo existe o si hay permisos insuficientes.",
+                        "type" => "error",
+                        "status" => false
+                    );
+                    toJson($data);
+                }
             }
             $strProfile = $nameFinalPhoto; //se asigna el nombre de la imagen a la variable
         } else {
