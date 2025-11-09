@@ -1,6 +1,6 @@
 <?php
 
-class business_type extends Controllers
+class Businesstype extends Controllers
 {
     public function __construct()
     {
@@ -25,16 +25,16 @@ class business_type extends Controllers
      *
      * @return void
      */
-    public function business_type()
+    public function Businesstype()
     {
         // Datos de la página (asignación única para claridad y mantenimiento)
         $data = [
-            'page_id'          => 12,
+            'page_id'          => 66,
             'page_title'       => 'Gestión de negocios',
             'page_description' => 'Gestiona todos los tipos de negocios.',
-            'page_container'   => 'business_type',
-            'page_view'        => 'business_type',
-            'page_js_css'      => 'business_type',
+            'page_container'   => 'Businesstype',
+            'page_view'        => 'Businesstype',
+            'page_js_css'      => 'Businesstype',
             'page_vars'        => ['permission_data', 'login', 'login_info'], // mantener contexto de permisos y sesión
         ];
 
@@ -71,6 +71,6 @@ class business_type extends Controllers
         );
 
         // Render de la vista del módulo
-        $this->views->getView($this, 'business_type', $data);
+        $this->views->getView($this, 'businesstype', $data);
     }
 }
