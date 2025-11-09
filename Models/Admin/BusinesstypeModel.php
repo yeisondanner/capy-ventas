@@ -1,6 +1,6 @@
 <?php
 
-class business_typeModel extends Mysql
+class BusinesstypeModel extends Mysql
 {
     private int $idBusinessType;
     private string $name;
