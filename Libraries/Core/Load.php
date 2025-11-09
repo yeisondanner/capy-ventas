@@ -22,11 +22,11 @@ if (file_exists($controllerFile)) {
 		$controller->{$method}($params);
 	} else {
 		//redireccionamos con js al notfound porque no encontro el metodo
-		echo "<script>window.location.href='" . base_url() . "/im/errors/notfound" . "';</script>";
+		echo "<script>window.location.href='" . base_url() . "/im/errors/methodnotfound" . "';</script>";
 		die();
 	}
 } else {
 	//redireccionamos con js al notfound el archivo
-	echo "<script>window.location.href='" . base_url() . "/im/errors/notfound" . "';</script>";
+	echo "<script>window.location.href='" . base_url() . "/im/errors/controllernotfound" . "';</script>";
 	die();
 }

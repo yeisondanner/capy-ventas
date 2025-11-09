@@ -22,6 +22,36 @@ class Errors extends Controllers
 		registerLog("Información de navegación", "El usuario entro a: " . $data['page_title'], 3, $_SESSION['login_info']['idUser']);
 		$this->views->getView($this, "404", $data);
 	}
+	public function controllernotfound()
+	{
+		isSession();
+		$data['page_id'] = 13;
+		permissionInterface($data['page_id']);
+		$data['page_title'] = "Error 404";
+		$data['page_description'] = "Pagina de error 404 para cuando no se encuentra el controlador";
+		$data['page_container'] = "Errors";
+		$data['page_view'] = 'error';
+		$data['page_js_css'] = "controllers";
+		//variables de sesion que se deben mantener activos, para evitar que se pierdan los datos
+		$data['page_vars'] = ["login", "login_info"];
+		registerLog("Información de navegación", "El usuario entro a: " . $data['page_title'], 3, $_SESSION['login_info']['idUser']);
+		$this->views->getView($this, "controllers", $data);
+	}
+	public function methodnotfound()
+	{
+		isSession();
+		$data['page_id'] = 14;
+		permissionInterface($data['page_id']);
+		$data['page_title'] = "Error 404";
+		$data['page_description'] = "Pagina de error 404 para cuando no se encuentra el metodo";
+		$data['page_container'] = "Errors";
+		$data['page_view'] = 'error';
+		$data['page_js_css'] = "method";
+		//variables de sesion que se deben mantener activos, para evitar que se pierdan los datos
+		$data['page_vars'] = ["login", "login_info"];
+		registerLog("Información de navegación", "El usuario entro a: " . $data['page_title'], 3, $_SESSION['login_info']['idUser']);
+		$this->views->getView($this, "method", $data);
+	}
 	public function timeout()
 	{
 
