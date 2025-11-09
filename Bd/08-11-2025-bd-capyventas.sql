@@ -2,7 +2,7 @@
 -- Host:                         127.0.0.1
 -- Versión del servidor:         10.4.32-MariaDB - mariadb.org binary distribution
 -- SO del servidor:              Win64
--- HeidiSQL Versión:             12.12.0.7122
+-- HeidiSQL Versión:             12.13.0.7147
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -417,7 +417,7 @@ CREATE TABLE IF NOT EXISTS `tb_interface` (
   CONSTRAINT `tb_interface_ibfk_1` FOREIGN KEY (`module_id`) REFERENCES `tb_module` (`idModule`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.tb_interface: ~8 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.tb_interface: ~15 rows (aproximadamente)
 DELETE FROM `tb_interface`;
 INSERT INTO `tb_interface` (`idInterface`, `i_name`, `i_description`, `i_url`, `i_isOption`, `i_isPublic`, `i_isListNav`, `i_status`, `i_registrationDate`, `i_updateDate`, `module_id`) VALUES
 	(1, 'Inicio de Sesion', NULL, 'login', '0', '1', '0', 'Activo', '2025-01-26 15:17:34', '2025-02-02 22:06:32', 1),
@@ -431,6 +431,9 @@ INSERT INTO `tb_interface` (`idInterface`, `i_name`, `i_description`, `i_url`, `
 	(9, 'Gestionar notificaciones', NULL, 'notification', '0', '0', '1', 'Activo', '2025-07-05 21:55:52', '2025-07-05 22:00:07', 3),
 	(10, 'Cambio de contraseña', NULL, 'pwreset', '0', '1', '0', 'Activo', '2025-08-25 01:21:10', '2025-08-25 01:21:10', 1),
 	(11, 'Gestion de archivos personales', NULL, 'clust', '0', '0', '1', 'Activo', '2025-08-20 19:16:18', '2025-08-20 19:16:18', 4),
+	(12, 'Gestion de tipo de negocio', NULL, 'businesstype', '0', '0', '1', 'Activo', '2025-11-09 03:15:28', '2025-11-09 03:15:58', 5),
+	(13, 'Pagina de error 404 del controlador', NULL, 'controllernotfound', '0', '0', '0', 'Activo', '2025-11-09 03:16:49', '2025-11-09 03:17:30', 1),
+	(14, 'Pagina de error 404 del metodo', NULL, 'methodnotfound', '0', '0', '0', 'Activo', '2025-11-09 03:20:08', '2025-11-09 03:20:08', 1),
 	(20, 'Bloqueo de Sesión', NULL, 'lock', '0', '0', '0', 'Activo', '2025-05-20 13:21:56', '2025-05-20 13:21:56', 1);
 
 -- Volcando estructura para tabla bd_capyventas.tb_log
@@ -447,9 +450,9 @@ CREATE TABLE IF NOT EXISTS `tb_log` (
   KEY `user_id` (`user_id`),
   KEY `tb_log_ibfk_1` (`typelog_id`),
   CONSTRAINT `tb_log_ibfk_1` FOREIGN KEY (`typelog_id`) REFERENCES `tb_typelog` (`idTypeLog`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8511 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8553 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.tb_log: ~8,184 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.tb_log: ~8,482 rows (aproximadamente)
 DELETE FROM `tb_log`;
 INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
 	(1, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-07-15 15:05:36', '2025-07-15 15:05:36', 3, 1),
@@ -8962,7 +8965,49 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(8507, 'Navegación', '{"event":"page_view","page":"Clust - Gestión de archivos y carpetas","page_id":11,"container":"Clust","user_id":1,"ip":"::1","method":"GET","url":"/sis-roles/clust","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-08T15:19:30-05:00"}', '2025-11-08 20:19:30', '2025-11-08 20:19:30', 3, 1),
 	(8508, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"::1","method":"GET","url":"/sis-roles/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-08T15:19:40-05:00"}', '2025-11-08 20:19:40', '2025-11-08 20:19:40', 3, 1),
 	(8509, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"::1","method":"GET","url":"/sis-roles/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-08T15:19:49-05:00"}', '2025-11-08 20:19:49', '2025-11-08 20:19:49', 3, 1),
-	(8510, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"::1","method":"GET","url":"/sis-roles/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-08T15:20:28-05:00"}', '2025-11-08 20:20:28', '2025-11-08 20:20:28', 3, 1);
+	(8510, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"::1","method":"GET","url":"/sis-roles/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-08T15:20:28-05:00"}', '2025-11-08 20:20:28', '2025-11-08 20:20:28', 3, 1),
+	(8511, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-09 02:02:42', '2025-11-09 02:02:42', 1, 0),
+	(8512, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-09 02:02:42', '2025-11-09 02:02:42', 1, 0),
+	(8513, 'Cierre de sesión', 'Se cerro de manera forzada la sesion de los usuarios', '2025-11-09 02:02:42', '2025-11-09 02:02:42', 2, 0),
+	(8514, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-09 02:02:42', '2025-11-09 02:02:42', 1, 0),
+	(8515, 'Inicio de sesión exitoso', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES, completo de manera satisfactoria el inicio de sesion', '2025-11-09 02:32:43', '2025-11-09 02:32:43', 2, 1),
+	(8516, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"::1","method":"GET","url":"/capy-ventas/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 OPR/123.0.0.0","timestamp":"2025-11-08T21:32:44-05:00"}', '2025-11-09 02:32:44', '2025-11-09 02:32:44', 3, 1),
+	(8517, 'Navegación', '{"event":"page_view","page":"Perfil del Usuario","page_id":7,"container":"Users","user_id":1,"ip":"::1","method":"GET","url":"/capy-ventas/im/users/profile","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 OPR/123.0.0.0","timestamp":"2025-11-08T21:32:52-05:00"}', '2025-11-09 02:32:52', '2025-11-09 02:32:52', 3, 1),
+	(8518, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"::1","method":"GET","url":"/capy-ventas/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 OPR/123.0.0.0","timestamp":"2025-11-08T21:32:54-05:00"}', '2025-11-09 02:32:54', '2025-11-09 02:32:54', 3, 1),
+	(8519, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"::1","method":"GET","url":"/capy-ventas/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 OPR/123.0.0.0","timestamp":"2025-11-08T21:33:43-05:00"}', '2025-11-09 02:33:43', '2025-11-09 02:33:43', 3, 1),
+	(8520, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 02:33:50', '2025-11-09 02:33:50', 3, 1),
+	(8521, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 02:36:07', '2025-11-09 02:36:07', 3, 1),
+	(8522, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"::1","method":"GET","url":"/capy-ventas/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 OPR/123.0.0.0","timestamp":"2025-11-08T21:53:23-05:00"}', '2025-11-09 02:53:23', '2025-11-09 02:53:23', 3, 1),
+	(8523, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:07:51', '2025-11-09 03:07:51', 3, 1),
+	(8524, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:07:53', '2025-11-09 03:07:53', 3, 1),
+	(8525, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:08:34', '2025-11-09 03:08:34', 3, 1),
+	(8526, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:10:01', '2025-11-09 03:10:01', 3, 1),
+	(8527, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:10:54', '2025-11-09 03:10:54', 3, 1),
+	(8528, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:12:55', '2025-11-09 03:12:55', 3, 1),
+	(8529, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"::1","method":"GET","url":"/capy-ventas/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 OPR/123.0.0.0","timestamp":"2025-11-08T22:13:02-05:00"}', '2025-11-09 03:13:02', '2025-11-09 03:13:02', 3, 1),
+	(8530, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"::1","method":"GET","url":"/capy-ventas/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 OPR/123.0.0.0","timestamp":"2025-11-08T22:18:46-05:00"}', '2025-11-09 03:18:46', '2025-11-09 03:18:46', 3, 1),
+	(8531, 'Cierre de sesion forzado', 'La cuenta no tiene permiso a ingresar en esta vista, por lo que se esta forzando a cerrar sesion', '2025-11-09 03:19:12', '2025-11-09 03:19:12', 3, 1),
+	(8532, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:19:12', '2025-11-09 03:19:12', 3, 1),
+	(8533, 'Cierre de sesión', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES ha cerrado sesión en el sistema', '2025-11-09 03:19:13', '2025-11-09 03:19:13', 2, 1),
+	(8534, 'Inicio de sesión exitoso', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES, completo de manera satisfactoria el inicio de sesion', '2025-11-09 03:21:46', '2025-11-09 03:21:46', 2, 1),
+	(8535, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"::1","method":"GET","url":"/capy-ventas/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 OPR/123.0.0.0","timestamp":"2025-11-08T22:21:47-05:00"}', '2025-11-09 03:21:47', '2025-11-09 03:21:47', 3, 1),
+	(8536, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:23:45', '2025-11-09 03:23:45', 3, 1),
+	(8537, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:23:48', '2025-11-09 03:23:48', 3, 1),
+	(8538, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:23:52', '2025-11-09 03:23:52', 3, 1),
+	(8539, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:07', '2025-11-09 03:24:07', 3, 1),
+	(8540, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:07', '2025-11-09 03:24:07', 3, 1),
+	(8541, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:07', '2025-11-09 03:24:07', 3, 1),
+	(8542, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:07', '2025-11-09 03:24:07', 3, 1),
+	(8543, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:07', '2025-11-09 03:24:07', 3, 1),
+	(8544, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:08', '2025-11-09 03:24:08', 3, 1),
+	(8545, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:08', '2025-11-09 03:24:08', 3, 1),
+	(8546, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:08', '2025-11-09 03:24:08', 3, 1),
+	(8547, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:08', '2025-11-09 03:24:08', 3, 1),
+	(8548, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:08', '2025-11-09 03:24:08', 3, 1),
+	(8549, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:08', '2025-11-09 03:24:08', 3, 1),
+	(8550, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"::1","method":"GET","url":"/capy-ventas/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36 OPR/123.0.0.0","timestamp":"2025-11-08T22:24:11-05:00"}', '2025-11-09 03:24:11', '2025-11-09 03:24:11', 3, 1),
+	(8551, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:16', '2025-11-09 03:24:16', 3, 1),
+	(8552, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-09 03:24:31', '2025-11-09 03:24:31', 3, 1);
 
 -- Volcando estructura para tabla bd_capyventas.tb_module
 DROP TABLE IF EXISTS `tb_module`;
@@ -8975,15 +9020,16 @@ CREATE TABLE IF NOT EXISTS `tb_module` (
   `m_registrationDate` timestamp NOT NULL DEFAULT current_timestamp(),
   `m_updateDate` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`idModule`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.tb_module: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.tb_module: ~5 rows (aproximadamente)
 DELETE FROM `tb_module`;
 INSERT INTO `tb_module` (`idModule`, `m_name`, `m_icon`, `m_description`, `m_status`, `m_registrationDate`, `m_updateDate`) VALUES
 	(1, 'Configuracion del sistema', '<i class="fa fa-cog" aria-hidden="true"></i>', 'Aqui se encuentra toda la configuracion inicial del sistema', 'Activo', '2025-01-26 15:17:10', '2025-02-02 22:46:08'),
 	(2, 'Logs', '<i class="fa fa-microchip" aria-hidden="true"></i>', 'Aqui se visualizara los logs del sistema', 'Activo', '2025-01-31 21:32:16', '2025-01-31 21:48:21'),
 	(3, 'Gestion de notificaciones', '<i class="fa fa-bell-o" aria-hidden="true"></i>', 'Aqui se gestiona todas las notificaciones que se realiza, como tambien enviar notificaciones a los usuarios o todos los usuarios dle sistema', 'Activo', '2025-07-05 21:54:58', '2025-07-05 21:54:58'),
-	(4, 'Gestion de archivos', '<i class="fa fa-hdd-o" aria-hidden="true"></i>', 'Aqui se gestiona los archivos que tiene la cuenta', 'Activo', '2025-08-19 17:30:55', '2025-08-19 17:30:55');
+	(4, 'Gestion de archivos', '<i class="fa fa-hdd-o" aria-hidden="true"></i>', 'Aqui se gestiona los archivos que tiene la cuenta', 'Activo', '2025-08-19 17:30:55', '2025-08-19 17:30:55'),
+	(5, 'Gestion de negocios', '<i class="fa fa-microchip" aria-hidden="true"></i>', NULL, 'Activo', '2025-11-09 03:15:49', '2025-11-09 03:15:49');
 
 -- Volcando estructura para tabla bd_capyventas.tb_notification
 DROP TABLE IF EXISTS `tb_notification`;
@@ -9081,7 +9127,7 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
 -- Volcando datos para la tabla bd_capyventas.tb_user: ~1 rows (aproximadamente)
 DELETE FROM `tb_user`;
 INSERT INTO `tb_user` (`idUser`, `u_user`, `u_password`, `u_email`, `u_profile`, `u_fullname`, `u_gender`, `u_dni`, `u_status`, `u_registrationDate`, `u_updateDate`, `u_online`, `role_id`, `u_login_attempts`, `u_reset_token_password`, `u_space_limit`, `u_personal_folder_name`) VALUES
-	(1, 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'ME9lN1h5LzYrVFNTeGZQdnVJVGNhV3lvaGNNV2lIbjMrcWg3Mzl6dFRSYz0=', '6866fefa42aef.jpg', 'SUPER ADMINISTRADOR SISTEMA ROLES', 'Otro', '12345678', 'Activo', '2025-01-28 18:49:20', '2025-11-05 02:44:59', 1, 1, 0, '', 0, 'root');
+	(1, 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'ME9lN1h5LzYrVFNTeGZQdnVJVGNhV3lvaGNNV2lIbjMrcWg3Mzl6dFRSYz0=', '6866fefa42aef.jpg', 'SUPER ADMINISTRADOR SISTEMA ROLES', 'Otro', '12345678', 'Activo', '2025-01-28 18:49:20', '2025-11-09 03:21:46', 1, 1, 0, '', 0, 'root');
 
 -- Volcando estructura para tabla bd_capyventas.tb_userroledetail
 DROP TABLE IF EXISTS `tb_userroledetail`;
@@ -9099,7 +9145,7 @@ CREATE TABLE IF NOT EXISTS `tb_userroledetail` (
   CONSTRAINT `tb_userroledetail_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `tb_role` (`idRole`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.tb_userroledetail: ~24 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.tb_userroledetail: ~27 rows (aproximadamente)
 DELETE FROM `tb_userroledetail`;
 INSERT INTO `tb_userroledetail` (`idUserRoleDetail`, `interface_id`, `role_id`, `urd_status`, `urd_registrationDate`, `urd_updateDate`) VALUES
 	(1, 1, 1, 'Activo', '2025-01-30 22:56:54', '2025-07-05 21:57:19'),
@@ -9113,6 +9159,9 @@ INSERT INTO `tb_userroledetail` (`idUserRoleDetail`, `interface_id`, `role_id`, 
 	(9, 9, 1, 'Activo', '2025-05-20 13:22:11', '2025-07-05 21:57:56'),
 	(10, 10, 1, 'Activo', '2025-08-25 01:21:20', '2025-08-25 01:21:20'),
 	(11, 11, 1, 'Activo', '2025-08-20 19:16:30', '2025-08-20 19:16:30'),
+	(12, 12, 1, 'Activo', '2025-11-09 03:20:52', '2025-11-09 03:20:52'),
+	(13, 13, 1, 'Activo', '2025-11-09 03:21:16', '2025-11-09 03:21:16'),
+	(14, 14, 1, 'Activo', '2025-11-09 03:21:27', '2025-11-09 03:21:27'),
 	(20, 20, 1, 'Activo', '2025-02-02 21:49:55', '2025-07-05 21:58:12'),
 	(47, 1, 18, 'Activo', '2025-08-07 03:29:08', '2025-08-08 14:35:34'),
 	(48, 2, 18, 'Activo', '2025-08-07 03:29:08', '2025-08-08 14:35:34'),
