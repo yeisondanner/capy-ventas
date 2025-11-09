@@ -161,7 +161,7 @@ class Lock extends Controllers
                 registerLog("Información de navegación", "Cuenta de usuario bloqueada por inactividad", 3, $_SESSION['login_info']['idUser']);
                 toJson([
                     "status" => "expired",
-                    "url" => base_url() . "/Lock",
+                    "url" => base_url() . "/im/Lock",
                     "message" => "Sesión expirada por inactividad"
                 ]);
             }
