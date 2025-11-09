@@ -101,7 +101,7 @@ class Login extends Controllers
 					"message" => "Hola " . $request["fullname"] . ", se completó de manera satisfactoria el inicio de sesión",
 					"type" => "success",
 					"status" => true,
-					"redirection" => base_url() . "/POS/dashboard"
+                                        "redirection" => base_url() . "/pos/dashboard"
 				);
 				//destruimos la variable que contiene la información del usuario
 				unset($request);

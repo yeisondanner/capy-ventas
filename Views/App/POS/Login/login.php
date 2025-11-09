@@ -107,7 +107,7 @@
       });
     </script>
     <script type="text/javascript">
-    const base_url = "<?= base_url(); ?>/POS";
+    const base_url = "<?= base_url(); ?>/pos";
   </script>
     <script
     src="<?= media() ?>/js/app/POS/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
