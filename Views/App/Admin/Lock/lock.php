@@ -64,7 +64,7 @@
                     </button>
                 </div>
             </form>
-            <p><a href="<?= base_url() ?>/LogOut">¿No eres <?= decryption($_SESSION['login_info']['user']) ?>? Inicie
+            <p><a href="<?= base_url() ?>/im/LogOut">¿No eres <?= decryption($_SESSION['login_info']['user']) ?>? Inicie
                     sesión aquí.</a></p>
         </div>
     </section>

@@ -113,7 +113,11 @@ class Lock extends Controllers
                 "registrationDate" => $request["u_registrationDate"],
                 "updateDate" => $request["u_updateDate"],
                 "role_id" => $request["role_id"],
-                "role" => $request["r_name"]
+                "role" => $request["r_name"],
+                "attempts" => $request["u_login_attempts"],
+                "token_password" => $request["u_reset_token_password"],
+                "space_limit" => $request["u_space_limit"],
+                "folder_name" => $request["u_personal_folder_name"]
             );
             $data_session = json_encode($data_session);
             $_SESSION['login'] = true;

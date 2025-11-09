@@ -42,12 +42,6 @@ class Clust extends Controllers
         // Usuario actual (defensivo)
         $userId = isset($_SESSION['login_info']['idUser']) ? (int) $_SESSION['login_info']['idUser'] : null;
 
-        // Versions de assets (defensivo, con fallback opcional)
-        $data['page_assets'] = [
-            'css_version' => $this->getAssetVersion('css/app/clust/style_clust.css') ?? '1',
-            'js_version'  => $this->getAssetVersion('js/app/clust/functions_clust.js') ?? '1',
-        ];
-
         // Componentes del módulo (ej. uso de almacenamiento)
         // Si el usuario no está definido, dejamos null para que la vista lo maneje.
         $spaceUsed = null;
@@ -109,7 +103,7 @@ class Clust extends Controllers
                 "title" => "Ocurrió un error inesperado",
                 "message" => "Folder no encontrado o no tienes permiso para acceder, por favor intentalo mas tarde",
                 "type" => "error",
-                "url" => base_url() . "/clust",
+                "url" => base_url() . "/im/clust",
                 "status" => false
             );
             toJson($data);
@@ -154,20 +148,7 @@ class Clust extends Controllers
         ];
         toJson($array);
     }
-    /**
-     * Obtiene la versión del recurso con base en su fecha de modificación.
-     *
-     * @param string $relativePath Ruta relativa dentro de la carpeta Assets.
-     * @return string|null Marca de tiempo del archivo o null si no existe.
-     */
-    private function getAssetVersion(string $relativePath): ?string
-    {
-        $assetPath = dirname(__DIR__) . '/Assets/' . ltrim($relativePath, '/');
-        if (!file_exists($assetPath)) {
-            return null;
-        }
-        return (string) filemtime($assetPath);
-    }
+
     /**
      * Metodo que se encarga de registrar un nuevo folder dentro de la basde de datos
      * @return void
