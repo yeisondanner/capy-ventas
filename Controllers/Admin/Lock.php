@@ -128,7 +128,7 @@ class Lock extends Controllers
                 "message" => "Hola " . $request["u_fullname"] . ", se completo de manera satisfactoria el desbloqueo del sistema",
                 "type" => "success",
                 "status" => true,
-                "redirection" => base_url() . "/dashboard"
+                "redirection" => base_url() . "/im/dashboard"
             );
             toJson($data);
         } else {
