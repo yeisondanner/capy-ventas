@@ -4,7 +4,7 @@ class Home extends Controllers
 {
 	public function __construct()
 	{
-		parent::__construct();
+		parent::__construct("");
 	}
 
 	public function home()
@@ -15,6 +15,4 @@ class Home extends Controllers
 		$data['page_js_css'] = "home";
 		$this->views->getView($this, "home", $data);
 	}
-
 }
-?>
