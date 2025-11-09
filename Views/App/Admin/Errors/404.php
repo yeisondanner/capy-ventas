@@ -24,11 +24,11 @@
         Parece que esta página se perdió en el espacio.
       </div>
       <button class="error__button error__button--active"
-              onclick="location.href='<?= base_url(); ?>';">
+        onclick="location.href='<?= base_url(); ?>';">
         IR AL INICIO
       </button>
       <button class="error__button"
-              onclick="javascript:window.history.back();">
+        onclick="javascript:window.history.back();">
         REGRESAR
       </button>
     </div>
@@ -56,17 +56,21 @@
       </div>
 
       <div class="astronaut__head">
-        <canvas id="visor" width="60" height="60"></canvas>
-        <div class="astronaut__head-visor-flare1"></div>
-        <div class="astronaut__head-visor-flare2"></div>
+        <img src="<?php echo rtrim(base_url(), '/'); ?>/Assets/head-capibara.png"
+          alt="Capibara astronauta"
+          class="astronaut__head-capibara">
       </div>
+
+
+
     </div>
 
   </div>
 </main>
 
 <!-- Enlaces a archivos CSS y JS externos -->
-<link rel="stylesheet" href="<?= media(); ?>/css/404.css">
-<script src="<?= media(); ?>/js/404.js"></script>
+<link rel="stylesheet" href="<?php echo base_url(); ?>Assets/css/app/Admin/errors/style_404.css">
+<script src="<?php echo base_url(); ?>Assets/js/app/Admin/errors/functions_404.js"></script>
+
 
 <?= footerAdmin($data) ?>
