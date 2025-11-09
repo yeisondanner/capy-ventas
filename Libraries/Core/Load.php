@@ -5,7 +5,7 @@ if (in_array($folder, $arrayFakeFolder)) {
 	if ($folder === "im") {
 		$folder = "Admin";
 	} else if ($folder === "pos") {
-		$folder = "pos";
+		$folder = "POS";
 	}
 	$controllerFile = "Controllers/" . $folder . "/" . $controller . ".php";
 } else {
