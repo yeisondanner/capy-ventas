@@ -76,7 +76,7 @@ class Lock extends Controllers
         $txtUser = encryption($txtUser);
         $txtPassword = encryption($txtPassword);
         //requerimos el modelo de login
-        require_once "./Models/LoginModel.php";
+        require_once "./Models/Admin/LoginModel.php";
         $obj = new LoginModel();
         $request = $obj->selectUserLogin($txtUser, $txtPassword);
         if ($request) {
@@ -85,6 +85,16 @@ class Lock extends Controllers
                 $data = array(
                     "title" => "Ocurrió un error inesperado",
                     "message" => "La cuenta del usuario actualmente se encuentra en estado Inactivo",
+                    "type" => "error",
+                    "status" => false
+                );
+                toJson($data);
+            }
+            if ($request["u_password"] !== $txtPassword) {
+                registerLog("Ocurrió un error inesperado", "El usuario " . $request["u_fullname"] . ", ingreso la contrase incorrecta cuando el sistema se bloqueo", 1, $request["idUser"]);
+                $data = array(
+                    "title" => "Ocurrió un error inesperado",
+                    "message" => "Contraseña incorrecta intentalo nuevamente",
                     "type" => "error",
                     "status" => false
                 );
@@ -167,7 +177,6 @@ class Lock extends Controllers
             }
             if (($inactive_duration / 60) >= 1) {
                 registerLog("Tiempo de inactividad", "El usuario ha estado inactivo durante -Tiempo inactivo: " . floor($inactive_duration / 60) . " minutos y " . ($inactive_duration % 60) . " segundos.", 3, $_SESSION['login_info']['idUser']);
-
             }
             echo json_encode([
                 "status" => "active",
