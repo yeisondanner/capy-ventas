@@ -513,7 +513,7 @@ class Users extends Controllers
                 registerLog("Informacion de creacion de ruta", "La carpeta raiz del usuario $txtRootFolder no estaba creada, por lo que se procedio a crear", 3, $_SESSION['login_info']['idUser']);
             }
             //una ves creada la carpeta insertamos los valores en la tabla para crear la carpeta
-            require_once "./Models/ClustModel.php";
+            require_once "./Models/Admin/ClustModel.php";
             $obj = new ClustModel();
             $requestInsertFolder = $obj->insert_folder($request, $txtRootFolder, 1);
             if (!$requestInsertFolder) {
