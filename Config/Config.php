@@ -28,8 +28,8 @@ $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https'
 $host = $_SERVER['HTTP_HOST'];
 $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])), '/');
 $baseUrl = $protocol . '://' . $host . $scriptDir;
-define('BASE_URL', rtrim($baseUrl, '/'));
-//const BASE_URL = "http://localhost/sis-roles";
+//define('BASE_URL', rtrim($baseUrl, '/'));
+const BASE_URL = "http://localhost/capy-ventas";
 //Ruta de almacenamiento de archivos
 const RUTA_ARCHIVOS = "./Storage/";
 //Nombre del sistema
