@@ -181,7 +181,7 @@ class Customersuserapp extends Controllers
 
         isCsrf();
 
-        validateFields(["txtNames", "txtLastname", "txtEmail", "txtDateOfBirth", "txtCountry", "txtTelephonePrefix", "txtPhoneNumber", "slctStatus"]);
+        validateFields(["txtNames", "txtLastname", "txtEmail", "txtDateOfBirth", "txtCountry", "txtTelephonePrefix", "txtPhoneNumber"]);
 
         $strNames = strClean($_POST["txtNames"]);
         $strLastname = strClean($_POST["txtLastname"]);
@@ -190,12 +190,10 @@ class Customersuserapp extends Controllers
         $strCountry = strClean($_POST["txtCountry"]);
         $strTelephonePrefix = strClean($_POST["txtTelephonePrefix"]);
         $strPhoneNumber = strClean($_POST["txtPhoneNumber"]);
-        $slctStatus = strClean($_POST["slctStatus"]);
         
         // Campos opcionales de usuario
         $strUser = isset($_POST["txtUser"]) ? strClean($_POST["txtUser"]) : "";
         $strPassword = isset($_POST["txtPassword"]) ? strClean($_POST["txtPassword"]) : "";
-        $slctUserStatus = isset($_POST["slctUserStatus"]) ? strClean($_POST["slctUserStatus"]) : "Activo";
 
         validateFieldsEmpty(array(
             "NOMBRES" => $strNames,
@@ -205,7 +203,6 @@ class Customersuserapp extends Controllers
             "PAÍS" => $strCountry,
             "PREFIJO TELEFÓNICO" => $strTelephonePrefix,
             "NÚMERO DE TELÉFONO" => $strPhoneNumber,
-            "ESTADO" => $slctStatus
         ));
 
         // Validación de formato de nombres
@@ -357,14 +354,14 @@ class Customersuserapp extends Controllers
         $strCountry = strtoupper($strCountry);
 
         // Insertar en la base de datos
-        $request = $this->model->insert_people($strNames, $strLastname, $strEmail, $strDateOfBirth, $strCountry, $strTelephonePrefix, $strPhoneNumber, $slctStatus);
+        $request = $this->model->insert_people($strNames, $strLastname, $strEmail, $strDateOfBirth, $strCountry, $strTelephonePrefix, $strPhoneNumber);
 
         if ($request > 0) {
             // Si se proporcionó usuario, crear el registro en user_app
             if (!empty($strUser) && !empty($strPassword)) {
                 $strUserEncrypted = encryption($strUser);
                 $strPasswordEncrypted = encryption($strPassword);
-                $requestUser = $this->model->insert_user_app($strUserEncrypted, $strPasswordEncrypted, $slctUserStatus, $request);
+                $requestUser = $this->model->insert_user_app($strUserEncrypted, $strPasswordEncrypted, $request);
                 
                 if (!$requestUser) {
                     registerLog("Atención", "La persona fue registrada pero no se pudo crear el usuario de la aplicación.", 3, $_SESSION['login_info']['idUser']);

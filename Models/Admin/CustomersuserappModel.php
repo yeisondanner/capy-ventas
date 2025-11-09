@@ -100,9 +100,9 @@ class CustomersuserappModel extends Mysql
      * @param string $status Estado (Activo/Inactivo)
      * @return int|false ID del registro insertado o false en caso de error
      */
-    public function insert_people($names, $lastname, $email, $dateOfBirth, $country, $telephonePrefix, $phoneNumber, $status)
+    public function insert_people($names, $lastname, $email, $dateOfBirth, $country, $telephonePrefix, $phoneNumber)
     {
-        $sql = "INSERT INTO `people` (`names`, `lastname`, `email`, `date_of_birth`, `country`, `telephone_prefix`, `phone_number`, `status`) VALUES (?,?,?,?,?,?,?,?);";
+        $sql = "INSERT INTO `people` (`names`, `lastname`, `email`, `date_of_birth`, `country`, `telephone_prefix`, `phone_number`) VALUES (?,?,?,?,?,?,?);";
         $arrValues = array(
             $this->names = $names,
             $this->lastname = $lastname,
@@ -111,7 +111,6 @@ class CustomersuserappModel extends Mysql
             $this->country = $country,
             $this->telephonePrefix = $telephonePrefix,
             $this->phoneNumber = $phoneNumber,
-            $this->status = $status
         );
         $request = $this->insert($sql, $arrValues);
         return $request;
@@ -212,13 +211,12 @@ class CustomersuserappModel extends Mysql
      * @param int $peopleId ID de la persona asociada
      * @return int|false ID del registro insertado o false en caso de error
      */
-    public function insert_user_app($user, $password, $status, $peopleId)
+    public function insert_user_app($user, $password, $peopleId)
     {
-        $sql = "INSERT INTO `user_app` (`user`, `password`, `status`, `people_id`) VALUES (?,?,?,?);";
+        $sql = "INSERT INTO `user_app` (`user`, `password`, `people_id`) VALUES (?,?,?);";
         $arrValues = array(
             $user,
             $password,
-            $status,
             $peopleId
         );
         $request = $this->insert($sql, $arrValues);

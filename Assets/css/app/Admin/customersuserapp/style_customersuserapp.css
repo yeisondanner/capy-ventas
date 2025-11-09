@@ -1,83 +1,10 @@
-/* Estilos específicos para el módulo de Clientes App */
-
-.upload-img-profile {
-    max-width: 150px;
-    max-height: 150px;
-    border-radius: 50%;
-    border: 3px solid #ddd;
-    padding: 5px;
-    object-fit: cover;
-}
-
-/* Estilos para la tabla */
-#table {
-    font-size: 0.9rem;
-}
-
-#table thead th {
-    background-color: #f8f9fa;
-    font-weight: 600;
-}
-
-/* Estilos para los modales */
-.modal-header {
-    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-}
-
-.modal-footer {
-    border-top: 2px solid rgba(0, 0, 0, 0.1);
-}
-
-/* Estilos para los badges de estado */
-.badge {
-    padding: 0.35em 0.65em;
-    font-size: 0.85em;
-}
-
-/* Estilos para los botones de acción */
-.btn-group .btn {
-    margin: 0 2px;
-}
-
-/* Estilos para los campos de formulario */
-.form-group label {
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
-
-.input-group-text {
-    background-color: #f8f9fa;
-    border-right: none;
-}
-
-.form-control:focus + .input-group-prepend .input-group-text,
-.form-control:focus ~ .input-group-prepend .input-group-text {
-    border-color: #80bdff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-/* Estilos para el reporte */
-#modalReport .table td {
-    vertical-align: middle;
-}
-
-#modalReport .table td:first-child {
-    font-weight: 600;
-    width: 40%;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
-    .upload-img-profile {
-        max-width: 100px;
-        max-height: 100px;
-    }
-    
     .btn-group {
         display: flex;
         flex-direction: column;
     }
-    
+
     .btn-group .btn {
         margin: 2px 0;
         width: 100%;
