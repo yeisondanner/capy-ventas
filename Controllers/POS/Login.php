@@ -70,9 +70,9 @@ class Login extends Controllers
 		}
 		$request = $this->model->selectUserLogin($txtUser);
 		if ($request) {
-
+			
 			//validamos si la contraseña coinciden
-			if (password_verify($txtPassword, $request['password'])) {
+			if (($txtPassword == $request['password'])) {
 
 				//verificamos si la cuenta se encuentra activa
 				if ($request["status"] == "Inactivo") {
@@ -101,7 +101,7 @@ class Login extends Controllers
 					"message" => "Hola " . $request["fullname"] . ", se completó de manera satisfactoria el inicio de sesión",
 					"type" => "success",
 					"status" => true,
-                                        "redirection" => base_url() . "/pos/dashboard"
+                    "redirection" => base_url() . "/pos/dashboard"
 				);
 				//destruimos la variable que contiene la información del usuario
 				unset($request);
