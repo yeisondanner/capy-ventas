@@ -6,18 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Main CSS-->
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/main.css">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/loader.css">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/main.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/loader.css?<?= versionSystem() ?>">
     <!-- Font-icon css-->
     <link rel="stylesheet" type="text/css"
-        href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        href="<?= media() ?>/css/libraries/Admin/font-awesome-4.7.0/css/font-awesome.min.css?<?= versionSystem() ?>">
     <!-- CSS de la las alertas -->
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/toastr.min.css">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/toastr.min.css?<?= versionSystem() ?>">
     <link rel="shortcut icon"
         href="<?= base_url() ?>/loadfile/icon?f=<?= (getSystemInfo()) ? getSystemInfo()["c_logo"] : null; ?>"
         type="image/x-icon">
     <link rel="stylesheet"
-        href="<?= media() ?>/css/app/<?= strtolower($data["page_container"]) ?>/style_<?= $data["page_js_css"] ?>.css">
+        href="<?= media() ?>/css/app/<?= strtolower($data["page_container"]) ?>/style_<?= $data["page_js_css"] ?>.css?<?= versionSystem() ?>">
     <style>
         :root {
             --color-primary:
@@ -79,19 +79,19 @@
     </section>
 
     <!-- Essential javascripts for application to work-->
-    <script src="<?= media() ?>/js/libraries/Admin/jquery-3.7.1.min.js"></script>
-    <script src="<?= media() ?>/js/libraries/Admin/popper.min.js"></script>
-    <script src="<?= media() ?>/js/libraries/Admin/bootstrap.min.js"></script>
-    <script src="<?= media() ?>/js/libraries/Admin/main.js"></script>
+    <script src="<?= media() ?>/js/libraries/Admin/jquery-3.7.1.min.js?<?= versionSystem() ?>"></script>
+    <script src="<?= media() ?>/js/libraries/Admin/popper.min.js?<?= versionSystem() ?>"></script>
+    <script src="<?= media() ?>/js/libraries/Admin/bootstrap.min.js?<?= versionSystem() ?>"></script>
+    <script src="<?= media() ?>/js/libraries/Admin/main.js?<?= versionSystem() ?>"></script>
     <!-- The javascript plugin to display page loading on top-->
-    <script src="<?= media() ?>/js/libraries/Admin/plugins/pace.min.js"></script>
+    <script src="<?= media() ?>/js/libraries/Admin/plugins/pace.min.js?<?= versionSystem() ?>"></script>
     <!--Libreria de sweetalert-->
-    <script type="text/javascript" src="<?= media() ?>/js/libraries/Admin/toastr.min.js"></script>
+    <script type="text/javascript" src="<?= media() ?>/js/libraries/Admin/toastr.min.js?<?= versionSystem() ?>"></script>
     <script type="text/javascript">
         const base_url = "<?= base_url(); ?>";
     </script>
     <script
-        src="<?= media() ?>/js/app/Admin/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js"></script>
+        src="<?= media() ?>/js/app/Admin/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.?<?= versionSystem() ?>"></script>
 </body>
 
 </html>
