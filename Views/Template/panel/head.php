@@ -9,19 +9,19 @@
     <!--Colocar las descripciones de la pagina-->
     <meta name="description" content="<?= getSystemInfo()["c_description"] ?>">
     <!-- Main CSS-->
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/main.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/main.css?<?= versionSystem() ?>">
     <!-- Font-icon css
     <link rel="stylesheet" type="text/css"
         href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">-->
     <link rel="stylesheet" type="text/css"
-        href="<?= media() ?>/css/libraries/font-awesome-4.7.0/css/font-awesome.min.css?<?= versionSystem() ?>">
+        href="<?= media() ?>/css/libraries/Admin/font-awesome-4.7.0/css/font-awesome.min.css?<?= versionSystem() ?>">
 
     <!-- CSS de la las alertas -->
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/toastr.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/toastr.min.css?<?= versionSystem() ?>">
     <!-- Data table plugin-->
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/dataTables.dataTables.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/buttons.dataTables.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/loader.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/dataTables.dataTables.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/buttons.dataTables.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/loader.css?<?= versionSystem() ?>">
 
     <!--Cargamos el inco de la pagina-->
     <link rel="shortcut icon"

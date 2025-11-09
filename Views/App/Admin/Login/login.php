@@ -6,13 +6,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Main CSS-->
-  <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/main.css">
-  <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/loader.css">
+  <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/main.css">
+  <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/loader.css">
   <!-- Font-icon css-->
   <link rel="stylesheet" type="text/css"
     href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- CSS de la las alertas -->
-  <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/toastr.min.css">
+  <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/toastr.min.css">
   <link rel="shortcut icon"
     href="<?= base_url() ?>/loadfile/icon?f=<?= (getSystemInfo()) ? getSystemInfo()["c_logo"] : null; ?>"
     type="image/x-icon">
@@ -122,19 +122,19 @@
   </section>
 
   <!-- Essential javascripts for application to work-->
-  <script src="<?= media() ?>/js/libraries/jquery-3.7.1.min.js"></script>
-  <script src="<?= media() ?>/js/libraries/popper.min.js"></script>
-  <script src="<?= media() ?>/js/libraries/bootstrap.min.js"></script>
-  <script src="<?= media() ?>/js/libraries/main.js"></script>
+  <script src="<?= media() ?>/js/libraries/Admin/jquery-3.7.1.min.js"></script>
+  <script src="<?= media() ?>/js/libraries/Admin/popper.min.js"></script>
+  <script src="<?= media() ?>/js/libraries/Admin/bootstrap.min.js"></script>
+  <script src="<?= media() ?>/js/libraries/Admin/main.js"></script>
   <!-- The javascript plugin to display page loading on top-->
-  <script src="<?= media() ?>/js/libraries/plugins/pace.min.js"></script>
+  <script src="<?= media() ?>/js/libraries/Admin/plugins/pace.min.js"></script>
   <!--Libreria de sweetalert-->
-  <script type="text/javascript" src="<?= media() ?>/js/libraries/toastr.min.js"></script>
+  <script type="text/javascript" src="<?= media() ?>/js/libraries/Admin/toastr.min.js"></script>
   <script type="text/javascript">
     const base_url = "<?= base_url(); ?>/im";
   </script>
   <script
-    src="<?= media() ?>/js/app/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js"></script>
+    src="<?= media() ?>/js/app/Admin/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
 </body>
 
 </html>

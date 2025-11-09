@@ -1,27 +1,27 @@
 <!-- Essential javascripts for application to work-->
-<script src="<?= media() ?>/js/libraries/jquery-3.7.1.min.js?<?= versionSystem() ?>"></script>
+<script src="<?= media() ?>/js/libraries/Admin/jquery-3.7.1.min.js?<?= versionSystem() ?>"></script>
 <!--Libreria de sweetalert-->
-<script type="text/javascript" src="<?= media() ?>/js/libraries/toastr.min.js?<?= versionSystem() ?>"></script>
-<script src="<?= media() ?>/js/libraries/popper.min.js?<?= versionSystem() ?>"></script>
-<script src="<?= media() ?>/js/libraries/bootstrap.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" src="<?= media() ?>/js/libraries/Admin/toastr.min.js?<?= versionSystem() ?>"></script>
+<script src="<?= media() ?>/js/libraries/Admin/popper.min.js?<?= versionSystem() ?>"></script>
+<script src="<?= media() ?>/js/libraries/Admin/bootstrap.min.js?<?= versionSystem() ?>"></script>
 <!-- Data table plugin-->
-<script type="text/javascript" src="<?= media() ?>/js/libraries/plugins/jquery.dataTables.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" src="<?= media() ?>/js/libraries/plugins/dataTables.bootstrap.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" src="<?= media() ?>/js/libraries/Admin/plugins/jquery.dataTables.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" src="<?= media() ?>/js/libraries/Admin/plugins/dataTables.bootstrap.min.js?<?= versionSystem() ?>"></script>
 
 <!-- Buttons for DataTables-->
 <script type="text/javascript" language="javascript"
-    src="<?= media() ?>/js/libraries/plugins/dataTables.buttons.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/plugins/jszip.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/plugins/pdfmake.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/plugins/vfs_fonts.js?<?= versionSystem() ?>"></script>
+    src="<?= media() ?>/js/libraries/Admin/plugins/dataTables.buttons.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/Admin/plugins/jszip.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/Admin/plugins/pdfmake.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/Admin/plugins/vfs_fonts.js?<?= versionSystem() ?>"></script>
 <script type="text/javascript" language="javascript"
-    src="<?= media() ?>/js/libraries/plugins/buttons.html5.min.js?<?= versionSystem() ?>"></script>
+    src="<?= media() ?>/js/libraries/Admin/plugins/buttons.html5.min.js?<?= versionSystem() ?>"></script>
 <!--Libreria prinicipal de la app-->
-<script src="<?= media() ?>/js/libraries/main.js?<?= versionSystem() ?>"></script>
+<script src="<?= media() ?>/js/libraries/Admin/main.js?<?= versionSystem() ?>"></script>
 <!--Libreria que valida la sesion de usuario-->
-<script src="<?= media() ?>/js/libraries/validateSesionActivity.js?<?= versionSystem() ?>"></script>
+<script src="<?= media() ?>/js/libraries/Admin/validateSesionActivity.js?<?= versionSystem() ?>"></script>
 <!-- The javascript plugin to display page loading on top-->
-<script src="<?= media() ?>/js/libraries/plugins/pace.min.js?<?= versionSystem() ?>"></script>
+<script src="<?= media() ?>/js/libraries/Admin/plugins/pace.min.js?<?= versionSystem() ?>"></script>
 
 <!--Librerias de la view-->
 <?php require_once "./Views/App/Admin/" . ucfirst($data["page_container"]) . "/Libraries/foot.php"; ?>
