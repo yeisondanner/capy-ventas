@@ -6,13 +6,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Main CSS-->
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css?<?= versionSystem() ?>">
     <!-- Font-icon css-->
-    <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css">
-
+    <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/toastr.min.css?<?= versionSystem() ?>">
-
-    <title>Login - Vali Admin</title>
+    <title>Capy Login</title>
 </head>
 
 <body>
@@ -59,7 +57,7 @@
                         </div>
                         <p class="semibold-text mb-0">
                             <a href="#" data-toggle="flip">¿Olvidaste tu contraseña?</a>
-                            </p>
+                        </p>
                     </div>
                 </div>
 
@@ -97,20 +95,9 @@
     <script src="<?= media() ?>/js/libraries/POS/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/popper.min.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
-    
+    <script src="<?= media() ?>/js/libraries/POS/SweerAlert2.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
-    <script type="text/javascript">
-      // Login Page Flipbox control
-      $('.login-content [data-toggle="flip"]').click(function() {
-      	$('.login-box').toggleClass('flipped');
-      	return false;
-      });
-    </script>
-    <script type="text/javascript">
-    const base_url = "<?= base_url(); ?>/pos";
-  </script>
-    <script
-    src="<?= media() ?>/js/app/POS/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
+    <script src="<?= media() ?>/js/app/POS/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
 </body>
 
 </html>

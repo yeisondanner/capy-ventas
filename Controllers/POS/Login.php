@@ -35,7 +35,8 @@ class Login extends Controllers
 				"type" => "error",
 				"status" => false
 			);
-			toJson($data); return;
+			toJson($data);
+			return;
 		}
 		//validacion de que existan los campos
 		validateFields(["txtUser", "txtPassword"]);
@@ -55,7 +56,8 @@ class Login extends Controllers
 				"type" => "error",
 				"status" => false
 			);
-			toJson($data); return;
+			toJson($data);
+			return;
 		}
 		//validacion que la contraseña pueda ingresar minimo 8 caracteres
 		if (strlen($txtPassword) < 8) {
@@ -66,11 +68,12 @@ class Login extends Controllers
 				"type" => "error",
 				"status" => false
 			);
-			toJson($data); return;
+			toJson($data);
+			return;
 		}
 		$request = $this->model->selectUserLogin($txtUser);
 		if ($request) {
-			
+
 			//validamos si la contraseña coinciden
 			if (($txtPassword == $request['password'])) {
 
@@ -84,7 +87,8 @@ class Login extends Controllers
 						"status" => false
 					);
 					unset($request);
-					toJson($data); return;
+					toJson($data);
+					return;
 				}
 				//creamos las variables de session para el usuario
 				$_SESSION['user_data_pos'] = array(
@@ -101,11 +105,12 @@ class Login extends Controllers
 					"message" => "Hola " . $request["fullname"] . ", se completó de manera satisfactoria el inicio de sesión",
 					"type" => "success",
 					"status" => true,
-                    "redirection" => base_url() . "/pos/dashboard"
+					"redirection" => base_url() . "/pos/dashboard"
 				);
 				//destruimos la variable que contiene la información del usuario
 				unset($request);
-				toJson($data); return;
+				toJson($data);
+				return;
 			} else {
 				registerLog("Ocurrió un error inesperado", "El usuario {$txtUser} o contraseña que esta intentando ingresar no existe", 1);
 				$data = array(
@@ -115,7 +120,8 @@ class Login extends Controllers
 					"status" => false
 				);
 				unset($request);
-				toJson($data); return;
+				toJson($data);
+				return;
 			}
 		}
 		registerLog("Ocurrió un error inesperado", "La cuenta de usuario {$txtUser} no existe", 1);
