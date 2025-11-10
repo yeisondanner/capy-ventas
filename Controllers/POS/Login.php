@@ -4,7 +4,9 @@ class Login extends Controllers
 {
 	public function __construct()
 	{
-
+		//inicializacmos la sesion pasamos el param 1 para inicializar la sesion de la app
+		session_start(config_sesion(1));
+		existLogin(1);
 		parent::__construct("POS");
 	}
 
@@ -25,35 +27,61 @@ class Login extends Controllers
 	 */
 	public function isLogIn()
 	{
-		header('Content-Type: application/json; charset=utf-8');
 		//validacion del Método POST
 		if (!$_POST) {
-			registerLog("Ocurrió un error inesperado", "Método POST no encontrado, al momento de iniciar session", 1);
 			$data = array(
 				"title" => "Ocurrió un error inesperado",
 				"message" => "Método POST no encontrado",
 				"type" => "error",
+				"icon" => "error",
 				"status" => false
 			);
 			toJson($data);
 			return;
 		}
-		//validacion de que existan los campos
-		validateFields(["txtUser", "txtPassword"]);
+		//validamos que existan los campos solictados
+		if (!isset($_POST["txtUser"]) || !isset($_POST["txtPassword"])) {
+			$data = array(
+				"title" => "Ocurrió un error inesperado",
+				"message" => "Los campos de usuario y contraseña son obligatorios",
+				"type" => "error",
+				"icon" => "error",
+				"status" => false
+			);
+			toJson($data);
+		}
 		//limpieza de los inputs
 		$txtUser = strClean($_POST["txtUser"]);
 		$txtPassword = strClean($_POST["txtPassword"]);
-		//validacion de campos vacios
-		validateFieldsEmpty(
-			["Usuario o Email" => $txtUser, "Contraseña" => $txtPassword]
-		);
-		//Validacion de usuario, solo debe soporte minimo 3 caracteres
-		if (strlen($txtUser) < 3) {
-			registerLog("Ocurrió un error inesperado", "El usuario debe tener al menos 3 caracteres para poder ingresar al sistema", 1);
+		//validamos que los campos no esten vacios de manera individual
+		if (empty($txtUser)) {
 			$data = array(
 				"title" => "Ocurrió un error inesperado",
-				"message" => "El usuario debe tener al menos 3 caracteres",
+				"message" => "El usuario o Email no puede estar vacio",
 				"type" => "error",
+				"icon" => "error",
+				"status" => false
+			);
+			toJson($data);
+		}
+		if (empty($txtPassword)) {
+			$data = array(
+				"title" => "Ocurrió un error inesperado",
+				"message" => "La contraseña no puede estar vacio",
+				"type" => "error",
+				"icon" => "error",
+				"status" => false
+			);
+			toJson($data);
+		}
+
+		//Validacion de usuario, solo debe soporte minimo 3 caracteres
+		if (strlen($txtUser) < 4) {
+			$data = array(
+				"title" => "Ocurrió un error inesperado",
+				"message" => "El usuario debe tener al menos 4 caracteres",
+				"type" => "info",
+				"icon" => "info",
 				"status" => false
 			);
 			toJson($data);
@@ -61,77 +89,115 @@ class Login extends Controllers
 		}
 		//validacion que la contraseña pueda ingresar minimo 8 caracteres
 		if (strlen($txtPassword) < 8) {
-			registerLog("Ocurrió un error inesperado", "La contraseña debe tener al menos 8 caracteres para iniciar sesion", 1);
 			$data = array(
 				"title" => "Ocurrió un error inesperado",
 				"message" => "La contraseña debe tener al menos 8 caracteres",
-				"type" => "error",
+				"type" => "info",
+				"icon" => "info",
 				"status" => false
 			);
 			toJson($data);
 			return;
 		}
+		//encriptamos el usuario
+		$txtUser = encryption($txtUser);
+		//verificamos si el usuario existe
 		$request = $this->model->selectUserLogin($txtUser);
-		if ($request) {
+		if (!$request) {
+			$data = array(
+				"title" => "Ocurrió un error inesperado",
+				"message" => "Usuario o contraseña inválidos",
+				"type" => "error",
+				"icon" => "error",
+				"timer" => 5000,
+				"status" => false
+			);
+			toJson($data);
+		}
+		//encriptamos el usuario
+		$txtPassword = encryption($txtPassword);
+		//validamos si la contraseña coinciden
+		if (($txtPassword === $request['password'])) {
 
-			//validamos si la contraseña coinciden
-			if (($txtPassword == $request['password'])) {
-
-				//verificamos si la cuenta se encuentra activa
-				if ($request["status"] == "Inactivo") {
-					registerLog("Ocurrió un error inesperado", "El usuario " . $request["fullname"] . ", no inicio sesión por motivo de cuenta desactivada", 1, $request["idUserApp"]);
-					$data = array(
-						"title" => "Ocurrió un error inesperado",
-						"message" => "La cuenta del usuario actualmente se encuentra en estado Inactivo",
-						"type" => "error",
-						"status" => false
-					);
-					unset($request);
-					toJson($data);
-					return;
-				}
-				//creamos las variables de session para el usuario
-				$_SESSION['user_data_pos'] = array(
-					"idUserApp" => $request["idUserApp"],
-					"idPeople" => $request["idPeople"],
-					"user" => $request["user"],
-					"fullName" => $request["fullname"],
-					"status" => $request["status"]
-				);
-
-				registerLog("Inicio de sesión exitoso", "El usuario " . $request["fullname"] . ", completo de manera satisfactoria el inicio de sesion", 2, $request["idUserApp"]);
-				$data = array(
-					"title" => "Inicio de sesion exitoso",
-					"message" => "Hola " . $request["fullname"] . ", se completó de manera satisfactoria el inicio de sesión",
-					"type" => "success",
-					"status" => true,
-					"redirection" => base_url() . "/pos/dashboard"
-				);
-				//destruimos la variable que contiene la información del usuario
-				unset($request);
-				toJson($data);
-				return;
-			} else {
-				registerLog("Ocurrió un error inesperado", "El usuario {$txtUser} o contraseña que esta intentando ingresar no existe", 1);
+			//verificamos si la cuenta se encuentra activa
+			if ($request["u_status"] === "Inactivo") {
 				$data = array(
 					"title" => "Ocurrió un error inesperado",
-					"message" => "La cuenta de usuario no existe",
+					"message" => "La cuenta del usuario actualmente se encuentra en estado Inactivo",
 					"type" => "error",
+					"icon" => "error",
 					"status" => false
 				);
 				unset($request);
 				toJson($data);
-				return;
 			}
+			//verificamos si la cuenta se encuentra activa
+			if ($request["p_status"] === "Inactivo") {
+				$data = array(
+					"title" => "Ocurrió un error inesperado",
+					"message" => "Los datos del usuario estan desactivados",
+					"type" => "error",
+					"icon" => "error",
+					"status" => false
+				);
+				unset($request);
+				toJson($data);
+			}
+			//creamos las variables de session para el usuario
+			$data_session = array(
+				"idUser" => $request["idUserApp"],
+				"user" => $request["user"],
+				"email" => $request["email"],
+				"profile" => '',
+				"fullName" => $request["names"] . ' ' . $request['lastname'],
+				"gender" => '',
+				"status" => $request["u_status"],
+				"p_status" => $request["p_status"]
+			);
+			$data_session = json_encode($data_session);
+			$_SESSION['login'] = true;
+			$_SESSION['login_info'] = json_decode($data_session, true);
+			//preparamos las alertas de bienvenida
+			$nombres = $request["names"];
+			$apellidos = $request['lastname'];
+			$txtUser = decryption($txtUser);
+			$data = array(
+				"title" => "Inicio de sesion exitoso",
+				"message" => "Hola " . $request["names"] . " " . $request['lastname'] . "",
+				"html" => <<<HTML
+							<div class="text-center">           
+								<div class="d-flex align-items-center justify-content-center gap-3 mb-3">
+									<div class="text-start">
+										<h3 class="fs-4 mb-0 fw-bold">{$nombres} {$apellidos}</h3>
+										<span class="badge bg-success rounded-pill fs-6"><i class="bi bi-person-fill"></i> Bienvenido</span>
+									</div>
+								</div>
+								<p class="text-muted mt-4 mb-2">Redirigiendo al panel...</p>
+								<div class="spinner-border text-success" role="status">
+									<span class="visually-hidden">Cargando...</span>
+								</div>
+							</div>
+				HTML,
+				"type" => "success",
+				"icon" => "success",
+				"timer" => 2000,
+				"status" => true,
+				"url" => base_url() . "/pos/dashboard"
+			);
+			//destruimos la variable que contiene la información del usuario
+			unset($request);
+			toJson($data);
+		} else {
+			$data = array(
+				"title" => "Ocurrió un error inesperado",
+				"message" => "Usuario o contraseña inválidos",
+				"type" => "error",
+				"icon" => "error",
+				"status" => false
+			);
+			unset($request);
+			toJson($data);
+			return;
 		}
-		registerLog("Ocurrió un error inesperado", "La cuenta de usuario {$txtUser} no existe", 1);
-		$data = array(
-			"title" => "Ocurrió un error inesperado",
-			"message" => "Usuario o contraseña inválidos",
-			"type" => "error",
-			"status" => false
-		);
-		toJson($data);
-		return;
 	}
 }

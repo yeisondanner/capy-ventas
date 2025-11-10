@@ -4,7 +4,7 @@ class Dashboard extends Controllers
 {
 	public function __construct()
 	{
-
+		isSession(1);
 		parent::__construct("POS");
 	}
 

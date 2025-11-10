@@ -43,14 +43,14 @@ function footerAdmin($data = "")
 
 function headerPos($data = [])
 {
-   $view_header = "./Views/Template/panelPos/head.php";
-   deleteSessionVariable($data);
-   require_once($view_header);
+    $view_header = "./Views/Template/panelPos/head.php";
+    deleteSessionVariable($data);
+    require_once($view_header);
 }
 function footerPos($data = "")
 {
-   $view_footer = "./Views/Template/panelPos/foot.php";
-   require_once($view_footer);
+    $view_footer = "./Views/Template/panelPos/foot.php";
+    require_once($view_footer);
 }
 
 //Muestra información formateada
@@ -399,35 +399,83 @@ function csrf(bool $input = true)
     }
 }
 //configuracion de la sesion
-function config_sesion()
+function config_sesion(int $sesion = 0)
 {
-    return ["name" => SESSION_NAME];
+    switch ($sesion) {
+        case 0:
+            return ["name" => SESSION_NAME];
+            break;
+        case 1:
+            return ["name" => SESSION_NAME_POS];
+            break;
+        default:
+            return "Nombre de inicio de sesion no definido";
+            break;
+    }
 }
 //Funcion que valida si un usuario  tiene validado el inicio de sesion correcto
-function isSession()
+function isSession(int $sesion = 0)
 {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start(config_sesion());
-    }
-    if (isset($_SESSION['login'])) {
-    } else if (!isset($_SESSION['login']) && isset($_COOKIE['login'])) {
-        $_SESSION['login'] = $_COOKIE['login'];
-        $_SESSION['login_info'] = json_decode($_COOKIE['login_info'], true);
-        registerLog("Informacion sobre sesión de usuario", "El usuario tenia una sesion abierta, de alguna manera se cerro, se procedio a volver a abrirla", 1, $_SESSION['login_info']['idUser']);
-        header("Location: " . base_url() . "/im/logOut");
-    } else {
-        //obtener ip
-        $ip = obtenerIP();
-        registerLog("Intento de inicio de interfaz", "No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - {$ip}", 1, 0);
-        header("Location: " . base_url() . "/im/logOut");
+    switch ($sesion) {
+        case 0:
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start(config_sesion());
+            }
+            if (isset($_SESSION['login'])) {
+            } else if (!isset($_SESSION['login']) && isset($_COOKIE['login'])) {
+                $_SESSION['login'] = $_COOKIE['login'];
+                $_SESSION['login_info'] = json_decode($_COOKIE['login_info'], true);
+                registerLog("Informacion sobre sesión de usuario", "El usuario tenia una sesion abierta, de alguna manera se cerro, se procedio a volver a abrirla", 1, $_SESSION['login_info']['idUser']);
+                header("Location: " . base_url() . "/im/logOut");
+            } else {
+                //obtener ip
+                $ip = obtenerIP();
+                registerLog("Intento de inicio de interfaz", "No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - {$ip}", 1, 0);
+                header("Location: " . base_url() . "/im/logOut");
+            }
+            break;
+        case 1:
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start(config_sesion(1));
+            }
+            if (isset($_SESSION['login'])) {
+            } else if (!isset($_SESSION['login']) && isset($_COOKIE['login'])) {
+                $_SESSION['login'] = $_COOKIE['login'];
+                $_SESSION['login_info'] = json_decode($_COOKIE['login_info'], true);
+                header("Location: " . base_url() . "/im/logOut");
+            } else {
+                //obtener ip
+                $ip = obtenerIP();
+                header("Location: " . base_url() . "/im/logOut");
+            }
+            break;
+        default:
+            # code...
+            break;
     }
 }
 //validacion de login de inicio si existe
-function existLogin()
+function existLogin(int $sesion = 0)
 {
-    //sirve para regresar al dashboard desde el login
-    if (isset($_SESSION['login'])) {
-        header("Location: " . base_url() . "/im/dashboard");
+    switch ($sesion) {
+        case 0:
+            //sirve para regresar al dashboard desde el login
+            if (isset($_SESSION['login'])) {
+
+                header("Location: " . base_url() . "/im/dashboard");
+            }
+            break;
+        case 1:
+            //sirve para regresar al dashboard desde el login
+            if (isset($_SESSION['login'])) {
+
+                header("Location: " . base_url() . "/pos/dashboard");
+            }
+            break;
+
+        default:
+            # code...
+            break;
     }
 }
 /**

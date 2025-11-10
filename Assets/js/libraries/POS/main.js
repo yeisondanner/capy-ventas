@@ -1,22 +1,46 @@
 (function () {
-	"use strict";
+  "use strict";
 
-	var treeviewMenu = $('.app-menu');
+  var treeviewMenu = $(".app-menu");
 
-	// Toggle Sidebar
-	$('[data-toggle="sidebar"]').click(function(event) {
-		event.preventDefault();
-		$('.app').toggleClass('sidenav-toggled');
-	});
+  // Toggle Sidebar
+  $('[data-toggle="sidebar"]').click(function (event) {
+    event.preventDefault();
+    $(".app").toggleClass("sidenav-toggled");
+  });
 
-	// Activate sidebar treeview toggle
-	$("[data-toggle='treeview']").click(function(event) {
-		event.preventDefault();
-		if(!$(this).parent().hasClass('is-expanded')) {
-			treeviewMenu.find("[data-toggle='treeview']").parent().removeClass('is-expanded');
-		}
-		$(this).parent().toggleClass('is-expanded');
-	});
-
+  // Activate sidebar treeview toggle
+  $("[data-toggle='treeview']").click(function (event) {
+    event.preventDefault();
+    if (!$(this).parent().hasClass("is-expanded")) {
+      treeviewMenu
+        .find("[data-toggle='treeview']")
+        .parent()
+        .removeClass("is-expanded");
+    }
+    $(this).parent().toggleClass("is-expanded");
+  });
 })();
+/**
+ * Creamos una funcion de tipos de alertas con sweetalert2
+ */
+function showAlert(data, type = "float") {
+  switch (type) {
+    case "float":
+      Swal.fire({
+        icon: data.icon,
+        title: data.title,
+        text: data.message,
+        html: data.html ?? "",
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: data.timer ?? 2500,
+        timerProgressBar: true,
+      });
+      break;
 
+    default:
+      break;
+  }
+}

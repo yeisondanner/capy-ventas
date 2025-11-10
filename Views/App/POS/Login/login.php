@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/toastr.min.css?<?= versionSystem() ?>">
     <title>Capy Login</title>
+    <script>
+        const base_url = "<?= base_url() ?>/pos";
+        const currency = "<?= getCurrency() ?>";
+    </script>
 </head>
 
 <body>
@@ -40,7 +44,7 @@
                     <label for="txtPassword" class="form-label">Contraseña</label>
                     <div class="input-group">
                         <input type="password" class="form-control" name="txtPassword" id="txtPassword"
-                            placeholder="Ingrese su contraseña" required>
+                            placeholder="Ingrese su contraseña" required autocomplete="off">
                         <button class="btn btn-outline-primary" type="button" id="togglePassword">
                             <i class="bi bi-eye-fill" id="iconoPassword"></i>
                         </button>

@@ -4,97 +4,36 @@ window.addEventListener("DOMContentLoaded", () => {
 
 function login() {
   const formLogin = document.getElementById("formLogin");
-
-  formLogin.addEventListener("submit", (e) => {
+  formLogin.addEventListener("submit", async (e) => {
     e.preventDefault();
-
-    const formData = new FormData(formLogin);
-
+    const formdata = new FormData(formLogin);
     const config = {
       method: "POST",
-      body: formData,
-      cache: "no-cache",
-      mode: "cors",
-      credentials: "same-origin",
+      body: formdata,
+      cache: "no-store",
     };
-
-    const url = base_url + "/login/isLogIn";
-
-    fetch(url, config)
-      .then(async (response) => {
-        const contentType = response.headers.get("content-type") || "";
-        const raw = await response.text();
-
-        if (!response.ok) {
-          throw new Error(
-            `HTTP ${response.status} ${response.statusText} :: ${raw.slice(
-              0,
-              200
-            )}`
-          );
-        }
-        if (!contentType.includes("application/json")) {
-          console.error("Respuesta no JSON del servidor:", raw);
-          throw new Error(
-            "El servidor no devolvió JSON (Content-Type inválido)"
-          );
-        }
-
-        return JSON.parse(raw);
-      })
-      .then((data) => {
-        if (typeof toastr !== "undefined") {
-          toastr.options = {
-            closeButton: true,
-            showDuration: "300",
-            hideDuration: "1000",
-            timeOut: "5000",
-            progressBar: true,
-          };
-        }
-
-        if (!data.status) {
-          formLogin.reset();
-          if (typeof toastr !== "undefined") {
-            toastr[data.type || "error"](
-              data.message || "Acción no permitida",
-              data.title || "Atención"
-            );
-          } else {
-            alert(
-              `${data.title || "Atención"}\n${
-                data.message || "Acción no permitida"
-              }`
-            );
-          }
-          return;
-        }
-
-        if (typeof toastr !== "undefined") {
-          toastr[data.type || "success"](
-            data.message || "Operación exitosa",
-            data.title || "OK"
-          );
-        } else {
-          alert(
-            `${data.title || "OK"}\n${data.message || "Operación exitosa"}`
-          );
-        }
-
-        formLogin.reset();
+    const url = base_url + "/Login/isLogIn";
+    try {
+      const response = await fetch(url, config);
+      if (!response.ok) {
+        throw new Error(response.statusText + " - " + response.status);
+      }
+      const data = await response.json();
+      showAlert(data);
+      if (data.status) {
         setTimeout(() => {
-          window.location.href = data.redirection;
-        }, 1000);
-      })
-      .catch((error) => {
-        console.error("Error en la solicitud:", error);
-        // Mensaje simple (sin Toastr si no está cargado)
-        if (typeof toastr !== "undefined") {
-          toastr.error(error.message || "Error en la solicitud", "Error");
-        } else {
-          alert(`Error en la solicitud al servidor: ${error.message}`);
-        }
-      });
+          window.location.href = data.url;
+        }, data.timer);
+      }
+    } catch (error) {
+      data = {
+        title: "Ocurrio un error inesperado",
+        message: "Ocurrio un error con el servidor: " + error.name,
+        icon: "error",
+        timer: 4000,
+      };
+      showAlert(data);
+    }
   });
 }
 
@@ -102,15 +41,4 @@ function login() {
 $('.login-content [data-toggle="flip"]').click(function () {
   $(".login-box").toggleClass("flipped");
   return false;
-});
-
-Swal.fire({
-  icon: "success",
-  title: "Modificado",
-  text: "El usuario se modificó correctamente.",
-  toast: true,
-  position: "top-end",
-  showConfirmButton: false,
-  timer: 2500,
-  timerProgressBar: true,
 });

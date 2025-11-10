@@ -1,10 +1,16 @@
 <?php
 class LoginModel extends Mysql
 {
-	public function __construct()
-	{
-		parent::__construct();
-	}
+        /**
+         * Encapsulamos la informacion
+         */
+        protected string $user;
+        protected string $password;
+
+        public function __construct()
+        {
+                parent::__construct();
+        }
 
         /**
          * Método que obtiene los datos del usuario en base al identificador recibido.
@@ -15,12 +21,25 @@ class LoginModel extends Mysql
          */
         public function selectUserLogin(string $user)
         {
-
-                $sql = "SELECT  up.user, up.password, up.status, CONCAT(p.names, ' ', p.lastname) AS fullname, p.idPeople, up.idUserApp
-                FROM user_app up
-		INNER JOIN people p ON p.idPeople=up.people_id WHERE up.user=? OR p.email=? LIMIT 1;";
-		return $this->select($sql, [$user, $user]);
-	}
-	
-	
+                $this->user = $user;
+                $sql = <<<SQL
+                        SELECT
+                                up.idUserApp,
+                                up.user,
+                                up.password,
+                                up.`status` AS 'u_status',
+                                p.*,
+                                p.`status` AS 'p_status'
+                                
+                        FROM
+                                user_app up
+                                INNER JOIN people p ON p.idPeople = up.people_id
+                        WHERE
+                                up.user = ?
+                                OR p.email = ?
+                        LIMIT
+                                1;
+                SQL;
+                return $this->select($sql, [$this->user, $this->user]);
+        }
 }

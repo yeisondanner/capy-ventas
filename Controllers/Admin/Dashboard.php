@@ -7,7 +7,7 @@ class Dashboard extends Controllers
         isSession();
         parent::__construct();
     }
-/**
+    /**
      * Muestra el módulo de Gestión de Dashboard.
      *
      * Requisitos:
