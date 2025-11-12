@@ -64,7 +64,9 @@ class InventoryModel extends Mysql
             LIMIT 1;
         SQL;
 
-        return $this->select($sql, [$productId, $businessId, $businessId]) ?? [];
+        $result = $this->select($sql, [$productId, $businessId, $businessId]);
+
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -208,7 +210,9 @@ class InventoryModel extends Mysql
             LIMIT 1;
         SQL;
 
-        return $this->select($sql, [$categoryId, $businessId]) ?? [];
+        $result = $this->select($sql, [$categoryId, $businessId]);
+
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -228,7 +232,9 @@ class InventoryModel extends Mysql
             LIMIT 1;
         SQL;
 
-        return $this->select($sql, [$measurementId]) ?? [];
+        $result = $this->select($sql, [$measurementId]);
+
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -270,7 +276,9 @@ class InventoryModel extends Mysql
             LIMIT 1;
         SQL;
 
-        return $this->select($sql, [$supplierId, $businessId]) ?? [];
+        $result = $this->select($sql, [$supplierId, $businessId]);
+
+        return is_array($result) ? $result : [];
     }
 
     /**
@@ -292,6 +300,8 @@ class InventoryModel extends Mysql
             LIMIT 1;
         SQL;
 
-        return $this->select($sql, [$businessId, $name]) ?? [];
+        $result = $this->select($sql, [$businessId, $name]);
+
+        return is_array($result) ? $result : [];
     }
 }
