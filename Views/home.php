@@ -432,7 +432,7 @@
         <div class="hero-metric">
           <div>
             <small>Ventas de hoy</small>
-            <strong>$ 128,400 MXN</strong>
+            <strong>S/. 128,400</strong>
           </div>
           <span>+18% vs ayer</span>
         </div>
@@ -446,7 +446,7 @@
         <div class="hero-metric">
           <div>
             <small>Ticket promedio</small>
-            <strong>$ 850 MXN</strong>
+            <strong>S/. 850</strong>
           </div>
           <span>+12% mensual</span>
         </div>
