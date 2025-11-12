@@ -524,7 +524,10 @@ class Inventory extends Controllers
     }
 
     /**
-     * Elimina una categoría del negocio activo siempre que no tenga productos asociados.
+     * Elimina o desactiva una categoría del negocio activo según sus asociaciones.
+     *
+     * Si la categoría no tiene registros relacionados se elimina definitivamente.
+     * En caso contrario, únicamente se desactiva para mantener la integridad de datos.
      *
      * @return void
      */
@@ -561,8 +564,24 @@ class Inventory extends Controllers
         }
 
         $productsAssociated = $this->model->countProductsByCategory($categoryId, $businessId);
+
         if ($productsAssociated > 0) {
-            $this->responseError('No puedes eliminar la categoría porque tiene productos asociados.');
+            $deactivated = $this->model->deactivateCategory($categoryId, $businessId);
+            if (!$deactivated) {
+                $this->responseError('No fue posible desactivar la categoría, inténtalo nuevamente.');
+            }
+
+            registerLog('Desactivación de categoría POS', 'Se desactivó la categoría: ' . $category['name'], 2, $userId);
+
+            toJson([
+                'title'   => 'Categoría desactivada',
+                'message' => 'La categoría tiene registros asociados, por lo que se desactivó y se ocultó del listado.',
+                'type'    => 'success',
+                'icon'    => 'success',
+                'status'  => true,
+            ]);
+
+            return;
         }
 
         $deleted = $this->model->deleteCategory($categoryId, $businessId);
@@ -573,11 +592,11 @@ class Inventory extends Controllers
         registerLog('Eliminación de categoría POS', 'Se eliminó la categoría: ' . $category['name'], 3, $userId);
 
         toJson([
-            'title'  => 'Categoría eliminada',
-            'message'=> 'La categoría se eliminó correctamente.',
-            'type'   => 'success',
-            'icon'   => 'success',
-            'status' => true,
+            'title'   => 'Categoría eliminada',
+            'message' => 'La categoría se eliminó correctamente.',
+            'type'    => 'success',
+            'icon'    => 'success',
+            'status'  => true,
         ]);
     }
 

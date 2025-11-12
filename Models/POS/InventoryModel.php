@@ -187,6 +187,7 @@ class InventoryModel extends Mysql
             SELECT idCategory, name, status
             FROM category
             WHERE business_id = ?
+              AND status = 'Activo'
             ORDER BY name ASC;
         SQL;
 
@@ -246,6 +247,27 @@ class InventoryModel extends Mysql
         $sql = 'DELETE FROM category WHERE idCategory = ? AND business_id = ? LIMIT 1;';
 
         return (bool) $this->delete($sql, [$categoryId, $businessId]);
+    }
+
+    /**
+     * Desactiva una categoría asociada a un negocio.
+     *
+     * @param int $categoryId Identificador de la categoría.
+     * @param int $businessId Identificador del negocio.
+     *
+     * @return bool
+     */
+    public function deactivateCategory(int $categoryId, int $businessId): bool
+    {
+        $sql = <<<SQL
+            UPDATE category
+            SET status = 'Inactivo'
+            WHERE idCategory = ?
+              AND business_id = ?
+            LIMIT 1;
+        SQL;
+
+        return (bool) $this->update($sql, [$categoryId, $businessId]);
     }
 
     /**
