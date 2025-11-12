@@ -62,12 +62,14 @@ class inventory extends Controllers
             $measurementName = htmlspecialchars($product['measurement'], ENT_QUOTES, 'UTF-8');
             $supplierName = htmlspecialchars($product['supplier'], ENT_QUOTES, 'UTF-8');
 
+            $formattedStock = number_format((float) $product['stock'], 2, SPD, SPM);
+
             $products[$key]['cont']        = $counter;
             $products[$key]['name']        = $productName;
             $products[$key]['category']    = $categoryName;
             $products[$key]['supplier']    = $supplierName;
             $products[$key]['measurement'] = $measurementName;
-            $products[$key]['stock']       = number_format((float) $product['stock'], 2, SPD, SPM);
+            $products[$key]['stock']       = $formattedStock . ' ' . $measurementName;
             $products[$key]['purchase_price'] = $currency . ' ' . formatMoney((float) $product['purchase_price']);
             $products[$key]['sales_price']    = $currency . ' ' . formatMoney((float) $product['sales_price']);
             $products[$key]['status']         = $product['status'] === 'Activo'
@@ -109,7 +111,6 @@ class inventory extends Controllers
             'txtProductStock',
             'txtProductPurchasePrice',
             'txtProductSalesPrice',
-            'txtProductStatus',
         ];
 
         foreach ($requiredFields as $field) {
@@ -126,7 +127,7 @@ class inventory extends Controllers
         $stock         = $this->sanitizeDecimal($_POST['txtProductStock'] ?? '0', 'stock');
         $purchase      = $this->sanitizeDecimal($_POST['txtProductPurchasePrice'] ?? '0', 'precio de compra');
         $sales         = $this->sanitizeDecimal($_POST['txtProductSalesPrice'] ?? '0', 'precio de venta');
-        $status        = $_POST['txtProductStatus'] === 'Inactivo' ? 'Inactivo' : 'Activo';
+        $status        = 'Activo';
         $description   = strClean($_POST['txtProductDescription'] ?? '');
 
         if ($name === '') {

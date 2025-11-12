@@ -38,8 +38,7 @@
                                     <th>Nombre</th>
                                     <th>Categoría</th>
                                     <th>Proveedor</th>
-                                    <th>Unidad</th>
-                                    <th>Stock</th>
+                                    <th>Stock (Unidad)</th>
                                     <th>Precio venta</th>
                                     <th>Precio compra</th>
                                     <th>Estado</th>
@@ -87,13 +86,6 @@
                         <label for="txtProductMeasurement" class="form-label">Unidad de medida <span class="text-danger">*</span></label>
                         <select class="form-select" id="txtProductMeasurement" name="txtProductMeasurement" required>
                             <option value="" selected disabled>Selecciona una unidad</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="txtProductStatus" class="form-label">Estado <span class="text-danger">*</span></label>
-                        <select class="form-select" id="txtProductStatus" name="txtProductStatus" required>
-                            <option value="Activo" selected>Activo</option>
-                            <option value="Inactivo">Inactivo</option>
                         </select>
                     </div>
                     <div class="col-md-4">

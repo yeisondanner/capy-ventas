@@ -188,7 +188,6 @@ function initTable() {
       { data: "name" },
       { data: "category" },
       { data: "supplier" },
-      { data: "measurement" },
       { data: "stock" },
       { data: "sales_price" },
       { data: "purchase_price" },
@@ -200,21 +199,21 @@ function initTable() {
         extend: "copyHtml5",
         text: "<i class='bi bi-clipboard'></i> Copiar",
         className: "btn btn-secondary",
-        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
+        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
       },
       {
         extend: "excelHtml5",
         text: "<i class='bi bi-file-earmark-excel'></i> Excel",
         className: "btn btn-success",
         title: "Productos",
-        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
+        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
       },
       {
         extend: "csvHtml5",
         text: "<i class='bi bi-filetype-csv'></i> CSV",
         className: "btn btn-info text-white",
         title: "Productos",
-        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
+        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
       },
       {
         extend: "pdfHtml5",
@@ -223,14 +222,14 @@ function initTable() {
         orientation: "portrait",
         pageSize: "A4",
         title: "Productos",
-        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
+        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
       },
     ],
     columnDefs: [
       { targets: 0, className: "text-center" },
       { targets: 1, className: "text-center" },
-      { targets: [6, 7, 8], className: "text-end" },
-      { targets: 9, className: "text-center" },
+      { targets: [5, 6, 7], className: "text-end" },
+      { targets: 8, className: "text-center" },
     ],
     responsive: true,
     destroy: true,
@@ -250,9 +249,22 @@ function initTable() {
 /**
  * Reinicia los formularios y muestra el modal de registro.
  */
-function openCreateModal() {
+async function openCreateModal() {
   const form = document.getElementById("formSaveProduct");
   if (!form) return;
+
+  if (!cachedCategories.length || !cachedSuppliers.length || !cachedMeasurements.length) {
+    await loadSelectors();
+  }
+
+  if (!cachedCategories.length || !cachedSuppliers.length || !cachedMeasurements.length) {
+    showAlert({
+      icon: "warning",
+      title: "Datos incompletos",
+      message: "Antes de registrar un producto debes contar con categorías, proveedores y unidades disponibles.",
+    });
+    return;
+  }
 
   form.reset();
   populateSelect(
@@ -270,15 +282,6 @@ function openCreateModal() {
     cachedMeasurements,
     "Selecciona una unidad"
   );
-
-  if (!cachedCategories.length || !cachedSuppliers.length || !cachedMeasurements.length) {
-    showAlert({
-      icon: "warning",
-      title: "Datos incompletos",
-      message: "Antes de registrar un producto debes contar con categorías, proveedores y unidades disponibles.",
-    });
-    return;
-  }
 
   showModal(modalCreate);
 }
