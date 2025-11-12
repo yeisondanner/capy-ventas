@@ -53,7 +53,7 @@
 
                 <div class="mb-3">
                     <div class="utility">
-                        <div class="form-check">
+                        <!--<div class="form-check">
                             <label class="form-check-label">
                                 <input class="form-check-input" type="checkbox" id="chbxRemember" name="chbxRemember">
                                 <label class="form-check-label" for="chbxRemember">Recuérdame</label>
@@ -61,7 +61,7 @@
                         </div>
                         <p class="semibold-text mb-0">
                             <a href="#" data-toggle="flip">¿Olvidaste tu contraseña?</a>
-                        </p>
+                        </p>-->
                     </div>
                 </div>
 
