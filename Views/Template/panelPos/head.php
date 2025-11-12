@@ -64,7 +64,7 @@ $nameVarLoginInfo = $name_sesion . 'login_info';
     <?php require_once "./Views/App/POS/" . ucfirst($data["page_container"]) . "/Libraries/head.php"; ?>
     <script type="text/javascript">
         // TODO: Base url
-        const base_url = "<?= base_url(); ?>/pos";
+        const base_url = "<?= base_url(); ?>";
         // TODO: Moneda
         const getcurrency = "<?= getCurrency(); ?>";
     </script>

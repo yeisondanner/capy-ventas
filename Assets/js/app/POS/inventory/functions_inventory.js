@@ -92,9 +92,9 @@
     try {
       const [categoriesResponse, measurementsResponse, suppliersResponse] =
         await Promise.all([
-          fetch(`${base_url}/Inventory/getCategories`),
-          fetch(`${base_url}/Inventory/getMeasurements`),
-          fetch(`${base_url}/Inventory/getSuppliers`),
+          fetch(`${base_url}/pos/Inventory/getCategories`),
+          fetch(`${base_url}/pos//Inventory/getMeasurements`),
+          fetch(`${base_url}/pos//Inventory/getSuppliers`),
         ]);
 
       if (!categoriesResponse.ok) {
@@ -190,7 +190,7 @@
   function initTable() {
     productsTable = $("#table").DataTable({
       ajax: {
-        url: `${base_url}/Inventory/getProducts`,
+        url: `${base_url}/pos/Inventory/getProducts`,
         dataSrc: "",
       },
       columns: [
@@ -320,7 +320,7 @@
 
       const formData = new FormData(form);
       try {
-        const response = await fetch(`${base_url}/Inventory/setProduct`, {
+        const response = await fetch(`${base_url}/pos/Inventory/setProduct`, {
           method: "POST",
           body: formData,
         });
@@ -382,7 +382,7 @@
 
       const formData = new FormData(form);
       try {
-        const response = await fetch(`${base_url}/Inventory/updateProduct`, {
+        const response = await fetch(`${base_url}/pos/Inventory/updateProduct`, {
           method: "POST",
           body: formData,
         });
@@ -483,7 +483,7 @@
       }
 
       try {
-        const response = await fetch(`${base_url}/Inventory/deleteProduct`, {
+        const response = await fetch(`${base_url}/pos/Inventory/deleteProduct`, {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: productId, token }),
@@ -523,7 +523,7 @@
   async function loadProductForEdition(productId) {
     try {
       const response = await fetch(
-        `${base_url}/Inventory/getProduct?id=${productId}`
+        `${base_url}/pos/Inventory/getProduct?id=${productId}`
       );
       if (!response.ok) {
         throw new Error(`Error ${response.status}`);
