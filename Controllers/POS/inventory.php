@@ -369,7 +369,7 @@ class inventory extends Controllers
             $this->responseError('No fue posible eliminar el producto, inténtalo nuevamente.');
         }
 
-        registerLog('Eliminación de producto POS', 'Se eliminó el producto: ' . $product['name'], 4, $userId);
+        registerLog('Eliminación de producto POS', 'Se eliminó el producto: ' . $product['name'], 3, $userId);
 
         $data = [
             'title'  => 'Producto eliminado',
