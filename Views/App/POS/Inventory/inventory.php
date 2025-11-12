@@ -30,7 +30,7 @@
             <div class="tile">
                 <div class="tile-body">
                     <div class="table-responsive">
-                        <table class="table table-sm table-hover table-bordered" id="table">
+                        <table class="table table-sm table-hover table-bordered" id="table" data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
@@ -198,26 +198,3 @@
     </div>
 </div>
 
-<!-- Modal: Eliminar producto -->
-<div class="modal fade" id="modalDeleteProduct" tabindex="-1" aria-labelledby="modalDeleteProductLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="modalDeleteProductLabel">Eliminar producto</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body text-center">
-                <i class="bi bi-exclamation-triangle-fill text-danger fs-1"></i>
-                <p class="mt-3 mb-1">¿Seguro que deseas eliminar el producto?</p>
-                <p class="fw-bold" id="txtDeleteProduct"></p>
-                <p class="text-danger mb-0"><small>Esta acción no se puede deshacer.</small></p>
-            </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteProduct" data-token="<?= csrf(false); ?>">
-                    <i class="bi bi-trash"></i> Eliminar
-                </button>
-            </div>
-        </div>
-    </div>
-</div>

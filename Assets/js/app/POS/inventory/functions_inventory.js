@@ -1,7 +1,6 @@
 let productsTable;
 let modalCreate;
 let modalUpdate;
-let modalDelete;
 let cachedCategories = [];
 let cachedMeasurements = [];
 let cachedSuppliers = [];
@@ -82,7 +81,6 @@ function populateSelect(select, data, placeholder) {
 function initModals() {
   modalCreate = document.getElementById("modalProduct");
   modalUpdate = document.getElementById("modalUpdateProduct");
-  modalDelete = document.getElementById("modalDeleteProduct");
 }
 
 /**
@@ -388,22 +386,65 @@ function handleUpdate() {
 }
 
 /**
- * Envía la solicitud de eliminación del producto seleccionado.
+ * Obtiene el token CSRF disponible en la tabla de productos.
+ *
+ * @returns {string}
  */
-function handleDelete() {
-  const confirmButton = document.getElementById("confirmDeleteProduct");
-  if (!confirmButton) return;
+function getDeleteToken() {
+  const table = document.getElementById("table");
+  if (table && table.dataset.token) {
+    return table.dataset.token;
+  }
 
-  confirmButton.addEventListener("click", async () => {
-    const id = confirmButton.getAttribute("data-id");
-    const token = confirmButton.getAttribute("data-token");
+  const metaToken = document.querySelector('meta[name="csrf-token"]');
+  if (metaToken) {
+    return metaToken.getAttribute("content") || "";
+  }
 
-    if (!id) {
-      showAlert({
-        icon: "warning",
-        title: "Producto no seleccionado",
-        message: "Selecciona un producto antes de confirmar la eliminación.",
-      });
+  return "";
+}
+
+/**
+ * Confirma con SweetAlert la eliminación del producto seleccionado.
+ *
+ * @param {number} productId Identificador del producto.
+ * @param {string} productName Nombre del producto.
+ * @param {string | null} productToken Token CSRF asociado al botón.
+ */
+function confirmDeleteProduct(productId, productName, productToken) {
+  if (!Number.isInteger(productId) || productId <= 0) {
+    showAlert({
+      icon: "warning",
+      title: "Producto inválido",
+      message: "No fue posible identificar el producto seleccionado.",
+    });
+    return;
+  }
+
+  const token = productToken || getDeleteToken();
+  if (!token) {
+    showAlert({
+      icon: "error",
+      title: "Token ausente",
+      message: "No fue posible validar la solicitud de eliminación. Actualiza la página e inténtalo nuevamente.",
+    });
+    return;
+  }
+
+  const safeName = productName ? `<strong>${productName}</strong>` : "este producto";
+
+  Swal.fire({
+    title: "¿Eliminar producto?",
+    html: `Se eliminará definitivamente ${safeName}. Esta acción no se puede deshacer.`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#6c757d",
+    confirmButtonText: "Sí, eliminar",
+    cancelButtonText: "Cancelar",
+    focusCancel: true,
+  }).then(async (result) => {
+    if (!result.isConfirmed) {
       return;
     }
 
@@ -411,7 +452,7 @@ function handleDelete() {
       const response = await fetch(`${base_url}/inventory/deleteProduct`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, token }),
+        body: JSON.stringify({ id: productId, token }),
       });
 
       if (!response.ok) {
@@ -426,8 +467,6 @@ function handleDelete() {
       });
 
       if (data.status) {
-        confirmButton.removeAttribute("data-id");
-        hideModal(modalDelete);
         productsTable.ajax.reload(null, false);
       }
     } catch (error) {
@@ -524,19 +563,10 @@ function registerTableActions() {
     const deleteButton = event.target.closest(".delete-product");
     if (deleteButton) {
       event.preventDefault();
-      const id = deleteButton.getAttribute("data-id");
+      const id = parseInt(deleteButton.getAttribute("data-id") || "0", 10);
       const name = deleteButton.getAttribute("data-name") || "";
-      const confirmButton = document.getElementById("confirmDeleteProduct");
-      const deleteText = document.getElementById("txtDeleteProduct");
-
-      if (confirmButton) {
-        confirmButton.setAttribute("data-id", id || "");
-      }
-      if (deleteText) {
-        deleteText.innerHTML = name ? `<strong>${name}</strong>` : "";
-      }
-
-      showModal(modalDelete);
+      const token = deleteButton.getAttribute("data-token") || null;
+      confirmDeleteProduct(id, name, token);
     }
   });
 }
@@ -548,7 +578,6 @@ window.addEventListener("DOMContentLoaded", async () => {
   registerTableActions();
   handleCreate();
   handleUpdate();
-  handleDelete();
 
   const openButton = document.getElementById("btnOpenProductModal");
   if (openButton) {

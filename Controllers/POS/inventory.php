@@ -77,7 +77,7 @@ class inventory extends Controllers
             $products[$key]['actions'] = '<div class="btn-group btn-group-sm" role="group">'
                 . '<button class="btn btn-outline-primary text-primary edit-product" data-id="' . (int) $product['idProduct'] . '">'
                 . '<i class="bi bi-pencil-square"></i></button>'
-                . '<button class="btn btn-outline-danger text-danger delete-product" data-id="' . (int) $product['idProduct'] . '" data-name="' . $productName . '">'
+                . '<button class="btn btn-outline-danger text-danger delete-product" data-id="' . (int) $product['idProduct'] . '" data-name="' . $productName . '" data-token="' . csrf(false) . '">'
                 . '<i class="bi bi-trash"></i></button>'
                 . '</div>';
 
