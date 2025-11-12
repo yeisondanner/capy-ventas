@@ -374,7 +374,7 @@ function loadTable() {
     iDisplayLength: 100,
     order: [[0, "asc"]],
     language: {
-      url: base_url + "/Assets/js/libraries/Spanish-datatables.json",
+      url: base_url + "/Assets/js/libraries/Admin/Spanish-datatables.json",
     },
     //hacemos que se recarguen funciones externas al modificar cualquier dato de la tabla o accion
     fnDrawCallback: function () {

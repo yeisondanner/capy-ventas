@@ -69,8 +69,8 @@
 </main>
 
 <!-- Enlaces a archivos CSS y JS externos -->
-<link rel="stylesheet" href="<?php echo base_url(); ?>Assets/css/app/Admin/errors/style_404.css">
-<script src="<?php echo base_url(); ?>Assets/js/app/Admin/errors/functions_404.js"></script>
+<link rel="stylesheet" href="<?php echo base_url(); ?>/Assets/css/app/Admin/errors/style_404.css">
+<script src="<?php echo base_url(); ?>/Assets/js/app/Admin/errors/functions_404.js"></script>
 
 
 <?= footerAdmin($data) ?>

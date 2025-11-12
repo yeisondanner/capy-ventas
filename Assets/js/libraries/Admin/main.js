@@ -481,7 +481,7 @@ function loadNotificationsAllUser() {
     iDisplayLength: 10,
     order: [[0, "asc"]],
     language: {
-      url: base_url + "/Assets/js/libraries/Spanish-datatables.json",
+      url: base_url + "/Assets/js/libraries/Admin/Spanish-datatables.json",
     },
     fnDrawCallback: function () {
       $(".dataTables_paginate > .pagination").addClass("pagination-sm");

@@ -344,13 +344,13 @@
     </div>
 
     <!-- Imagen -->
-    <img src="<?php echo base_url(); ?> /Assets/capi_mariado.png" alt="Capi mariado" class="capi">
+    <img src="<?php echo base_url(); ?>/Assets/capi_mariado.png" alt="Capi mariado" class="capi">
     <h1>Ups, algo salió mal</h1>
     <p>No es tu culpa. Puede ser un problema temporal del servidor o de conexión.</p>
 
     <!-- Video -->
     <video class="capi" autoplay muted loop playsinline>
-        <source src="<?php echo base_url(); ?> /Assets/capibara_pixel.mp4" type="video/mp4">
+        <source src="<?php echo base_url(); ?>/Assets/capibara_pixel.mp4" type="video/mp4">
         Tu navegador no soporta videos HTML5.
     </video>
 
