@@ -5,9 +5,8 @@ class LogOut extends Controllers
     {
         //preparamos las vairables a usar
         $urlReturn = base_url() . "/im/login";
-        $name_sesion = config_sesion()['name'];
-        $nameVarLogin = $name_sesion . 'login';
-        $nameVarLoginInfo = $name_sesion . 'login_info';
+        $nameVarLogin = 'login';
+        $nameVarLoginInfo = 'login_info';
         if (isset($_SESSION[$nameVarLogin])) {
             require_once "./Models/Admin/LoginModel.php";
             $obj = new LoginModel();
