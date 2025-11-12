@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * Definimos que el proyecto sea estricto para programar
+ */
+
+declare(strict_types=1);
+/**
  * Generación dinámica de la URL base del proyecto.
  *
  * Este bloque construye automáticamente la constante BASE_URL,
@@ -28,8 +33,8 @@ $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https'
 $host = $_SERVER['HTTP_HOST'];
 $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])), '/');
 $baseUrl = $protocol . '://' . $host . $scriptDir;
-//define('BASE_URL', rtrim($baseUrl, '/'));
-const BASE_URL = "http://localhost/capy-ventas";
+define('BASE_URL', rtrim($baseUrl, '/'));
+//const BASE_URL = "http://192.168.1.12/sersa-ssoma";
 //Ruta de almacenamiento de archivos
 const RUTA_ARCHIVOS = "./Storage/";
 //Nombre del sistema

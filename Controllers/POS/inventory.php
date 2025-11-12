@@ -1,6 +1,6 @@
 <?php
 
-class inventory extends Controllers
+class Inventory extends Controllers
 {
     /**
      * Nombre de la variable de sesión que almacena el negocio activo.
