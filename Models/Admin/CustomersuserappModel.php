@@ -60,8 +60,9 @@ class CustomersuserappModel extends Mysql
     /**
      * Obtiene una persona por su email para validar duplicados
      * 
-     * @param string $email Email a buscar
+     * @param string $email Email encriptado a buscar
      * @return array|false Datos de la persona o false si no existe
+     * Nota: El parámetro $email debe estar encriptado antes de llamar a este método
      */
     public function select_people_by_email(string $email)
     {

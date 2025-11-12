@@ -1,0 +1,95 @@
+/* Estilos específicos para el módulo de Tipos de Negocio */
+
+/* Responsive */
+@media (max-width: 768px) {
+    .btn-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .btn-group .btn {
+        margin: 2px 0;
+        width: 100%;
+    }
+}
+
+/* Estilos para la tabla */
+#table {
+    width: 100% !important;
+}
+
+#table thead th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#table tbody td {
+    vertical-align: middle;
+}
+
+/* Estilos para modales */
+.modal-header {
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.modal-footer {
+    border-top: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para badges */
+.badge {
+    font-size: 0.9em;
+    padding: 0.4em 0.6em;
+}
+
+/* Estilos para formularios */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+}
+
+/* Estilos para textarea */
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Estilos para botones de acción */
+.btn-group .btn {
+    margin: 0 2px;
+}
+
+/* Estilos para el reporte */
+#reportName {
+    color: #007bff;
+    margin-bottom: 1rem;
+}
+
+.table-bordered td {
+    padding: 0.75rem;
+}
+
+/* Estilos para el loader */
+.elementLoader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
