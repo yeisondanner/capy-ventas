@@ -10,7 +10,7 @@ class Dashboard extends Controllers
 
 	public function dashboard()
 	{
-		$data['page_id'] = 41;
+		$data['page_id'] = 0;
 		$data['page_title'] = "Dashboard de la app";
 		$data['page_description'] = "Dashboard";
 		$data['page_container'] = "Dashboard";
