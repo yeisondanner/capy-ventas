@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Controlador para la gestión de tipos de negocio
+ * Controlador para la gestión de tipos de documento
  * 
  * Este controlador maneja todas las operaciones relacionadas con la gestión
- * de tipos de negocio del sistema.
+ * de tipos de documento del sistema.
  */
-class BusinessType extends Controllers
+class DocumentType extends Controllers
 {
     /**
      * Constructor de la clase
@@ -18,19 +18,19 @@ class BusinessType extends Controllers
     }
 
     /**
-     * Muestra la vista principal de gestión de tipos de negocio
+     * Muestra la vista principal de gestión de tipos de documento
      * 
      * @return void
      */
-    public function businesstype()
+    public function documenttype()
     {
         $data = [
-            'page_id'          => 12,
-            'page_title'       => 'Tipos de Negocio',
-            'page_description' => 'Gestiona los tipos de negocio del sistema.',
-            'page_container'   => 'BusinessType',
-            'page_view'        => 'businesstype',
-            'page_js_css'      => 'businesstype',
+            'page_id'          => 18,
+            'page_title'       => 'Tipos de Documento',
+            'page_description' => 'Gestiona los tipos de documento del sistema.',
+            'page_container'   => 'DocumentType',
+            'page_view'        => 'documenttype',
+            'page_js_css'      => 'documenttype',
             'page_vars'        => ['permission_data', 'login', 'login_info'],
         ];
 
@@ -62,18 +62,18 @@ class BusinessType extends Controllers
             $userId
         );
 
-        $this->views->getView($this, 'businesstype', $data);
+        $this->views->getView($this, 'documenttype', $data);
     }
 
     /**
-     * Obtiene la lista de todos los tipos de negocio para mostrar en la tabla
+     * Obtiene la lista de todos los tipos de documento para mostrar en la tabla
      * 
      * @return void
      */
-    public function getBusinessTypes()
+    public function getDocumentTypes()
     {
-        permissionInterface(12);
-        $arrData = $this->model->select_business_types();
+        permissionInterface(18);
+        $arrData = $this->model->select_document_types();
         $cont = 1;
         foreach ($arrData as $key => $value) {
             $arrData[$key]["cont"] = $cont;
@@ -96,7 +96,7 @@ class BusinessType extends Controllers
             $arrData[$key]["actions"] = '
                 <div class="btn-group">
                     <button class="btn btn-success update-item" type="button"
-                        data-id="' . $value["idBusinessType"] . '"
+                        data-id="' . $value["idDocumentType"] . '"
                         data-name="' . htmlspecialchars($value["name"]) . '"
                         data-description="' . htmlspecialchars($value["description"] ?? "") . '"
                         data-status="' . $value["status"] . '"
@@ -104,7 +104,7 @@ class BusinessType extends Controllers
                         data-update-date="' . $arrData[$key]["update_date_formatted"] . '"
                     ><i class="fa fa-pencil"></i></button>
                     <button class="btn btn-info report-item" type="button"
-                        data-id="' . $value["idBusinessType"] . '"
+                        data-id="' . $value["idDocumentType"] . '"
                         data-name="' . htmlspecialchars($value["name"]) . '"
                         data-description="' . htmlspecialchars($value["description"] ?? "") . '"
                         data-status="' . $value["status"] . '"
@@ -112,7 +112,7 @@ class BusinessType extends Controllers
                         data-update-date="' . $arrData[$key]["update_date_formatted"] . '"
                     ><i class="fa fa-info-circle"></i></button>
                     <button class="btn btn-danger delete-item" 
-                        data-id="' . $value["idBusinessType"] . '" 
+                        data-id="' . $value["idDocumentType"] . '" 
                         data-name="' . htmlspecialchars($value["name"]) . '"
                     ><i class="fa fa-remove"></i></button>
                 </div>
@@ -123,16 +123,16 @@ class BusinessType extends Controllers
     }
 
     /**
-     * Registra un nuevo tipo de negocio en el sistema
+     * Registra un nuevo tipo de documento en el sistema
      * 
      * @return void
      */
-    public function setBusinessType()
+    public function setDocumentType()
     {
-        permissionInterface(12);
+        permissionInterface(18);
 
         if (!$_POST) {
-            registerLog("Ocurrió un error inesperado", "Método POST no encontrado, al momento de registrar un tipo de negocio", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "Método POST no encontrado, al momento de registrar un tipo de documento", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
                 "message" => "Método POST no encontrado",
@@ -166,12 +166,12 @@ class BusinessType extends Controllers
         }
 
         // Validar que el nombre no exista
-        $request = $this->model->select_business_type_by_name($strName);
+        $request = $this->model->select_document_type_by_name($strName);
         if ($request) {
-            registerLog("Ocurrió un error inesperado", "El nombre del tipo de negocio ingresado ya se encuentra registrado en el sistema.", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "El nombre del tipo de documento ingresado ya se encuentra registrado en el sistema.", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "El nombre del tipo de negocio ingresado ya se encuentra registrado en el sistema.",
+                "message" => "El nombre del tipo de documento ingresado ya se encuentra registrado en el sistema.",
                 "type" => "error",
                 "status" => false
             );
@@ -184,22 +184,22 @@ class BusinessType extends Controllers
 
         // Insertar en la base de datos (description puede ser null)
         $description = !empty($strDescription) ? $strDescription : null;
-        $request = $this->model->insert_business_type($strName, $description);
+        $request = $this->model->insert_document_type($strName, $description);
 
         if ($request > 0) {
-            registerLog("Registro exitoso", "El tipo de negocio ha sido registrado correctamente en el sistema.", 2, $_SESSION['login_info']['idUser']);
+            registerLog("Registro exitoso", "El tipo de documento ha sido registrado correctamente en el sistema.", 2, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Registro exitoso",
-                "message" => "El tipo de negocio fue registrado satisfactoriamente en el sistema.",
+                "message" => "El tipo de documento fue registrado satisfactoriamente en el sistema.",
                 "type" => "success",
                 "status" => true
             );
             toJson($data);
         } else {
-            registerLog("Ocurrió un error inesperado", "No se pudo completar el registro del tipo de negocio.", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "No se pudo completar el registro del tipo de documento.", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "El tipo de negocio no se ha registrado correctamente en el sistema",
+                "message" => "El tipo de documento no se ha registrado correctamente en el sistema",
                 "type" => "error",
                 "status" => false
             );
@@ -208,16 +208,16 @@ class BusinessType extends Controllers
     }
 
     /**
-     * Actualiza los datos de un tipo de negocio existente
+     * Actualiza los datos de un tipo de documento existente
      * 
      * @return void
      */
-    public function updateBusinessType()
+    public function updateDocumentType()
     {
-        permissionInterface(12);
+        permissionInterface(18);
 
         if (!$_POST) {
-            registerLog("Ocurrió un error inesperado", "Método POST no encontrado, al momento de actualizar un tipo de negocio", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "Método POST no encontrado, al momento de actualizar un tipo de documento", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
                 "message" => "Método POST no encontrado",
@@ -266,13 +266,13 @@ class BusinessType extends Controllers
             toJson($data);
         }
 
-        // Validar que el tipo de negocio exista
-        $result = $this->model->select_business_type_by_id($intId);
+        // Validar que el tipo de documento exista
+        $result = $this->model->select_document_type_by_id($intId);
         if (!$result) {
-            registerLog("Ocurrió un error inesperado", "No se puede actualizar el tipo de negocio, ya que el ID proporcionado no existe.", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "No se puede actualizar el tipo de documento, ya que el ID proporcionado no existe.", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "El ID del tipo de negocio no existe.",
+                "message" => "El ID del tipo de documento no existe.",
                 "type" => "error",
                 "status" => false
             );
@@ -280,13 +280,13 @@ class BusinessType extends Controllers
         }
 
         // Validar que el nombre no esté duplicado (excepto el actual)
-        $requestForName = $this->model->select_business_type_by_name($strName);
+        $requestForName = $this->model->select_document_type_by_name($strName);
         if ($requestForName) {
-            if ($requestForName['idBusinessType'] != $intId) {
-                registerLog("Ocurrió un error inesperado", "El nombre del tipo de negocio ya existe en el sistema.", 1, $_SESSION['login_info']['idUser']);
+            if ($requestForName['idDocumentType'] != $intId) {
+                registerLog("Ocurrió un error inesperado", "El nombre del tipo de documento ya existe en el sistema.", 1, $_SESSION['login_info']['idUser']);
                 $data = array(
                     "title" => "Ocurrió un error inesperado",
-                    "message" => "El nombre del tipo de negocio ya existe. Por favor, ingrese un nombre diferente.",
+                    "message" => "El nombre del tipo de documento ya existe. Por favor, ingrese un nombre diferente.",
                     "type" => "error",
                     "status" => false
                 );
@@ -299,22 +299,22 @@ class BusinessType extends Controllers
 
         // Actualizar en la base de datos
         $description = !empty($strDescription) ? $strDescription : null;
-        $request = $this->model->update_business_type($intId, $strName, $description, $slctStatus);
+        $request = $this->model->update_document_type($intId, $strName, $description, $slctStatus);
 
         if ($request) {
-            registerLog("Registro exitoso", "El tipo de negocio se ha actualizado correctamente en el sistema.", 2, $_SESSION['login_info']['idUser']);
+            registerLog("Registro exitoso", "El tipo de documento se ha actualizado correctamente en el sistema.", 2, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Registro exitoso",
-                "message" => "El tipo de negocio ha sido actualizado correctamente en el sistema.",
+                "message" => "El tipo de documento ha sido actualizado correctamente en el sistema.",
                 "type" => "success",
                 "status" => true
             );
             toJson($data);
         } else {
-            registerLog("Ocurrió un error inesperado", "No se pudo completar la actualización del tipo de negocio.", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "No se pudo completar la actualización del tipo de documento.", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "No se pudo completar la actualización del tipo de negocio.",
+                "message" => "No se pudo completar la actualización del tipo de documento.",
                 "type" => "error",
                 "status" => false
             );
@@ -323,16 +323,16 @@ class BusinessType extends Controllers
     }
 
     /**
-     * Elimina un tipo de negocio del sistema
+     * Elimina un tipo de documento del sistema
      * 
      * @return void
      */
-    public function deleteBusinessType()
+    public function deleteDocumentType()
     {
-        permissionInterface(12);
+        permissionInterface(18);
 
         if ($_SERVER["REQUEST_METHOD"] != "DELETE") {
-            registerLog("Ocurrió un error inesperado", "No se encontró el método DELETE durante el intento de eliminar un tipo de negocio.", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "No se encontró el método DELETE durante el intento de eliminar un tipo de documento.", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
                 "message" => "Método DELETE no encontrado",
@@ -349,10 +349,10 @@ class BusinessType extends Controllers
         $name = strClean($request["name"]);
 
         if ($id == "") {
-            registerLog("Ocurrió un error inesperado", "El ID del tipo de negocio es obligatorio para completar el proceso de eliminación.", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "El ID del tipo de documento es obligatorio para completar el proceso de eliminación.", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "El ID del tipo de negocio es requerido.",
+                "message" => "El ID del tipo de documento es requerido.",
                 "type" => "error",
                 "status" => false
             );
@@ -360,43 +360,43 @@ class BusinessType extends Controllers
         }
 
         if (!is_numeric($id)) {
-            registerLog("Ocurrió un error inesperado", "El ID del tipo de negocio debe ser un valor numérico válido.", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "El ID del tipo de documento debe ser un valor numérico válido.", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "El ID del tipo de negocio debe ser numérico.",
+                "message" => "El ID del tipo de documento debe ser numérico.",
                 "type" => "error",
                 "status" => false
             );
             toJson($data);
         }
 
-        $result = $this->model->select_business_type_by_id($id);
+        $result = $this->model->select_document_type_by_id($id);
         if (!$result) {
-            registerLog("Ocurrió un error inesperado", "No se puede eliminar el tipo de negocio, ya que el ID proporcionado no existe.", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "No se puede eliminar el tipo de documento, ya que el ID proporcionado no existe.", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "El ID del tipo de negocio no existe.",
+                "message" => "El ID del tipo de documento no existe.",
                 "type" => "error",
                 "status" => false
             );
             toJson($data);
         }
 
-        $request = $this->model->delete_business_type($id);
+        $request = $this->model->delete_document_type($id);
         if ($request) {
-            registerLog("Eliminación exitosa", "El tipo de negocio con ID {$id} y nombre {$name} fue eliminado satisfactoriamente del sistema.", 2, $_SESSION['login_info']['idUser']);
+            registerLog("Eliminación exitosa", "El tipo de documento con ID {$id} y nombre {$name} fue eliminado satisfactoriamente del sistema.", 2, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Eliminación exitosa",
-                "message" => "El tipo de negocio con ID '{$id}' y nombre '{$name}' ha sido eliminado correctamente del sistema.",
+                "message" => "El tipo de documento con ID '{$id}' y nombre '{$name}' ha sido eliminado correctamente del sistema.",
                 "type" => "success",
                 "status" => true
             );
             toJson($data);
         } else {
-            registerLog("Ocurrió un error inesperado", "No fue posible eliminar el tipo de negocio con ID '{$id}' y nombre '{$name}'.", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrió un error inesperado", "No fue posible eliminar el tipo de documento con ID '{$id}' y nombre '{$name}'.", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrió un error inesperado",
-                "message" => "No se pudo completar la eliminación del tipo de negocio con ID '{$id}' y nombre '{$name}'.",
+                "message" => "No se pudo completar la eliminación del tipo de documento con ID '{$id}' y nombre '{$name}'.",
                 "type" => "error",
                 "status" => false
             );

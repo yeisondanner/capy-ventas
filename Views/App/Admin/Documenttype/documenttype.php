@@ -2,11 +2,11 @@
 <main class="app-content">
     <div class="app-title pt-5">
         <div>
-            <h1 class="text-primary"><i class="fa fa-building"></i> <?= $data["page_title"] ?></h1>
+            <h1 class="text-primary"><i class="fa fa-file-text"></i> <?= $data["page_title"] ?></h1>
             <p><?= $data["page_description"] ?></p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
-            <li class="breadcrumb-item"><i class="fa fa-building fa-lg"></i></li>
+            <li class="breadcrumb-item"><i class="fa fa-file-text fa-lg"></i></li>
             <li class="breadcrumb-item"><a href="<?= base_url() ?>/im/<?= $data['page_view'] ?>"><?= $data["page_title"] ?></a></li>
         </ul>
     </div>
@@ -45,7 +45,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalSaveLabel">Registro de Tipo de Negocio</h5>
+                <h5 class="modal-title" id="modalSaveLabel">Registro de Tipo de Documento</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -60,11 +60,11 @@
                                     <label class="control-label" for="txtName">Nombre <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <input class="form-control" type="text" id="txtName" name="txtName" required
-                                               placeholder="Ingrese el nombre del tipo de negocio" maxlength="255"
+                                               placeholder="Ingrese el nombre del tipo de documento" maxlength="255"
                                                oninput="this.value = this.value.toUpperCase()"
                                                aria-describedby="iconName">
                                         <div class="input-group-append">
-                                            <span class="input-group-text" id="iconName"><i class="fa fa-building" aria-hidden="true"></i></span>
+                                            <span class="input-group-text" id="iconName"><i class="fa fa-file-text" aria-hidden="true"></i></span>
                                         </div>
                                     </div>
                                 </div>
@@ -130,7 +130,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
-                <h5 class="modal-title font-weight-bold" id="modalReportLabel">Reporte de Tipo de Negocio</h5>
+                <h5 class="modal-title font-weight-bold" id="modalReportLabel">Reporte de Tipo de Documento</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -141,7 +141,7 @@
                         <h3 class="text-uppercase font-weight-bold text-primary" id="reportName"></h3>
                     </div>
                 </div>
-                <h6 class="text-uppercase font-weight-bold text-danger mt-4">Información del Tipo de Negocio</h6>
+                <h6 class="text-uppercase font-weight-bold text-danger mt-4">Información del Tipo de Documento</h6>
                 <hr>
                 <table class="table table-bordered">
                     <tbody>
@@ -180,7 +180,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="modalUpdateLabel">Actualizar información del Tipo de Negocio</h5>
+                <h5 class="modal-title" id="modalUpdateLabel">Actualizar información del Tipo de Documento</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -196,11 +196,11 @@
                                     <label class="control-label" for="update_txtName">Nombre <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <input class="form-control" type="text" id="update_txtName" name="update_txtName" required
-                                               placeholder="Ingrese el nombre del tipo de negocio" maxlength="255"
+                                               placeholder="Ingrese el nombre del tipo de documento" maxlength="255"
                                                oninput="this.value = this.value.toUpperCase()"
                                                aria-describedby="iconNameUpdate">
                                         <div class="input-group-append">
-                                            <span class="input-group-text" id="iconNameUpdate"><i class="fa fa-building" aria-hidden="true"></i></span>
+                                            <span class="input-group-text" id="iconNameUpdate"><i class="fa fa-file-text" aria-hidden="true"></i></span>
                                         </div>
                                     </div>
                                 </div>
