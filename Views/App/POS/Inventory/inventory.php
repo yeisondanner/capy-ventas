@@ -17,7 +17,7 @@
                     <button class="btn btn-primary" type="button" id="btnOpenProductModal">
                         <i class="bi bi-plus-lg"></i> Agregar nuevo producto
                     </button>
-                    <button class="btn btn-outline-info text-info" type="button" disabled>
+                    <button class="btn btn-outline-info text-info" type="button" id="btnOpenCategoryModal">
                         <i class="bi bi-collection"></i> Categorías
                     </button>
                     <button class="btn btn-outline-warning text-warning" type="button" disabled>
@@ -115,6 +115,42 @@
                 <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal: Gestionar categorías -->
+<div class="modal fade" id="modalCategory" tabindex="-1" aria-labelledby="modalCategoryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="modalCategoryLabel">Categorías</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <h6 class="fw-semibold">Registrar nueva categoría</h6>
+                    <form class="row g-2 align-items-center" id="formCreateCategory" autocomplete="off">
+                        <?= csrf(); ?>
+                        <div class="col-sm-8 col-md-9">
+                            <label for="txtCategoryName" class="visually-hidden">Nombre de la categoría</label>
+                            <input type="text" class="form-control" id="txtCategoryName" name="txtCategoryName" maxlength="255"
+                                required placeholder="Ej. Bebidas calientes">
+                        </div>
+                        <div class="col-sm-4 col-md-3 d-grid">
+                            <button class="btn btn-info text-white" type="submit">
+                                <i class="bi bi-plus-lg"></i> Registrar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div>
+                    <h6 class="fw-semibold">Categorías registradas</h6>
+                    <ul class="list-group" id="categoryList">
+                        <li class="list-group-item text-center text-muted">No hay categorías registradas.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

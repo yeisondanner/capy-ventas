@@ -3,6 +3,8 @@
   let productsTable;
   let modalCreate;
   let modalUpdate;
+  let modalCategory;
+  let categoryList = [];
   let cachedCategories = [];
   let cachedMeasurements = [];
   let cachedSuppliers = [];
@@ -83,6 +85,7 @@
   function initModals() {
     modalCreate = document.getElementById("modalProduct");
     modalUpdate = document.getElementById("modalUpdateProduct");
+    modalCategory = document.getElementById("modalCategory");
   }
 
   /**
@@ -182,6 +185,405 @@
           "No fue posible cargar las listas de apoyo. Actualiza la página e inténtalo nuevamente.",
       });
     }
+  }
+
+  /**
+   * Muestra las categorías disponibles dentro del listado del modal.
+   * @param {Array<{idCategory:number,name:string,status:string}>} categories
+   */
+  function renderCategoryList(categories) {
+    const list = document.getElementById("categoryList");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    if (!Array.isArray(categories) || !categories.length) {
+      const emptyItem = document.createElement("li");
+      emptyItem.className = "list-group-item text-center text-muted";
+      emptyItem.textContent = "No hay categorías registradas.";
+      list.appendChild(emptyItem);
+      return;
+    }
+
+    categories.forEach((category) => {
+      const item = document.createElement("li");
+      item.className =
+        "list-group-item d-flex flex-wrap align-items-center justify-content-between gap-2";
+
+      const infoWrapper = document.createElement("div");
+      infoWrapper.className = "d-flex flex-column flex-grow-1";
+
+      const nameRow = document.createElement("div");
+      nameRow.className = "d-flex align-items-center gap-2";
+
+      const nameText = document.createElement("span");
+      nameText.className = "fw-semibold";
+      nameText.textContent = category.name;
+
+      const statusBadge = document.createElement("span");
+      const isActive = category.status === "Activo";
+      statusBadge.className = `badge ${isActive ? "bg-success" : "bg-secondary"}`;
+      statusBadge.textContent = category.status;
+
+      nameRow.appendChild(nameText);
+      nameRow.appendChild(statusBadge);
+      infoWrapper.appendChild(nameRow);
+
+      const actionGroup = document.createElement("div");
+      actionGroup.className = "btn-group btn-group-sm";
+
+      const editButton = document.createElement("button");
+      editButton.type = "button";
+      editButton.className = "btn btn-outline-primary text-primary edit-category";
+      editButton.setAttribute("data-id", `${category.idCategory}`);
+      editButton.innerHTML = '<i class="bi bi-pencil-square"></i>';
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "btn btn-outline-danger text-danger delete-category";
+      deleteButton.setAttribute("data-id", `${category.idCategory}`);
+      deleteButton.setAttribute("data-name", category.name);
+      deleteButton.innerHTML = '<i class="bi bi-trash"></i>';
+
+      actionGroup.appendChild(editButton);
+      actionGroup.appendChild(deleteButton);
+
+      item.appendChild(infoWrapper);
+      item.appendChild(actionGroup);
+
+      list.appendChild(item);
+    });
+  }
+
+  /**
+   * Obtiene el listado de categorías para el mantenimiento.
+   * @param {boolean} showError Mensaje de error en caso de fallo.
+   * @returns {Promise<Array<{idCategory:number,name:string,status:string}>>}
+   */
+  async function refreshCategoryList(showError = true) {
+    try {
+      const response = await fetch(`${base_url}/pos/Inventory/getCategoryList`);
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.status) {
+        if (showError) {
+          showAlert({
+            icon: "error",
+            title: data.title || "Ocurrió un error",
+            message:
+              data.message ||
+              "No fue posible cargar las categorías registradas. Actualiza la página e inténtalo nuevamente.",
+          });
+        }
+        categoryList = [];
+        renderCategoryList(categoryList);
+        return [];
+      }
+
+      categoryList = Array.isArray(data.data) ? data.data : [];
+      renderCategoryList(categoryList);
+      return categoryList;
+    } catch (error) {
+      console.error("Error cargando categorías", error);
+      if (showError) {
+        showAlert({
+          icon: "error",
+          title: "Ocurrió un error",
+          message:
+            "No fue posible cargar las categorías registradas. Actualiza la página e inténtalo nuevamente.",
+        });
+      }
+      categoryList = [];
+      renderCategoryList(categoryList);
+      return [];
+    }
+  }
+
+  /**
+   * Abre el modal de categorías y carga el listado disponible.
+   */
+  async function openCategoryModal() {
+    const list = document.getElementById("categoryList");
+    if (list) {
+      list.innerHTML = "";
+      const loadingItem = document.createElement("li");
+      loadingItem.className = "list-group-item text-center text-muted";
+      loadingItem.textContent = "Cargando categorías...";
+      list.appendChild(loadingItem);
+    }
+
+    showModal(modalCategory);
+    await refreshCategoryList(true);
+  }
+
+  /**
+   * Gestiona el registro de nuevas categorías desde el formulario del modal.
+   */
+  function handleCreateCategory() {
+    const form = document.getElementById("formCreateCategory");
+    if (!form) return;
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const nameValue = (formData.get("txtCategoryName") || "").toString().trim();
+      if (!nameValue) {
+        showAlert({
+          icon: "warning",
+          title: "Nombre requerido",
+          message: "Debes ingresar el nombre de la categoría.",
+        });
+        return;
+      }
+
+      formData.set("txtCategoryName", nameValue);
+
+      try {
+        const response = await fetch(`${base_url}/pos/Inventory/setCategory`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}`);
+        }
+
+        const data = await response.json();
+        showAlert({
+          icon: data.icon || (data.status ? "success" : "error"),
+          title: data.title || (data.status ? "Categoría registrada" : "Ocurrió un error"),
+          message: data.message || "",
+        });
+
+        if (data.status) {
+          form.reset();
+          await refreshCategoryList(false);
+          await loadSelectors();
+        }
+      } catch (error) {
+        console.error("Error registrando categoría", error);
+        showAlert({
+          icon: "error",
+          title: "Ocurrió un error",
+          message: "No fue posible registrar la categoría. Inténtalo nuevamente.",
+        });
+      }
+    });
+  }
+
+  /**
+   * Solicita la edición del nombre de una categoría utilizando SweetAlert.
+   * @param {number} categoryId Identificador de la categoría.
+   */
+  function promptCategoryEdition(categoryId) {
+    if (!Number.isInteger(categoryId) || categoryId <= 0) {
+      showAlert({
+        icon: "warning",
+        title: "Categoría inválida",
+        message: "No fue posible identificar la categoría seleccionada.",
+      });
+      return;
+    }
+
+    const currentCategory = categoryList.find(
+      (item) => Number.parseInt(item.idCategory, 10) === categoryId
+    );
+
+    if (!currentCategory) {
+      showAlert({
+        icon: "warning",
+        title: "Categoría no encontrada",
+        message: "La categoría seleccionada no se encuentra en el listado actual.",
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: "Actualizar categoría",
+      input: "text",
+      inputLabel: "Nombre",
+      inputValue: currentCategory.name,
+      inputAttributes: {
+        maxlength: "255",
+        autocapitalize: "words",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Guardar",
+      cancelButtonText: "Cancelar",
+      focusCancel: true,
+      preConfirm: async (value) => {
+        const newName = (value || "").trim();
+        if (!newName) {
+          Swal.showValidationMessage("Debes ingresar un nombre para la categoría.");
+          return false;
+        }
+
+        const token = getSecurityToken();
+        if (!token) {
+          Swal.showValidationMessage(
+            "No se encontró el token de seguridad. Actualiza la página e inténtalo nuevamente."
+          );
+          return false;
+        }
+
+        const formData = new FormData();
+        formData.append("token", token);
+        formData.append("categoryId", `${categoryId}`);
+        formData.append("txtCategoryName", newName);
+
+        try {
+          const response = await fetch(`${base_url}/pos/Inventory/updateCategory`, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error(`Error ${response.status}`);
+          }
+
+          const data = await response.json();
+          if (!data.status) {
+            Swal.showValidationMessage(
+              data.message || "No fue posible actualizar la categoría."
+            );
+            return false;
+          }
+
+          return data;
+        } catch (error) {
+          console.error("Error actualizando categoría", error);
+          Swal.showValidationMessage(
+            "No fue posible actualizar la categoría. Inténtalo nuevamente."
+          );
+          return false;
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    }).then(async (result) => {
+      if (result.isConfirmed && result.value) {
+        showAlert({
+          icon: result.value.icon || (result.value.status ? "success" : "error"),
+          title:
+            result.value.title ||
+            (result.value.status ? "Categoría actualizada" : "Ocurrió un error"),
+          message:
+            result.value.message ||
+            (result.value.status
+              ? "Los cambios fueron guardados correctamente."
+              : "No fue posible actualizar la categoría."),
+        });
+        await refreshCategoryList(false);
+        await loadSelectors();
+      }
+    });
+  }
+
+  /**
+   * Confirma con el usuario la eliminación de una categoría.
+   * @param {number} categoryId Identificador de la categoría.
+   * @param {string} categoryName Nombre de la categoría.
+   */
+  function confirmDeleteCategory(categoryId, categoryName) {
+    if (!Number.isInteger(categoryId) || categoryId <= 0) {
+      showAlert({
+        icon: "warning",
+        title: "Categoría inválida",
+        message: "No fue posible identificar la categoría seleccionada.",
+      });
+      return;
+    }
+
+    const token = getSecurityToken();
+    if (!token) {
+      showAlert({
+        icon: "error",
+        title: "Token ausente",
+        message:
+          "No fue posible validar la solicitud de eliminación. Actualiza la página e inténtalo nuevamente.",
+      });
+      return;
+    }
+
+    const safeName = categoryName
+      ? `<strong>${categoryName}</strong>`
+      : "esta categoría";
+
+    Swal.fire({
+      title: "¿Eliminar categoría?",
+      html: `Se eliminará definitivamente ${safeName}. Esta acción no se puede deshacer.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      focusCancel: true,
+    }).then(async (result) => {
+      if (!result.isConfirmed) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${base_url}/pos/Inventory/deleteCategory`, {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: categoryId, token }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error ${response.status}`);
+        }
+
+        const data = await response.json();
+        showAlert({
+          icon: data.icon || (data.status ? "success" : "error"),
+          title: data.title || (data.status ? "Operación exitosa" : "Ocurrió un error"),
+          message: data.message || "",
+        });
+
+        if (data.status) {
+          await refreshCategoryList(false);
+          await loadSelectors();
+        }
+      } catch (error) {
+        console.error("Error eliminando categoría", error);
+        showAlert({
+          icon: "error",
+          title: "Ocurrió un error",
+          message: "No fue posible eliminar la categoría. Inténtalo nuevamente.",
+        });
+      }
+    });
+  }
+
+  /**
+   * Registra los listeners para las acciones del listado de categorías.
+   */
+  function registerCategoryActions() {
+    const list = document.getElementById("categoryList");
+    if (!list) return;
+
+    list.addEventListener("click", (event) => {
+      const editButton = event.target.closest(".edit-category");
+      if (editButton) {
+        event.preventDefault();
+        const id = Number.parseInt(editButton.getAttribute("data-id") || "0", 10);
+        promptCategoryEdition(id);
+        return;
+      }
+
+      const deleteButton = event.target.closest(".delete-category");
+      if (deleteButton) {
+        event.preventDefault();
+        const id = Number.parseInt(deleteButton.getAttribute("data-id") || "0", 10);
+        const name = deleteButton.getAttribute("data-name") || "";
+        confirmDeleteCategory(id, name);
+      }
+    });
   }
 
   /**
@@ -417,11 +819,11 @@
   }
 
   /**
-   * Obtiene el token CSRF disponible en la tabla de productos.
+   * Obtiene el token CSRF disponible en la vista.
    *
    * @returns {string}
    */
-  function getDeleteToken() {
+  function getSecurityToken() {
     const table = document.getElementById("table");
     if (table && table.dataset.token) {
       return table.dataset.token;
@@ -452,7 +854,7 @@
       return;
     }
 
-    const token = productToken || getDeleteToken();
+    const token = productToken || getSecurityToken();
     if (!token) {
       showAlert({
         icon: "error",
@@ -627,10 +1029,17 @@
     registerTableActions();
     handleCreate();
     handleUpdate();
+    handleCreateCategory();
+    registerCategoryActions();
 
     const openButton = document.getElementById("btnOpenProductModal");
     if (openButton) {
       openButton.addEventListener("click", openCreateModal);
+    }
+
+    const openCategoryButton = document.getElementById("btnOpenCategoryModal");
+    if (openCategoryButton) {
+      openCategoryButton.addEventListener("click", openCategoryModal);
     }
   });
 })();

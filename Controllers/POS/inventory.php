@@ -399,6 +399,174 @@ class Inventory extends Controllers
     }
 
     /**
+     * Devuelve el listado completo de categorías para el mantenimiento en el POS.
+     *
+     * @return void
+     */
+    public function getCategoryList(): void
+    {
+        $businessId = $this->getBusinessId();
+        $data       = $this->model->selectCategoryList($businessId);
+
+        toJson([
+            'status' => true,
+            'data'   => $data,
+        ]);
+    }
+
+    /**
+     * Registra una nueva categoría asociada al negocio activo.
+     *
+     * @return void
+     */
+    public function setCategory(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        $userId = $this->getUserId();
+        $this->validateCsrfToken($_POST['token'] ?? '', $userId);
+
+        $rawName = $_POST['txtCategoryName'] ?? '';
+        $name    = ucwords(strClean($rawName));
+
+        if ($name === '') {
+            $this->responseError('El nombre de la categoría es obligatorio.');
+        }
+
+        $businessId = $this->getBusinessId();
+        $existing   = $this->model->selectCategoryByName($name, $businessId);
+
+        if (!empty($existing)) {
+            $this->responseError('Ya existe una categoría con el mismo nombre en tu negocio.');
+        }
+
+        $categoryId = $this->model->insertCategory($businessId, $name);
+        if ($categoryId <= 0) {
+            $this->responseError('No fue posible registrar la categoría, inténtalo nuevamente.');
+        }
+
+        registerLog('Registro de categoría POS', 'Se registró la categoría: ' . $name, 2, $userId);
+
+        toJson([
+            'title'  => 'Categoría registrada',
+            'message'=> 'La categoría se registró correctamente.',
+            'type'   => 'success',
+            'icon'   => 'success',
+            'status' => true,
+        ]);
+    }
+
+    /**
+     * Actualiza el nombre de una categoría existente del negocio activo.
+     *
+     * @return void
+     */
+    public function updateCategory(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        $userId = $this->getUserId();
+        $this->validateCsrfToken($_POST['token'] ?? '', $userId);
+
+        $categoryId = (int) ($_POST['categoryId'] ?? 0);
+        $rawName    = $_POST['txtCategoryName'] ?? '';
+        $name       = ucwords(strClean($rawName));
+
+        if ($categoryId <= 0) {
+            $this->responseError('No fue posible identificar la categoría seleccionada.');
+        }
+
+        if ($name === '') {
+            $this->responseError('El nombre de la categoría es obligatorio.');
+        }
+
+        $businessId = $this->getBusinessId();
+        $category   = $this->model->findCategory($categoryId, $businessId);
+
+        if (empty($category)) {
+            $this->responseError('La categoría seleccionada no existe o no pertenece a tu negocio.');
+        }
+
+        $existing = $this->model->selectCategoryByName($name, $businessId, $categoryId);
+        if (!empty($existing)) {
+            $this->responseError('Ya existe otra categoría con el mismo nombre en tu negocio.');
+        }
+
+        $updated = $this->model->updateCategory($categoryId, $businessId, $name);
+        if (!$updated) {
+            $this->responseError('No fue posible actualizar la categoría, inténtalo nuevamente.');
+        }
+
+        registerLog('Actualización de categoría POS', 'Se actualizó la categoría: ' . $name, 2, $userId);
+
+        toJson([
+            'title'  => 'Categoría actualizada',
+            'message'=> 'La categoría se actualizó correctamente.',
+            'type'   => 'success',
+            'icon'   => 'success',
+            'status' => true,
+        ]);
+    }
+
+    /**
+     * Elimina una categoría del negocio activo siempre que no tenga productos asociados.
+     *
+     * @return void
+     */
+    public function deleteCategory(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        $payload = json_decode(file_get_contents('php://input'), true);
+        if (!is_array($payload)) {
+            $this->responseError('Solicitud inválida.');
+        }
+
+        $categoryId = (int) ($payload['id'] ?? 0);
+        $token      = (string) ($payload['token'] ?? '');
+
+        if ($categoryId <= 0) {
+            $this->responseError('No fue posible identificar la categoría seleccionada.');
+        }
+
+        $userId = $this->getUserId();
+        $this->validateCsrfToken($token, $userId);
+
+        $businessId = $this->getBusinessId();
+        $category   = $this->model->findCategory($categoryId, $businessId);
+
+        if (empty($category)) {
+            $this->responseError('La categoría seleccionada no existe o no pertenece a tu negocio.');
+        }
+
+        $productsAssociated = $this->model->countProductsByCategory($categoryId, $businessId);
+        if ($productsAssociated > 0) {
+            $this->responseError('No puedes eliminar la categoría porque tiene productos asociados.');
+        }
+
+        $deleted = $this->model->deleteCategory($categoryId, $businessId);
+        if (!$deleted) {
+            $this->responseError('No fue posible eliminar la categoría, inténtalo nuevamente.');
+        }
+
+        registerLog('Eliminación de categoría POS', 'Se eliminó la categoría: ' . $category['name'], 3, $userId);
+
+        toJson([
+            'title'  => 'Categoría eliminada',
+            'message'=> 'La categoría se eliminó correctamente.',
+            'type'   => 'success',
+            'icon'   => 'success',
+            'status' => true,
+        ]);
+    }
+
+    /**
      * Devuelve las unidades de medida disponibles en el sistema.
      *
      * @return void

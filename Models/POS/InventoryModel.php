@@ -175,6 +175,80 @@ class InventoryModel extends Mysql
     }
 
     /**
+     * Recupera todas las categorías asociadas a un negocio, sin filtrar por estado.
+     *
+     * @param int $businessId Identificador del negocio activo.
+     *
+     * @return array
+     */
+    public function selectCategoryList(int $businessId): array
+    {
+        $sql = <<<SQL
+            SELECT idCategory, name, status
+            FROM category
+            WHERE business_id = ?
+            ORDER BY name ASC;
+        SQL;
+
+        return $this->select_all($sql, [$businessId]);
+    }
+
+    /**
+     * Inserta una nueva categoría vinculada a un negocio.
+     *
+     * @param int    $businessId Identificador del negocio.
+     * @param string $name       Nombre de la categoría.
+     *
+     * @return int
+     */
+    public function insertCategory(int $businessId, string $name): int
+    {
+        $sql = <<<SQL
+            INSERT INTO category (business_id, name, status)
+            VALUES (?, ?, 'Activo');
+        SQL;
+
+        return (int) $this->insert($sql, [$businessId, $name]);
+    }
+
+    /**
+     * Actualiza los datos de una categoría existente.
+     *
+     * @param int    $categoryId Identificador de la categoría.
+     * @param int    $businessId Identificador del negocio.
+     * @param string $name       Nombre actualizado.
+     *
+     * @return bool
+     */
+    public function updateCategory(int $categoryId, int $businessId, string $name): bool
+    {
+        $sql = <<<SQL
+            UPDATE category
+            SET name = ?
+            WHERE idCategory = ?
+              AND business_id = ?
+            LIMIT 1;
+        SQL;
+
+        return (bool) $this->update($sql, [$name, $categoryId, $businessId]);
+    }
+
+    /**
+     * Elimina una categoría asociada a un negocio.
+     *
+     * @param int $categoryId Identificador de la categoría.
+     * @param int $businessId Identificador del negocio.
+     *
+     * @return bool
+     */
+    public function deleteCategory(int $categoryId, int $businessId): bool
+    {
+        $sql = 'DELETE FROM category WHERE idCategory = ? AND business_id = ? LIMIT 1;';
+
+        return (bool) $this->delete($sql, [$categoryId, $businessId]);
+    }
+
+    /**
      * Obtiene las unidades de medida activas disponibles.
      *
      * @return array
@@ -207,6 +281,29 @@ class InventoryModel extends Mysql
             WHERE idCategory = ?
               AND business_id = ?
               AND status = 'Activo'
+            LIMIT 1;
+        SQL;
+
+        $result = $this->select($sql, [$categoryId, $businessId]);
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Obtiene una categoría sin filtrar por estado para validar su pertenencia al negocio.
+     *
+     * @param int $categoryId Identificador de la categoría.
+     * @param int $businessId Identificador del negocio.
+     *
+     * @return array
+     */
+    public function findCategory(int $categoryId, int $businessId): array
+    {
+        $sql = <<<SQL
+            SELECT idCategory, name, status
+            FROM category
+            WHERE idCategory = ?
+              AND business_id = ?
             LIMIT 1;
         SQL;
 
@@ -279,6 +376,61 @@ class InventoryModel extends Mysql
         $result = $this->select($sql, [$supplierId, $businessId]);
 
         return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Busca una categoría por su nombre dentro del negocio indicado.
+     *
+     * @param string $name       Nombre de la categoría.
+     * @param int    $businessId Identificador del negocio.
+     * @param int    $excludeId  Identificador a excluir (opcional).
+     *
+     * @return array
+     */
+    public function selectCategoryByName(string $name, int $businessId, int $excludeId = 0): array
+    {
+        $sql = <<<SQL
+            SELECT idCategory
+            FROM category
+            WHERE business_id = ?
+              AND name = ?
+        SQL;
+
+        $params = [$businessId, $name];
+
+        if ($excludeId > 0) {
+            $sql .= ' AND idCategory != ?';
+            $params[] = $excludeId;
+        }
+
+        $sql .= ' LIMIT 1;';
+
+        $result = $this->select($sql, $params);
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Cuenta los productos asociados a una categoría específica.
+     *
+     * @param int $categoryId Identificador de la categoría.
+     * @param int $businessId Identificador del negocio.
+     *
+     * @return int
+     */
+    public function countProductsByCategory(int $categoryId, int $businessId): int
+    {
+        $sql = <<<SQL
+            SELECT COUNT(*) AS total
+            FROM product AS p
+            INNER JOIN category AS c ON c.idCategory = p.category_id
+            WHERE p.category_id = ?
+              AND c.business_id = ?;
+        SQL;
+
+        $result = $this->select($sql, [$categoryId, $businessId]);
+
+        return isset($result['total']) ? (int) $result['total'] : 0;
     }
 
     /**
