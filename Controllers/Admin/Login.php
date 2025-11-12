@@ -20,7 +20,7 @@ class Login extends Controllers
 		$data['page_js_css'] = "login";
 		$this->views->getView($this, "login", $data);
 	}
-	
+
 	public function pwreset($token)
 	{
 		//validamos que el token no sea nulo
@@ -183,16 +183,19 @@ class Login extends Controllers
 				"folder_name" => $request["u_personal_folder_name"]
 			);
 			//actualizamos el estado de online del usuario
-			$this->model->update_online_user($request["idUser"], 1);
+			$this->model->update_online_user($request["idUser"], 1);		
+			$name_sesion = config_sesion()['name'];
+			$nameVarLogin = $name_sesion . 'login';
+			$nameVarLoginInfo = $name_sesion . 'login_info';
 			//creamos las cookies para el usuario
 			$data_session = json_encode($data_session);
-			$_SESSION['login'] = true;
-			$_SESSION['login_info'] = json_decode($data_session, true);
+			$_SESSION[$nameVarLogin] = true;
+			$_SESSION[$nameVarLoginInfo] = json_decode($data_session, true);
 			//reiniciamos los intentos de inicio de sesion
 			$this->model->update_attempts_login($request["idUser"], 0);
 			//creamos las cookies para el usuario
-			setcookie("login_info", $data_session, time() + (86400 * 30), "/"); // 86400 = 1 day => 30 days
-			setcookie("login", true, time() + (86400 * 30), "/"); // 86400 = 1 day => 30 days
+			setcookie($nameVarLoginInfo, $data_session, time() + (86400 * 30), "/"); // 86400 = 1 day => 30 days
+			setcookie($nameVarLogin, true, time() + (86400 * 30), "/"); // 86400 = 1 day => 30 days
 			registerLog("Inicio de sesión exitoso", "El usuario " . $request["u_fullname"] . ", completo de manera satisfactoria el inicio de sesion", 2, $request["idUser"]);
 			$data = array(
 				"title" => "Inicio de sesion exitoso",
