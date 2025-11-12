@@ -30,6 +30,7 @@ body {
 
 .login-content .login-box .login-form .login-message {
     margin-bottom: 1rem !important;
+    text-align: center;
 }
 
 .login-content .login-box .login-form .contacto p {
