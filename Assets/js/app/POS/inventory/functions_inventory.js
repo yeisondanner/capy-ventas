@@ -264,43 +264,31 @@
       nameRow.appendChild(statusBadge);
       infoWrapper.appendChild(nameRow);
 
-      const actionGroup = document.createElement("div");
-      actionGroup.className = "btn-group btn-group-sm";
-
-      const editButton = document.createElement("button");
-      editButton.type = "button";
-      editButton.className = "btn btn-outline-primary text-primary edit-category";
-      editButton.setAttribute("data-id", `${category.idCategory}`);
-      editButton.innerHTML = '<i class="bi bi-pencil-square"></i>';
-      if (isProtected) {
-        editButton.disabled = true;
-        editButton.classList.add("disabled");
-        editButton.setAttribute(
-          "title",
-          "Esta categoría es predeterminada y no puede modificarse."
-        );
-      }
-
-      const deleteButton = document.createElement("button");
-      deleteButton.type = "button";
-      deleteButton.className = "btn btn-outline-danger text-danger delete-category";
-      deleteButton.setAttribute("data-id", `${category.idCategory}`);
-      deleteButton.setAttribute("data-name", category.name);
-      deleteButton.innerHTML = '<i class="bi bi-trash"></i>';
-      if (isProtected) {
-        deleteButton.disabled = true;
-        deleteButton.classList.add("disabled");
-        deleteButton.setAttribute(
-          "title",
-          "Esta categoría es predeterminada y no puede eliminarse."
-        );
-      }
-
-      actionGroup.appendChild(editButton);
-      actionGroup.appendChild(deleteButton);
-
       item.appendChild(infoWrapper);
-      item.appendChild(actionGroup);
+
+      if (!isProtected) {
+        const actionGroup = document.createElement("div");
+        actionGroup.className = "btn-group btn-group-sm";
+
+        const editButton = document.createElement("button");
+        editButton.type = "button";
+        editButton.className = "btn btn-outline-primary text-primary edit-category";
+        editButton.setAttribute("data-id", `${category.idCategory}`);
+        editButton.innerHTML = '<i class="bi bi-pencil-square"></i>';
+
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button";
+        deleteButton.className =
+          "btn btn-outline-danger text-danger delete-category";
+        deleteButton.setAttribute("data-id", `${category.idCategory}`);
+        deleteButton.setAttribute("data-name", category.name);
+        deleteButton.innerHTML = '<i class="bi bi-trash"></i>';
+
+        actionGroup.appendChild(editButton);
+        actionGroup.appendChild(deleteButton);
+
+        item.appendChild(actionGroup);
+      }
 
       list.appendChild(item);
     });
