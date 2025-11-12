@@ -16,6 +16,13 @@ class Inventory extends Controllers
      */
     protected string $nameVarLoginInfo;
 
+    /**
+     * Clave normalizada de la categoría protegida por defecto.
+     *
+     * @var string|null
+     */
+    private ?string $protectedCategoryKey = null;
+
     public function __construct()
     {
         isSession(1);
@@ -491,6 +498,10 @@ class Inventory extends Controllers
             $this->responseError('La categoría seleccionada no existe o no pertenece a tu negocio.');
         }
 
+        if ($this->isProtectedCategoryName($category['name'] ?? '')) {
+            $this->responseError('No puedes modificar la categoría predeterminada del sistema.');
+        }
+
         $existing = $this->model->selectCategoryByName($name, $businessId, $categoryId);
         if (!empty($existing)) {
             $this->responseError('Ya existe otra categoría con el mismo nombre en tu negocio.');
@@ -543,6 +554,10 @@ class Inventory extends Controllers
 
         if (empty($category)) {
             $this->responseError('La categoría seleccionada no existe o no pertenece a tu negocio.');
+        }
+
+        if ($this->isProtectedCategoryName($category['name'] ?? '')) {
+            $this->responseError('No puedes eliminar la categoría predeterminada del sistema.');
         }
 
         $productsAssociated = $this->model->countProductsByCategory($categoryId, $businessId);
@@ -716,6 +731,68 @@ class Inventory extends Controllers
         if (empty($supplier)) {
             $this->responseError('El proveedor seleccionado no pertenece a tu negocio o está inactivo.');
         }
+    }
+
+    /**
+     * Determina si el nombre corresponde a la categoría protegida por defecto.
+     *
+     * @param string $name Nombre a evaluar.
+     *
+     * @return bool
+     */
+    private function isProtectedCategoryName(string $name): bool
+    {
+        if ($name === '') {
+            return false;
+        }
+
+        return $this->normalizeCategoryKey($name) === $this->getProtectedCategoryKey();
+    }
+
+    /**
+     * Obtiene la clave de comparación de la categoría protegida.
+     *
+     * @return string
+     */
+    private function getProtectedCategoryKey(): string
+    {
+        if ($this->protectedCategoryKey === null) {
+            $this->protectedCategoryKey = $this->normalizeCategoryKey('Sin Categoria');
+        }
+
+        return $this->protectedCategoryKey;
+    }
+
+    /**
+     * Normaliza un nombre de categoría para comparaciones internas.
+     *
+     * @param string $value Texto a normalizar.
+     *
+     * @return string
+     */
+    private function normalizeCategoryKey(string $value): string
+    {
+        $trimmed = trim($value);
+        if ($trimmed === '') {
+            return '';
+        }
+
+        if (function_exists('iconv')) {
+            $transliterated = iconv('UTF-8', 'ASCII//TRANSLIT', $trimmed);
+            if ($transliterated === false) {
+                $transliterated = $trimmed;
+            }
+        } else {
+            $transliterated = $trimmed;
+        }
+
+        $lower = function_exists('mb_strtolower')
+            ? mb_strtolower($transliterated, 'UTF-8')
+            : strtolower($transliterated);
+
+        $normalizedSpaces = preg_replace('/\s+/', ' ', $lower ?? '');
+
+        return is_string($normalizedSpaces) ? $normalizedSpaces : '';
     }
 
     /**

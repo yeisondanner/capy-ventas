@@ -10,6 +10,40 @@
   let cachedSuppliers = [];
 
   const rootUrl = base_url;
+  const PROTECTED_CATEGORY_NAME = "Sin Categoria";
+  const PROTECTED_CATEGORY_KEY = normalizeCategoryName(PROTECTED_CATEGORY_NAME);
+
+  /**
+   * Normaliza un nombre de categoría eliminando tildes y espacios duplicados.
+   * @param {string} value Texto a normalizar.
+   * @returns {string}
+   */
+  function normalizeCategoryName(value) {
+    if (!value) return "";
+
+    let normalized = value.toString().trim();
+    if (!normalized) return "";
+
+    if (typeof normalized.normalize === "function") {
+      normalized = normalized
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    normalized = normalized.toLowerCase();
+
+    return normalized.replace(/\s+/g, " ");
+  }
+
+  /**
+   * Indica si el nombre corresponde a la categoría protegida por defecto.
+   * @param {string} value Nombre a evaluar.
+   * @returns {boolean}
+   */
+  function isProtectedCategoryName(value) {
+    if (!value) return false;
+    return normalizeCategoryName(value) === PROTECTED_CATEGORY_KEY;
+  }
 
   /**
    * Obtiene o crea la instancia de un modal de Bootstrap.
@@ -222,6 +256,7 @@
 
       const statusBadge = document.createElement("span");
       const isActive = category.status === "Activo";
+      const isProtected = isProtectedCategoryName(category.name);
       statusBadge.className = `badge ${isActive ? "bg-success" : "bg-secondary"}`;
       statusBadge.textContent = category.status;
 
@@ -237,6 +272,14 @@
       editButton.className = "btn btn-outline-primary text-primary edit-category";
       editButton.setAttribute("data-id", `${category.idCategory}`);
       editButton.innerHTML = '<i class="bi bi-pencil-square"></i>';
+      if (isProtected) {
+        editButton.disabled = true;
+        editButton.classList.add("disabled");
+        editButton.setAttribute(
+          "title",
+          "Esta categoría es predeterminada y no puede modificarse."
+        );
+      }
 
       const deleteButton = document.createElement("button");
       deleteButton.type = "button";
@@ -244,6 +287,14 @@
       deleteButton.setAttribute("data-id", `${category.idCategory}`);
       deleteButton.setAttribute("data-name", category.name);
       deleteButton.innerHTML = '<i class="bi bi-trash"></i>';
+      if (isProtected) {
+        deleteButton.disabled = true;
+        deleteButton.classList.add("disabled");
+        deleteButton.setAttribute(
+          "title",
+          "Esta categoría es predeterminada y no puede eliminarse."
+        );
+      }
 
       actionGroup.appendChild(editButton);
       actionGroup.appendChild(deleteButton);
@@ -402,6 +453,15 @@
       return;
     }
 
+    if (isProtectedCategoryName(currentCategory.name)) {
+      showAlert({
+        icon: "info",
+        title: "Acción no permitida",
+        message: "La categoría predeterminada no puede modificarse.",
+      });
+      return;
+    }
+
     Swal.fire({
       title: "Actualizar categoría",
       input: "text",
@@ -493,6 +553,22 @@
         icon: "warning",
         title: "Categoría inválida",
         message: "No fue posible identificar la categoría seleccionada.",
+      });
+      return;
+    }
+
+    const currentCategory = categoryList.find(
+      (item) => Number.parseInt(item.idCategory, 10) === categoryId
+    );
+
+    if (
+      (currentCategory && isProtectedCategoryName(currentCategory.name)) ||
+      (!currentCategory && isProtectedCategoryName(categoryName))
+    ) {
+      showAlert({
+        icon: "info",
+        title: "Acción no permitida",
+        message: "La categoría predeterminada no puede eliminarse.",
       });
       return;
     }
