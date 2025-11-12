@@ -89,9 +89,9 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="txtProductStock" class="form-label">Stock <span class="text-danger">*</span></label>
+                        <label for="txtProductStock" class="form-label">Stock (opcional)</label>
                         <input type="number" step="0.01" min="0" class="form-control" id="txtProductStock"
-                            name="txtProductStock" required placeholder="0.00">
+                            name="txtProductStock" placeholder="0.00">
                     </div>
                     <div class="col-md-4">
                         <label for="txtProductPurchasePrice" class="form-label">Precio compra <span class="text-danger">*</span></label>
@@ -234,9 +234,9 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label for="update_txtProductStock" class="form-label">Stock <span class="text-danger">*</span></label>
+                        <label for="update_txtProductStock" class="form-label">Stock (opcional)</label>
                         <input type="number" step="0.01" min="0" class="form-control" id="update_txtProductStock"
-                            name="update_txtProductStock" required>
+                            name="update_txtProductStock">
                     </div>
                     <div class="col-md-4">
                         <label for="update_txtProductPurchasePrice" class="form-label">Precio compra <span class="text-danger">*</span></label>

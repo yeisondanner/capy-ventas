@@ -117,7 +117,6 @@ class Inventory extends Controllers
             'txtProductCategory',
             'txtProductMeasurement',
             'txtProductSupplier',
-            'txtProductStock',
             'txtProductPurchasePrice',
             'txtProductSalesPrice',
         ];
@@ -133,7 +132,7 @@ class Inventory extends Controllers
         $categoryId    = (int) ($_POST['txtProductCategory'] ?? 0);
         $measurementId = (int) ($_POST['txtProductMeasurement'] ?? 0);
         $supplierId    = (int) ($_POST['txtProductSupplier'] ?? 0);
-        $stock         = $this->sanitizeDecimal($_POST['txtProductStock'] ?? '0', 'stock');
+        $stock         = $this->resolveOptionalStock($_POST['txtProductStock'] ?? null);
         $purchase      = $this->sanitizeDecimal($_POST['txtProductPurchasePrice'] ?? '0', 'precio de compra');
         $sales         = $this->sanitizeDecimal($_POST['txtProductSalesPrice'] ?? '0', 'precio de venta');
         $status        = 'Activo';
@@ -286,7 +285,7 @@ class Inventory extends Controllers
         $categoryId    = (int) ($_POST['update_txtProductCategory'] ?? 0);
         $measurementId = (int) ($_POST['update_txtProductMeasurement'] ?? 0);
         $supplierId    = (int) ($_POST['update_txtProductSupplier'] ?? 0);
-        $stock         = $this->sanitizeDecimal($_POST['update_txtProductStock'] ?? '0', 'stock');
+        $stock         = $this->resolveOptionalStock($_POST['update_txtProductStock'] ?? null);
         $purchase      = $this->sanitizeDecimal($_POST['update_txtProductPurchasePrice'] ?? '0', 'precio de compra');
         $sales         = $this->sanitizeDecimal($_POST['update_txtProductSalesPrice'] ?? '0', 'precio de venta');
         $status        = $_POST['update_txtProductStatus'] === 'Inactivo' ? 'Inactivo' : 'Activo';
@@ -693,6 +692,27 @@ class Inventory extends Controllers
             registerLog('Seguridad POS', 'Token CSRF no coincide.', 1, $userId);
             $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
         }
+    }
+
+    /**
+     * Determina el valor de stock permitido considerando que el campo es opcional.
+     *
+     * @param string|null $value Valor recibido desde el formulario.
+     *
+     * @return float
+     */
+    private function resolveOptionalStock(?string $value): float
+    {
+        if ($value === null) {
+            return 0.0;
+        }
+
+        $trimmed = trim($value);
+        if ($trimmed === '') {
+            return 0.0;
+        }
+
+        return $this->sanitizeDecimal($trimmed, 'stock');
     }
 
     /**

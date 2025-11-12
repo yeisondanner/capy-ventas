@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
 -- Versión del servidor:         10.4.32-MariaDB - mariadb.org binary distribution
@@ -19724,3 +19725,8 @@ DELETE FROM `voucher_header`;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
+=======
+  `stock` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `document_number` char(11) DEFAULT NULL,
+        (2, NULL, 'Sin Proveedor', '', NULL, '', 2, 'Activo', '2025-11-12 05:38:47', '2025-11-12 05:38:47');
+>>>>>>> codex/update-inventory-and-suppliers-modules
