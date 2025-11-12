@@ -790,7 +790,7 @@ class Inventory extends Controllers
     private function getProtectedCategoryKey(): string
     {
         if ($this->protectedCategoryKey === null) {
-            $this->protectedCategoryKey = $this->normalizeCategoryKey('Sin Categoria');
+            $this->protectedCategoryKey = $this->normalizeCategoryKey('Sin Categoría');
         }
 
         return $this->protectedCategoryKey;
@@ -810,13 +810,30 @@ class Inventory extends Controllers
             return '';
         }
 
+        $transliterated = $trimmed;
+
         if (function_exists('iconv')) {
-            $transliterated = iconv('UTF-8', 'ASCII//TRANSLIT', $trimmed);
-            if ($transliterated === false) {
-                $transliterated = $trimmed;
+            $converted = iconv('UTF-8', 'ASCII//TRANSLIT', $trimmed);
+            if ($converted !== false && $converted !== null) {
+                $transliterated = $converted;
             }
-        } else {
-            $transliterated = $trimmed;
+        }
+
+        if ($transliterated === $trimmed) {
+            $transliterated = strtr($transliterated, [
+                'Á' => 'A', 'À' => 'A', 'Â' => 'A', 'Ä' => 'A', 'Ã' => 'A', 'Å' => 'A',
+                'É' => 'E', 'È' => 'E', 'Ê' => 'E', 'Ë' => 'E',
+                'Í' => 'I', 'Ì' => 'I', 'Î' => 'I', 'Ï' => 'I',
+                'Ó' => 'O', 'Ò' => 'O', 'Ô' => 'O', 'Ö' => 'O', 'Õ' => 'O',
+                'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U',
+                'Ñ' => 'N', 'Ç' => 'C',
+                'á' => 'a', 'à' => 'a', 'â' => 'a', 'ä' => 'a', 'ã' => 'a', 'å' => 'a',
+                'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
+                'í' => 'i', 'ì' => 'i', 'î' => 'i', 'ï' => 'i',
+                'ó' => 'o', 'ò' => 'o', 'ô' => 'o', 'ö' => 'o', 'õ' => 'o',
+                'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
+                'ñ' => 'n', 'ç' => 'c',
+            ]);
         }
 
         $lower = function_exists('mb_strtolower')

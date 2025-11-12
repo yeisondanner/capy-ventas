@@ -11,7 +11,7 @@
   let cachedSuppliers = [];
 
   const rootUrl = base_url;
-  const PROTECTED_CATEGORY_NAME = "Sin Categoria";
+  const PROTECTED_CATEGORY_NAME = "Sin Categoría";
   const PROTECTED_CATEGORY_KEY = normalizeCategoryName(PROTECTED_CATEGORY_NAME);
 
   /**
