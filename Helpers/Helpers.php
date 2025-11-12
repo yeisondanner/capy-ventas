@@ -445,11 +445,11 @@ function isSession(int $sesion = 0)
             } else if (!isset($_SESSION[$nameVarLogin]) && isset($_COOKIE[$nameVarLogin])) {
                 $_SESSION[$nameVarLogin] = $_COOKIE[$nameVarLogin];
                 $_SESSION[$nameVarLoginInfo] = json_decode($_COOKIE[$nameVarLoginInfo], true);
-                header("Location: " . base_url() . "/im/logOut");
+                header("Location: " . base_url() . "/pos/logout");
             } else {
                 //obtener ip
                 $ip = obtenerIP();
-                header("Location: " . base_url() . "/im/logOut");
+                header("Location: " . base_url() . "/pos/logout");
             }
             break;
         default:

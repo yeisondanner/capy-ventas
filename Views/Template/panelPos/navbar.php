@@ -57,7 +57,7 @@
             <ul class="dropdown-menu settings-menu dropdown-menu-right">
                 <li><a class="dropdown-item" href="page-user.html"><i class="bi bi-gear me-2 fs-5"></i> Settings</a></li>
                 <li><a class="dropdown-item" href="page-user.html"><i class="bi bi-person me-2 fs-5"></i> Profile</a></li>
-                <li><a class="dropdown-item" href="<?= base_url() ?>/POS/LogOut"><i class="bi bi-box-arrow-right me-2 fs-5"></i> Logout</a></li>
+                <li><a class="dropdown-item" href="<?= base_url() ?>/pos/logout"><i class="bi bi-box-arrow-right me-2 fs-5"></i> Logout</a></li>
             </ul>
         </li>
     </ul>
