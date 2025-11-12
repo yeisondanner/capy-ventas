@@ -29,7 +29,7 @@ $host = $_SERVER['HTTP_HOST'];
 $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])), '/');
 $baseUrl = $protocol . '://' . $host . $scriptDir;
 //define('BASE_URL', rtrim($baseUrl, '/'));
-const BASE_URL = "http://localhost/capy-ventas";
+const BASE_URL = "https://capyventas.shaday-pe.com";
 //Ruta de almacenamiento de archivos
 const RUTA_ARCHIVOS = "./Storage/";
 //Nombre del sistema
@@ -43,9 +43,9 @@ date_default_timezone_set('America/Lima');
 
 //Datos de conexión a Base de Datos
 const DB_HOST = "localhost";
-const DB_NAME = "bd_capyventas";
-const DB_USER = "root";
-const DB_PASSWORD = "";
+const DB_NAME = "shadaype_capyventas";
+const DB_USER = "shadaype_capyventas";
+const DB_PASSWORD = "rqzc17!@]a}qkcYC";
 const DB_CHARSET = "utf8";
 
 //Deliminadores decimal y millar Ej. 24,1989.00
