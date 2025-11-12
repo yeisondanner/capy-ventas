@@ -99,6 +99,9 @@ class Customersuserapp extends Controllers
             $arrData[$key]["registration_date_formatted"] = dateFormat($value["registration_date"]);
             $arrData[$key]["update_date_formatted"] = dateFormat($value["update_date"]);
             
+            // Desencriptar email para mostrar
+            $arrData[$key]["email"] = decryption($value["email"]);
+            
             // Información del usuario de la app
             $userApp = $this->model->select_user_app_by_people_id($value["idPeople"]);
             $userName = $userApp ? decryption($userApp["user"]) : "Sin usuario";
@@ -109,6 +112,9 @@ class Customersuserapp extends Controllers
             $arrData[$key]["user_app"] = $userName;
             $arrData[$key]["has_user"] = $userApp ? true : false;
             
+            // Desencriptar email para usar en atributos data-* (ya está desencriptado en $arrData[$key]["email"])
+            $emailDecrypted = $arrData[$key]["email"];
+            
             // Botones de acción
             $arrData[$key]["actions"] = '
                 <div class="btn-group">
@@ -116,7 +122,7 @@ class Customersuserapp extends Controllers
                         data-id="' . $value["idPeople"] . '"
                         data-names="' . htmlspecialchars($value["names"]) . '"
                         data-lastname="' . htmlspecialchars($value["lastname"]) . '"
-                        data-email="' . htmlspecialchars($value["email"]) . '"
+                        data-email="' . htmlspecialchars($emailDecrypted) . '"
                         data-date-of-birth="' . $value["date_of_birth"] . '"
                         data-country="' . htmlspecialchars($value["country"]) . '"
                         data-telephone-prefix="' . htmlspecialchars($value["telephone_prefix"]) . '"
@@ -134,7 +140,7 @@ class Customersuserapp extends Controllers
                         data-id="' . $value["idPeople"] . '"
                         data-names="' . htmlspecialchars($value["names"]) . '"
                         data-lastname="' . htmlspecialchars($value["lastname"]) . '"
-                        data-email="' . htmlspecialchars($value["email"]) . '"
+                        data-email="' . htmlspecialchars($emailDecrypted) . '"
                         data-date-of-birth="' . $arrData[$key]["date_of_birth_formatted"] . '"
                         data-country="' . htmlspecialchars($value["country"]) . '"
                         data-telephone-prefix="' . htmlspecialchars($value["telephone_prefix"]) . '"
@@ -266,8 +272,9 @@ class Customersuserapp extends Controllers
             toJson($data);
         }
 
-        // Validar que el email no exista
-        $request = $this->model->select_people_by_email($strEmail);
+        // Validar que el email no exista (encriptamos para buscar en BD)
+        $strEmailEncrypted = encryption($strEmail);
+        $request = $this->model->select_people_by_email($strEmailEncrypted);
         if ($request) {
             registerLog("Ocurrió un error inesperado", "El correo electrónico ingresado ya se encuentra registrado en el sistema.", 1, $_SESSION['login_info']['idUser']);
             $data = array(
@@ -353,8 +360,11 @@ class Customersuserapp extends Controllers
         $strLastname = strtoupper($strLastname);
         $strCountry = strtoupper($strCountry);
 
+        // Encriptar email antes de guardar
+        $strEmailEncrypted = encryption($strEmail);
+
         // Insertar en la base de datos
-        $request = $this->model->insert_people($strNames, $strLastname, $strEmail, $strDateOfBirth, $strCountry, $strTelephonePrefix, $strPhoneNumber);
+        $request = $this->model->insert_people($strNames, $strLastname, $strEmailEncrypted, $strDateOfBirth, $strCountry, $strTelephonePrefix, $strPhoneNumber);
 
         if ($request > 0) {
             // Si se proporcionó usuario, crear el registro en user_app
@@ -507,7 +517,9 @@ class Customersuserapp extends Controllers
         }
 
         // Validar que el email no esté duplicado (excepto el actual)
-        $requestForEmail = $this->model->select_people_by_email($strEmail);
+        // Encriptamos el email para buscar en BD
+        $strEmailEncrypted = encryption($strEmail);
+        $requestForEmail = $this->model->select_people_by_email($strEmailEncrypted);
         if ($requestForEmail) {
             if ($requestForEmail['idPeople'] != $intId) {
                 registerLog("Ocurrió un error inesperado", "El correo electrónico ya existe en el sistema.", 1, $_SESSION['login_info']['idUser']);
@@ -585,8 +597,11 @@ class Customersuserapp extends Controllers
         $strLastname = strtoupper($strLastname);
         $strCountry = strtoupper($strCountry);
 
+        // Encriptar email antes de actualizar
+        $strEmailEncrypted = encryption($strEmail);
+
         // Actualizar en la base de datos
-        $request = $this->model->update_people($intId, $strNames, $strLastname, $strEmail, $strDateOfBirth, $strCountry, $strTelephonePrefix, $strPhoneNumber, $slctStatus);
+        $request = $this->model->update_people($intId, $strNames, $strLastname, $strEmailEncrypted, $strDateOfBirth, $strCountry, $strTelephonePrefix, $strPhoneNumber, $slctStatus);
 
         if ($request) {
             // Manejar usuario de la aplicación
