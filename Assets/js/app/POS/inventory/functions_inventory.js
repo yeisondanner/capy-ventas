@@ -214,7 +214,7 @@ function initTable() {
     iDisplayLength: 10,
     order: [[0, "asc"]],
     language: {
-      url: `${rootUrl}/Assets/js/libraries/Spanish-datatables.json`,
+      url: `${rootUrl}/Assets/js/libraries/Admin/Spanish-datatables.json`,
     },
     drawCallback: () => {
       document.querySelectorAll(".dataTables_paginate > .pagination").forEach((el) => {
