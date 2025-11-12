@@ -26,9 +26,7 @@
     if (!normalized) return "";
 
     if (typeof normalized.normalize === "function") {
-      normalized = normalized
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
+      normalized = normalized.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
     }
 
     normalized = normalized.toLowerCase();
@@ -147,7 +145,9 @@
       product.measurement_name || "Sin unidad registrada"
     );
     const currency =
-      typeof product.currency_symbol === "string" ? product.currency_symbol : "";
+      typeof product.currency_symbol === "string"
+        ? product.currency_symbol
+        : "";
     const stockText =
       product.stock_text ||
       `${Number(product.stock || 0).toFixed(2)}${
@@ -182,17 +182,20 @@
    * @param {HTMLSelectElement} select
    * @param {Array} data
    * @param {string} placeholder
+   * @param {boolean} placeholderStatus
    */
-  function populateSelect(select, data, placeholder) {
+  function populateSelect(select, data, placeholder, placeholderStatus = "No") {
     if (!select) return;
     select.innerHTML = "";
-    const option = document.createElement("option");
-    option.value = "";
-    option.textContent = placeholder;
-    option.disabled = true;
-    option.selected = true;
-    select.appendChild(option);
-
+    if (placeholderStatus === "Si") {
+      //alert("hola");
+      const option = document.createElement("option");
+      option.value = "";
+      option.textContent = placeholder;
+      option.disabled = true;
+      option.selected = true;
+      select.appendChild(option);
+    }
     data.forEach((item) => {
       const opt = document.createElement("option");
       opt.value = item.id;
@@ -346,7 +349,9 @@
       const statusBadge = document.createElement("span");
       const isActive = category.status === "Activo";
       const isProtected = isProtectedCategoryName(category.name);
-      statusBadge.className = `badge ${isActive ? "bg-success" : "bg-secondary"}`;
+      statusBadge.className = `badge ${
+        isActive ? "bg-success" : "bg-secondary"
+      }`;
       statusBadge.textContent = category.status;
 
       nameRow.appendChild(nameText);
@@ -361,7 +366,8 @@
 
         const editButton = document.createElement("button");
         editButton.type = "button";
-        editButton.className = "btn btn-outline-primary text-primary edit-category";
+        editButton.className =
+          "btn btn-outline-primary text-primary edit-category";
         editButton.setAttribute("data-id", `${category.idCategory}`);
         editButton.innerHTML = '<i class="bi bi-pencil-square"></i>';
 
@@ -458,7 +464,9 @@
       event.preventDefault();
 
       const formData = new FormData(form);
-      const nameValue = (formData.get("txtCategoryName") || "").toString().trim();
+      const nameValue = (formData.get("txtCategoryName") || "")
+        .toString()
+        .trim();
       if (!nameValue) {
         showAlert({
           icon: "warning",
@@ -483,7 +491,9 @@
         const data = await response.json();
         showAlert({
           icon: data.icon || (data.status ? "success" : "error"),
-          title: data.title || (data.status ? "Categoría registrada" : "Ocurrió un error"),
+          title:
+            data.title ||
+            (data.status ? "Categoría registrada" : "Ocurrió un error"),
           message: data.message || "",
         });
 
@@ -497,7 +507,8 @@
         showAlert({
           icon: "error",
           title: "Ocurrió un error",
-          message: "No fue posible registrar la categoría. Inténtalo nuevamente.",
+          message:
+            "No fue posible registrar la categoría. Inténtalo nuevamente.",
         });
       }
     });
@@ -525,7 +536,8 @@
       showAlert({
         icon: "warning",
         title: "Categoría no encontrada",
-        message: "La categoría seleccionada no se encuentra en el listado actual.",
+        message:
+          "La categoría seleccionada no se encuentra en el listado actual.",
       });
       return;
     }
@@ -555,7 +567,9 @@
       preConfirm: async (value) => {
         const newName = (value || "").trim();
         if (!newName) {
-          Swal.showValidationMessage("Debes ingresar un nombre para la categoría.");
+          Swal.showValidationMessage(
+            "Debes ingresar un nombre para la categoría."
+          );
           return false;
         }
 
@@ -573,10 +587,13 @@
         formData.append("txtCategoryName", newName);
 
         try {
-          const response = await fetch(`${base_url}/pos/Inventory/updateCategory`, {
-            method: "POST",
-            body: formData,
-          });
+          const response = await fetch(
+            `${base_url}/pos/Inventory/updateCategory`,
+            {
+              method: "POST",
+              body: formData,
+            }
+          );
 
           if (!response.ok) {
             throw new Error(`Error ${response.status}`);
@@ -603,10 +620,13 @@
     }).then(async (result) => {
       if (result.isConfirmed && result.value) {
         showAlert({
-          icon: result.value.icon || (result.value.status ? "success" : "error"),
+          icon:
+            result.value.icon || (result.value.status ? "success" : "error"),
           title:
             result.value.title ||
-            (result.value.status ? "Categoría actualizada" : "Ocurrió un error"),
+            (result.value.status
+              ? "Categoría actualizada"
+              : "Ocurrió un error"),
           message:
             result.value.message ||
             (result.value.status
@@ -681,11 +701,14 @@
       }
 
       try {
-        const response = await fetch(`${base_url}/pos/Inventory/deleteCategory`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: categoryId, token }),
-        });
+        const response = await fetch(
+          `${base_url}/pos/Inventory/deleteCategory`,
+          {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: categoryId, token }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`Error ${response.status}`);
@@ -694,7 +717,9 @@
         const data = await response.json();
         showAlert({
           icon: data.icon || (data.status ? "success" : "error"),
-          title: data.title || (data.status ? "Operación exitosa" : "Ocurrió un error"),
+          title:
+            data.title ||
+            (data.status ? "Operación exitosa" : "Ocurrió un error"),
           message: data.message || "",
         });
 
@@ -707,7 +732,8 @@
         showAlert({
           icon: "error",
           title: "Ocurrió un error",
-          message: "No fue posible eliminar la categoría. Inténtalo nuevamente.",
+          message:
+            "No fue posible eliminar la categoría. Inténtalo nuevamente.",
         });
       }
     });
@@ -724,7 +750,10 @@
       const editButton = event.target.closest(".edit-category");
       if (editButton) {
         event.preventDefault();
-        const id = Number.parseInt(editButton.getAttribute("data-id") || "0", 10);
+        const id = Number.parseInt(
+          editButton.getAttribute("data-id") || "0",
+          10
+        );
         promptCategoryEdition(id);
         return;
       }
@@ -732,7 +761,10 @@
       const deleteButton = event.target.closest(".delete-category");
       if (deleteButton) {
         event.preventDefault();
-        const id = Number.parseInt(deleteButton.getAttribute("data-id") || "0", 10);
+        const id = Number.parseInt(
+          deleteButton.getAttribute("data-id") || "0",
+          10
+        );
         const name = deleteButton.getAttribute("data-name") || "";
         confirmDeleteCategory(id, name);
       }
@@ -937,10 +969,13 @@
 
       const formData = new FormData(form);
       try {
-        const response = await fetch(`${base_url}/pos/Inventory/updateProduct`, {
-          method: "POST",
-          body: formData,
-        });
+        const response = await fetch(
+          `${base_url}/pos/Inventory/updateProduct`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`Error ${response.status}`);
@@ -1038,11 +1073,14 @@
       }
 
       try {
-        const response = await fetch(`${base_url}/pos/Inventory/deleteProduct`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: productId, token }),
-        });
+        const response = await fetch(
+          `${base_url}/pos/Inventory/deleteProduct`,
+          {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: productId, token }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`Error ${response.status}`);
@@ -1178,7 +1216,8 @@
           icon: "error",
           title: data.title || "Ocurrió un error",
           message:
-            data.message || "No fue posible obtener la información del producto.",
+            data.message ||
+            "No fue posible obtener la información del producto.",
         });
         return;
       }
