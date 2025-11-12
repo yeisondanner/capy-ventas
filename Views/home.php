@@ -128,16 +128,116 @@
     .hero {
       position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
       text-align: center; z-index: 10; width: 90%; max-width: 860px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .hero-subtitle {
+      font-family: var(--font-secondary);
+      font-size: 0.95rem;
+      letter-spacing: .4em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
     }
     .hero h1 {
       font-family: var(--font-primary); font-weight: 800; font-size: var(--font-size-large);
-      line-height: .9; letter-spacing: -0.02em; margin: 0 0 1.2rem 0;
+      line-height: .9; letter-spacing: -0.02em; margin: 0 0 1.4rem 0;
       background: linear-gradient(180deg, currentColor, rgba(167,179,255,.9) 60%, rgba(122,241,209,.95) 100%);
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
-    .hero h2 {
-      font-family: var(--font-secondary); font-size: var(--font-size-small); color: var(--text-secondary);
-      text-transform: uppercase; letter-spacing:.05em; line-height:1.4; opacity:.85; margin:0 0 1.2rem 0;
+    .hero-description {
+      max-width: 560px;
+      margin: 0 auto 1.6rem;
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+    .hero-live {
+      font-family: var(--font-secondary);
+      font-size: var(--font-size-small);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      line-height: 1.4;
+      opacity: .85;
+      margin: 1.6rem 0;
+    }
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      width: 100%;
+      max-width: 720px;
+      margin: 0 auto 1.4rem;
+    }
+    .metric-card {
+      background: var(--bg-2);
+      border-radius: 18px;
+      padding: 1.2rem 1rem;
+      box-shadow: 0 20px 60px rgba(10, 19, 52, .18);
+      border: 1px solid rgba(255,255,255,.04);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .35rem;
+    }
+    .metric-value {
+      font-family: var(--font-primary);
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: var(--text-primary);
+    }
+    .metric-label {
+      font-family: var(--font-sans);
+      font-size: .9rem;
+      line-height: 1.3;
+      color: var(--text-secondary);
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1.8rem;
+      width: 100%;
+    }
+    .feature-card {
+      background: rgba(10, 18, 32, .18);
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 16px;
+      padding: 1.4rem 1.2rem;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: .75rem;
+      transition: transform .3s ease, border-color .3s ease, background .3s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(134, 247, 218, .4);
+      background: rgba(10, 18, 32, .28);
+    }
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+      background: linear-gradient(135deg, rgba(0,229,168,.25), rgba(41,45,150,.35));
+      color: var(--text-primary);
+    }
+    .feature-card h3 {
+      font-family: var(--font-primary);
+      font-size: 1.2rem;
+      margin: 0;
+      color: var(--text-primary);
+    }
+    .feature-card p {
+      font-family: var(--font-sans);
+      font-size: .95rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin: 0;
     }
 
     /* ===== Botones ===== */
@@ -182,6 +282,8 @@
 
     @media (max-width: 768px){
       .hero h1 { font-size: 3rem; }
+      .hero-description { font-size: .95rem; }
+      .hero-metrics { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
       .coordinates { font-size: 10px; }
     }
     @media (max-width: 480px){
@@ -329,35 +431,69 @@
 
     <!-- Hero -->
     <div class="hero">
-      <h1>El sistema simple para<br/>vender más y mejor</h1>
-      <h2 id="story-text">
-        nuestra nave está en (0.00, 0.00)<br/>
-        el campo gravitacional se extiende 0.10 unidades<br/>
-        fusionándose con 0 entidades
+      <span class="hero-subtitle">Suite POS + CRM</span>
+      <h1>Impulsa tus ventas omnicanal</h1>
+      <p class="hero-description">
+        Centraliza inventario, clientes y sucursales en una plataforma lista para crecer.
+        Automatiza reportes, comisiones y promociones en tiempo real sin complicaciones técnicas.
+      </p>
+      <div class="hero-metrics" role="list">
+        <div class="metric-card" role="listitem">
+          <span class="metric-value">+35%</span>
+          <span class="metric-label">productividad del equipo de ventas</span>
+        </div>
+        <div class="metric-card" role="listitem">
+          <span class="metric-value">99.9%</span>
+          <span class="metric-label">tiempo en línea con respaldo automático</span>
+        </div>
+        <div class="metric-card" role="listitem">
+          <span class="metric-value">24/7</span>
+          <span class="metric-label">monitoreo y alertas inteligentes</span>
+        </div>
+      </div>
+      <h2 id="story-text" class="hero-live">
+        Panel en vivo: calibrando métricas de tus tiendas...
       </h2>
       <div class="button-group">
-        <a href="./im/login" class="btn btn--secondary">Administración</a>
-        <a href="./pos/login" class="btn">Capy ventas</a>
+        <a href="mailto:ventas@capyventas.app?subject=Demo%20Capy%20Ventas" class="btn btn--secondary">Solicitar demo</a>
+        <a href="./pos/login" class="btn">Ingresar al punto de venta</a>
+      </div>
+      <div class="feature-grid" id="funcionalidades" role="list">
+        <article class="feature-card" role="listitem">
+          <div class="feature-icon" aria-hidden="true">⚡️</div>
+          <h3>Checkout ágil</h3>
+          <p>Procesa ventas en segundos con catálogos inteligentes, combos y múltiple formas de pago.</p>
+        </article>
+        <article class="feature-card" role="listitem">
+          <div class="feature-icon" aria-hidden="true">📊</div>
+          <h3>Analítica accionable</h3>
+          <p>Visualiza márgenes, forecast de ventas y desempeño por sucursal en paneles listos para la dirección.</p>
+        </article>
+        <article class="feature-card" role="listitem">
+          <div class="feature-icon" aria-hidden="true">🔗</div>
+          <h3>Integraciones simples</h3>
+          <p>Conecta tu ecommerce, sistemas contables y servicios de entrega con APIs seguras y documentadas.</p>
+        </article>
       </div>
     </div>
 
     <!-- Contacto -->
     <div class="contact-info">
-      <p class="contact-heading">+Contacto</p>
-      <span class="contact-email">soporte@capyventas.app</span>
+      <p class="contact-heading">+Asesoría</p>
+      <a class="contact-email" href="mailto:ventas@capyventas.app">ventas@capyventas.app</a>
     </div>
 
     <!-- Enlaces pie -->
     <div class="footer-links">
-      <a href="#" class="footer-link">Producto</a>
-      <a href="#" class="footer-link">Precios</a>
-      <a href="#" class="footer-link">Documentación</a>
-      <a href="#" class="footer-link">Soporte</a>
+      <a href="#funcionalidades" class="footer-link">Funcionalidades</a>
+      <a href="mailto:ventas@capyventas.app?subject=Planes%20Capy%20Ventas" class="footer-link">Planes y precios</a>
+      <a href="mailto:soporte@capyventas.app?subject=Documentaci%C3%B3n%20API" class="footer-link">API &amp; documentación</a>
+      <a href="mailto:soporte@capyventas.app" class="footer-link">Soporte técnico</a>
     </div>
 
     <div class="coordinates">
-      <p>Capy Ventas • Activo</p>
-      <p>donde las ventas fluyen</p>
+      <p>Capy Ventas • Crece sin fricciones</p>
+      <p>Conecta tus canales, escala tus resultados</p>
     </div>
   </section>
 
@@ -440,11 +576,21 @@
       maxMovementScale: 1.0
     };
 
+    /**
+     * Construye el mensaje del panel en vivo utilizando los datos del cursor y rendimiento del render.
+     *
+     * @param {string} x     Coordenada X normalizada del cursor sobre el lienzo.
+     * @param {string} y     Coordenada Y normalizada del cursor sobre el lienzo.
+     * @param {string} radius Radio dinámico que representa el alcance de cobertura.
+     * @param {number} merges Cantidad de puntos de venta cercanos que interactúan.
+     * @param {number} fps    Fotogramas por segundo calculados para el material.
+     * @returns {string} Texto formateado para mostrar en el encabezado de métricas en vivo.
+     */
     function getStoryText(x, y, radius, merges, fps) {
       if (isMobile) {
-        return `nave: (${x}, ${y})<br>campo: ${radius}u<br>fusiones: ${merges}<br>flujo: ${fps}hz`;
+        return `POS (${x}, ${y})<br>radio activo: ${radius}u<br>tiendas sincronizadas: ${merges}<br>rendimiento: ${fps}fps`;
       }
-      return `nuestra nave está en (${x}, ${y})<br>el campo gravitacional se extiende ${radius} unidades<br>fusionándose con ${merges} entidades<br>flujo temporal: ${fps} ciclos/seg`;
+      return `Panel en vivo: POS en (${x}, ${y})<br>Radio de cobertura: ${radius} unidades<br>Tiendas sincronizadas: ${merges}<br>Motor gráfico: ${fps} fps`;
     }
 
     init();
