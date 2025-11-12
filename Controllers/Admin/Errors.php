@@ -64,6 +64,17 @@ class Errors extends Controllers
 		registerLog("Información de navegación", "El usuario entro a: " . $data['page_title'], 3);
 		$this->views->getView($this, "timeout", $data);
 	}
+	public function sessionexpired()
+	{
+		$data['page_id'] = 16;
+		$data['page_title'] = "Tiempo Vencido";
+		$data['page_description'] = "Pagina que muestra la pagina de tiempo vencido";
+		$data['page_container'] = "Errors";
+		$data['page_view'] = 'timeout';
+		$data['page_js_css'] = "timeout";
+		registerLog("Información de navegación", "El usuario entro a: " . $data['page_title'], 3);
+		$this->views->getView($this, "sessionexpired", $data);
+	}
 }
 
 /*$notFound = new Errors();

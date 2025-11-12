@@ -435,13 +435,16 @@ function isSession(int $sesion = 0)
             }
             break;
         case 1:
+            $name_sesion = config_sesion(1)['name'];
+            $nameVarLogin = $name_sesion . 'login';
+            $nameVarLoginInfo = $name_sesion . 'login_info';
             if (session_status() === PHP_SESSION_NONE) {
                 session_start(config_sesion(1));
             }
-            if (isset($_SESSION['login'])) {
-            } else if (!isset($_SESSION['login']) && isset($_COOKIE['login'])) {
-                $_SESSION['login'] = $_COOKIE['login'];
-                $_SESSION['login_info'] = json_decode($_COOKIE['login_info'], true);
+            if (isset($_SESSION[$nameVarLogin])) {
+            } else if (!isset($_SESSION[$nameVarLogin]) && isset($_COOKIE[$nameVarLogin])) {
+                $_SESSION[$nameVarLogin] = $_COOKIE[$nameVarLogin];
+                $_SESSION[$nameVarLoginInfo] = json_decode($_COOKIE[$nameVarLoginInfo], true);
                 header("Location: " . base_url() . "/im/logOut");
             } else {
                 //obtener ip

@@ -154,9 +154,17 @@ class Login extends Controllers
 				"status" => $request["u_status"],
 				"p_status" => $request["p_status"]
 			);
+			//preparacion de nombres de variables de acuerdo a la sesion creada
+			$name_sesion = config_sesion(1)['name'];
+			$nameVarLogin = $name_sesion . 'login';
+			$nameVarLoginInfo = $name_sesion . 'login_info';
 			$data_session = json_encode($data_session);
-			$_SESSION['login'] = true;
-			$_SESSION['login_info'] = json_decode($data_session, true);
+			//creacion de variables de sesion
+			$_SESSION[$nameVarLogin] = true;
+			$_SESSION[$nameVarLoginInfo] = json_decode($data_session, true);
+			//creamos las cookies para el usuario
+			setcookie($nameVarLoginInfo, $data_session, time() + (86400 * 30), "/"); // 86400 = 1 day => 30 days
+			setcookie($nameVarLogin, true, time() + (86400 * 30), "/"); // 86400 = 1 day => 30 days
 			//preparamos las alertas de bienvenida
 			$nombres = $request["names"];
 			$apellidos = $request['lastname'];
