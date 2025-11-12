@@ -187,8 +187,7 @@
   function populateSelect(select, data, placeholder, placeholderStatus = "No") {
     if (!select) return;
     select.innerHTML = "";
-    if (placeholderStatus === "Si") {
-      //alert("hola");
+    if (placeholderStatus === "Si") {     
       const option = document.createElement("option");
       option.value = "";
       option.textContent = placeholder;
