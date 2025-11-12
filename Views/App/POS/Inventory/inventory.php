@@ -118,6 +118,43 @@
     </div>
 </div>
 
+<!-- Modal: Reporte de producto -->
+<div class="modal fade" id="modalProductReport" tabindex="-1" aria-labelledby="modalProductReportLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-secondary text-white">
+                <h5 class="modal-title" id="modalProductReportLabel">Reporte del producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <h4 class="mb-0" id="reportProductName">Nombre del producto</h4>
+                    <small class="text-muted" id="reportProductStatus">Estado</small>
+                </div>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Categoría</dt>
+                    <dd class="col-sm-8" id="reportProductCategory">-</dd>
+                    <dt class="col-sm-4">Proveedor</dt>
+                    <dd class="col-sm-8" id="reportProductSupplier">-</dd>
+                    <dt class="col-sm-4">Unidad de medida</dt>
+                    <dd class="col-sm-8" id="reportProductMeasurement">-</dd>
+                    <dt class="col-sm-4">Stock disponible</dt>
+                    <dd class="col-sm-8" id="reportProductStock">-</dd>
+                    <dt class="col-sm-4">Precio de compra</dt>
+                    <dd class="col-sm-8" id="reportProductPurchase">-</dd>
+                    <dt class="col-sm-4">Precio de venta</dt>
+                    <dd class="col-sm-8" id="reportProductSale">-</dd>
+                    <dt class="col-sm-4">Descripción</dt>
+                    <dd class="col-sm-8" id="reportProductDescription">Sin descripción registrada.</dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal: Gestionar categorías -->
 <div class="modal fade" id="modalCategory" tabindex="-1" aria-labelledby="modalCategoryLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">

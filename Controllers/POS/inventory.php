@@ -84,6 +84,8 @@ class Inventory extends Controllers
                 : '<span class="badge badge-secondary bg-secondary"><i class="bi bi-slash-circle"></i> Inactivo</span>';
 
             $products[$key]['actions'] = '<div class="btn-group btn-group-sm" role="group">'
+                . '<button class="btn btn-outline-secondary text-secondary report-product" data-id="' . (int) $product['idProduct'] . '" data-name="' . $productName . '" title="Ver reporte del producto">'
+                . '<i class="bi bi-file-earmark-text"></i></button>'
                 . '<button class="btn btn-outline-primary text-primary edit-product" data-id="' . (int) $product['idProduct'] . '">'
                 . '<i class="bi bi-pencil-square"></i></button>'
                 . '<button class="btn btn-outline-danger text-danger delete-product" data-id="' . (int) $product['idProduct'] . '" data-name="' . $productName . '" data-token="' . csrf(false) . '">'
@@ -215,19 +217,31 @@ class Inventory extends Controllers
             $this->responseError('No se encontró el producto solicitado.');
         }
 
+        $currencySymbol = getCurrency();
+
         $data = [
             'status' => true,
             'data'   => [
                 'idProduct'      => (int) $product['idProduct'],
                 'category_id'    => (int) $product['category_id'],
+                'category_name'  => $product['category_name'] ?? '',
                 'measurement_id' => (int) $product['measurement_id'],
+                'measurement_name' => $product['measurement_name'] ?? '',
                 'supplier_id'    => (int) $product['supplier_id'],
+                'supplier_name'  => $product['supplier_name'] ?? '',
                 'name'           => $product['name'],
                 'stock'          => (float) $product['stock'],
+                'stock_text'     => number_format((float) $product['stock'], 2, SPD, SPM)
+                    . ' ' . ($product['measurement_name'] ?? ''),
                 'purchase_price' => (float) $product['purchase_price'],
+                'purchase_price_text' => $currencySymbol . ' '
+                    . formatMoney((float) $product['purchase_price']),
                 'sales_price'    => (float) $product['sales_price'],
+                'sales_price_text'    => $currencySymbol . ' '
+                    . formatMoney((float) $product['sales_price']),
                 'description'    => $product['description'] ?? '',
                 'status'         => $product['status'],
+                'currency_symbol'=> $currencySymbol,
             ],
         ];
 

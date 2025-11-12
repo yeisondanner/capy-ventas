@@ -4,6 +4,7 @@
   let modalCreate;
   let modalUpdate;
   let modalCategory;
+  let modalReport;
   let categoryList = [];
   let cachedCategories = [];
   let cachedMeasurements = [];
@@ -90,6 +91,93 @@
   }
 
   /**
+   * Actualiza el contenido de un elemento dentro del modal de reporte.
+   *
+   * @param {string} elementId Identificador del elemento a actualizar.
+   * @param {string} value Texto que se mostrará.
+   */
+  function setReportField(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    element.textContent = value;
+  }
+
+  /**
+   * Configura el estado visual del producto dentro del modal de reporte.
+   *
+   * @param {string} status Estado del producto (Activo/Inactivo).
+   */
+  function renderReportStatus(status) {
+    const statusElement = document.getElementById("reportProductStatus");
+    if (!statusElement) return;
+
+    statusElement.classList.remove("text-success", "text-danger", "text-muted");
+
+    if (status === "Activo") {
+      statusElement.textContent = "Activo";
+      statusElement.classList.add("text-success");
+    } else if (status === "Inactivo") {
+      statusElement.textContent = "Inactivo";
+      statusElement.classList.add("text-danger");
+    } else {
+      statusElement.textContent = status || "Estado desconocido";
+      statusElement.classList.add("text-muted");
+    }
+  }
+
+  /**
+   * Rellena los datos del modal de reporte con la información del producto.
+   *
+   * @param {any} product Objeto que contiene la información del producto.
+   */
+  function renderProductReport(product) {
+    if (!product) return;
+
+    setReportField("reportProductName", product.name || "Producto sin nombre");
+    setReportField(
+      "reportProductCategory",
+      product.category_name || "Sin categoría asignada"
+    );
+    setReportField(
+      "reportProductSupplier",
+      product.supplier_name || "Sin proveedor asignado"
+    );
+    setReportField(
+      "reportProductMeasurement",
+      product.measurement_name || "Sin unidad registrada"
+    );
+    const currency =
+      typeof product.currency_symbol === "string" ? product.currency_symbol : "";
+    const stockText =
+      product.stock_text ||
+      `${Number(product.stock || 0).toFixed(2)}${
+        product.measurement_name ? ` ${product.measurement_name}` : ""
+      }`;
+    const purchaseText =
+      product.purchase_price_text ||
+      `${currency ? `${currency} ` : ""}${Number(
+        product.purchase_price || 0
+      ).toFixed(2)}`;
+    const saleText =
+      product.sales_price_text ||
+      `${currency ? `${currency} ` : ""}${Number(
+        product.sales_price || 0
+      ).toFixed(2)}`;
+
+    setReportField("reportProductStock", stockText);
+    setReportField("reportProductPurchase", purchaseText);
+    setReportField("reportProductSale", saleText);
+
+    const description =
+      typeof product.description === "string" && product.description.trim()
+        ? product.description
+        : "Sin descripción registrada.";
+    setReportField("reportProductDescription", description);
+
+    renderReportStatus(product.status || "");
+  }
+
+  /**
    * Llena un elemento select con las opciones proporcionadas.
    * @param {HTMLSelectElement} select
    * @param {Array} data
@@ -120,6 +208,7 @@
     modalCreate = document.getElementById("modalProduct");
     modalUpdate = document.getElementById("modalUpdateProduct");
     modalCategory = document.getElementById("modalCategory");
+    modalReport = document.getElementById("modalProductReport");
   }
 
   /**
@@ -1061,10 +1150,66 @@
   }
 
   /**
-   * Configura los listeners de la tabla para acciones de edición y eliminación.
+   * Obtiene los datos del producto seleccionado y muestra el modal de reporte.
+   *
+   * @param {number} productId Identificador del producto.
+   */
+  async function openProductReport(productId) {
+    if (!Number.isInteger(productId) || productId <= 0) {
+      showAlert({
+        icon: "warning",
+        title: "Producto inválido",
+        message: "No fue posible identificar el producto seleccionado.",
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${base_url}/pos/Inventory/getProduct?id=${productId}`
+      );
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (!data.status) {
+        showAlert({
+          icon: "error",
+          title: data.title || "Ocurrió un error",
+          message:
+            data.message || "No fue posible obtener la información del producto.",
+        });
+        return;
+      }
+
+      renderProductReport(data.data);
+      showModal(modalReport);
+    } catch (error) {
+      console.error("Error obteniendo reporte del producto", error);
+      showAlert({
+        icon: "error",
+        title: "Ocurrió un error",
+        message: "No fue posible cargar el reporte del producto.",
+      });
+    }
+  }
+
+  /**
+   * Configura los listeners de la tabla para acciones de reporte, edición y eliminación.
    */
   function registerTableActions() {
     document.addEventListener("click", (event) => {
+      const reportButton = event.target.closest(".report-product");
+      if (reportButton) {
+        event.preventDefault();
+        const id = parseInt(reportButton.getAttribute("data-id") || "0", 10);
+        if (Number.isInteger(id) && id > 0) {
+          openProductReport(id);
+        }
+        return;
+      }
+
       const editButton = event.target.closest(".edit-product");
       if (editButton) {
         event.preventDefault();

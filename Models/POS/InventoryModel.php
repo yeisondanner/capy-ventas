@@ -54,9 +54,13 @@ class InventoryModel extends Mysql
     {
         $sql = <<<SQL
             SELECT
-                p.*
+                p.*,
+                c.name AS category_name,
+                m.name AS measurement_name,
+                s.company_name AS supplier_name
             FROM product AS p
             INNER JOIN category AS c ON c.idCategory = p.category_id
+            INNER JOIN measurement AS m ON m.idMeasurement = p.measurement_id
             INNER JOIN supplier AS s ON s.idSupplier = p.supplier_id
             WHERE p.idProduct = ?
               AND c.business_id = ?
