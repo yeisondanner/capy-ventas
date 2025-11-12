@@ -219,8 +219,8 @@
       const [categoriesResponse, measurementsResponse, suppliersResponse] =
         await Promise.all([
           fetch(`${base_url}/pos/Inventory/getCategories`),
-          fetch(`${base_url}/pos//Inventory/getMeasurements`),
-          fetch(`${base_url}/pos//Inventory/getSuppliers`),
+          fetch(`${base_url}/pos/Inventory/getMeasurements`),
+          fetch(`${base_url}/pos/Inventory/getSuppliers`),
         ]);
 
       if (!categoriesResponse.ok) {
