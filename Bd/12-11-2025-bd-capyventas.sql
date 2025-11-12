@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
 -- Versión del servidor:         10.4.32-MariaDB - mariadb.org binary distribution
@@ -45,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `business` (
   CONSTRAINT `business_ibfk_2` FOREIGN KEY (`typebusiness_id`) REFERENCES `business_type` (`idBusinessType`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.business: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.business: ~1 rows (aproximadamente)
 DELETE FROM `business`;
 INSERT INTO `business` (`idBusiness`, `typebusiness_id`, `name`, `direction`, `city`, `document_number`, `phone_number`, `country`, `telephone_prefix`, `email`, `status`, `registration_date`, `update_date`, `userapp_id`) VALUES
 	(3, 6, 'QUCHA', 'Jr. Dos de Mayo', 'RIOJA', '20613844369', '969480973', 'PERU', '+51', 'grupomaslucanrojas@gmail.com', 'Activo', '2025-11-12 06:43:09', '2025-11-12 06:43:09', 2),
@@ -83,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `category` (
   CONSTRAINT `category_ibfk_1` FOREIGN KEY (`business_id`) REFERENCES `business` (`idBusiness`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.category: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.category: ~1 rows (aproximadamente)
 DELETE FROM `category`;
 INSERT INTO `category` (`idCategory`, `business_id`, `name`, `description`, `status`, `registration_date`, `update_date`) VALUES
 	(1, 3, 'Sin categoría', NULL, 'Activo', '2025-11-12 13:33:32', '2025-11-12 13:33:32'),
@@ -235,7 +234,7 @@ CREATE TABLE IF NOT EXISTS `people` (
   PRIMARY KEY (`idPeople`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.people: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.people: ~1 rows (aproximadamente)
 DELETE FROM `people`;
 INSERT INTO `people` (`idPeople`, `names`, `lastname`, `email`, `date_of_birth`, `country`, `telephone_prefix`, `phone_number`, `status`, `registration_date`, `update_date`) VALUES
 	(2, 'LOLITA MERCEDES', 'MASLUCAN RJOJAS', 'KzUwZU9WSCs1ZWVTZXZMT24zdCtVcC9PWm82UU02Q0R1a3dHZ1NkZE04az0=', '1984-01-23', 'PERU', '+51', '969480973', 'Activo', '2025-11-12 06:40:33', '2025-11-12 06:40:33'),
@@ -286,12 +285,13 @@ CREATE TABLE IF NOT EXISTS `product` (
   CONSTRAINT `FK_product_supplier` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`idSupplier`),
   CONSTRAINT `product_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`idCategory`),
   CONSTRAINT `product_ibfk_2` FOREIGN KEY (`measurement_id`) REFERENCES `measurement` (`idMeasurement`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.product: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.product: ~0 rows (aproximadamente)
 DELETE FROM `product`;
 INSERT INTO `product` (`idProduct`, `category_id`, `name`, `stock`, `purchase_price`, `sales_price`, `measurement_id`, `description`, `status`, `registration_date`, `update_date`, `supplier_id`) VALUES
-	(2, 2, 'Prueba De Product', 00000000.00, 4.00, 4.00, 4, NULL, 'Activo', '2025-11-12 20:21:46', '2025-11-12 20:21:46', 2);
+	(2, 2, 'Prueba De Product', 00000000.00, 4.00, 4.00, 4, NULL, 'Activo', '2025-11-12 20:21:46', '2025-11-12 20:21:46', 2),
+	(3, 1, 'Sdfsdfsdf', 00000000.00, 4.00, 4.00, 4, NULL, 'Activo', '2025-11-12 20:43:23', '2025-11-12 20:43:23', 1);
 
 -- Volcando estructura para tabla bd_capyventas.role_app
 DROP TABLE IF EXISTS `role_app`;
@@ -327,13 +327,14 @@ CREATE TABLE IF NOT EXISTS `supplier` (
   PRIMARY KEY (`idSupplier`),
   KEY `business_id` (`business_id`),
   CONSTRAINT `supplier_ibfk_1` FOREIGN KEY (`business_id`) REFERENCES `business` (`idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.supplier: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.supplier: ~1 rows (aproximadamente)
 DELETE FROM `supplier`;
 INSERT INTO `supplier` (`idSupplier`, `document_number`, `company_name`, `phone_number`, `direction`, `email`, `business_id`, `status`, `registration_date`, `update_date`) VALUES
 	(1, '00000000000', 'Sin proveedor', '999999999', 'Sin proveedor', 'Sin proveedor', 3, 'Activo', '2025-11-12 13:34:34', '2025-11-12 20:26:26'),
-	(2, '00000000000', 'Sin proveedor', '999999999', 'Sin proveedor', 'Sin proveedor', 4, 'Activo', '2025-11-12 20:09:30', '2025-11-12 20:09:30');
+	(2, '00000000000', 'Sin proveedor', '999999999', 'Sin proveedor', 'Sin proveedor', 4, 'Activo', '2025-11-12 20:09:30', '2025-11-12 20:09:30'),
+	(3, NULL, 'Ewrewrew', '9999', NULL, 'bihecay427@agenra.com', 3, 'Activo', '2025-11-12 20:43:45', '2025-11-12 20:43:45');
 
 -- Volcando estructura para tabla bd_capyventas.tb_configuration
 DROP TABLE IF EXISTS `tb_configuration`;
@@ -479,9 +480,9 @@ CREATE TABLE IF NOT EXISTS `tb_log` (
   KEY `user_id` (`user_id`),
   KEY `tb_log_ibfk_1` (`typelog_id`),
   CONSTRAINT `tb_log_ibfk_1` FOREIGN KEY (`typelog_id`) REFERENCES `tb_typelog` (`idTypeLog`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=18986 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18988 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.tb_log: ~18,759 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.tb_log: ~17,957 rows (aproximadamente)
 DELETE FROM `tb_log`;
 INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
 	(1, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-07-15 15:05:36', '2025-07-15 15:05:36', 3, 1),
@@ -19472,7 +19473,9 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(18982, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"181.64.11.160","method":"GET","url":"/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36","timestamp":"2025-11-12T15:11:41-05:00"}', '2025-11-12 20:11:41', '2025-11-12 20:11:41', 3, 1),
 	(18983, 'Navegación', '{"event":"page_view","page":"Clientes App","page_id":15,"container":"Customersuserapp","user_id":1,"ip":"181.64.11.160","method":"GET","url":"/im/customersuserapp","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36","timestamp":"2025-11-12T15:11:46-05:00"}', '2025-11-12 20:11:46', '2025-11-12 20:11:46', 3, 1),
 	(18984, 'Cierre de sesión', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES ha cerrado sesión en el sistema', '2025-11-12 20:11:52', '2025-11-12 20:11:52', 2, 1),
-	(18985, 'Registro de producto POS', 'Se registró el producto: Prueba De Product', '2025-11-12 20:21:46', '2025-11-12 20:21:46', 2, 3);
+	(18985, 'Registro de producto POS', 'Se registró el producto: Prueba De Product', '2025-11-12 20:21:46', '2025-11-12 20:21:46', 2, 3),
+	(18986, 'Registro de producto POS', 'Se registró el producto: Sdfsdfsdf', '2025-11-12 20:43:23', '2025-11-12 20:43:23', 2, 2),
+	(18987, 'Registro de proveedor POS', 'Se registró el proveedor: Ewrewrew', '2025-11-12 20:43:45', '2025-11-12 20:43:45', 2, 2);
 
 -- Volcando estructura para tabla bd_capyventas.tb_module
 DROP TABLE IF EXISTS `tb_module`;
@@ -19662,7 +19665,7 @@ CREATE TABLE IF NOT EXISTS `user_app` (
   CONSTRAINT `user_app_ibfk_1` FOREIGN KEY (`people_id`) REFERENCES `people` (`idPeople`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.user_app: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.user_app: ~1 rows (aproximadamente)
 DELETE FROM `user_app`;
 INSERT INTO `user_app` (`idUserApp`, `user`, `password`, `status`, `registration_date`, `update_date`, `people_id`) VALUES
 	(2, 'WTkxR2dvdlc2RXpHQmdObVh4OE9WUT09', 'WTkxR2dvdlc2RXpHQmdObVh4OE9WUT09', 'Activo', '2025-11-12 06:40:33', '2025-11-12 16:17:09', 2),
@@ -19725,8 +19728,3 @@ DELETE FROM `voucher_header`;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40111 SET SQL_NOTES=IFNULL(@OLD_SQL_NOTES, 1) */;
-=======
-  `stock` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `document_number` char(11) DEFAULT NULL,
-        (2, NULL, 'Sin Proveedor', '', NULL, '', 2, 'Activo', '2025-11-12 05:38:47', '2025-11-12 05:38:47');
->>>>>>> codex/update-inventory-and-suppliers-modules
