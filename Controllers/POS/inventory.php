@@ -60,10 +60,12 @@ class inventory extends Controllers
             $productName = htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8');
             $categoryName = htmlspecialchars($product['category'], ENT_QUOTES, 'UTF-8');
             $measurementName = htmlspecialchars($product['measurement'], ENT_QUOTES, 'UTF-8');
+            $supplierName = htmlspecialchars($product['supplier'], ENT_QUOTES, 'UTF-8');
 
             $products[$key]['cont']        = $counter;
             $products[$key]['name']        = $productName;
             $products[$key]['category']    = $categoryName;
+            $products[$key]['supplier']    = $supplierName;
             $products[$key]['measurement'] = $measurementName;
             $products[$key]['stock']       = number_format((float) $product['stock'], 2, SPD, SPM);
             $products[$key]['purchase_price'] = $currency . ' ' . formatMoney((float) $product['purchase_price']);
@@ -103,6 +105,7 @@ class inventory extends Controllers
             'txtProductName',
             'txtProductCategory',
             'txtProductMeasurement',
+            'txtProductSupplier',
             'txtProductStock',
             'txtProductPurchasePrice',
             'txtProductSalesPrice',
@@ -119,6 +122,7 @@ class inventory extends Controllers
         $name          = ucwords(strClean($_POST['txtProductName'] ?? ''));
         $categoryId    = (int) ($_POST['txtProductCategory'] ?? 0);
         $measurementId = (int) ($_POST['txtProductMeasurement'] ?? 0);
+        $supplierId    = (int) ($_POST['txtProductSupplier'] ?? 0);
         $stock         = $this->sanitizeDecimal($_POST['txtProductStock'] ?? '0', 'stock');
         $purchase      = $this->sanitizeDecimal($_POST['txtProductPurchasePrice'] ?? '0', 'precio de compra');
         $sales         = $this->sanitizeDecimal($_POST['txtProductSalesPrice'] ?? '0', 'precio de venta');
@@ -137,8 +141,13 @@ class inventory extends Controllers
             $this->responseError('Debes seleccionar una unidad de medida válida.');
         }
 
+        if ($supplierId <= 0) {
+            $this->responseError('Debes seleccionar un proveedor válido.');
+        }
+
         $this->ensureCategoryBelongsToBusiness($categoryId, $businessId);
         $this->ensureMeasurementExists($measurementId);
+        $this->ensureSupplierBelongsToBusiness($supplierId, $businessId);
 
         $existingProduct = $this->model->selectProductByName($name, $businessId);
         if (!empty($existingProduct)) {
@@ -154,6 +163,7 @@ class inventory extends Controllers
             'measurement_id' => $measurementId,
             'description'    => $description,
             'status'         => $status,
+            'supplier_id'    => $supplierId,
         ];
 
         $productId = $this->model->insertProduct($payload);
@@ -203,6 +213,7 @@ class inventory extends Controllers
                 'idProduct'      => (int) $product['idProduct'],
                 'category_id'    => (int) $product['category_id'],
                 'measurement_id' => (int) $product['measurement_id'],
+                'supplier_id'    => (int) $product['supplier_id'],
                 'name'           => $product['name'],
                 'stock'          => (float) $product['stock'],
                 'purchase_price' => (float) $product['purchase_price'],
@@ -234,6 +245,7 @@ class inventory extends Controllers
             'update_txtProductName',
             'update_txtProductCategory',
             'update_txtProductMeasurement',
+            'update_txtProductSupplier',
             'update_txtProductStock',
             'update_txtProductPurchasePrice',
             'update_txtProductSalesPrice',
@@ -251,6 +263,7 @@ class inventory extends Controllers
         $name          = ucwords(strClean($_POST['update_txtProductName'] ?? ''));
         $categoryId    = (int) ($_POST['update_txtProductCategory'] ?? 0);
         $measurementId = (int) ($_POST['update_txtProductMeasurement'] ?? 0);
+        $supplierId    = (int) ($_POST['update_txtProductSupplier'] ?? 0);
         $stock         = $this->sanitizeDecimal($_POST['update_txtProductStock'] ?? '0', 'stock');
         $purchase      = $this->sanitizeDecimal($_POST['update_txtProductPurchasePrice'] ?? '0', 'precio de compra');
         $sales         = $this->sanitizeDecimal($_POST['update_txtProductSalesPrice'] ?? '0', 'precio de venta');
@@ -273,6 +286,10 @@ class inventory extends Controllers
             $this->responseError('Debes seleccionar una unidad de medida válida.');
         }
 
+        if ($supplierId <= 0) {
+            $this->responseError('Debes seleccionar un proveedor válido.');
+        }
+
         $currentProduct = $this->model->selectProduct($productId, $businessId);
         if (empty($currentProduct)) {
             $this->responseError('El producto seleccionado no existe o no pertenece a tu negocio.');
@@ -280,6 +297,7 @@ class inventory extends Controllers
 
         $this->ensureCategoryBelongsToBusiness($categoryId, $businessId);
         $this->ensureMeasurementExists($measurementId);
+        $this->ensureSupplierBelongsToBusiness($supplierId, $businessId);
 
         $existingProduct = $this->model->selectProductByName($name, $businessId);
         if (!empty($existingProduct) && (int) $existingProduct['idProduct'] !== $productId) {
@@ -296,6 +314,7 @@ class inventory extends Controllers
             'measurement_id' => $measurementId,
             'description'    => $description,
             'status'         => $status,
+            'supplier_id'    => $supplierId,
         ];
 
         $updated = $this->model->updateProduct($payload);
@@ -386,6 +405,22 @@ class inventory extends Controllers
     public function getMeasurements(): void
     {
         $data = $this->model->selectMeasurements();
+
+        toJson([
+            'status' => true,
+            'data'   => $data,
+        ]);
+    }
+
+    /**
+     * Devuelve los proveedores activos para el negocio en sesión.
+     *
+     * @return void
+     */
+    public function getSuppliers(): void
+    {
+        $businessId = $this->getBusinessId();
+        $data       = $this->model->selectSuppliers($businessId);
 
         toJson([
             'status' => true,
@@ -495,6 +530,22 @@ class inventory extends Controllers
         $measurement = $this->model->selectMeasurement($measurementId);
         if (empty($measurement)) {
             $this->responseError('La unidad de medida seleccionada no es válida.');
+        }
+    }
+
+    /**
+     * Verifica que el proveedor pertenezca al negocio activo y esté disponible.
+     *
+     * @param int $supplierId Identificador del proveedor.
+     * @param int $businessId Identificador del negocio activo.
+     *
+     * @return void
+     */
+    private function ensureSupplierBelongsToBusiness(int $supplierId, int $businessId): void
+    {
+        $supplier = $this->model->selectSupplier($supplierId, $businessId);
+        if (empty($supplier)) {
+            $this->responseError('El proveedor seleccionado no pertenece a tu negocio o está inactivo.');
         }
     }
 

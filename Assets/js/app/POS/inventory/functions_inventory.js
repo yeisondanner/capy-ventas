@@ -4,6 +4,7 @@ let modalUpdate;
 let modalDelete;
 let cachedCategories = [];
 let cachedMeasurements = [];
+let cachedSuppliers = [];
 
 const rootUrl = base_url.replace(/\/?pos$/, '');
 
@@ -85,13 +86,14 @@ function initModals() {
 }
 
 /**
- * Carga las categorías y unidades de medida desde el servidor.
+ * Carga las categorías, proveedores y unidades de medida desde el servidor.
  */
 async function loadSelectors() {
   try {
-    const [categoriesResponse, measurementsResponse] = await Promise.all([
+    const [categoriesResponse, measurementsResponse, suppliersResponse] = await Promise.all([
       fetch(`${base_url}/inventory/getCategories`),
       fetch(`${base_url}/inventory/getMeasurements`),
+      fetch(`${base_url}/inventory/getSuppliers`),
     ]);
 
     if (!categoriesResponse.ok) {
@@ -100,15 +102,22 @@ async function loadSelectors() {
     if (!measurementsResponse.ok) {
       throw new Error(`Unidades: ${measurementsResponse.status}`);
     }
+    if (!suppliersResponse.ok) {
+      throw new Error(`Proveedores: ${suppliersResponse.status}`);
+    }
 
     const categoriesJson = await categoriesResponse.json();
     const measurementsJson = await measurementsResponse.json();
+    const suppliersJson = await suppliersResponse.json();
 
     if (!categoriesJson.status) {
       throw new Error(categoriesJson.message || "No fue posible cargar las categorías");
     }
     if (!measurementsJson.status) {
       throw new Error(measurementsJson.message || "No fue posible cargar las unidades de medida");
+    }
+    if (!suppliersJson.status) {
+      throw new Error(suppliersJson.message || "No fue posible cargar los proveedores");
     }
 
     cachedCategories = categoriesJson.data.map((item) => ({
@@ -118,6 +127,10 @@ async function loadSelectors() {
     cachedMeasurements = measurementsJson.data.map((item) => ({
       id: item.idMeasurement,
       name: item.name,
+    }));
+    cachedSuppliers = suppliersJson.data.map((item) => ({
+      id: item.idSupplier,
+      name: item.company_name,
     }));
 
     populateSelect(
@@ -129,6 +142,17 @@ async function loadSelectors() {
       document.getElementById("update_txtProductCategory"),
       cachedCategories,
       "Selecciona una categoría"
+    );
+
+    populateSelect(
+      document.getElementById("txtProductSupplier"),
+      cachedSuppliers,
+      "Selecciona un proveedor"
+    );
+    populateSelect(
+      document.getElementById("update_txtProductSupplier"),
+      cachedSuppliers,
+      "Selecciona un proveedor"
     );
 
     populateSelect(
@@ -165,6 +189,7 @@ function initTable() {
       { data: "actions", orderable: false, searchable: false },
       { data: "name" },
       { data: "category" },
+      { data: "supplier" },
       { data: "measurement" },
       { data: "stock" },
       { data: "sales_price" },
@@ -177,21 +202,21 @@ function initTable() {
         extend: "copyHtml5",
         text: "<i class='bi bi-clipboard'></i> Copiar",
         className: "btn btn-secondary",
-        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
+        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
       },
       {
         extend: "excelHtml5",
         text: "<i class='bi bi-file-earmark-excel'></i> Excel",
         className: "btn btn-success",
         title: "Productos",
-        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
+        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
       },
       {
         extend: "csvHtml5",
         text: "<i class='bi bi-filetype-csv'></i> CSV",
         className: "btn btn-info text-white",
         title: "Productos",
-        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
+        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
       },
       {
         extend: "pdfHtml5",
@@ -200,14 +225,14 @@ function initTable() {
         orientation: "portrait",
         pageSize: "A4",
         title: "Productos",
-        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
+        exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
       },
     ],
     columnDefs: [
       { targets: 0, className: "text-center" },
       { targets: 1, className: "text-center" },
-      { targets: [5, 6, 7], className: "text-end" },
-      { targets: 8, className: "text-center" },
+      { targets: [6, 7, 8], className: "text-end" },
+      { targets: 9, className: "text-center" },
     ],
     responsive: true,
     destroy: true,
@@ -238,16 +263,21 @@ function openCreateModal() {
     "Selecciona una categoría"
   );
   populateSelect(
+    document.getElementById("txtProductSupplier"),
+    cachedSuppliers,
+    "Selecciona un proveedor"
+  );
+  populateSelect(
     document.getElementById("txtProductMeasurement"),
     cachedMeasurements,
     "Selecciona una unidad"
   );
 
-  if (!cachedCategories.length || !cachedMeasurements.length) {
+  if (!cachedCategories.length || !cachedSuppliers.length || !cachedMeasurements.length) {
     showAlert({
       icon: "warning",
       title: "Datos incompletos",
-      message: "Antes de registrar un producto debes contar con categorías y unidades disponibles.",
+      message: "Antes de registrar un producto debes contar con categorías, proveedores y unidades disponibles.",
     });
     return;
   }
@@ -289,6 +319,11 @@ function handleCreate() {
           document.getElementById("txtProductCategory"),
           cachedCategories,
           "Selecciona una categoría"
+        );
+        populateSelect(
+          document.getElementById("txtProductSupplier"),
+          cachedSuppliers,
+          "Selecciona un proveedor"
         );
         populateSelect(
           document.getElementById("txtProductMeasurement"),
@@ -439,6 +474,11 @@ async function loadProductForEdition(productId) {
       "Selecciona una categoría"
     );
     populateSelect(
+      document.getElementById("update_txtProductSupplier"),
+      cachedSuppliers,
+      "Selecciona un proveedor"
+    );
+    populateSelect(
       document.getElementById("update_txtProductMeasurement"),
       cachedMeasurements,
       "Selecciona una unidad"
@@ -447,6 +487,7 @@ async function loadProductForEdition(productId) {
     document.getElementById("update_txtProductId").value = product.idProduct;
     document.getElementById("update_txtProductName").value = product.name;
     document.getElementById("update_txtProductCategory").value = `${product.category_id}`;
+    document.getElementById("update_txtProductSupplier").value = `${product.supplier_id}`;
     document.getElementById("update_txtProductMeasurement").value = `${product.measurement_id}`;
     document.getElementById("update_txtProductStatus").value = product.status;
     document.getElementById("update_txtProductStock").value = product.stock;

@@ -26,16 +26,20 @@ class InventoryModel extends Mysql
                 p.measurement_id,
                 p.description,
                 p.status,
+                p.supplier_id,
                 c.name AS category,
-                m.name AS measurement
+                m.name AS measurement,
+                s.company_name AS supplier
             FROM product AS p
             INNER JOIN category AS c ON c.idCategory = p.category_id
             INNER JOIN measurement AS m ON m.idMeasurement = p.measurement_id
+            INNER JOIN supplier AS s ON s.idSupplier = p.supplier_id
             WHERE c.business_id = ?
+              AND s.business_id = ?
             ORDER BY p.idProduct DESC;
         SQL;
 
-        return $this->select_all($sql, [$businessId]);
+        return $this->select_all($sql, [$businessId, $businessId]);
     }
 
     /**
@@ -53,12 +57,14 @@ class InventoryModel extends Mysql
                 p.*
             FROM product AS p
             INNER JOIN category AS c ON c.idCategory = p.category_id
+            INNER JOIN supplier AS s ON s.idSupplier = p.supplier_id
             WHERE p.idProduct = ?
               AND c.business_id = ?
+              AND s.business_id = ?
             LIMIT 1;
         SQL;
 
-        return $this->select($sql, [$productId, $businessId]) ?? [];
+        return $this->select($sql, [$productId, $businessId, $businessId]) ?? [];
     }
 
     /**
@@ -72,9 +78,9 @@ class InventoryModel extends Mysql
     {
         $sql = <<<SQL
             INSERT INTO product
-                (category_id, name, stock, purchase_price, sales_price, measurement_id, description, status)
+                (category_id, name, stock, purchase_price, sales_price, measurement_id, description, status, supplier_id)
             VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?);
+                (?, ?, ?, ?, ?, ?, ?, ?, ?);
         SQL;
 
         $params = [
@@ -86,6 +92,7 @@ class InventoryModel extends Mysql
             $data['measurement_id'],
             $data['description'] !== '' ? $data['description'] : null,
             $data['status'],
+            $data['supplier_id'],
         ];
 
         return (int) $this->insert($sql, $params);
@@ -110,7 +117,8 @@ class InventoryModel extends Mysql
                 sales_price = ?,
                 measurement_id = ?,
                 description = ?,
-                status = ?
+                status = ?,
+                supplier_id = ?
             WHERE idProduct = ?
             LIMIT 1;
         SQL;
@@ -124,6 +132,7 @@ class InventoryModel extends Mysql
             $data['measurement_id'],
             $data['description'] !== '' ? $data['description'] : null,
             $data['status'],
+            $data['supplier_id'],
             $data['idProduct'],
         ];
 
@@ -220,6 +229,48 @@ class InventoryModel extends Mysql
         SQL;
 
         return $this->select($sql, [$measurementId]) ?? [];
+    }
+
+    /**
+     * Obtiene los proveedores activos asociados a un negocio.
+     *
+     * @param int $businessId Identificador del negocio activo.
+     *
+     * @return array
+     */
+    public function selectSuppliers(int $businessId): array
+    {
+        $sql = <<<SQL
+            SELECT idSupplier, company_name
+            FROM supplier
+            WHERE business_id = ?
+              AND status = 'Activo'
+            ORDER BY company_name ASC;
+        SQL;
+
+        return $this->select_all($sql, [$businessId]);
+    }
+
+    /**
+     * Valida si un proveedor pertenece al negocio activo y está disponible.
+     *
+     * @param int $supplierId Identificador del proveedor.
+     * @param int $businessId Identificador del negocio.
+     *
+     * @return array
+     */
+    public function selectSupplier(int $supplierId, int $businessId): array
+    {
+        $sql = <<<SQL
+            SELECT idSupplier
+            FROM supplier
+            WHERE idSupplier = ?
+              AND business_id = ?
+              AND status = 'Activo'
+            LIMIT 1;
+        SQL;
+
+        return $this->select($sql, [$supplierId, $businessId]) ?? [];
     }
 
     /**

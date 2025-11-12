@@ -37,6 +37,7 @@
                                     <th>Acciones</th>
                                     <th>Nombre</th>
                                     <th>Categoría</th>
+                                    <th>Proveedor</th>
                                     <th>Unidad</th>
                                     <th>Stock</th>
                                     <th>Precio venta</th>
@@ -74,6 +75,12 @@
                         <label for="txtProductCategory" class="form-label">Categoría <span class="text-danger">*</span></label>
                         <select class="form-select" id="txtProductCategory" name="txtProductCategory" required>
                             <option value="" selected disabled>Selecciona una categoría</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="txtProductSupplier" class="form-label">Proveedor <span class="text-danger">*</span></label>
+                        <select class="form-select" id="txtProductSupplier" name="txtProductSupplier" required>
+                            <option value="" selected disabled>Selecciona un proveedor</option>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -140,6 +147,12 @@
                         <label for="update_txtProductCategory" class="form-label">Categoría <span class="text-danger">*</span></label>
                         <select class="form-select" id="update_txtProductCategory" name="update_txtProductCategory" required>
                             <option value="" selected disabled>Selecciona una categoría</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="update_txtProductSupplier" class="form-label">Proveedor <span class="text-danger">*</span></label>
+                        <select class="form-select" id="update_txtProductSupplier" name="update_txtProductSupplier" required>
+                            <option value="" selected disabled>Selecciona un proveedor</option>
                         </select>
                     </div>
                     <div class="col-md-6">
