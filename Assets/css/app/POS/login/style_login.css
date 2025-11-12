@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+HU:wght@100..400&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif !important;
+}
+
+.material-half-bg {
+    background-color: #fff !important;
+}
+
+.material-half-bg .cover{
+    background-color: orange !important;
+}
+
+.login-content .login-box{
+    border-radius: 1.5rem;
+    min-width: 500px;
+    min-height: 480px;
+}
+
+.login-content .login-box .login-head {
+    border: none;
+}
+
+.login-content .login-box .login-form{
+    padding: 2rem;
+}
+
+.login-content .login-box .login-form .login-message {
+    margin-bottom: 1rem !important;
+    text-align: center;
+}
+
+.login-content .login-box .login-form .contacto p {
+    color: dimgray;
+}
+
+.login-content .login-box .login-form .contacto a{
+    color: orange;
+}
+
+.login-content .login-box .login-form .login-message span {
+    color: dimgray;
+}
+
+.login-content .login-box .login-form .login-head {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.login-content .login-box .login-form .login-head img {
+    width: 3rem;
+}
+
+.login-content .login-box .login-form .login-head h3 {
+    font-family: "Playwrite HU", cursive;
+    color: dimgray;
+    padding: 0;
+    margin: 0;
+}
+
+.login-content .login-box .login-form .input-group .input-group-text{
+    border-radius: 1.2rem;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+}
+
+.login-content .login-box .login-form .input-group button{
+    border-radius: 1.2rem;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    border-color: orange;
+    color: orange;
+    &:hover {
+        background-color: orange;
+        color: white
+    }
+}
+
+.login-content .login-box .login-form .input-group .form-control{
+    border-radius: 1.2rem;
+    padding: 0.7rem;
+    font-size: 1rem;
+    &:focus {
+        border-color: orange;
+    }
+}
+
+.login-content .login-box .login-form .btn-container button {
+    border-radius: 1.2rem;
+    padding: 0.7rem;
+    font-size: 1rem;
+    background-color: orange !important;
+    border: none;
+    &:hover {
+        background-color: #d08803 !important;
+    }
+}
+
+
+/* Trabajamos las media query*/
+
+@media screen and (max-width: 600px) {
+    .login-content{
+        padding: 1rem;
+    }
+
+    .login-content .login-box{
+        min-width: 100%;
+    }
+}
