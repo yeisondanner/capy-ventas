@@ -10,6 +10,7 @@
     <!-- Font-icon css-->
     <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/toastr.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/app/POS/login/style_login.css?<?= versionSystem() ?>">
     <title>Capy Login</title>
     <script>
         const base_url = "<?= base_url() ?>/pos";
@@ -23,23 +24,32 @@
     </section>
 
     <section class="login-content">
-        <div class="logo">
-            <h1>CapyVentas</h1>
-        </div>
+<!--        <div class="logo">-->
+<!--            <h1>CapyVentas</h1>-->
+<!--        </div>-->
 
         <div class="login-box">
             <form class="login-form" id="formLogin" autocomplete="off">
-                <h3 class="login-head"><i class="bi bi-person me-2"></i>Iniciar Sesión</h3>
+                <div class="login-head">
+                    <img src="<?= media() ?>/carpincho.png" alt="">
+                    <h3>
+                        <!--                    <i class="bi bi-person me-2"></i>-->
 
+                        Capy Ventas</h3>
+                </div>
+                <div class="login-message">
+                    <span>
+                        Para ingresar a tu app <strong>CapyVentas</strong>, ingresa tus capy credenciales.
+                    </span>
+                </div>
                 <div class="mb-3">
-                    <label for="txtUser" class="form-label">Usuario o Email</label>
+                    <label for="txtUser" class="form-label">Email</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
                         <input class="form-control" type="text" id="txtUser" name="txtUser"
-                            placeholder="Ingrese su usuario o Email" autofocus>
+                            placeholder="micapycorreo@example.com" autofocus>
                     </div>
                 </div>
-
                 <div class="mb-3">
                     <label for="txtPassword" class="form-label">Contraseña</label>
                     <div class="input-group">
@@ -51,19 +61,26 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <div class="utility">
-                        <!--<div class="form-check">
-                            <label class="form-check-label">
-                                <input class="form-check-input" type="checkbox" id="chbxRemember" name="chbxRemember">
-                                <label class="form-check-label" for="chbxRemember">Recuérdame</label>
-                            </label>
-                        </div>
-                        <p class="semibold-text mb-0">
-                            <a href="#" data-toggle="flip">¿Olvidaste tu contraseña?</a>
-                        </p>-->
-                    </div>
+                <div class="mb-3 contacto">
+                        <p class="mb-0">
+                            Si no tienes cuenta, contactate con el <strong>capy administrador</strong>.
+                            <a class="semibold-text" href="tel:+51999999999">Aquí</a>
+                        </p>
                 </div>
+
+<!--                <div class="mb-3">-->
+<!--                    <div class="utility">-->
+<!--                        <div class="form-check">-->
+<!--                            <label class="form-check-label">-->
+<!--                                <input class="form-check-input" type="checkbox" id="chbxRemember" name="chbxRemember">-->
+<!--                                <label class="form-check-label" for="chbxRemember">Recuérdame</label>-->
+<!--                            </label>-->
+<!--                        </div>-->
+<!--                        <p class="semibold-text mb-0">-->
+<!--                            <a href="#" data-toggle="flip">¿Olvidaste tu contraseña?</a>-->
+<!--                        </p>-->
+<!--                    </div>-->
+<!--                </div>-->
 
 
                 <div class="mb-3 btn-container d-grid">
