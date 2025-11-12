@@ -18,9 +18,6 @@
                     <button class="btn btn-primary" type="button" id="btnOpenSupplierModal">
                         <i class="bi bi-plus-lg"></i> Registrar proveedor
                     </button>
-                    <a class="btn btn-outline-secondary" href="<?= base_url() ?>/pos/inventory">
-                        <i class="bi bi-box-seam"></i> Inventario
-                    </a>
                 </div>
             </div>
         </div>

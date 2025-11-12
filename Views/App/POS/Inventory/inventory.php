@@ -20,9 +20,6 @@
                     <button class="btn btn-outline-info text-info" type="button" id="btnOpenCategoryModal">
                         <i class="bi bi-collection"></i> Categorías
                     </button>
-                    <a class="btn btn-outline-warning text-warning" href="<?= base_url() ?>/pos/suppliers">
-                        <i class="bi bi-people"></i> Proveedores
-                    </a>
                 </div>
             </div>
         </div>
@@ -262,4 +259,3 @@
         </form>
     </div>
 </div>
-
