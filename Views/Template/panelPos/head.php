@@ -1,5 +1,11 @@
+<?php
+$name_sesion = config_sesion(1)['name'];
+$nameVarLogin = $name_sesion . 'login';
+$nameVarLoginInfo = $name_sesion . 'login_info';
+?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <title><?= $data["page_title"] ?></title>
     <meta charset="utf-8">
@@ -10,12 +16,13 @@
     <!-- Main CSS-->
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css?<?= versionSystem() ?>">
     <!-- Font-icon css-->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css?<?= versionSystem() ?>">
+
 
     <!--TODO: Cargamos el icono de la pagina-->
     <link rel="shortcut icon"
-          href="<?= base_url() ?>/loadfile/icon?f=<?= (getSystemInfo()) ? getSystemInfo()["c_logo"] : null; ?>"
-          type="image/x-icon">
+        href="<?= base_url() ?>/loadfile/icon?f=<?= (getSystemInfo()) ? getSystemInfo()["c_logo"] : null; ?>"
+        type="image/x-icon">
     <!-- CSS de la vista -->
     <?php
     $pageAssets = $data['page_assets'] ?? [];
@@ -52,17 +59,18 @@
     $pageCssQuery = $pageCssVersion ? '?v=' . $pageCssVersion : '';
     ?>
     <link rel="stylesheet" type="text/css"
-          href="<?= media() ?>/css/app/POS/<?= $pageCssFolder ?>/<?= $pageCssFile ?><?= $pageCssQuery ?>?<?= versionSystem() ?>">
+        href="<?= media() ?>/css/app/POS/<?= $pageCssFolder ?>/<?= $pageCssFile ?><?= $pageCssQuery ?>?<?= versionSystem() ?>">
     <?php require_once "./Views/App/POS/" . ucfirst($data["page_container"]) . "/Libraries/head.php"; ?>
     <script type="text/javascript">
         // TODO: Base url
-       const base_url = "<?= base_url(); ?>/pos";
+        const base_url = "<?= base_url(); ?>/pos";
         // TODO: Moneda
-       const getcurrency = "<?= getCurrency(); ?>";
+        const getcurrency = "<?= getCurrency(); ?>";
     </script>
 </head>
+
 <body class="app sidebar-mini">
-<!-- Navbar-->
-<?php include "./Views/Template/panelPos/navbar.php"; ?>
-<!-- Sidebar menu-->
-<?php include "./Views/Template/panelPos/sidebarmenu.php"; ?>
+    <!-- Navbar-->
+    <?php include "./Views/Template/panelPos/navbar.php"; ?>
+    <!-- Sidebar menu-->
+    <?php include "./Views/Template/panelPos/sidebarmenu.php"; ?>

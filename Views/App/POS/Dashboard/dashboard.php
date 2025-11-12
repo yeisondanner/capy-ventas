@@ -13,8 +13,9 @@
     <div class="row">
         <div class="col-md-12">
             <div class="tile">
-                <!--TODO: Contenido-->
-                <div class="tile-body">Create a beautiful dashboard</div>
+                <pre>
+                    <?= dep($_SESSION) ?>
+                </pre>
             </div>
         </div>
     </div>

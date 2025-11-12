@@ -6,6 +6,7 @@ class LoginModel extends Mysql
          */
         protected string $user;
         protected string $password;
+        protected int $iduser;
 
         public function __construct()
         {
@@ -41,5 +42,24 @@ class LoginModel extends Mysql
                                 1;
                 SQL;
                 return $this->select($sql, [$this->user, $this->user]);
+        }
+        /**
+         * Metodo que que obtiene los negocios asociados al usuario que inicio sesion
+         * @param int $id 
+         * @return array
+         */
+        public function select_business(int $id)
+        {
+                $this->iduser = $id;
+                $sql = <<<SQL
+                        SELECT
+                                *
+                        FROM
+                                business AS b
+                                INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
+                                WHERE b.userapp_id=?;
+                SQL;
+                $request = $this->select_all($sql, [$this->iduser]);
+                return $request ?? [];
         }
 }

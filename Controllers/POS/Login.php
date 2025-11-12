@@ -143,6 +143,8 @@ class Login extends Controllers
 				unset($request);
 				toJson($data);
 			}
+			//obtenemos los negocios asociasdos al usuario
+			$bussiness = $this->model->select_business($request["idUserApp"]);
 			//creamos las variables de session para el usuario
 			$data_session = array(
 				"idUser" => $request["idUserApp"],
@@ -150,9 +152,12 @@ class Login extends Controllers
 				"email" => $request["email"],
 				"profile" => '',
 				"fullName" => $request["names"] . ' ' . $request['lastname'],
+				"name" => $request["names"],
+				"lastname" =>  $request['lastname'],
 				"gender" => '',
 				"status" => $request["u_status"],
-				"p_status" => $request["p_status"]
+				"p_status" => $request["p_status"],
+				"boss_business" => $bussiness
 			);
 			//preparacion de nombres de variables de acuerdo a la sesion creada
 			$name_sesion = config_sesion(1)['name'];
