@@ -1,0 +1,11 @@
+.table#table tbody td {
+    vertical-align: middle;
+}
+
+.modal .form-label {
+    font-weight: 600;
+}
+
+.modal .btn-close {
+    box-shadow: none;
+}
