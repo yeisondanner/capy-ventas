@@ -72,7 +72,6 @@ class Errors extends Controllers
 		$data['page_container'] = "Errors";
 		$data['page_view'] = 'timeout';
 		$data['page_js_css'] = "timeout";
-		registerLog("Información de navegación", "El usuario entro a: " . $data['page_title'], 3);
 		$this->views->getView($this, "sessionexpired", $data);
 	}
 }

@@ -16,32 +16,38 @@
                             <div>
                                 <p class="app-notification__message">Lisa sent you a mail</p>
                                 <p class="app-notification__meta">2 min ago</p>
-                            </div></a></li>
+                            </div>
+                        </a></li>
                     <li><a class="app-notification__item" href="javascript:;"><span class="app-notification__icon"><i class="bi bi-exclamation-triangle fs-4 text-warning"></i></span>
                             <div>
                                 <p class="app-notification__message">Mail server not working</p>
                                 <p class="app-notification__meta">5 min ago</p>
-                            </div></a></li>
+                            </div>
+                        </a></li>
                     <li><a class="app-notification__item" href="javascript:;"><span class="app-notification__icon"><i class="bi bi-cash fs-4 text-success"></i></span>
                             <div>
                                 <p class="app-notification__message">Transaction complete</p>
                                 <p class="app-notification__meta">2 days ago</p>
-                            </div></a></li>
+                            </div>
+                        </a></li>
                     <li><a class="app-notification__item" href="javascript:;"><span class="app-notification__icon"><i class="bi bi-envelope fs-4 text-primary"></i></span>
                             <div>
                                 <p class="app-notification__message">Lisa sent you a mail</p>
                                 <p class="app-notification__meta">2 min ago</p>
-                            </div></a></li>
+                            </div>
+                        </a></li>
                     <li><a class="app-notification__item" href="javascript:;"><span class="app-notification__icon"><i class="bi bi-exclamation-triangle fs-4 text-warning"></i></span>
                             <div>
                                 <p class="app-notification__message">Mail server not working</p>
                                 <p class="app-notification__meta">5 min ago</p>
-                            </div></a></li>
+                            </div>
+                        </a></li>
                     <li><a class="app-notification__item" href="javascript:;"><span class="app-notification__icon"><i class="bi bi-cash fs-4 text-success"></i></span>
                             <div>
                                 <p class="app-notification__message">Transaction complete</p>
                                 <p class="app-notification__meta">2 days ago</p>
-                            </div></a></li>
+                            </div>
+                        </a></li>
                 </div>
                 <li class="app-notification__footer"><a href="#">See all notifications.</a></li>
             </ul>
@@ -51,7 +57,7 @@
             <ul class="dropdown-menu settings-menu dropdown-menu-right">
                 <li><a class="dropdown-item" href="page-user.html"><i class="bi bi-gear me-2 fs-5"></i> Settings</a></li>
                 <li><a class="dropdown-item" href="page-user.html"><i class="bi bi-person me-2 fs-5"></i> Profile</a></li>
-                <li><a class="dropdown-item" href="page-login.html"><i class="bi bi-box-arrow-right me-2 fs-5"></i> Logout</a></li>
+                <li><a class="dropdown-item" href="<?= base_url() ?>/POS/LogOut"><i class="bi bi-box-arrow-right me-2 fs-5"></i> Logout</a></li>
             </ul>
         </li>
     </ul>

@@ -469,15 +469,17 @@ function existLogin(int $sesion = 0)
             }
             break;
         case 1:
-            //sirve para regresar al dashboard desde el login
-            if (isset($_SESSION['login'])) {
+            $name_sesion = config_sesion(1)['name'];
+            $nameVarLogin = $name_sesion . 'login';            //sirve para regresar al dashboard desde el login
+            if (isset($_SESSION[$nameVarLogin])) {
 
                 header("Location: " . base_url() . "/pos/dashboard");
             }
             break;
 
         default:
-            # code...
+            echo "Validacion incorrecta de session";
+            die();
             break;
     }
 }
