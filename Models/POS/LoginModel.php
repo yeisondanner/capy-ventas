@@ -52,14 +52,21 @@ class LoginModel extends Mysql
         {
                 $this->iduser = $id;
                 $sql = <<<SQL
-                        SELECT
-                                *
+                       SELECT
+                                b.idBusiness,
+                                b.`name` AS 'business',
+                                bt.`name` AS 'category'
                         FROM
                                 business AS b
                                 INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
-                                WHERE b.userapp_id=?;
+                        WHERE
+                                b.`status` = 'Activo' AND b.userapp_id = ?
+                        ORDER BY
+                                b.idBusiness DESC
+                        LIMIT
+                                1;
                 SQL;
-                $request = $this->select_all($sql, [$this->iduser]);
+                $request = $this->select($sql, [$this->iduser]);
                 return $request ?? [];
         }
 }

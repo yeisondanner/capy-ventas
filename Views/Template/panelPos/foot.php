@@ -4,6 +4,7 @@
 <script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
 <!-- TODO: libreria principal main-->
 <script src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
+
 <!-- TODO: Librerias de la view-->
 <?php require_once "./Views/App/POS/" . ucfirst($data["page_container"]) . "/Libraries/foot.php"; ?>
 
@@ -42,4 +43,5 @@ $pageJsQuery = $pageJsVersion ? '?v=' . $pageJsVersion : '';
 ?>
 <script src="<?= media() ?>/js/app/POS/<?= $pageJsFolder ?>/<?= $pageJsFile ?><?= $pageJsQuery ?>?<?= versionSystem() ?>"></script>
 </body>
+
 </html>
