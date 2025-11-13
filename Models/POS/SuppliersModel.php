@@ -84,9 +84,9 @@ class SuppliersModel extends Mysql
         $params = [
             $data['document'] !== '' ? $data['document'] : null,
             $data['name'],
-            $data['phone'],
+            $data['phone'] !== '' ? $data['phone'] : null,
             $data['address'] !== '' ? $data['address'] : null,
-            $data['email'],
+            $data['email'] !== '' ? $data['email'] : null,
             $businessId,
         ];
 
@@ -120,9 +120,9 @@ class SuppliersModel extends Mysql
         $params = [
             $data['document'] !== '' ? $data['document'] : null,
             $data['name'],
-            $data['phone'],
+            $data['phone'] !== '' ? $data['phone'] : null,
             $data['address'] !== '' ? $data['address'] : null,
-            $data['email'],
+            $data['email'] !== '' ? $data['email'] : null,
             $supplierId,
             $businessId,
         ];
