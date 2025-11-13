@@ -385,11 +385,6 @@
       color: var(--color-primary);
     }
 
-    .plan-description {
-      color: var(--color-muted);
-      font-size: 0.95rem;
-    }
-
     .plan-price {
       font-size: 2.4rem;
       font-weight: 700;
@@ -403,29 +398,15 @@
       margin-left: 6px;
     }
 
-    .plan-features {
-      list-style: none;
-      display: grid;
-      gap: 10px;
-      color: var(--color-muted);
-      font-size: 0.95rem;
-      padding-left: 0;
-    }
-
-    .plan-features li {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .plan-features li::before {
-      content: "✓";
-      font-weight: 700;
-      color: var(--color-secondary);
-    }
-
     .plan-cta {
-      margin-top: 12px;
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+    }
+
+    .plan-cta .btn {
+      width: 100%;
     }
 
     .cta-panel {
@@ -675,86 +656,140 @@
       <div class="pricing-grid" data-plan-group="monthly">
         <article class="pricing-card">
           <h3 class="plan-name">Gratis</h3>
-          <p class="plan-description">Ideal para emprendedores que necesitan emitir sus primeras ventas sin inversión inicial.</p>
           <p class="plan-price">S/. 0<span>/mes</span></p>
-          <ul class="plan-features">
-            <li>Usuarios y sucursales limitados</li>
-            <li>Reportes básicos de ventas</li>
-            <li>Soporte por correo en horario laboral</li>
-          </ul>
           <div class="plan-cta">
-            <a class="btn btn-outline" href="#demo">Crear cuenta gratuita</a>
+            <a
+              class="btn btn-primary"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Gratis%20mensual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Crear cuenta
+            </a>
+            <a
+              class="btn btn-outline"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Gratis%20mensual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Solicitar detalles
+            </a>
           </div>
         </article>
 
         <article class="pricing-card">
           <h3 class="plan-name">Basic</h3>
-          <p class="plan-description">Gestiona inventario y ventas de tu tienda física y digital con herramientas esenciales.</p>
           <p class="plan-price">S/. 10<span>/mes</span></p>
-          <ul class="plan-features">
-            <li>Inventario sincronizado en tiempo real</li>
-            <li>Integración con pasarelas de pago</li>
-            <li>Soporte prioritario por chat</li>
-          </ul>
           <div class="plan-cta">
-            <a class="btn btn-outline" href="#demo">Probar plan Basic</a>
+            <a
+              class="btn btn-primary"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Basic%20mensual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Crear cuenta
+            </a>
+            <a
+              class="btn btn-outline"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Basic%20mensual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Solicitar detalles
+            </a>
           </div>
         </article>
 
         <article class="pricing-card recommended">
           <span class="plan-badge">Popular</span>
           <h3 class="plan-name">Pro</h3>
-          <p class="plan-description">Automatiza campañas, gestiona equipos comerciales y obtén analítica avanzada.</p>
           <p class="plan-price">S/. 20<span>/mes</span></p>
-          <ul class="plan-features">
-            <li>CRM con segmentación inteligente</li>
-            <li>Automatización de marketing y embudos</li>
-            <li>Paneles BI personalizables</li>
-          </ul>
           <div class="plan-cta">
-            <a class="btn btn-primary" href="#demo">Elegir plan Pro</a>
+            <a
+              class="btn btn-primary"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Pro%20mensual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Crear cuenta
+            </a>
+            <a
+              class="btn btn-outline"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Pro%20mensual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Solicitar detalles
+            </a>
           </div>
         </article>
 
         <article class="pricing-card">
           <h3 class="plan-name">Business</h3>
-          <p class="plan-description">Control total para cadenas con múltiples sucursales y necesidades operativas complejas.</p>
           <p class="plan-price">S/. 30<span>/mes</span></p>
-          <ul class="plan-features">
-            <li>Workflows de aprobación y auditoría</li>
-            <li>Integración con ERP y marketplaces</li>
-            <li>Soporte dedicado 24/7</li>
-          </ul>
           <div class="plan-cta">
-            <a class="btn btn-outline" href="#demo">Hablar con ventas</a>
+            <a
+              class="btn btn-primary"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Business%20mensual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Crear cuenta
+            </a>
+            <a
+              class="btn btn-outline"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Business%20mensual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Solicitar detalles
+            </a>
           </div>
         </article>
 
         <article class="pricing-card">
           <h3 class="plan-name">Premium</h3>
-          <p class="plan-description">Experiencia omnicanal completa con personalizaciones avanzadas para retail y servicios.</p>
           <p class="plan-price">S/. 40<span>/mes</span></p>
-          <ul class="plan-features">
-            <li>Catálogos dinámicos ilimitados</li>
-            <li>KPIs personalizados y alertas proactivas</li>
-            <li>Implementación guiada por consultores</li>
-          </ul>
           <div class="plan-cta">
-            <a class="btn btn-outline" href="#demo">Solicitar detalles</a>
+            <a
+              class="btn btn-primary"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Premium%20mensual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Crear cuenta
+            </a>
+            <a
+              class="btn btn-outline"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Premium%20mensual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Solicitar detalles
+            </a>
           </div>
         </article>
 
         <article class="pricing-card">
           <h3 class="plan-name">Full Max</h3>
-          <p class="plan-description">Suite corporativa para operaciones regionales con necesidades de gobierno y seguridad.</p>
           <p class="plan-price">S/. 50<span>/mes</span></p>
-          <ul class="plan-features">
-            <li>Multiempresa y multi-moneda</li>
-            <li>Single Sign-On y cumplimiento SOX</li>
-            <li>Gerente de cuenta dedicado</li>
-          </ul>
           <div class="plan-cta">
-            <a class="btn btn-outline" href="#demo">Agendar consultoría</a>
+            <a
+              class="btn btn-primary"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Full%20Max%20mensual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Crear cuenta
+            </a>
+            <a
+              class="btn btn-outline"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Full%20Max%20mensual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Solicitar detalles
+            </a>
           </div>
         </article>
       </div>
@@ -762,72 +797,117 @@
       <div class="pricing-grid is-hidden" data-plan-group="yearly">
         <article class="pricing-card">
           <h3 class="plan-name">Basic Anual</h3>
-          <p class="plan-description">Obtén todos los beneficios de Basic con un 10% de ahorro para asegurar tu operación todo el año.</p>
           <p class="plan-price">S/. 108<span>/año</span></p>
-          <ul class="plan-features">
-            <li>Inventario sincronizado en tiempo real</li>
-            <li>Integración con pasarelas de pago</li>
-            <li>Horas de onboarding asistido incluidas</li>
-          </ul>
           <div class="plan-cta">
-            <a class="btn btn-outline" href="#demo">Contratar Basic Anual</a>
+            <a
+              class="btn btn-primary"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Basic%20anual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Crear cuenta
+            </a>
+            <a
+              class="btn btn-outline"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Basic%20anual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Solicitar detalles
+            </a>
           </div>
         </article>
 
         <article class="pricing-card recommended">
           <span class="plan-badge">Recomendado</span>
           <h3 class="plan-name">Pro Anual</h3>
-          <p class="plan-description">Plan favorito de equipos comerciales que buscan escalar con automatización y soporte premium.</p>
           <p class="plan-price">S/. 204<span>/año</span></p>
-          <ul class="plan-features">
-            <li>CRM avanzado con segmentación predictiva</li>
-            <li>Campañas automatizadas ilimitadas</li>
-            <li>Sesiones trimestrales de estrategia</li>
-          </ul>
           <div class="plan-cta">
-            <a class="btn btn-primary" href="#demo">Reservar Pro Anual</a>
+            <a
+              class="btn btn-primary"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Pro%20anual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Crear cuenta
+            </a>
+            <a
+              class="btn btn-outline"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Pro%20anual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Solicitar detalles
+            </a>
           </div>
         </article>
 
         <article class="pricing-card">
           <h3 class="plan-name">Business Anual</h3>
-          <p class="plan-description">Optimiza operaciones regionales con un ahorro del 20% y soporte ejecutivo permanente.</p>
           <p class="plan-price">S/. 288<span>/año</span></p>
-          <ul class="plan-features">
-            <li>Workflows y auditorías avanzadas</li>
-            <li>Integraciones personalizadas ilimitadas</li>
-            <li>Formación trimestral para tu equipo</li>
-          </ul>
           <div class="plan-cta">
-            <a class="btn btn-outline" href="#demo">Solicitar propuesta anual</a>
+            <a
+              class="btn btn-primary"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Business%20anual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Crear cuenta
+            </a>
+            <a
+              class="btn btn-outline"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Business%20anual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Solicitar detalles
+            </a>
           </div>
         </article>
 
         <article class="pricing-card">
           <h3 class="plan-name">Premium Anual</h3>
-          <p class="plan-description">La opción para retailers en expansión con consultoría CX y soporte VIP en español.</p>
           <p class="plan-price">S/. 384<span>/año</span></p>
-          <ul class="plan-features">
-            <li>Personalización avanzada de catálogos</li>
-            <li>Monitor de experiencia omnicanal 360°</li>
-            <li>Capacitaciones mensuales en vivo</li>
-          </ul>
           <div class="plan-cta">
-            <a class="btn btn-outline" href="#demo">Explorar Premium Anual</a>
+            <a
+              class="btn btn-primary"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Premium%20anual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Crear cuenta
+            </a>
+            <a
+              class="btn btn-outline"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Premium%20anual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Solicitar detalles
+            </a>
           </div>
         </article>
 
         <article class="pricing-card">
           <h3 class="plan-name">Full Max Anual</h3>
-          <p class="plan-description">Suite ejecutiva con gobierno corporativo, seguridad avanzada y ahorros exclusivos.</p>
           <p class="plan-price">S/. 480<span>/año</span></p>
-          <ul class="plan-features">
-            <li>Arquitectura multi-región y redundante</li>
-            <li>Consultoría de adopción y change management</li>
-            <li>Soporte de misión crítica 24/7</li>
-          </ul>
           <div class="plan-cta">
-            <a class="btn btn-outline" href="#demo">Hablar con un asesor</a>
+            <a
+              class="btn btn-primary"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Full%20Max%20anual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Crear cuenta
+            </a>
+            <a
+              class="btn btn-outline"
+              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Full%20Max%20anual"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Solicitar detalles
+            </a>
           </div>
         </article>
       </div>

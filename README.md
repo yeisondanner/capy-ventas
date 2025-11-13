@@ -26,3 +26,4 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
 - CHATGPT - 2025-11-13 16:14 UTC - Actualización de la página de inicio con la sección de planes y precios en soles.
 - CHATGPT - 2025-11-13 17:30 UTC - Vinculación de la sección de planes con la base de datos para mostrar precios y periodos reales.
 - CHATGPT - 2025-11-13 16:38 UTC - Se reemplazó la carga dinámica por una versión estática en HTML, CSS y JS, segmentando los planes mensuales y anuales con un nuevo selector interactivo.
+- CHATGPT - 2025-11-13 16:47 UTC - Se simplificó la sección de planes del home para mostrar solo los nombres con botones de contacto vía WhatsApp por modalidad mensual y anual.
