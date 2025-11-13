@@ -170,14 +170,6 @@ class Customers extends Controllers
             $this->responseError('El nombre del cliente es obligatorio.');
         }
 
-        if ($phone === '') {
-            $this->responseError('El número de teléfono es obligatorio.');
-        }
-
-        if ($email === '') {
-            $this->responseError('El correo electrónico es obligatorio.');
-        }
-
         if ($this->isProtectedCustomerName($name)) {
             $this->responseError('No puedes registrar un cliente con el nombre protegido del sistema.');
         }
@@ -258,14 +250,6 @@ class Customers extends Controllers
 
         if ($name === '') {
             $this->responseError('El nombre del cliente es obligatorio.');
-        }
-
-        if ($phone === '') {
-            $this->responseError('El número de teléfono es obligatorio.');
-        }
-
-        if ($email === '') {
-            $this->responseError('El correo electrónico es obligatorio.');
         }
 
         $existing = $this->model->selectCustomerByDocument($businessId, $documentTypeId, $document, $customerId);

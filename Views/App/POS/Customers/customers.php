@@ -82,13 +82,13 @@
                             placeholder="Nombre completo del cliente">
                     </div>
                     <div class="col-md-6">
-                        <label for="txtCustomerPhone" class="form-label">Teléfono <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="txtCustomerPhone" name="txtCustomerPhone" maxlength="11" required
+                        <label for="txtCustomerPhone" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" id="txtCustomerPhone" name="txtCustomerPhone" maxlength="11"
                             placeholder="Número de contacto">
                     </div>
                     <div class="col-md-6">
-                        <label for="txtCustomerEmail" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" id="txtCustomerEmail" name="txtCustomerEmail" maxlength="255" required
+                        <label for="txtCustomerEmail" class="form-label">Correo electrónico</label>
+                        <input type="email" class="form-control" id="txtCustomerEmail" name="txtCustomerEmail" maxlength="255"
                             placeholder="correo@ejemplo.com">
                     </div>
                     <div class="col-12">
