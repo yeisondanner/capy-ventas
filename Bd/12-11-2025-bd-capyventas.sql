@@ -96,9 +96,9 @@ CREATE TABLE IF NOT EXISTS `customer` (
   `idCustomer` int(11) NOT NULL AUTO_INCREMENT,
   `fullname` varchar(255) NOT NULL,
   `documenttype_id` int(11) NOT NULL,
-  `document_number` char(11) NOT NULL,
-  `phone_number` char(11) NOT NULL,
-  `email` text NOT NULL,
+  `document_number` char(11) DEFAULT NULL,
+  `phone_number` char(11) DEFAULT NULL,
+  `email` text DEFAULT NULL,
   `direction` text DEFAULT NULL,
   `status` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo',
   `registration_date` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `customer` (
   KEY `business_id` (`business_id`),
   CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`documenttype_id`) REFERENCES `document_type` (`idDocumentType`),
   CONSTRAINT `customer_ibfk_2` FOREIGN KEY (`business_id`) REFERENCES `business` (`idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla bd_capyventas.customer: ~2 rows (aproximadamente)
 DELETE FROM `customer`;
@@ -360,11 +360,8 @@ CREATE TABLE IF NOT EXISTS `product` (
   CONSTRAINT `product_ibfk_2` FOREIGN KEY (`measurement_id`) REFERENCES `measurement` (`idMeasurement`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.product: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.product: ~0 rows (aproximadamente)
 DELETE FROM `product`;
-INSERT INTO `product` (`idProduct`, `category_id`, `name`, `stock`, `purchase_price`, `sales_price`, `measurement_id`, `description`, `status`, `registration_date`, `update_date`, `supplier_id`) VALUES
-	(4, 3, 'Condones Piel', 00000004.00, 2.00, 4.00, 4, NULL, 'Activo', '2025-11-13 02:45:02', '2025-11-13 02:45:39', 2),
-	(5, 3, 'Condones Baratos', 00000000.00, 1.00, 4.00, 4, NULL, 'Activo', '2025-11-13 02:46:35', '2025-11-13 02:46:35', 3);
 
 -- Volcando estructura para tabla bd_capyventas.role_app
 DROP TABLE IF EXISTS `role_app`;
@@ -417,9 +414,9 @@ CREATE TABLE IF NOT EXISTS `supplier` (
   `idSupplier` int(11) NOT NULL AUTO_INCREMENT,
   `document_number` char(11) DEFAULT NULL,
   `company_name` varchar(255) NOT NULL,
-  `phone_number` char(11) NOT NULL,
+  `phone_number` char(11) DEFAULT NULL,
   `direction` text DEFAULT NULL,
-  `email` text NOT NULL,
+  `email` text DEFAULT NULL,
   `business_id` int(11) NOT NULL,
   `status` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo',
   `registration_date` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -428,7 +425,7 @@ CREATE TABLE IF NOT EXISTS `supplier` (
   UNIQUE KEY `document_number_business_id` (`document_number`,`business_id`,`registration_date`) USING BTREE,
   KEY `business_id` (`business_id`),
   CONSTRAINT `supplier_ibfk_1` FOREIGN KEY (`business_id`) REFERENCES `business` (`idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla bd_capyventas.supplier: ~3 rows (aproximadamente)
 DELETE FROM `supplier`;
@@ -581,9 +578,9 @@ CREATE TABLE IF NOT EXISTS `tb_log` (
   KEY `user_id` (`user_id`),
   KEY `tb_log_ibfk_1` (`typelog_id`),
   CONSTRAINT `tb_log_ibfk_1` FOREIGN KEY (`typelog_id`) REFERENCES `tb_typelog` (`idTypeLog`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=19035 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19040 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.tb_log: ~18,954 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.tb_log: ~19,573 rows (aproximadamente)
 DELETE FROM `tb_log`;
 INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
 	(1, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-07-15 15:05:36', '2025-07-15 15:05:36', 3, 1),
@@ -19623,7 +19620,12 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(19031, 'Eliminación de categoría POS', 'Se eliminó la categoría: Hilos', '2025-11-13 02:47:56', '2025-11-13 02:47:56', 3, 3),
 	(19032, 'Desactivación de categoría POS', 'Se desactivó la categoría: Preservativos', '2025-11-13 02:47:59', '2025-11-13 02:47:59', 2, 3),
 	(19033, 'Desactivación de proveedor POS', 'Se desactivó el proveedor: Smith El Cheroca', '2025-11-13 02:48:23', '2025-11-13 02:48:23', 3, 3),
-	(19034, 'Cierre de sesión', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES ha cerrado sesión en el sistema', '2025-11-13 02:54:43', '2025-11-13 02:54:43', 2, 1);
+	(19034, 'Eliminación de producto POS', 'Se eliminó el producto: Condones Piel', '2025-11-13 02:54:07', '2025-11-13 02:54:07', 3, 3),
+	(19035, 'Eliminación de producto POS', 'Se eliminó el producto: Condones Baratos', '2025-11-13 02:54:09', '2025-11-13 02:54:09', 3, 3),
+	(19036, 'Registro de proveedor POS', 'Se registró el proveedor: Sdfsdfdsfds', '2025-11-13 04:45:03', '2025-11-13 04:45:03', 2, 3),
+	(19037, 'Eliminación de proveedor POS', 'Se eliminó el proveedor: Sdfsdfdsfds', '2025-11-13 04:45:15', '2025-11-13 04:45:15', 3, 3),
+	(19038, 'Registro de cliente POS', 'Se registró el cliente: Fdsf Ds Fds Fds Fdfdsfdsf Ds Ds', '2025-11-13 04:55:44', '2025-11-13 04:55:44', 2, 3),
+	(19039, 'Eliminación de cliente POS', 'Se eliminó el cliente: Fdsf Ds Fds Fds Fdfdsfdsf Ds Ds', '2025-11-13 04:55:55', '2025-11-13 04:55:55', 3, 3);
 
 -- Volcando estructura para tabla bd_capyventas.tb_module
 DROP TABLE IF EXISTS `tb_module`;
