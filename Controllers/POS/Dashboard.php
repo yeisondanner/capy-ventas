@@ -12,8 +12,8 @@ class Dashboard extends Controllers
 	{
 		$data = [
 			'page_id'          => 0,
-			'page_title'       => 'Dashboard de la app',
-			'page_description' => 'Dashboard',
+			'page_title'       => 'Dashboard',
+			'page_description' => 'Panel de control de la aplicación',
 			'page_container'   => 'Dashboard',
 			'page_view'        => 'dashboard',
 			'page_js_css'      => 'dashboard',

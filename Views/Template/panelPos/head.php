@@ -1,8 +1,15 @@
 <?php
+//nombres de las variables de sesion
 $name_sesion = config_sesion(1)['name'];
 $nameVarLogin = $name_sesion . 'login';
 $nameVarBusiness = $name_sesion . 'business_active';
 $nameVarLoginInfo = $name_sesion . 'login_info';
+//vaiables de las rutas del css
+$pageCssFolder = strtolower($data["page_container"]);
+$pageCssFile = "style_" . strtolower($data["page_js_css"]) . ".css?" . versionSystem();
+//variables del contendor
+$pageContainer = ucfirst($data["page_container"]);
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -25,43 +32,9 @@ $nameVarLoginInfo = $name_sesion . 'login_info';
         href="<?= base_url() ?>/loadfile/icon?f=<?= (getSystemInfo()) ? getSystemInfo()["c_logo"] : null; ?>"
         type="image/x-icon">
     <!-- CSS de la vista -->
-    <?php
-    $pageAssets = $data['page_assets'] ?? [];
-
-    // Documentación (español):
-    // Validamos y normalizamos el valor de 'page_container' para evitar pasar un array a strtolower().
-    // - Si es string: lo usamos directamente.
-    // - Si es array: intentamos obtener la clave 'name' o el primer elemento string disponible.
-    // - Si no se puede obtener un string, usamos un valor por defecto 'default'.
-    $pageContainerRaw = $data['page_container'] ?? '';
-    if (is_string($pageContainerRaw)) {
-        $pageCssFolder = strtolower($pageContainerRaw);
-    } elseif (is_array($pageContainerRaw)) {
-        $pageCssFolder = '';
-        if (isset($pageContainerRaw['name']) && is_string($pageContainerRaw['name'])) {
-            $pageCssFolder = strtolower($pageContainerRaw['name']);
-        } else {
-            $first = reset($pageContainerRaw);
-            if (is_string($first)) {
-                $pageCssFolder = strtolower($first);
-            }
-        }
-    } else {
-        $pageCssFolder = '';
-    }
-
-    // Fallback: si está vacío, usar carpeta por defecto 'default'
-    if ($pageCssFolder === '') {
-        $pageCssFolder = 'default';
-    }
-
-    $pageCssFile = "style_" . ($data['page_js_css'] ?? 'main') . ".css";
-    $pageCssVersion = $pageAssets['css_version'] ?? null;
-    $pageCssQuery = $pageCssVersion ? '?v=' . $pageCssVersion : '';
-    ?>
     <link rel="stylesheet" type="text/css"
-        href="<?= media() ?>/css/app/POS/<?= $pageCssFolder ?>/<?= $pageCssFile ?><?= $pageCssQuery ?>?<?= versionSystem() ?>">
-    <?php require_once "./Views/App/POS/" . ucfirst($data["page_container"]) . "/Libraries/head.php"; ?>
+        href="<?= media() ?>/css/app/POS/<?= $pageCssFolder ?>/<?= $pageCssFile ?>">
+    <?php require_once "./Views/App/POS/" . $pageContainer . "/Libraries/head.php"; ?>
     <script type="text/javascript">
         // TODO: Base url
         const base_url = "<?= base_url(); ?>";
