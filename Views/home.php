@@ -290,6 +290,71 @@
 
     .pricing-section {
       margin-top: 120px;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .pricing-section::before,
+    .pricing-section::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(0);
+      z-index: -1;
+    }
+
+    .pricing-section::before {
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle at center, rgba(27, 191, 157, 0.22), transparent 70%);
+      top: -120px;
+      left: -180px;
+    }
+
+    .pricing-section::after {
+      width: 460px;
+      height: 460px;
+      background: radial-gradient(circle at center, rgba(35, 67, 106, 0.18), transparent 65%);
+      bottom: -160px;
+      right: -140px;
+    }
+
+    .pricing-wrapper {
+      position: relative;
+      padding: 72px clamp(32px, 6vw, 80px);
+      border-radius: 36px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(235, 243, 250, 0.88));
+      box-shadow: 0 28px 64px rgba(17, 40, 66, 0.18);
+      border: 1px solid rgba(35, 67, 106, 0.08);
+      overflow: hidden;
+    }
+
+    .pricing-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(27, 191, 157, 0.06), rgba(35, 67, 106, 0));
+      pointer-events: none;
+    }
+
+    .pricing-header {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 48px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .pricing-eyebrow {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: var(--color-secondary);
+    }
+
+    .pricing-header .section-title {
+      margin-bottom: 0;
     }
 
     .billing-toggle {
@@ -297,16 +362,16 @@
       justify-content: center;
       align-items: stretch;
       gap: 18px;
-      margin-bottom: 44px;
+      margin-bottom: 48px;
       flex-wrap: wrap;
     }
 
     .toggle-button {
-      border: 1px solid rgba(35, 67, 106, 0.15);
-      background: rgba(245, 247, 251, 0.9);
-      border-radius: 14px;
-      padding: 16px 28px;
-      min-width: 220px;
+      border: 1px solid rgba(35, 67, 106, 0.14);
+      background: rgba(245, 247, 251, 0.88);
+      border-radius: 18px;
+      padding: 16px 32px;
+      min-width: 240px;
       display: grid;
       gap: 6px;
       text-align: left;
@@ -338,6 +403,11 @@
       color: #ffffff;
     }
 
+    .pricing-grids {
+      display: grid;
+      gap: 36px;
+    }
+
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -350,25 +420,77 @@
 
     .pricing-card {
       position: relative;
-      background: var(--color-card);
-      border-radius: var(--border-radius);
-      padding: 36px 32px;
-      border: 1px solid rgba(35, 67, 106, 0.12);
-      box-shadow: var(--shadow-soft);
+      background: linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(235, 243, 250, 0.88));
+      border-radius: 26px;
+      padding: 40px 34px 44px;
+      border: 1px solid rgba(35, 67, 106, 0.08);
+      box-shadow: 0 20px 48px rgba(17, 40, 66, 0.18);
       display: grid;
-      gap: 18px;
+      gap: 20px;
+      overflow: hidden;
+    }
+
+    .pricing-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(27, 191, 157, 0.12), rgba(35, 67, 106, 0.06));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 0;
+    }
+
+    .pricing-card::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(27, 191, 157, 0.22), transparent 70%);
+      top: -120px;
+      right: -100px;
+      opacity: 0.65;
+      z-index: 0;
+      transition: transform 0.35s ease;
+    }
+
+    .pricing-card:hover::after {
+      transform: translate(-14px, 18px) scale(1.05);
+    }
+
+    .pricing-grid[data-plan-group="monthly"] .pricing-card:nth-child(2)::after {
+      background: radial-gradient(circle, rgba(35, 67, 106, 0.2), transparent 70%);
+    }
+
+    .pricing-grid[data-plan-group="monthly"] .pricing-card:nth-child(3)::after,
+    .pricing-grid[data-plan-group="yearly"] .pricing-card.recommended::after {
+      background: radial-gradient(circle, rgba(27, 191, 157, 0.28), transparent 68%);
+    }
+
+    .pricing-grid[data-plan-group="monthly"] .pricing-card:nth-child(5)::after,
+    .pricing-grid[data-plan-group="yearly"] .pricing-card:nth-child(3)::after {
+      background: radial-gradient(circle, rgba(247, 163, 37, 0.26), transparent 70%);
+    }
+
+    .pricing-grid[data-plan-group="monthly"] .pricing-card:nth-child(6)::after,
+    .pricing-grid[data-plan-group="yearly"] .pricing-card:nth-child(4)::after {
+      background: radial-gradient(circle, rgba(35, 67, 106, 0.24), transparent 72%);
+    }
+
+    .pricing-card:hover::before {
+      opacity: 1;
     }
 
     .pricing-card.recommended {
-      border: 2px solid var(--color-secondary);
-      transform: translateY(-8px);
-      box-shadow: 0 24px 48px rgba(27, 191, 157, 0.22);
+      border: 2px solid rgba(27, 191, 157, 0.55);
+      transform: translateY(-10px);
+      box-shadow: 0 32px 68px rgba(27, 191, 157, 0.28);
     }
 
     .plan-badge {
       position: absolute;
-      top: 24px;
-      right: 24px;
+      top: 22px;
+      right: 22px;
       background: linear-gradient(135deg, var(--color-secondary), #24d7b1);
       color: #fff;
       padding: 6px 14px;
@@ -380,15 +502,19 @@
     }
 
     .plan-name {
-      font-size: 1.35rem;
+      font-size: 1.4rem;
       font-weight: 600;
       color: var(--color-primary);
+      position: relative;
+      z-index: 1;
     }
 
     .plan-price {
-      font-size: 2.4rem;
+      font-size: 2.5rem;
       font-weight: 700;
       color: var(--color-secondary);
+      position: relative;
+      z-index: 1;
     }
 
     .plan-price span {
@@ -403,6 +529,8 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 12px;
+      position: relative;
+      z-index: 1;
     }
 
     .plan-cta .btn {
@@ -503,6 +631,23 @@
 
       .pricing-section {
         margin-top: 80px;
+      }
+
+      .pricing-wrapper {
+        padding: 52px 28px;
+        border-radius: 28px;
+      }
+
+      .billing-toggle {
+        margin-bottom: 36px;
+      }
+
+      .plan-price {
+        font-size: 2.2rem;
+      }
+
+      .plan-cta {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -636,27 +781,32 @@
     </section>
 
     <section class="pricing-section" id="planes">
-      <h2 class="section-title">Planes diseñados para tu crecimiento</h2>
-      <p class="section-subtitle">
-        Elige la modalidad de pago que se ajusta a tu presupuesto. Los planes mensuales ofrecen flexibilidad sin permanencia
-        y los planes anuales incluyen descuentos preferenciales para impulsar tu expansión.
-      </p>
+      <div class="pricing-wrapper">
+        <div class="pricing-header">
+          <span class="pricing-eyebrow">Planes Capy Ventas</span>
+          <h2 class="section-title">Planes diseñados para tu crecimiento</h2>
+          <p class="section-subtitle">
+            Elige la modalidad de pago que se ajusta a tu presupuesto. Los planes mensuales ofrecen flexibilidad sin
+            permanencia y los planes anuales premian tu compromiso con descuentos especiales.
+          </p>
+        </div>
 
-      <div class="billing-toggle" role="group" aria-label="Selector de modalidad de facturación">
-        <button class="toggle-button active" data-target="monthly" type="button">
-          <span>Pagos mensuales</span>
-          <small>Flexibilidad sin contratos</small>
-        </button>
-        <button class="toggle-button" data-target="yearly" type="button">
-          <span>Pagos anuales</span>
-          <small>Ahorra hasta 20%</small>
-        </button>
-      </div>
+        <div class="billing-toggle" role="group" aria-label="Selector de modalidad de facturación">
+          <button class="toggle-button active" data-target="monthly" type="button">
+            <span>Pagos mensuales</span>
+            <small>Flexibilidad sin contratos</small>
+          </button>
+          <button class="toggle-button" data-target="yearly" type="button">
+            <span>Pagos anuales</span>
+            <small>Ahorra hasta 20%</small>
+          </button>
+        </div>
 
-      <div class="pricing-grid" data-plan-group="monthly">
-        <article class="pricing-card">
-          <h3 class="plan-name">Gratis</h3>
-          <p class="plan-price">S/. 0<span>/mes</span></p>
+        <div class="pricing-grids">
+          <div class="pricing-grid" data-plan-group="monthly">
+            <article class="pricing-card">
+              <h3 class="plan-name">Gratis</h3>
+              <p class="plan-price">S/. 0<span>/mes</span></p>
           <div class="plan-cta">
             <a
               class="btn btn-primary"
@@ -791,125 +941,103 @@
               Solicitar detalles
             </a>
           </div>
-        </article>
-      </div>
-
-      <div class="pricing-grid is-hidden" data-plan-group="yearly">
-        <article class="pricing-card">
-          <h3 class="plan-name">Basic Anual</h3>
-          <p class="plan-price">S/. 108<span>/año</span></p>
-          <div class="plan-cta">
-            <a
-              class="btn btn-primary"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Basic%20anual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Crear cuenta
-            </a>
-            <a
-              class="btn btn-outline"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Basic%20anual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Solicitar detalles
-            </a>
           </div>
-        </article>
 
-        <article class="pricing-card recommended">
-          <span class="plan-badge">Recomendado</span>
-          <h3 class="plan-name">Pro Anual</h3>
-          <p class="plan-price">S/. 204<span>/año</span></p>
-          <div class="plan-cta">
-            <a
-              class="btn btn-primary"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Pro%20anual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Crear cuenta
-            </a>
-            <a
-              class="btn btn-outline"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Pro%20anual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Solicitar detalles
-            </a>
-          </div>
-        </article>
+          <div class="pricing-grid is-hidden" data-plan-group="yearly">
+            <article class="pricing-card recommended">
+              <span class="plan-badge">Recomendado</span>
+              <h3 class="plan-name">Pro Anual</h3>
+              <p class="plan-price">S/. 204<span>/año</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Pro%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Pro%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Solicitar detalles
+                </a>
+              </div>
+            </article>
 
-        <article class="pricing-card">
-          <h3 class="plan-name">Business Anual</h3>
-          <p class="plan-price">S/. 288<span>/año</span></p>
-          <div class="plan-cta">
-            <a
-              class="btn btn-primary"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Business%20anual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Crear cuenta
-            </a>
-            <a
-              class="btn btn-outline"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Business%20anual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Solicitar detalles
-            </a>
-          </div>
-        </article>
+            <article class="pricing-card">
+              <h3 class="plan-name">Business Anual</h3>
+              <p class="plan-price">S/. 288<span>/año</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Business%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Business%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Solicitar detalles
+                </a>
+              </div>
+            </article>
 
-        <article class="pricing-card">
-          <h3 class="plan-name">Premium Anual</h3>
-          <p class="plan-price">S/. 384<span>/año</span></p>
-          <div class="plan-cta">
-            <a
-              class="btn btn-primary"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Premium%20anual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Crear cuenta
-            </a>
-            <a
-              class="btn btn-outline"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Premium%20anual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Solicitar detalles
-            </a>
-          </div>
-        </article>
+            <article class="pricing-card">
+              <h3 class="plan-name">Premium Anual</h3>
+              <p class="plan-price">S/. 384<span>/año</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Premium%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Premium%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Solicitar detalles
+                </a>
+              </div>
+            </article>
 
-        <article class="pricing-card">
-          <h3 class="plan-name">Full Max Anual</h3>
-          <p class="plan-price">S/. 480<span>/año</span></p>
-          <div class="plan-cta">
-            <a
-              class="btn btn-primary"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Full%20Max%20anual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Crear cuenta
-            </a>
-            <a
-              class="btn btn-outline"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Full%20Max%20anual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Solicitar detalles
-            </a>
+            <article class="pricing-card">
+              <h3 class="plan-name">Full Max Anual</h3>
+              <p class="plan-price">S/. 480<span>/año</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Full%20Max%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Full%20Max%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Solicitar detalles
+                </a>
+              </div>
+            </article>
           </div>
-        </article>
+        </div>
       </div>
     </section>
 
