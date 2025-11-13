@@ -42,13 +42,8 @@ class Inventory extends Controllers
             'page_container'   => 'Inventory',
             'page_view'        => 'inventory',
             'page_js_css'      => 'inventory',
-            'page_assets'      => [
-                'css_version' => '1.0.0',
-                'js_version'  => '1.0.0',
-            ],
         ];
-
-        $this->views->getView($this, 'inventory', $data, 'POS');
+        $this->views->getView($this, "inventory", $data, "POS");
     }
 
     /**
@@ -184,7 +179,7 @@ class Inventory extends Controllers
 
         $data = [
             'title'  => 'Registro exitoso',
-            'message'=> 'El producto se registró correctamente.',
+            'message' => 'El producto se registró correctamente.',
             'type'   => 'success',
             'icon'   => 'success',
             'status' => true,
@@ -240,7 +235,7 @@ class Inventory extends Controllers
                     . formatMoney((float) $product['sales_price']),
                 'description'    => $product['description'] ?? '',
                 'status'         => $product['status'],
-                'currency_symbol'=> $currencySymbol,
+                'currency_symbol' => $currencySymbol,
             ],
         ];
 
@@ -347,7 +342,7 @@ class Inventory extends Controllers
 
         $data = [
             'title'  => 'Actualización exitosa',
-            'message'=> 'La información del producto se actualizó correctamente.',
+            'message' => 'La información del producto se actualizó correctamente.',
             'type'   => 'success',
             'icon'   => 'success',
             'status' => true,
@@ -393,7 +388,7 @@ class Inventory extends Controllers
 
         $data = [
             'title'  => 'Producto eliminado',
-            'message'=> 'El producto se eliminó correctamente.',
+            'message' => 'El producto se eliminó correctamente.',
             'type'   => 'success',
             'icon'   => 'success',
             'status' => true,
@@ -471,7 +466,7 @@ class Inventory extends Controllers
 
         toJson([
             'title'  => 'Categoría registrada',
-            'message'=> 'La categoría se registró correctamente.',
+            'message' => 'La categoría se registró correctamente.',
             'type'   => 'success',
             'icon'   => 'success',
             'status' => true,
@@ -529,7 +524,7 @@ class Inventory extends Controllers
 
         toJson([
             'title'  => 'Categoría actualizada',
-            'message'=> 'La categoría se actualizó correctamente.',
+            'message' => 'La categoría se actualizó correctamente.',
             'type'   => 'success',
             'icon'   => 'success',
             'status' => true,
@@ -841,18 +836,56 @@ class Inventory extends Controllers
 
         if ($transliterated === $trimmed) {
             $transliterated = strtr($transliterated, [
-                'Á' => 'A', 'À' => 'A', 'Â' => 'A', 'Ä' => 'A', 'Ã' => 'A', 'Å' => 'A',
-                'É' => 'E', 'È' => 'E', 'Ê' => 'E', 'Ë' => 'E',
-                'Í' => 'I', 'Ì' => 'I', 'Î' => 'I', 'Ï' => 'I',
-                'Ó' => 'O', 'Ò' => 'O', 'Ô' => 'O', 'Ö' => 'O', 'Õ' => 'O',
-                'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U',
-                'Ñ' => 'N', 'Ç' => 'C',
-                'á' => 'a', 'à' => 'a', 'â' => 'a', 'ä' => 'a', 'ã' => 'a', 'å' => 'a',
-                'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
-                'í' => 'i', 'ì' => 'i', 'î' => 'i', 'ï' => 'i',
-                'ó' => 'o', 'ò' => 'o', 'ô' => 'o', 'ö' => 'o', 'õ' => 'o',
-                'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
-                'ñ' => 'n', 'ç' => 'c',
+                'Á' => 'A',
+                'À' => 'A',
+                'Â' => 'A',
+                'Ä' => 'A',
+                'Ã' => 'A',
+                'Å' => 'A',
+                'É' => 'E',
+                'È' => 'E',
+                'Ê' => 'E',
+                'Ë' => 'E',
+                'Í' => 'I',
+                'Ì' => 'I',
+                'Î' => 'I',
+                'Ï' => 'I',
+                'Ó' => 'O',
+                'Ò' => 'O',
+                'Ô' => 'O',
+                'Ö' => 'O',
+                'Õ' => 'O',
+                'Ú' => 'U',
+                'Ù' => 'U',
+                'Û' => 'U',
+                'Ü' => 'U',
+                'Ñ' => 'N',
+                'Ç' => 'C',
+                'á' => 'a',
+                'à' => 'a',
+                'â' => 'a',
+                'ä' => 'a',
+                'ã' => 'a',
+                'å' => 'a',
+                'é' => 'e',
+                'è' => 'e',
+                'ê' => 'e',
+                'ë' => 'e',
+                'í' => 'i',
+                'ì' => 'i',
+                'î' => 'i',
+                'ï' => 'i',
+                'ó' => 'o',
+                'ò' => 'o',
+                'ô' => 'o',
+                'ö' => 'o',
+                'õ' => 'o',
+                'ú' => 'u',
+                'ù' => 'u',
+                'û' => 'u',
+                'ü' => 'u',
+                'ñ' => 'n',
+                'ç' => 'c',
             ]);
         }
 
@@ -876,7 +909,7 @@ class Inventory extends Controllers
     {
         $data = [
             'title'  => 'Ocurrió un error',
-            'message'=> $message,
+            'message' => $message,
             'type'   => 'error',
             'icon'   => 'error',
             'status' => false,

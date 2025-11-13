@@ -31,21 +31,6 @@ $pageAssets = $data['page_assets'] ?? [];
 // Se normaliza reemplazando caracteres no permitidos por '_' para evitar rutas inválidas.
 $pageContainer = $data['page_container'] ?? '';
 
-if (is_array($pageContainer)) {
-    if (!empty($pageContainer['name']) && is_scalar($pageContainer['name'])) {
-        $rawFolder = (string) $pageContainer['name'];
-    } else {
-        $rawFolder = implode('_', array_map('strval', $pageContainer));
-    }
-} else {
-    $rawFolder = (string) $pageContainer;
-}
-
-$rawFolder = trim($rawFolder);
-if ($rawFolder === '') {
-    $rawFolder = 'default';
-}
-
 // Forzar minúsculas y sanear la cadena para usar en nombres de carpeta/archivo
 $pageJsFolder = strtolower($rawFolder);
 $pageJsFolder = preg_replace('/[^a-z0-9_\-]/', '_', $pageJsFolder);
