@@ -1,3 +1,39 @@
+<?php
+$plans = [];
+$minimumPlanPrice = null;
+$recommendedPlanName = null;
+
+if (isset($data['plans']) && is_array($data['plans'])) {
+        $plans = array_values(array_filter($data['plans'], static function ($plan) {
+                return (int) ($plan['is_active'] ?? 0) === 1;
+        }));
+
+        usort($plans, static function ($first, $second) {
+                return (float) ($first['base_price'] ?? 0) <=> (float) ($second['base_price'] ?? 0);
+        });
+}
+
+if (isset($data['minimum_plan_price']) && $data['minimum_plan_price'] !== null) {
+        $minimumPlanPrice = (float) $data['minimum_plan_price'];
+} elseif (!empty($plans)) {
+        $minimumPlanPrice = (float) ($plans[0]['base_price'] ?? 0);
+}
+
+foreach ($plans as $plan) {
+        if (isset($plan['name']) && strcasecmp((string) $plan['name'], 'Pro') === 0) {
+                $recommendedPlanName = (string) $plan['name'];
+                break;
+        }
+}
+
+if ($recommendedPlanName === null && !empty($plans)) {
+        $recommendedPlanName = $plans[min(1, count($plans) - 1)]['name'] ?? $plans[0]['name'];
+}
+
+$formattedMinimumPrice = $minimumPlanPrice !== null
+        ? number_format($minimumPlanPrice, 2, '.', ',')
+        : null;
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -296,6 +332,17 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 28px;
+    }
+
+    .plan-empty-message {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--color-muted);
+      font-size: 1.05rem;
+      background: rgba(245, 247, 251, 0.9);
+      border: 1px solid rgba(35, 67, 106, 0.08);
+      border-radius: var(--border-radius);
+      padding: 40px 32px;
     }
 
     .pricing-card {
@@ -621,53 +668,49 @@
     <section class="pricing-section" id="planes">
       <h2 class="section-title">Planes diseñados para tu crecimiento</h2>
       <p class="section-subtitle">
-        Selecciona el plan que mejor se adapta a tu equipo y activa Capy Ventas desde S/. 189 al mes. Todos los
-        planes incluyen implementación guiada y soporte en español.
+        <?php if ($formattedMinimumPrice !== null) : ?>
+          Selecciona el plan que mejor se adapta a tu equipo y activa Capy Ventas desde S/. <?php echo $formattedMinimumPrice; ?> al mes.
+        <?php else : ?>
+          Selecciona el plan que mejor se adapta a tu equipo y contáctanos para recibir una propuesta personalizada.
+        <?php endif; ?>
+        Todos los planes incluyen implementación guiada y soporte en español.
       </p>
       <div class="pricing-grid">
-        <article class="pricing-card">
-          <h3 class="plan-name">Plan Esencial</h3>
-          <p class="plan-description">Ideal para puntos de venta que necesitan digitalizar procesos rápidamente.</p>
-          <p class="plan-price">S/. 189<span>/mes</span></p>
-          <ul class="plan-features">
-            <li>Hasta 5 usuarios activos</li>
-            <li>Módulos de POS e inventario</li>
-            <li>Reportes básicos de ventas</li>
-            <li>Soporte vía chat en horario laboral</li>
-          </ul>
-          <div class="plan-cta">
-            <a class="btn btn-outline" href="#demo">Probar Plan Esencial</a>
-          </div>
-        </article>
-        <article class="pricing-card recommended">
-          <span class="plan-badge">Más popular</span>
-          <h3 class="plan-name">Plan Profesional</h3>
-          <p class="plan-description">Combina analítica avanzada y CRM para acelerar la productividad comercial.</p>
-          <p class="plan-price">S/. 389<span>/mes</span></p>
-          <ul class="plan-features">
-            <li>Usuarios ilimitados</li>
-            <li>Módulos POS, inventario y CRM</li>
-            <li>Campañas automatizadas y reportes BI</li>
-            <li>Soporte prioritario 24/7</li>
-          </ul>
-          <div class="plan-cta">
-            <a class="btn btn-primary" href="#demo">Elegir Plan Profesional</a>
-          </div>
-        </article>
-        <article class="pricing-card">
-          <h3 class="plan-name">Plan Enterprise</h3>
-          <p class="plan-description">Integraciones personalizadas y acompañamiento estratégico para grandes redes.</p>
-          <p class="plan-price">S/. 729<span>/mes</span></p>
-          <ul class="plan-features">
-            <li>Gestión de múltiples sedes y bodegas</li>
-            <li>API abierta y conectores con ERP</li>
-            <li>Asesoría dedicada en analítica e IA</li>
-            <li>Capacitaciones trimestrales in-company</li>
-          </ul>
-          <div class="plan-cta">
-            <a class="btn btn-outline" href="mailto:ventas@capyventas.com">Hablar con ventas</a>
-          </div>
-        </article>
+        <?php if (!empty($plans)) : ?>
+          <?php foreach ($plans as $plan) :
+                  $planName = isset($plan['name']) ? (string) $plan['name'] : 'Plan sin nombre';
+                  $rawDescription = isset($plan['description']) ? trim((string) $plan['description']) : '';
+                  $planDescription = $rawDescription !== ''
+                          ? $rawDescription
+                          : sprintf('Impulsa tu negocio con el plan %s y funcionalidades adaptables.', $planName);
+                  $priceValue = isset($plan['base_price']) ? (float) $plan['base_price'] : 0.0;
+                  $planPrice = number_format($priceValue, 2, '.', ',');
+                  $billingPeriod = isset($plan['billing_period']) ? (string) $plan['billing_period'] : 'monthly';
+                  $periodLabel = $billingPeriod === 'yearly' ? 'año' : 'mes';
+                  $isRecommended = $recommendedPlanName !== null && strcasecmp($planName, (string) $recommendedPlanName) === 0;
+                  $buttonClass = $isRecommended ? 'btn-primary' : 'btn-outline';
+                  $ctaLabel = $isRecommended ? 'Elegir este plan' : 'Solicitar información';
+          ?>
+          <article class="pricing-card<?php echo $isRecommended ? ' recommended' : ''; ?>">
+            <?php if ($isRecommended) : ?>
+              <span class="plan-badge">Recomendado</span>
+            <?php endif; ?>
+            <h3 class="plan-name"><?php echo htmlspecialchars($planName, ENT_QUOTES, 'UTF-8'); ?></h3>
+            <p class="plan-description"><?php echo htmlspecialchars($planDescription, ENT_QUOTES, 'UTF-8'); ?></p>
+            <p class="plan-price">S/. <?php echo $planPrice; ?><span>/<?php echo $periodLabel; ?></span></p>
+            <ul class="plan-features">
+              <li>Implementación guiada y soporte en español</li>
+              <li>Acceso a módulos esenciales de gestión comercial</li>
+              <li>Paneles listos para analizar tus ventas</li>
+            </ul>
+            <div class="plan-cta">
+              <a class="btn <?php echo $buttonClass; ?>" href="#demo"><?php echo $ctaLabel; ?></a>
+            </div>
+          </article>
+          <?php endforeach; ?>
+        <?php else : ?>
+          <p class="plan-empty-message">Estamos actualizando nuestros planes. Contáctanos para recibir una propuesta personalizada.</p>
+        <?php endif; ?>
       </div>
     </section>
 

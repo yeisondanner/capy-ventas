@@ -24,3 +24,4 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
 
 ## Cambios realizados mediante IA
 - CHATGPT - 2025-11-13 16:14 UTC - Actualización de la página de inicio con la sección de planes y precios en soles.
+- CHATGPT - 2025-11-13 17:30 UTC - Vinculación de la sección de planes con la base de datos para mostrar precios y periodos reales.
