@@ -13,9 +13,9 @@
 <script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/colReorder.bootstrap5.min.js?<?= versionSystem() ?>"></script>
 <!--Libreria de generacion de reportes-->
 <script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/dataTables.bootstrap5.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/Admin/plugins/jszip.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/Admin/plugins/pdfmake.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/Admin/plugins/vfs_fonts.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/jszip.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/pdfmake.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/vfs_fonts.js?<?= versionSystem() ?>"></script>
 <script type="text/javascript" language="javascript"
     src="<?= media() ?>/js/libraries/Admin/plugins/buttons.html5.min.js?<?= versionSystem() ?>"></script>
 <!-- TODO: libreria principal main-->
