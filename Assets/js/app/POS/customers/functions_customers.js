@@ -116,7 +116,9 @@
    */
   function updateModalTexts(isEdit) {
     const title = document.getElementById("modalCustomerLabel");
-    const submitButton = document.querySelector("#formCustomer button[type='submit']");
+    const submitButton = document.querySelector(
+      "#formCustomer button[type='submit']"
+    );
 
     if (title) {
       title.textContent = isEdit ? "Actualizar cliente" : "Registrar cliente";
@@ -124,8 +126,8 @@
 
     if (submitButton) {
       submitButton.innerHTML = isEdit
-        ? "<i class=\"bi bi-save\"></i> Actualizar"
-        : "<i class=\"bi bi-save\"></i> Guardar";
+        ? '<i class="bi bi-save"></i> Actualizar'
+        : '<i class="bi bi-save"></i> Guardar';
     }
   }
 
@@ -144,7 +146,9 @@
       idField.value = customer.idCustomer || customer.id || 0;
     }
 
-    const documentTypeField = document.getElementById("txtCustomerDocumentType");
+    const documentTypeField = document.getElementById(
+      "txtCustomerDocumentType"
+    );
     if (documentTypeField) {
       documentTypeField.value = String(
         customer.documenttype_id || customer.document_type_id || ""
@@ -211,7 +215,8 @@
 
     const fields = {
       detailCustomerName: customer.fullname_raw || customer.fullname || "-",
-      detailCustomerDocumentType: customer.document_type_raw || customer.document_type || "Sin tipo",
+      detailCustomerDocumentType:
+        customer.document_type_raw || customer.document_type || "Sin tipo",
       detailCustomerDocument: customer.document_raw || "Sin documento",
       detailCustomerPhone: customer.phone_raw || "Sin teléfono",
       detailCustomerEmail: customer.email_raw || "Sin correo",
@@ -244,7 +249,8 @@
       showAlert({
         icon: "error",
         title: "Token ausente",
-        message: "No se encontró el token de seguridad. Actualiza la página e inténtalo nuevamente.",
+        message:
+          "No se encontró el token de seguridad. Actualiza la página e inténtalo nuevamente.",
       });
       return;
     }
@@ -274,7 +280,9 @@
       const data = await response.json();
       showAlert({
         icon: data.icon || (data.status ? "success" : "error"),
-        title: data.title || (data.status ? "Operación exitosa" : "Ocurrió un error"),
+        title:
+          data.title ||
+          (data.status ? "Operación exitosa" : "Ocurrió un error"),
         message: data.message || "",
       });
 
@@ -290,7 +298,8 @@
       showAlert({
         icon: "error",
         title: "Ocurrió un error",
-        message: "No fue posible guardar la información del cliente. Inténtalo nuevamente.",
+        message:
+          "No fue posible guardar la información del cliente. Inténtalo nuevamente.",
       });
     }
   }
@@ -303,7 +312,9 @@
   function confirmDeleteCustomer(customer, button) {
     if (!customer || !button) return;
 
-    if (isProtectedCustomerName(customer.fullname_raw || customer.fullname || "")) {
+    if (
+      isProtectedCustomerName(customer.fullname_raw || customer.fullname || "")
+    ) {
       showAlert({
         icon: "info",
         title: "Acción no permitida",
@@ -317,12 +328,14 @@
       showAlert({
         icon: "error",
         title: "Token ausente",
-        message: "No fue posible validar la solicitud. Actualiza la página e inténtalo nuevamente.",
+        message:
+          "No fue posible validar la solicitud. Actualiza la página e inténtalo nuevamente.",
       });
       return;
     }
 
-    const customerName = customer.fullname_raw || customer.fullname || "este cliente";
+    const customerName =
+      customer.fullname_raw || customer.fullname || "este cliente";
 
     Swal.fire({
       title: "¿Eliminar cliente?",
@@ -340,11 +353,17 @@
       }
 
       try {
-        const response = await fetch(`${base_url}/pos/Customers/deleteCustomer`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: customer.idCustomer || customer.id || 0, token }),
-        });
+        const response = await fetch(
+          `${base_url}/pos/Customers/deleteCustomer`,
+          {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: customer.idCustomer || customer.id || 0,
+              token,
+            }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`Error ${response.status}`);
@@ -353,7 +372,9 @@
         const data = await response.json();
         showAlert({
           icon: data.icon || (data.status ? "success" : "error"),
-          title: data.title || (data.status ? "Operación exitosa" : "Ocurrió un error"),
+          title:
+            data.title ||
+            (data.status ? "Operación exitosa" : "Ocurrió un error"),
           message: data.message || "",
         });
 
@@ -488,10 +509,13 @@
       ],
       responsive: true,
       destroy: true,
+      colReorder: true,
+      stateSave: false,
+      autoFill: false,
       iDisplayLength: 10,
       order: [[0, "asc"]],
       language: {
-        url: `${base_url}/Assets/js/libraries/Admin/Spanish-datatables.json`,
+        url: `${base_url}/Assets/js/libraries/POS/Spanish-datatables.json`,
       },
       drawCallback: () => {
         document

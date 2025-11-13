@@ -23,17 +23,16 @@ $pageContainer = ucfirst($data["page_container"]);
     <meta name="description" content="<?= getSystemInfo()["c_description"] ?>">
     <!-- Main CSS-->
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/dataTables.bootstrap.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/buttons.bootstrap5.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/autoFill.bootstrap5.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/colReorder.bootstrap5.min.css?<?= versionSystem() ?>">
     <!-- Font-icon css-->
     <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css?<?= versionSystem() ?>">
-
-
     <!--TODO: Cargamos el icono de la pagina-->
-    <link rel="shortcut icon"
-        href="<?= base_url() ?>/loadfile/icon?f=<?= (getSystemInfo()) ? getSystemInfo()["c_logo"] : null; ?>"
-        type="image/x-icon">
+    <link rel="shortcut icon" href="<?= base_url() ?>/loadfile/icon?f=<?= (getSystemInfo()) ? getSystemInfo()["c_logo"] : null; ?>" type="image/x-icon">
     <!-- CSS de la vista -->
-    <link rel="stylesheet" type="text/css"
-        href="<?= media() ?>/css/app/POS/<?= $pageCssFolder ?>/<?= $pageCssFile ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/app/POS/<?= $pageCssFolder ?>/<?= $pageCssFile ?>">
     <?php require_once "./Views/App/POS/" . $pageContainer . "/Libraries/head.php"; ?>
     <script type="text/javascript">
         // TODO: Base url

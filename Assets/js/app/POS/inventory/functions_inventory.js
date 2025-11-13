@@ -187,7 +187,7 @@
   function populateSelect(select, data, placeholder, placeholderStatus = "No") {
     if (!select) return;
     select.innerHTML = "";
-    if (placeholderStatus === "Si") {     
+    if (placeholderStatus === "Si") {
       const option = document.createElement("option");
       option.value = "";
       option.textContent = placeholder;
@@ -830,10 +830,13 @@
       ],
       responsive: true,
       destroy: true,
+      colReorder: true,
+      stateSave: false,
+      autoFill: false,
       iDisplayLength: 10,
       order: [[0, "asc"]],
       language: {
-        url: `${rootUrl}/Assets/js/libraries/Admin/Spanish-datatables.json`,
+        url: `${rootUrl}/Assets/js/libraries/POS/Spanish-datatables.json`,
       },
       drawCallback: () => {
         document

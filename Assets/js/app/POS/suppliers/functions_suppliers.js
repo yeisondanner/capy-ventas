@@ -116,16 +116,20 @@
    */
   function updateModalTexts(isEdit) {
     const title = document.getElementById("modalSupplierLabel");
-    const submitButton = document.querySelector("#formSupplier button[type='submit']");
+    const submitButton = document.querySelector(
+      "#formSupplier button[type='submit']"
+    );
 
     if (title) {
-      title.textContent = isEdit ? "Actualizar proveedor" : "Registrar proveedor";
+      title.textContent = isEdit
+        ? "Actualizar proveedor"
+        : "Registrar proveedor";
     }
 
     if (submitButton) {
       submitButton.innerHTML = isEdit
-        ? "<i class=\"bi bi-save\"></i> Actualizar"
-        : "<i class=\"bi bi-save\"></i> Guardar";
+        ? '<i class="bi bi-save"></i> Actualizar'
+        : '<i class="bi bi-save"></i> Guardar';
     }
   }
 
@@ -236,7 +240,8 @@
       showAlert({
         icon: "error",
         title: "Token ausente",
-        message: "No se encontró el token de seguridad. Actualiza la página e inténtalo nuevamente.",
+        message:
+          "No se encontró el token de seguridad. Actualiza la página e inténtalo nuevamente.",
       });
       return;
     }
@@ -266,7 +271,9 @@
       const data = await response.json();
       showAlert({
         icon: data.icon || (data.status ? "success" : "error"),
-        title: data.title || (data.status ? "Operación exitosa" : "Ocurrió un error"),
+        title:
+          data.title ||
+          (data.status ? "Operación exitosa" : "Ocurrió un error"),
         message: data.message || "",
       });
 
@@ -282,7 +289,8 @@
       showAlert({
         icon: "error",
         title: "Ocurrió un error",
-        message: "No fue posible guardar la información del proveedor. Inténtalo nuevamente.",
+        message:
+          "No fue posible guardar la información del proveedor. Inténtalo nuevamente.",
       });
     }
   }
@@ -295,7 +303,11 @@
   function confirmDeleteSupplier(supplier, button) {
     if (!supplier || !button) return;
 
-    if (isProtectedSupplierName(supplier.company_raw || supplier.company_name || "")) {
+    if (
+      isProtectedSupplierName(
+        supplier.company_raw || supplier.company_name || ""
+      )
+    ) {
       showAlert({
         icon: "info",
         title: "Acción no permitida",
@@ -309,12 +321,14 @@
       showAlert({
         icon: "error",
         title: "Token ausente",
-        message: "No fue posible validar la solicitud. Actualiza la página e inténtalo nuevamente.",
+        message:
+          "No fue posible validar la solicitud. Actualiza la página e inténtalo nuevamente.",
       });
       return;
     }
 
-    const supplierName = supplier.company_raw || supplier.company_name || "este proveedor";
+    const supplierName =
+      supplier.company_raw || supplier.company_name || "este proveedor";
 
     Swal.fire({
       title: "¿Eliminar proveedor?",
@@ -332,11 +346,17 @@
       }
 
       try {
-        const response = await fetch(`${base_url}/pos/Suppliers/deleteSupplier`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: supplier.idSupplier || supplier.id || 0, token }),
-        });
+        const response = await fetch(
+          `${base_url}/pos/Suppliers/deleteSupplier`,
+          {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: supplier.idSupplier || supplier.id || 0,
+              token,
+            }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error(`Error ${response.status}`);
@@ -345,7 +365,9 @@
         const data = await response.json();
         showAlert({
           icon: data.icon || (data.status ? "success" : "error"),
-          title: data.title || (data.status ? "Operación exitosa" : "Ocurrió un error"),
+          title:
+            data.title ||
+            (data.status ? "Operación exitosa" : "Ocurrió un error"),
           message: data.message || "",
         });
 
@@ -357,7 +379,8 @@
         showAlert({
           icon: "error",
           title: "Ocurrió un error",
-          message: "No fue posible eliminar el proveedor. Inténtalo nuevamente.",
+          message:
+            "No fue posible eliminar el proveedor. Inténtalo nuevamente.",
         });
       }
     });
@@ -479,10 +502,13 @@
       ],
       responsive: true,
       destroy: true,
+      colReorder: true,
+      stateSave: false,
+      autoFill: false,
       iDisplayLength: 10,
       order: [[0, "asc"]],
       language: {
-        url: `${base_url}/Assets/js/libraries/Admin/Spanish-datatables.json`,
+        url: `${base_url}/Assets/js/libraries/POS/Spanish-datatables.json`,
       },
       drawCallback: () => {
         document
