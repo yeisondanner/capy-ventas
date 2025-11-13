@@ -28,3 +28,4 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
 - CHATGPT - 2025-11-13 16:38 UTC - Se reemplazó la carga dinámica por una versión estática en HTML, CSS y JS, segmentando los planes mensuales y anuales con un nuevo selector interactivo.
 - CHATGPT - 2025-11-13 16:47 UTC - Se simplificó la sección de planes del home para mostrar solo los nombres con botones de contacto vía WhatsApp por modalidad mensual y anual.
 - CHATGPT - 2025-11-13 16:58 UTC - Se refinó la sección de planes del home con un diseño más visual, agrupando mensualidades y anualidades en tarjetas estilizadas y retirando el plan Basic Anual.
+- CHATGPT - 2025-11-13 17:04 UTC - Se añadieron botones de acceso para clientes y se actualizaron los enlaces de WhatsApp para crear cuenta o solicitar demos según cada plan.

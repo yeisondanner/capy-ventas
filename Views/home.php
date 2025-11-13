@@ -110,6 +110,18 @@
       box-shadow: 0 16px 32px rgba(35, 67, 106, 0.32);
     }
 
+    .btn-ghost {
+      border: 2px solid rgba(35, 67, 106, 0.18);
+      background: rgba(35, 67, 106, 0.08);
+      color: var(--color-primary);
+    }
+
+    .btn-ghost:hover {
+      transform: translateY(-2px);
+      background: rgba(35, 67, 106, 0.14);
+      box-shadow: 0 16px 32px rgba(35, 67, 106, 0.18);
+    }
+
     main {
       width: 100%;
       padding: 40px 6% 120px;
@@ -662,7 +674,14 @@
       <a href="#planes">Planes</a>
       <a href="#contacto">Contacto</a>
     </nav>
-    <a class="btn btn-outline" href="#demo">Solicitar demo</a>
+    <a
+      class="btn btn-outline"
+      href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20de%20Capy%20Ventas"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Solicitar demo
+    </a>
   </header>
 
   <main>
@@ -807,140 +826,147 @@
             <article class="pricing-card">
               <h3 class="plan-name">Gratis</h3>
               <p class="plan-price">S/. 0<span>/mes</span></p>
-          <div class="plan-cta">
-            <a
-              class="btn btn-primary"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Gratis%20mensual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Crear cuenta
-            </a>
-            <a
-              class="btn btn-outline"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Gratis%20mensual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Solicitar detalles
-            </a>
-          </div>
-        </article>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Gratis%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Gratis%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Solicitar demo
+                </a>
+                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
+              </div>
+            </article>
 
-        <article class="pricing-card">
-          <h3 class="plan-name">Basic</h3>
-          <p class="plan-price">S/. 10<span>/mes</span></p>
-          <div class="plan-cta">
-            <a
-              class="btn btn-primary"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Basic%20mensual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Crear cuenta
-            </a>
-            <a
-              class="btn btn-outline"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Basic%20mensual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Solicitar detalles
-            </a>
-          </div>
-        </article>
+            <article class="pricing-card">
+              <h3 class="plan-name">Basic</h3>
+              <p class="plan-price">S/. 10<span>/mes</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Basic%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Basic%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Solicitar demo
+                </a>
+                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
+              </div>
+            </article>
 
-        <article class="pricing-card recommended">
-          <span class="plan-badge">Popular</span>
-          <h3 class="plan-name">Pro</h3>
-          <p class="plan-price">S/. 20<span>/mes</span></p>
-          <div class="plan-cta">
-            <a
-              class="btn btn-primary"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Pro%20mensual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Crear cuenta
-            </a>
-            <a
-              class="btn btn-outline"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Pro%20mensual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Solicitar detalles
-            </a>
-          </div>
-        </article>
+            <article class="pricing-card recommended">
+              <span class="plan-badge">Popular</span>
+              <h3 class="plan-name">Pro</h3>
+              <p class="plan-price">S/. 20<span>/mes</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Pro%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Pro%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Solicitar demo
+                </a>
+                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
+              </div>
+            </article>
 
-        <article class="pricing-card">
-          <h3 class="plan-name">Business</h3>
-          <p class="plan-price">S/. 30<span>/mes</span></p>
-          <div class="plan-cta">
-            <a
-              class="btn btn-primary"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Business%20mensual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Crear cuenta
-            </a>
-            <a
-              class="btn btn-outline"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Business%20mensual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Solicitar detalles
-            </a>
-          </div>
-        </article>
+            <article class="pricing-card">
+              <h3 class="plan-name">Business</h3>
+              <p class="plan-price">S/. 30<span>/mes</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Business%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Business%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Solicitar demo
+                </a>
+                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
+              </div>
+            </article>
 
-        <article class="pricing-card">
-          <h3 class="plan-name">Premium</h3>
-          <p class="plan-price">S/. 40<span>/mes</span></p>
-          <div class="plan-cta">
-            <a
-              class="btn btn-primary"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Premium%20mensual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Crear cuenta
-            </a>
-            <a
-              class="btn btn-outline"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Premium%20mensual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Solicitar detalles
-            </a>
-          </div>
-        </article>
+            <article class="pricing-card">
+              <h3 class="plan-name">Premium</h3>
+              <p class="plan-price">S/. 40<span>/mes</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Premium%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Premium%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Solicitar demo
+                </a>
+                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
+              </div>
+            </article>
 
-        <article class="pricing-card">
-          <h3 class="plan-name">Full Max</h3>
-          <p class="plan-price">S/. 50<span>/mes</span></p>
-          <div class="plan-cta">
-            <a
-              class="btn btn-primary"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Full%20Max%20mensual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Crear cuenta
-            </a>
-            <a
-              class="btn btn-outline"
-              href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Full%20Max%20mensual"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Solicitar detalles
-            </a>
-          </div>
+            <article class="pricing-card">
+              <h3 class="plan-name">Full Max</h3>
+              <p class="plan-price">S/. 50<span>/mes</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Full%20Max%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Full%20Max%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Solicitar demo
+                </a>
+                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
+              </div>
+            </article>
           </div>
 
           <div class="pricing-grid is-hidden" data-plan-group="yearly">
@@ -951,7 +977,7 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Pro%20anual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Pro%20anual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -959,12 +985,13 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Pro%20anual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Pro%20anual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar detalles
+                  Solicitar demo
                 </a>
+                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
 
@@ -974,7 +1001,7 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Business%20anual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Business%20anual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -982,12 +1009,13 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Business%20anual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Business%20anual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar detalles
+                  Solicitar demo
                 </a>
+                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
 
@@ -997,7 +1025,7 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Premium%20anual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Premium%20anual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -1005,12 +1033,13 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Premium%20anual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Premium%20anual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar detalles
+                  Solicitar demo
                 </a>
+                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
 
@@ -1020,7 +1049,7 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Full%20Max%20anual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Full%20Max%20anual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -1028,12 +1057,13 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Quiero%20el%20plan%20Full%20Max%20anual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Full%20Max%20anual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar detalles
+                  Solicitar demo
                 </a>
+                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
           </div>
