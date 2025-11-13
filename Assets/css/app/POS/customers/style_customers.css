@@ -1,0 +1,11 @@
+/* Estilos específicos para la vista de clientes POS */
+
+.table#customerTable td,
+.table#customerTable th {
+    vertical-align: middle;
+}
+
+.list-group-item-protected {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

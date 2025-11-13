@@ -73,6 +73,7 @@
         <li><a class="app-menu__item active" href="<?= base_url() ?>/pos/dashboard"><i class="app-menu__icon bi bi-house-door"></i>
                 <span class="app-menu__label">Inicio</span></a></li>
         <li><a class="app-menu__item " href="<?= base_url() ?>/pos/inventory"><i class="app-menu__icon bi bi-box-seam"></i><span class="app-menu__label">Inventario</span></a></li>
+        <li><a class="app-menu__item " href="<?= base_url() ?>/pos/customers"><i class="app-menu__icon bi bi-person-lines-fill"></i><span class="app-menu__label">Clientes</span></a></li>
         <li><a class="app-menu__item " href="<?= base_url() ?>/pos/suppliers"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label">Proveedores</span></a></li>
     </ul>
 </aside>
