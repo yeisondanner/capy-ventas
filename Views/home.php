@@ -1,39 +1,3 @@
-<?php
-$plans = [];
-$minimumPlanPrice = null;
-$recommendedPlanName = null;
-
-if (isset($data['plans']) && is_array($data['plans'])) {
-        $plans = array_values(array_filter($data['plans'], static function ($plan) {
-                return (int) ($plan['is_active'] ?? 0) === 1;
-        }));
-
-        usort($plans, static function ($first, $second) {
-                return (float) ($first['base_price'] ?? 0) <=> (float) ($second['base_price'] ?? 0);
-        });
-}
-
-if (isset($data['minimum_plan_price']) && $data['minimum_plan_price'] !== null) {
-        $minimumPlanPrice = (float) $data['minimum_plan_price'];
-} elseif (!empty($plans)) {
-        $minimumPlanPrice = (float) ($plans[0]['base_price'] ?? 0);
-}
-
-foreach ($plans as $plan) {
-        if (isset($plan['name']) && strcasecmp((string) $plan['name'], 'Pro') === 0) {
-                $recommendedPlanName = (string) $plan['name'];
-                break;
-        }
-}
-
-if ($recommendedPlanName === null && !empty($plans)) {
-        $recommendedPlanName = $plans[min(1, count($plans) - 1)]['name'] ?? $plans[0]['name'];
-}
-
-$formattedMinimumPrice = $minimumPlanPrice !== null
-        ? number_format($minimumPlanPrice, 2, '.', ',')
-        : null;
-?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -328,21 +292,60 @@ $formattedMinimumPrice = $minimumPlanPrice !== null
       margin-top: 120px;
     }
 
+    .billing-toggle {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      gap: 18px;
+      margin-bottom: 44px;
+      flex-wrap: wrap;
+    }
+
+    .toggle-button {
+      border: 1px solid rgba(35, 67, 106, 0.15);
+      background: rgba(245, 247, 251, 0.9);
+      border-radius: 14px;
+      padding: 16px 28px;
+      min-width: 220px;
+      display: grid;
+      gap: 6px;
+      text-align: left;
+      color: var(--color-muted);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .toggle-button span {
+      font-size: 1rem;
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+
+    .toggle-button small {
+      font-size: 0.8rem;
+    }
+
+    .toggle-button.active {
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--color-secondary), #24d7b1);
+      box-shadow: 0 16px 32px rgba(27, 191, 157, 0.25);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .toggle-button.active span,
+    .toggle-button.active small {
+      color: #ffffff;
+    }
+
     .pricing-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 28px;
     }
 
-    .plan-empty-message {
-      grid-column: 1 / -1;
-      text-align: center;
-      color: var(--color-muted);
-      font-size: 1.05rem;
-      background: rgba(245, 247, 251, 0.9);
-      border: 1px solid rgba(35, 67, 106, 0.08);
-      border-radius: var(--border-radius);
-      padding: 40px 32px;
+    .pricing-grid.is-hidden {
+      display: none;
     }
 
     .pricing-card {
@@ -440,80 +443,66 @@ $formattedMinimumPrice = $minimumPlanPrice !== null
       position: absolute;
       width: 480px;
       height: 480px;
-      background: radial-gradient(circle, rgba(27, 191, 157, 0.35), transparent 60%);
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(27, 191, 157, 0.35), transparent 65%);
       top: -220px;
       right: -120px;
-      z-index: 0;
+      opacity: 0.8;
     }
 
-    .cta-content {
+    .cta-panel::after {
+      content: "";
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(247, 163, 37, 0.28), transparent 60%);
+      bottom: -160px;
+      left: -60px;
+      opacity: 0.6;
+    }
+
+    .cta-panel > * {
       position: relative;
       z-index: 2;
-      display: grid;
-      gap: 16px;
-      max-width: 600px;
     }
 
-    .cta-content h3 {
-      font-size: clamp(2.1rem, 3.2vw, 2.8rem);
-      font-weight: 700;
-      line-height: 1.2;
+    .cta-panel h3 {
+      font-size: clamp(2rem, 3vw, 2.6rem);
+      margin-bottom: 18px;
     }
 
-    .cta-content p {
-      font-size: 1.05rem;
-      color: rgba(255, 255, 255, 0.8);
+    .cta-panel p {
+      max-width: 580px;
+      color: rgba(255, 255, 255, 0.88);
+      margin-bottom: 28px;
     }
 
     footer {
-      margin-top: 80px;
-      padding: 40px 0 20px;
+      padding: 40px 6% 60px;
       text-align: center;
       color: var(--color-muted);
-      font-size: 0.85rem;
+      font-size: 0.9rem;
     }
 
-    footer a {
-      color: var(--color-secondary);
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    @media (max-width: 860px) {
+    @media (max-width: 960px) {
       header {
-        flex-direction: column;
-        gap: 18px;
-        padding: 22px 6%;
-      }
-
-      nav {
         flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .hero {
-        gap: 40px;
-        padding: 40px 0 20px;
-      }
-
-      .hero-card {
-        order: -1;
-      }
-    }
-
-    @media (max-width: 540px) {
-      main {
-        padding: 24px 5% 80px;
-      }
-
-      header {
-        align-items: flex-start;
+        gap: 18px;
       }
 
       nav {
         width: 100%;
-        justify-content: space-between;
-        gap: 14px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .hero {
+        padding: 40px 0;
+      }
+
+      .hero-content h1 {
+        font-size: clamp(2.2rem, 6vw, 3rem);
       }
 
       .hero-content p {
@@ -668,49 +657,179 @@ $formattedMinimumPrice = $minimumPlanPrice !== null
     <section class="pricing-section" id="planes">
       <h2 class="section-title">Planes diseñados para tu crecimiento</h2>
       <p class="section-subtitle">
-        <?php if ($formattedMinimumPrice !== null) : ?>
-          Selecciona el plan que mejor se adapta a tu equipo y activa Capy Ventas desde S/. <?php echo $formattedMinimumPrice; ?> al mes.
-        <?php else : ?>
-          Selecciona el plan que mejor se adapta a tu equipo y contáctanos para recibir una propuesta personalizada.
-        <?php endif; ?>
-        Todos los planes incluyen implementación guiada y soporte en español.
+        Elige la modalidad de pago que se ajusta a tu presupuesto. Los planes mensuales ofrecen flexibilidad sin permanencia
+        y los planes anuales incluyen descuentos preferenciales para impulsar tu expansión.
       </p>
-      <div class="pricing-grid">
-        <?php if (!empty($plans)) : ?>
-          <?php foreach ($plans as $plan) :
-                  $planName = isset($plan['name']) ? (string) $plan['name'] : 'Plan sin nombre';
-                  $rawDescription = isset($plan['description']) ? trim((string) $plan['description']) : '';
-                  $planDescription = $rawDescription !== ''
-                          ? $rawDescription
-                          : sprintf('Impulsa tu negocio con el plan %s y funcionalidades adaptables.', $planName);
-                  $priceValue = isset($plan['base_price']) ? (float) $plan['base_price'] : 0.0;
-                  $planPrice = number_format($priceValue, 2, '.', ',');
-                  $billingPeriod = isset($plan['billing_period']) ? (string) $plan['billing_period'] : 'monthly';
-                  $periodLabel = $billingPeriod === 'yearly' ? 'año' : 'mes';
-                  $isRecommended = $recommendedPlanName !== null && strcasecmp($planName, (string) $recommendedPlanName) === 0;
-                  $buttonClass = $isRecommended ? 'btn-primary' : 'btn-outline';
-                  $ctaLabel = $isRecommended ? 'Elegir este plan' : 'Solicitar información';
-          ?>
-          <article class="pricing-card<?php echo $isRecommended ? ' recommended' : ''; ?>">
-            <?php if ($isRecommended) : ?>
-              <span class="plan-badge">Recomendado</span>
-            <?php endif; ?>
-            <h3 class="plan-name"><?php echo htmlspecialchars($planName, ENT_QUOTES, 'UTF-8'); ?></h3>
-            <p class="plan-description"><?php echo htmlspecialchars($planDescription, ENT_QUOTES, 'UTF-8'); ?></p>
-            <p class="plan-price">S/. <?php echo $planPrice; ?><span>/<?php echo $periodLabel; ?></span></p>
-            <ul class="plan-features">
-              <li>Implementación guiada y soporte en español</li>
-              <li>Acceso a módulos esenciales de gestión comercial</li>
-              <li>Paneles listos para analizar tus ventas</li>
-            </ul>
-            <div class="plan-cta">
-              <a class="btn <?php echo $buttonClass; ?>" href="#demo"><?php echo $ctaLabel; ?></a>
-            </div>
-          </article>
-          <?php endforeach; ?>
-        <?php else : ?>
-          <p class="plan-empty-message">Estamos actualizando nuestros planes. Contáctanos para recibir una propuesta personalizada.</p>
-        <?php endif; ?>
+
+      <div class="billing-toggle" role="group" aria-label="Selector de modalidad de facturación">
+        <button class="toggle-button active" data-target="monthly" type="button">
+          <span>Pagos mensuales</span>
+          <small>Flexibilidad sin contratos</small>
+        </button>
+        <button class="toggle-button" data-target="yearly" type="button">
+          <span>Pagos anuales</span>
+          <small>Ahorra hasta 20%</small>
+        </button>
+      </div>
+
+      <div class="pricing-grid" data-plan-group="monthly">
+        <article class="pricing-card">
+          <h3 class="plan-name">Gratis</h3>
+          <p class="plan-description">Ideal para emprendedores que necesitan emitir sus primeras ventas sin inversión inicial.</p>
+          <p class="plan-price">S/. 0<span>/mes</span></p>
+          <ul class="plan-features">
+            <li>Usuarios y sucursales limitados</li>
+            <li>Reportes básicos de ventas</li>
+            <li>Soporte por correo en horario laboral</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-outline" href="#demo">Crear cuenta gratuita</a>
+          </div>
+        </article>
+
+        <article class="pricing-card">
+          <h3 class="plan-name">Basic</h3>
+          <p class="plan-description">Gestiona inventario y ventas de tu tienda física y digital con herramientas esenciales.</p>
+          <p class="plan-price">S/. 10<span>/mes</span></p>
+          <ul class="plan-features">
+            <li>Inventario sincronizado en tiempo real</li>
+            <li>Integración con pasarelas de pago</li>
+            <li>Soporte prioritario por chat</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-outline" href="#demo">Probar plan Basic</a>
+          </div>
+        </article>
+
+        <article class="pricing-card recommended">
+          <span class="plan-badge">Popular</span>
+          <h3 class="plan-name">Pro</h3>
+          <p class="plan-description">Automatiza campañas, gestiona equipos comerciales y obtén analítica avanzada.</p>
+          <p class="plan-price">S/. 20<span>/mes</span></p>
+          <ul class="plan-features">
+            <li>CRM con segmentación inteligente</li>
+            <li>Automatización de marketing y embudos</li>
+            <li>Paneles BI personalizables</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-primary" href="#demo">Elegir plan Pro</a>
+          </div>
+        </article>
+
+        <article class="pricing-card">
+          <h3 class="plan-name">Business</h3>
+          <p class="plan-description">Control total para cadenas con múltiples sucursales y necesidades operativas complejas.</p>
+          <p class="plan-price">S/. 30<span>/mes</span></p>
+          <ul class="plan-features">
+            <li>Workflows de aprobación y auditoría</li>
+            <li>Integración con ERP y marketplaces</li>
+            <li>Soporte dedicado 24/7</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-outline" href="#demo">Hablar con ventas</a>
+          </div>
+        </article>
+
+        <article class="pricing-card">
+          <h3 class="plan-name">Premium</h3>
+          <p class="plan-description">Experiencia omnicanal completa con personalizaciones avanzadas para retail y servicios.</p>
+          <p class="plan-price">S/. 40<span>/mes</span></p>
+          <ul class="plan-features">
+            <li>Catálogos dinámicos ilimitados</li>
+            <li>KPIs personalizados y alertas proactivas</li>
+            <li>Implementación guiada por consultores</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-outline" href="#demo">Solicitar detalles</a>
+          </div>
+        </article>
+
+        <article class="pricing-card">
+          <h3 class="plan-name">Full Max</h3>
+          <p class="plan-description">Suite corporativa para operaciones regionales con necesidades de gobierno y seguridad.</p>
+          <p class="plan-price">S/. 50<span>/mes</span></p>
+          <ul class="plan-features">
+            <li>Multiempresa y multi-moneda</li>
+            <li>Single Sign-On y cumplimiento SOX</li>
+            <li>Gerente de cuenta dedicado</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-outline" href="#demo">Agendar consultoría</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="pricing-grid is-hidden" data-plan-group="yearly">
+        <article class="pricing-card">
+          <h3 class="plan-name">Basic Anual</h3>
+          <p class="plan-description">Obtén todos los beneficios de Basic con un 10% de ahorro para asegurar tu operación todo el año.</p>
+          <p class="plan-price">S/. 108<span>/año</span></p>
+          <ul class="plan-features">
+            <li>Inventario sincronizado en tiempo real</li>
+            <li>Integración con pasarelas de pago</li>
+            <li>Horas de onboarding asistido incluidas</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-outline" href="#demo">Contratar Basic Anual</a>
+          </div>
+        </article>
+
+        <article class="pricing-card recommended">
+          <span class="plan-badge">Recomendado</span>
+          <h3 class="plan-name">Pro Anual</h3>
+          <p class="plan-description">Plan favorito de equipos comerciales que buscan escalar con automatización y soporte premium.</p>
+          <p class="plan-price">S/. 204<span>/año</span></p>
+          <ul class="plan-features">
+            <li>CRM avanzado con segmentación predictiva</li>
+            <li>Campañas automatizadas ilimitadas</li>
+            <li>Sesiones trimestrales de estrategia</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-primary" href="#demo">Reservar Pro Anual</a>
+          </div>
+        </article>
+
+        <article class="pricing-card">
+          <h3 class="plan-name">Business Anual</h3>
+          <p class="plan-description">Optimiza operaciones regionales con un ahorro del 20% y soporte ejecutivo permanente.</p>
+          <p class="plan-price">S/. 288<span>/año</span></p>
+          <ul class="plan-features">
+            <li>Workflows y auditorías avanzadas</li>
+            <li>Integraciones personalizadas ilimitadas</li>
+            <li>Formación trimestral para tu equipo</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-outline" href="#demo">Solicitar propuesta anual</a>
+          </div>
+        </article>
+
+        <article class="pricing-card">
+          <h3 class="plan-name">Premium Anual</h3>
+          <p class="plan-description">La opción para retailers en expansión con consultoría CX y soporte VIP en español.</p>
+          <p class="plan-price">S/. 384<span>/año</span></p>
+          <ul class="plan-features">
+            <li>Personalización avanzada de catálogos</li>
+            <li>Monitor de experiencia omnicanal 360°</li>
+            <li>Capacitaciones mensuales en vivo</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-outline" href="#demo">Explorar Premium Anual</a>
+          </div>
+        </article>
+
+        <article class="pricing-card">
+          <h3 class="plan-name">Full Max Anual</h3>
+          <p class="plan-description">Suite ejecutiva con gobierno corporativo, seguridad avanzada y ahorros exclusivos.</p>
+          <p class="plan-price">S/. 480<span>/año</span></p>
+          <ul class="plan-features">
+            <li>Arquitectura multi-región y redundante</li>
+            <li>Consultoría de adopción y change management</li>
+            <li>Soporte de misión crítica 24/7</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-outline" href="#demo">Hablar con un asesor</a>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -737,7 +856,34 @@ $formattedMinimumPrice = $minimumPlanPrice !== null
   </main>
 
   <footer>
-    © <?php echo date('Y'); ?> Capy Ventas · Plataforma integral para la gestión y crecimiento de ventas.
+    © <span id="current-year"></span> Capy Ventas · Plataforma integral para la gestión y crecimiento de ventas.
   </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const toggleButtons = document.querySelectorAll(".toggle-button");
+      const planGroups = document.querySelectorAll("[data-plan-group]");
+      const yearLabel = document.getElementById("current-year");
+
+      toggleButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const target = button.dataset.target;
+
+          toggleButtons.forEach((btn) => {
+            btn.classList.toggle("active", btn === button);
+          });
+
+          planGroups.forEach((group) => {
+            const isTarget = group.dataset.planGroup === target;
+            group.classList.toggle("is-hidden", !isTarget);
+          });
+        });
+      });
+
+      if (yearLabel) {
+        yearLabel.textContent = new Date().getFullYear().toString();
+      }
+    });
+  </script>
 </body>
 </html>
