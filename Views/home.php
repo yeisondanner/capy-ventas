@@ -306,6 +306,85 @@
       font-size: 0.95rem;
     }
 
+    .clients-section {
+      margin-top: 120px;
+      background: rgba(35, 67, 106, 0.04);
+      border-radius: 32px;
+      padding: clamp(48px, 6vw, 72px);
+      box-shadow: 0 18px 44px rgba(17, 40, 66, 0.12);
+      border: 1px solid rgba(35, 67, 106, 0.08);
+    }
+
+    .clients-header {
+      text-align: center;
+      max-width: 660px;
+      margin: 0 auto 42px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .clients-eyebrow {
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--color-secondary);
+    }
+
+    .clients-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .client-card {
+      background: var(--color-card);
+      border-radius: 24px;
+      padding: 26px 22px;
+      border: 1px solid rgba(35, 67, 106, 0.08);
+      box-shadow: 0 12px 28px rgba(17, 40, 66, 0.12);
+      display: grid;
+      gap: 14px;
+      justify-items: center;
+      text-align: center;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .client-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 44px rgba(17, 40, 66, 0.16);
+    }
+
+    .client-logo {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(27, 191, 157, 0.18), rgba(35, 67, 106, 0.16));
+      display: grid;
+      place-items: center;
+      color: var(--color-primary);
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .client-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+
+    .client-field {
+      font-size: 0.85rem;
+      color: var(--color-muted);
+    }
+
+    .client-quote {
+      font-size: 0.95rem;
+      color: var(--color-muted);
+      line-height: 1.5;
+    }
+
     .pricing-section {
       margin-top: 120px;
       position: relative;
@@ -684,17 +763,18 @@
       <a href="#metricas">Impacto</a>
       <a href="#funcionalidades">Funcionalidades</a>
       <a href="#planes">Planes</a>
+      <a href="#clientes">Clientes</a>
       <a href="#contacto">Contacto</a>
     </nav>
     <div class="header-actions">
       <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
       <a
         class="btn btn-outline"
-        href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20de%20Capy%20Ventas"
+        href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20Capy%20Ventas"
         target="_blank"
         rel="noopener noreferrer"
       >
-        Solicitar demo
+        Inicia gratis
       </a>
     </div>
   </header>
@@ -708,7 +788,14 @@
           para que cada oportunidad se convierta en ingresos recurrentes.
         </p>
         <div class="hero-buttons">
-          <a class="btn btn-primary" href="#demo">Comenzar prueba gratuita</a>
+          <a
+            class="btn btn-primary"
+            href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20Capy%20Ventas"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Inicia gratis
+          </a>
           <a class="btn btn-outline" href="#contacto">Hablar con un especialista</a>
         </div>
         <div class="hero-highlights">
@@ -814,6 +901,43 @@
       </div>
     </section>
 
+    <section class="clients-section" id="clientes">
+      <div class="clients-header">
+        <span class="clients-eyebrow">Nuestros clientes</span>
+        <h2 class="section-title">Marcas que confían en Capy Ventas</h2>
+        <p class="section-subtitle">
+          Acompañamos a negocios de retail, gastronomía, moda y servicios a escalar sus operaciones con experiencias
+          omnicanal memorables.
+        </p>
+      </div>
+      <div class="clients-grid">
+        <article class="client-card">
+          <div class="client-logo">RV</div>
+          <h3 class="client-name">Retail Vision</h3>
+          <span class="client-field">Retail multiformato</span>
+          <p class="client-quote">“Duplicamos nuestras ventas online integrando tiendas físicas y ecommerce en un solo flujo.”</p>
+        </article>
+        <article class="client-card">
+          <div class="client-logo">GF</div>
+          <h3 class="client-name">Gourmet Factory</h3>
+          <span class="client-field">Restaurantes y dark kitchens</span>
+          <p class="client-quote">“Las órdenes llegan centralizadas y el inventario se sincroniza en tiempo real en todas las sedes.”</p>
+        </article>
+        <article class="client-card">
+          <div class="client-logo">LM</div>
+          <h3 class="client-name">Luna Moda</h3>
+          <span class="client-field">Moda omnicanal</span>
+          <p class="client-quote">“La segmentación automática nos permitió personalizar campañas y aumentar la recompra.”</p>
+        </article>
+        <article class="client-card">
+          <div class="client-logo">TC</div>
+          <h3 class="client-name">TechCare</h3>
+          <span class="client-field">Servicios técnicos</span>
+          <p class="client-quote">“Integramos CRM y soporte para dar seguimiento a cada ticket y cerrar contratos recurrentes.”</p>
+        </article>
+      </div>
+    </section>
+
     <section class="pricing-section" id="planes">
       <div class="pricing-wrapper">
         <div class="pricing-header">
@@ -852,11 +976,11 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Gratis%20mensual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Gratis%20mensual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar demo
+                  Inicia gratis
                 </a>
               </div>
             </article>
@@ -875,11 +999,11 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Basic%20mensual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Basic%20mensual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar demo
+                  Inicia gratis
                 </a>
               </div>
             </article>
@@ -899,11 +1023,11 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Pro%20mensual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Pro%20mensual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar demo
+                  Inicia gratis
                 </a>
               </div>
             </article>
@@ -922,11 +1046,11 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Business%20mensual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Business%20mensual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar demo
+                  Inicia gratis
                 </a>
               </div>
             </article>
@@ -945,11 +1069,11 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Premium%20mensual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Premium%20mensual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar demo
+                  Inicia gratis
                 </a>
               </div>
             </article>
@@ -968,11 +1092,11 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Full%20Max%20mensual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Full%20Max%20mensual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar demo
+                  Inicia gratis
                 </a>
               </div>
             </article>
@@ -994,11 +1118,11 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Pro%20anual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Pro%20anual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar demo
+                  Inicia gratis
                 </a>
               </div>
             </article>
@@ -1017,11 +1141,11 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Business%20anual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Business%20anual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar demo
+                  Inicia gratis
                 </a>
               </div>
             </article>
@@ -1040,11 +1164,11 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Premium%20anual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Premium%20anual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar demo
+                  Inicia gratis
                 </a>
               </div>
             </article>
@@ -1063,11 +1187,11 @@
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20del%20plan%20Full%20Max%20anual"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Full%20Max%20anual"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Solicitar demo
+                  Inicia gratis
                 </a>
               </div>
             </article>
@@ -1078,13 +1202,20 @@
 
     <section class="cta-panel" id="demo">
       <div class="cta-content">
-        <h3>Agenda una demo personalizada y descubre Capy Ventas en acción</h3>
+        <h3>Inicia gratis con acompañamiento personalizado</h3>
         <p>
-          Un especialista analizará tu modelo de negocio, configurará los módulos ideales y te acompañará
-          en la migración para que adoptes la plataforma sin fricción.
+          Un especialista analizará tu modelo de negocio, configurará los módulos ideales y te acompañará en cada paso para
+          que adoptes la plataforma sin fricción.
         </p>
         <div>
-          <a class="btn btn-primary" href="mailto:hola@capyventas.com">Reservar demo</a>
+          <a
+            class="btn btn-primary"
+            href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20Capy%20Ventas%20y%20recibir%20acompa%C3%B1amiento"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Inicia gratis ahora
+          </a>
         </div>
       </div>
     </section>
