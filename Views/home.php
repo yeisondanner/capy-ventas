@@ -902,6 +902,305 @@
       </div>
     </section>
 
+    <section class="clients-section" id="clientes">
+      <div class="clients-header">
+        <span class="clients-eyebrow">Nuestros clientes</span>
+        <h2 class="section-title">Marcas que confían en Capy Ventas</h2>
+        <p class="section-subtitle">
+          Acompañamos a negocios de retail, gastronomía, moda y servicios a escalar sus operaciones con experiencias
+          omnicanal memorables.
+        </p>
+      </div>
+      <div class="clients-grid">
+        <article class="client-card">
+          <div class="client-logo">RV</div>
+          <h3 class="client-name">Retail Vision</h3>
+          <span class="client-field">Retail multiformato</span>
+          <p class="client-quote">“Duplicamos nuestras ventas online integrando tiendas físicas y ecommerce en un solo flujo.”</p>
+        </article>
+        <article class="client-card">
+          <div class="client-logo">GF</div>
+          <h3 class="client-name">Gourmet Factory</h3>
+          <span class="client-field">Restaurantes y dark kitchens</span>
+          <p class="client-quote">“Creamos nuevos negocios digitales y controlamos cada operación en un panel único para todo el grupo.”</p>
+        </article>
+        <article class="client-card">
+          <div class="client-logo">LM</div>
+          <h3 class="client-name">Luna Moda</h3>
+          <span class="client-field">Moda omnicanal</span>
+          <p class="client-quote">“La segmentación automática nos permitió personalizar campañas y aumentar la recompra.”</p>
+        </article>
+        <article class="client-card">
+          <div class="client-logo">TC</div>
+          <h3 class="client-name">TechCare</h3>
+          <span class="client-field">Servicios técnicos</span>
+          <p class="client-quote">“Integramos CRM y soporte para dar seguimiento a cada ticket y cerrar contratos recurrentes.”</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="pricing-section" id="planes">
+      <div class="pricing-wrapper">
+        <div class="pricing-header">
+          <span class="pricing-eyebrow">Planes Capy Ventas</span>
+          <h2 class="section-title">Planes diseñados para tu crecimiento</h2>
+          <p class="section-subtitle">
+            Elige la modalidad de pago que se ajusta a tu presupuesto. Los planes mensuales ofrecen flexibilidad sin
+            permanencia y los planes anuales premian tu compromiso con descuentos especiales.
+          </p>
+        </div>
+
+        <div class="billing-toggle" role="group" aria-label="Selector de modalidad de facturación">
+          <button class="toggle-button active" data-target="monthly" type="button">
+            <span>Pagos mensuales</span>
+            <small>Flexibilidad sin contratos</small>
+          </button>
+          <button class="toggle-button" data-target="yearly" type="button">
+            <span>Pagos anuales</span>
+            <small>Ahorra hasta 20%</small>
+          </button>
+        </div>
+
+        <div class="pricing-grids">
+          <div class="pricing-grid" data-plan-group="monthly">
+            <article class="pricing-card">
+              <h3 class="plan-name">Gratis</h3>
+              <p class="plan-price">S/. 0<span>/mes</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Gratis%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Gratis%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Inicia gratis
+                </a>
+              </div>
+            </article>
+
+            <article class="pricing-card">
+              <h3 class="plan-name">Basic</h3>
+              <p class="plan-price">S/. 10<span>/mes</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Basic%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Basic%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Inicia gratis
+                </a>
+              </div>
+            </article>
+
+            <article class="pricing-card recommended">
+              <span class="plan-badge">Popular</span>
+              <h3 class="plan-name">Pro</h3>
+              <p class="plan-price">S/. 20<span>/mes</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Pro%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Pro%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Inicia gratis
+                </a>
+              </div>
+            </article>
+
+            <article class="pricing-card">
+              <h3 class="plan-name">Business</h3>
+              <p class="plan-price">S/. 30<span>/mes</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Business%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Business%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Inicia gratis
+                </a>
+              </div>
+            </article>
+
+            <article class="pricing-card">
+              <h3 class="plan-name">Premium</h3>
+              <p class="plan-price">S/. 40<span>/mes</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Premium%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Premium%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Inicia gratis
+                </a>
+              </div>
+            </article>
+
+            <article class="pricing-card">
+              <h3 class="plan-name">Full Max</h3>
+              <p class="plan-price">S/. 50<span>/mes</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Full%20Max%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Full%20Max%20mensual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Inicia gratis
+                </a>
+              </div>
+            </article>
+          </div>
+
+          <div class="pricing-grid is-hidden" data-plan-group="yearly">
+            <article class="pricing-card recommended">
+              <span class="plan-badge">Recomendado</span>
+              <h3 class="plan-name">Pro Anual</h3>
+              <p class="plan-price">S/. 204<span>/año</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Pro%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Pro%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Inicia gratis
+                </a>
+              </div>
+            </article>
+
+            <article class="pricing-card">
+              <h3 class="plan-name">Business Anual</h3>
+              <p class="plan-price">S/. 288<span>/año</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Business%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Business%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Inicia gratis
+                </a>
+              </div>
+            </article>
+
+            <article class="pricing-card">
+              <h3 class="plan-name">Premium Anual</h3>
+              <p class="plan-price">S/. 384<span>/año</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Premium%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Premium%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Inicia gratis
+                </a>
+              </div>
+            </article>
+
+            <article class="pricing-card">
+              <h3 class="plan-name">Full Max Anual</h3>
+              <p class="plan-price">S/. 480<span>/año</span></p>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Full%20Max%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Full%20Max%20anual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Inicia gratis
+                </a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="cta-panel" id="demo">
       <div class="cta-content">
         <h3>Inicia gratis con acompañamiento personalizado</h3>
