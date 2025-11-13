@@ -61,6 +61,12 @@
       gap: 28px;
     }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
     nav a {
       text-decoration: none;
       font-size: 0.95rem;
@@ -618,6 +624,12 @@
         flex-wrap: wrap;
       }
 
+      .header-actions {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
       .hero {
         padding: 40px 0;
       }
@@ -674,14 +686,17 @@
       <a href="#planes">Planes</a>
       <a href="#contacto">Contacto</a>
     </nav>
-    <a
-      class="btn btn-outline"
-      href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20de%20Capy%20Ventas"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Solicitar demo
-    </a>
+    <div class="header-actions">
+      <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
+      <a
+        class="btn btn-outline"
+        href="https://wa.me/5190367611?text=Hola%2C%20quisiera%20solicitar%20una%20demo%20de%20Capy%20Ventas"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Solicitar demo
+      </a>
+    </div>
   </header>
 
   <main>
@@ -843,7 +858,6 @@
                 >
                   Solicitar demo
                 </a>
-                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
 
@@ -867,7 +881,6 @@
                 >
                   Solicitar demo
                 </a>
-                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
 
@@ -892,7 +905,6 @@
                 >
                   Solicitar demo
                 </a>
-                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
 
@@ -916,7 +928,6 @@
                 >
                   Solicitar demo
                 </a>
-                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
 
@@ -940,7 +951,6 @@
                 >
                   Solicitar demo
                 </a>
-                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
 
@@ -964,7 +974,6 @@
                 >
                   Solicitar demo
                 </a>
-                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
           </div>
@@ -991,7 +1000,6 @@
                 >
                   Solicitar demo
                 </a>
-                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
 
@@ -1015,7 +1023,6 @@
                 >
                   Solicitar demo
                 </a>
-                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
 
@@ -1039,7 +1046,6 @@
                 >
                   Solicitar demo
                 </a>
-                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
 
@@ -1063,7 +1069,6 @@
                 >
                   Solicitar demo
                 </a>
-                <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
               </div>
             </article>
           </div>
