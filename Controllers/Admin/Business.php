@@ -77,41 +77,41 @@ class Business extends Controllers
         $cont = 1;
         foreach ($arrData as $key => $value) {
             $arrData[$key]["cont"] = $cont;
-            
+
             // Formatear estado
             if ($value["status"] == "Activo") {
                 $arrData[$key]["status"] = '<span class="badge badge-success"><i class="fa fa-check"></i> Activo</span>';
             } else {
                 $arrData[$key]["status"] = '<span class="badge badge-danger"><i class="fa fa-close"></i> Inactivo</span>';
             }
-            
+
             // Formatear teléfono completo
             $arrData[$key]["phone_full"] = $value["telephone_prefix"] . " " . $value["phone_number"];
-            
+
             // Formatear dirección (si está vacía, mostrar guión)
             $arrData[$key]["direction_display"] = !empty($value["direction"]) ? $value["direction"] : "-";
-            
+
             // Formatear ciudad (si está vacía, mostrar guión)
             $arrData[$key]["city_display"] = !empty($value["city"]) ? $value["city"] : "-";
-            
+
             // Formatear país (si está vacía, mostrar guión)
             $arrData[$key]["country_display"] = !empty($value["country"]) ? $value["country"] : "-";
-            
+
             // Formatear tipo de negocio (desencriptar si es necesario)
             $businessTypeName = $value["business_type_name"] ?? "Sin tipo";
             $arrData[$key]["business_type_display"] = $businessTypeName;
-            
+
             // Formatear usuario de aplicación (desencriptar)
             $userAppName = "Sin usuario";
             if (!empty($value["user_app_name"])) {
                 $userAppName = decryption($value["user_app_name"]);
             }
             $arrData[$key]["user_app_display"] = $userAppName;
-            
+
             // Formatear fechas de registro y actualización
             $arrData[$key]["registration_date_formatted"] = dateFormat($value["registration_date"]);
             $arrData[$key]["update_date_formatted"] = dateFormat($value["update_date"]);
-            
+
             // Botones de acción
             $arrData[$key]["actions"] = '
                 <div class="btn-group">
@@ -186,10 +186,13 @@ class Business extends Controllers
             if (!empty($value["user"])) {
                 $arrData[$key]["user"] = decryption($value["user"]);
             }
+            if (!empty($value["email"])) {
+                $arrData[$key]["email"] = (decryption($value["email"]));
+            }
             // Crear nombre completo para mostrar
             $arrData[$key]["full_name"] = $value["names"] . " " . $value["lastname"];
         }
-        echo json_encode($arrData);
+        toJson($arrData);
     }
 
     /**

@@ -22,13 +22,6 @@ window.addEventListener("DOMContentLoaded", (e) => {
     updateData();
   }, 1500);
 });
-
-window.addEventListener("click", (e) => {
-  loadBusinessReport();
-  confirmationDelete();
-  loadDataUpdate();
-});
-
 /**
  * Función que carga los selects de tipo de negocio y usuarios de aplicación
  */
@@ -262,9 +255,7 @@ function confirmationDelete() {
       const name = item.getAttribute("data-name");
       const id = item.getAttribute("data-id");
       document.getElementById("txtDelete").innerHTML =
-        "¿Está seguro de eliminar el negocio <strong>" +
-        name +
-        " </strong>?";
+        "¿Está seguro de eliminar el negocio <strong>" + name + " </strong>?";
       const confirmDelete = document.getElementById("confirmDelete");
       confirmDelete.setAttribute("data-id", id);
       confirmDelete.setAttribute("data-name", name);
@@ -363,7 +354,9 @@ function loadBusinessReport() {
       const reportName = document.getElementById("reportName");
       const reportTypeBusiness = document.getElementById("reportTypeBusiness");
       const reportNameDetail = document.getElementById("reportNameDetail");
-      const reportDocumentNumber = document.getElementById("reportDocumentNumber");
+      const reportDocumentNumber = document.getElementById(
+        "reportDocumentNumber"
+      );
       const reportDirection = document.getElementById("reportDirection");
       const reportCity = document.getElementById("reportCity");
       const reportCountry = document.getElementById("reportCountry");
@@ -425,14 +418,24 @@ function loadDataUpdate() {
       const userappId = item.getAttribute("data-userapp-id");
 
       const update_txtId = document.getElementById("update_txtId");
-      const update_slctTypeBusiness = document.getElementById("update_slctTypeBusiness");
+      const update_slctTypeBusiness = document.getElementById(
+        "update_slctTypeBusiness"
+      );
       const update_txtName = document.getElementById("update_txtName");
-      const update_txtDirection = document.getElementById("update_txtDirection");
+      const update_txtDirection = document.getElementById(
+        "update_txtDirection"
+      );
       const update_txtCity = document.getElementById("update_txtCity");
       const update_txtCountry = document.getElementById("update_txtCountry");
-      const update_txtDocumentNumber = document.getElementById("update_txtDocumentNumber");
-      const update_txtTelephonePrefix = document.getElementById("update_txtTelephonePrefix");
-      const update_txtPhoneNumber = document.getElementById("update_txtPhoneNumber");
+      const update_txtDocumentNumber = document.getElementById(
+        "update_txtDocumentNumber"
+      );
+      const update_txtTelephonePrefix = document.getElementById(
+        "update_txtTelephonePrefix"
+      );
+      const update_txtPhoneNumber = document.getElementById(
+        "update_txtPhoneNumber"
+      );
       const update_txtEmail = document.getElementById("update_txtEmail");
       const update_slctStatus = document.getElementById("update_slctStatus");
       const update_slctUserApp = document.getElementById("update_slctUserApp");

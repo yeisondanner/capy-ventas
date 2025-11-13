@@ -82,9 +82,9 @@
                                             <label class="control-label" for="txtName">Nombre <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input class="form-control" type="text" id="txtName" name="txtName" required
-                                                       placeholder="Ingrese el nombre del negocio" maxlength="255"
-                                                       oninput="this.value = this.value.toUpperCase()"
-                                                       aria-describedby="iconName">
+                                                    placeholder="Ingrese el nombre del negocio" maxlength="255"
+                                                    oninput="this.value = this.value.toUpperCase()"
+                                                    aria-describedby="iconName">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconName"><i class="fa fa-briefcase" aria-hidden="true"></i></span>
                                                 </div>
@@ -95,9 +95,9 @@
                                         <div class="form-group">
                                             <label class="control-label" for="txtDirection">Dirección</label>
                                             <div class="input-group">
-                                                <textarea class="form-control" id="txtDirection" name="txtDirection" rows="2"
-                                                          placeholder="Ingrese la dirección (opcional)"
-                                                          aria-describedby="iconDirection"></textarea>
+                                                <input class="form-control" id="txtDirection" name="txtDirection"
+                                                    placeholder="Ingrese la dirección (opcional)"
+                                                    aria-describedby="iconDirection">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconDirection"><i class="fa fa-map-marker" aria-hidden="true"></i></span>
                                                 </div>
@@ -110,9 +110,9 @@
                                             <label class="control-label" for="txtCity">Ciudad</label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="txtCity" name="txtCity"
-                                                       placeholder="Ingrese la ciudad" maxlength="250"
-                                                       oninput="this.value = this.value.toUpperCase()"
-                                                       aria-describedby="iconCity">
+                                                    placeholder="Ingrese la ciudad" maxlength="250"
+                                                    oninput="this.value = this.value.toUpperCase()"
+                                                    aria-describedby="iconCity">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconCity"><i class="fa fa-map" aria-hidden="true"></i></span>
                                                 </div>
@@ -125,9 +125,9 @@
                                             <label class="control-label" for="txtCountry">País</label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="txtCountry" name="txtCountry"
-                                                       placeholder="Ingrese el país" maxlength="100"
-                                                       oninput="this.value = this.value.toUpperCase()"
-                                                       aria-describedby="iconCountry">
+                                                    placeholder="Ingrese el país" maxlength="100"
+                                                    oninput="this.value = this.value.toUpperCase()"
+                                                    aria-describedby="iconCountry">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconCountry"><i class="fa fa-globe" aria-hidden="true"></i></span>
                                                 </div>
@@ -140,9 +140,9 @@
                                             <label class="control-label" for="txtDocumentNumber">N° Documento <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="txtDocumentNumber" name="txtDocumentNumber" required
-                                                       placeholder="12345678901" maxlength="11" pattern="^\d{11}$"
-                                                       title="Debe contener exactamente 11 números"
-                                                       aria-describedby="iconDocument">
+                                                    placeholder="12345678901" maxlength="11" pattern="^\d{11}$"
+                                                    title="Debe contener exactamente 11 números"
+                                                    aria-describedby="iconDocument">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconDocument"><i class="fa fa-id-card" aria-hidden="true"></i></span>
                                                 </div>
@@ -154,8 +154,8 @@
                                             <label class="control-label" for="txtTelephonePrefix">Prefijo Tel. <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="txtTelephonePrefix" name="txtTelephonePrefix" required
-                                                       placeholder="+51" maxlength="7"
-                                                       aria-describedby="iconPrefix">
+                                                    placeholder="+51" maxlength="7"
+                                                    aria-describedby="iconPrefix">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconPrefix"><i class="fa fa-phone" aria-hidden="true"></i></span>
                                                 </div>
@@ -167,9 +167,9 @@
                                             <label class="control-label" for="txtPhoneNumber">Número de Teléfono <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="txtPhoneNumber" name="txtPhoneNumber" required
-                                                       placeholder="987654321" maxlength="11" pattern="^\d+$"
-                                                       title="Solo se permiten números"
-                                                       aria-describedby="iconPhone">
+                                                    placeholder="987654321" maxlength="11" pattern="^\d+$"
+                                                    title="Solo se permiten números"
+                                                    aria-describedby="iconPhone">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconPhone"><i class="fa fa-mobile" aria-hidden="true"></i></span>
                                                 </div>
@@ -181,10 +181,10 @@
                                             <label class="control-label" for="txtEmail">Email <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                                                       class="form-control" id="txtEmail" name="txtEmail" required
-                                                       placeholder="Ingrese el correo electrónico"
-                                                       oninput="this.value = this.value.toLowerCase();"
-                                                       aria-describedby="iconEmail">
+                                                    class="form-control" id="txtEmail" name="txtEmail" required
+                                                    placeholder="Ingrese el correo electrónico"
+                                                    oninput="this.value = this.value.toLowerCase();"
+                                                    aria-describedby="iconEmail">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconEmail"><i class="fa fa-envelope" aria-hidden="true"></i></span>
                                                 </div>
@@ -364,9 +364,9 @@
                                             <label class="control-label" for="update_txtName">Nombre <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input class="form-control" type="text" id="update_txtName" name="update_txtName" required
-                                                       placeholder="Ingrese el nombre del negocio" maxlength="255"
-                                                       oninput="this.value = this.value.toUpperCase()"
-                                                       aria-describedby="iconNameUpdate">
+                                                    placeholder="Ingrese el nombre del negocio" maxlength="255"
+                                                    oninput="this.value = this.value.toUpperCase()"
+                                                    aria-describedby="iconNameUpdate">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconNameUpdate"><i class="fa fa-briefcase" aria-hidden="true"></i></span>
                                                 </div>
@@ -378,8 +378,8 @@
                                             <label class="control-label" for="update_txtDirection">Dirección</label>
                                             <div class="input-group">
                                                 <textarea class="form-control" id="update_txtDirection" name="update_txtDirection" rows="2"
-                                                          placeholder="Ingrese la dirección (opcional)"
-                                                          aria-describedby="iconDirectionUpdate"></textarea>
+                                                    placeholder="Ingrese la dirección (opcional)"
+                                                    aria-describedby="iconDirectionUpdate"></textarea>
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconDirectionUpdate"><i class="fa fa-map-marker" aria-hidden="true"></i></span>
                                                 </div>
@@ -392,9 +392,9 @@
                                             <label class="control-label" for="update_txtCity">Ciudad</label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="update_txtCity" name="update_txtCity"
-                                                       placeholder="Ingrese la ciudad" maxlength="250"
-                                                       oninput="this.value = this.value.toUpperCase()"
-                                                       aria-describedby="iconCityUpdate">
+                                                    placeholder="Ingrese la ciudad" maxlength="250"
+                                                    oninput="this.value = this.value.toUpperCase()"
+                                                    aria-describedby="iconCityUpdate">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconCityUpdate"><i class="fa fa-map" aria-hidden="true"></i></span>
                                                 </div>
@@ -407,9 +407,9 @@
                                             <label class="control-label" for="update_txtCountry">País</label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="update_txtCountry" name="update_txtCountry"
-                                                       placeholder="Ingrese el país" maxlength="100"
-                                                       oninput="this.value = this.value.toUpperCase()"
-                                                       aria-describedby="iconCountryUpdate">
+                                                    placeholder="Ingrese el país" maxlength="100"
+                                                    oninput="this.value = this.value.toUpperCase()"
+                                                    aria-describedby="iconCountryUpdate">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconCountryUpdate"><i class="fa fa-globe" aria-hidden="true"></i></span>
                                                 </div>
@@ -422,9 +422,9 @@
                                             <label class="control-label" for="update_txtDocumentNumber">N° Documento <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="update_txtDocumentNumber" name="update_txtDocumentNumber" required
-                                                       placeholder="12345678901" maxlength="11" pattern="^\d{11}$"
-                                                       title="Debe contener exactamente 11 números"
-                                                       aria-describedby="iconDocumentUpdate">
+                                                    placeholder="12345678901" maxlength="11" pattern="^\d{11}$"
+                                                    title="Debe contener exactamente 11 números"
+                                                    aria-describedby="iconDocumentUpdate">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconDocumentUpdate"><i class="fa fa-id-card" aria-hidden="true"></i></span>
                                                 </div>
@@ -436,8 +436,8 @@
                                             <label class="control-label" for="update_txtTelephonePrefix">Prefijo Tel. <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="update_txtTelephonePrefix" name="update_txtTelephonePrefix" required
-                                                       placeholder="+51" maxlength="7"
-                                                       aria-describedby="iconPrefixUpdate">
+                                                    placeholder="+51" maxlength="7"
+                                                    aria-describedby="iconPrefixUpdate">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconPrefixUpdate"><i class="fa fa-phone" aria-hidden="true"></i></span>
                                                 </div>
@@ -449,9 +449,9 @@
                                             <label class="control-label" for="update_txtPhoneNumber">Número de Teléfono <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="text" class="form-control" id="update_txtPhoneNumber" name="update_txtPhoneNumber" required
-                                                       placeholder="987654321" maxlength="11" pattern="^\d+$"
-                                                       title="Solo se permiten números"
-                                                       aria-describedby="iconPhoneUpdate">
+                                                    placeholder="987654321" maxlength="11" pattern="^\d+$"
+                                                    title="Solo se permiten números"
+                                                    aria-describedby="iconPhoneUpdate">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconPhoneUpdate"><i class="fa fa-mobile" aria-hidden="true"></i></span>
                                                 </div>
@@ -463,10 +463,10 @@
                                             <label class="control-label" for="update_txtEmail">Email <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input type="email" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                                                       class="form-control" id="update_txtEmail" name="update_txtEmail" required
-                                                       placeholder="Ingrese el correo electrónico"
-                                                       oninput="this.value = this.value.toLowerCase();"
-                                                       aria-describedby="iconEmailUpdate">
+                                                    class="form-control" id="update_txtEmail" name="update_txtEmail" required
+                                                    placeholder="Ingrese el correo electrónico"
+                                                    oninput="this.value = this.value.toLowerCase();"
+                                                    aria-describedby="iconEmailUpdate">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconEmailUpdate"><i class="fa fa-envelope" aria-hidden="true"></i></span>
                                                 </div>

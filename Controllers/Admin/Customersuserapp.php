@@ -77,44 +77,44 @@ class Customersuserapp extends Controllers
         $cont = 1;
         foreach ($arrData as $key => $value) {
             $arrData[$key]["cont"] = $cont;
-            
+
             // Formatear nombre completo
             $fullName = $value["names"] . " " . $value["lastname"];
             $arrData[$key]["full_name"] = $fullName;
-            
+
             // Formatear estado
             if ($value["status"] == "Activo") {
                 $arrData[$key]["status"] = '<span class="badge badge-success"><i class="fa fa-check"></i> Activo</span>';
             } else {
                 $arrData[$key]["status"] = '<span class="badge badge-danger"><i class="fa fa-close"></i> Inactivo</span>';
             }
-            
+
             // Formatear fecha de nacimiento
             $arrData[$key]["date_of_birth_formatted"] = date("d/m/Y", strtotime($value["date_of_birth"]));
-            
+
             // Formatear teléfono completo
             $arrData[$key]["phone_full"] = $value["telephone_prefix"] . " " . $value["phone_number"];
-            
+
             // Formatear fechas de registro y actualización
             $arrData[$key]["registration_date_formatted"] = dateFormat($value["registration_date"]);
             $arrData[$key]["update_date_formatted"] = dateFormat($value["update_date"]);
-            
+
             // Desencriptar email para mostrar
             $arrData[$key]["email"] = decryption($value["email"]);
-            
+
             // Información del usuario de la app
             $userApp = $this->model->select_user_app_by_people_id($value["idPeople"]);
             $userName = $userApp ? decryption($userApp["user"]) : "Sin usuario";
             $userIdApp = $userApp ? $userApp["idUserApp"] : "";
             $userStatus = $userApp ? $userApp["status"] : "";
             $userPassword = $userApp && !empty($userApp["password"]) ? decryption($userApp["password"]) : "";
-            
+
             $arrData[$key]["user_app"] = $userName;
             $arrData[$key]["has_user"] = $userApp ? true : false;
-            
+
             // Desencriptar email para usar en atributos data-* (ya está desencriptado en $arrData[$key]["email"])
             $emailDecrypted = $arrData[$key]["email"];
-            
+
             // Botones de acción
             $arrData[$key]["actions"] = '
                 <div class="btn-group">
@@ -196,7 +196,7 @@ class Customersuserapp extends Controllers
         $strCountry = strClean($_POST["txtCountry"]);
         $strTelephonePrefix = strClean($_POST["txtTelephonePrefix"]);
         $strPhoneNumber = strClean($_POST["txtPhoneNumber"]);
-        
+
         // Campos opcionales de usuario
         $strUser = isset($_POST["txtUser"]) ? strClean($_POST["txtUser"]) : "";
         $strPassword = isset($_POST["txtPassword"]) ? strClean($_POST["txtPassword"]) : "";
@@ -372,7 +372,7 @@ class Customersuserapp extends Controllers
                 $strUserEncrypted = encryption($strUser);
                 $strPasswordEncrypted = encryption($strPassword);
                 $requestUser = $this->model->insert_user_app($strUserEncrypted, $strPasswordEncrypted, $request);
-                
+
                 if (!$requestUser) {
                     registerLog("Atención", "La persona fue registrada pero no se pudo crear el usuario de la aplicación.", 3, $_SESSION['login_info']['idUser']);
                     $data = array(
@@ -438,7 +438,7 @@ class Customersuserapp extends Controllers
         $strTelephonePrefix = strClean($_POST["update_txtTelephonePrefix"]);
         $strPhoneNumber = strClean($_POST["update_txtPhoneNumber"]);
         $slctStatus = strClean($_POST["update_slctStatus"]);
-        
+
         // Campos opcionales de usuario
         $intUserAppId = isset($_POST["update_txtUserAppId"]) ? strClean($_POST["update_txtUserAppId"]) : "";
         $strUser = isset($_POST["update_txtUser"]) ? strClean($_POST["update_txtUser"]) : "";
@@ -608,13 +608,13 @@ class Customersuserapp extends Controllers
             if (!empty($strUser)) {
                 // Encriptar usuario para guardar en BD
                 $strUserEncrypted = encryption($strUser);
-                
+
                 // Si existe ID de usuario, actualizar
                 if (!empty($intUserAppId) && is_numeric($intUserAppId)) {
                     // Si se proporciona contraseña, encriptarla; si no, mantener la actual (null)
                     $strPasswordEncrypted = !empty($strPassword) ? encryption($strPassword) : null;
                     $requestUser = $this->model->update_user_app($intUserAppId, $strUserEncrypted, $strPasswordEncrypted, $slctUserStatus);
-                    
+
                     if (!$requestUser) {
                         registerLog("Atención", "La persona fue actualizada pero no se pudo actualizar el usuario de la aplicación.", 3, $_SESSION['login_info']['idUser']);
                     }
@@ -623,7 +623,7 @@ class Customersuserapp extends Controllers
                     // Si no se proporciona contraseña, generar una aleatoria
                     $strPasswordEncrypted = !empty($strPassword) ? encryption($strPassword) : encryption(passGenerator(10));
                     $requestUser = $this->model->insert_user_app($strUserEncrypted, $strPasswordEncrypted, $slctUserStatus, $intId);
-                    
+
                     if (!$requestUser) {
                         registerLog("Atención", "La persona fue actualizada pero no se pudo crear el usuario de la aplicación.", 3, $_SESSION['login_info']['idUser']);
                     }
