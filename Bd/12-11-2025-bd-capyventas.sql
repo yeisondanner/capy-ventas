@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS `business` (
   CONSTRAINT `business_ibfk_2` FOREIGN KEY (`typebusiness_id`) REFERENCES `business_type` (`idBusinessType`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.business: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.business: ~2 rows (aproximadamente)
 DELETE FROM `business`;
 INSERT INTO `business` (`idBusiness`, `typebusiness_id`, `name`, `direction`, `city`, `document_number`, `phone_number`, `country`, `telephone_prefix`, `email`, `status`, `registration_date`, `update_date`, `userapp_id`) VALUES
 	(3, 6, 'QUCHA', 'Jr. Dos de Mayo', 'RIOJA', '20613844369', '969480973', 'PERU', '+51', 'grupomaslucanrojas@gmail.com', 'Activo', '2025-11-12 06:43:09', '2025-11-12 06:43:09', 2),
@@ -78,15 +78,17 @@ CREATE TABLE IF NOT EXISTS `category` (
   `registration_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `update_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`idCategory`),
+  UNIQUE KEY `business_id_name` (`business_id`,`name`),
   KEY `business_id` (`business_id`),
   CONSTRAINT `category_ibfk_1` FOREIGN KEY (`business_id`) REFERENCES `business` (`idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.category: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.category: ~3 rows (aproximadamente)
 DELETE FROM `category`;
 INSERT INTO `category` (`idCategory`, `business_id`, `name`, `description`, `status`, `registration_date`, `update_date`) VALUES
 	(1, 3, 'Sin categoría', NULL, 'Activo', '2025-11-12 13:33:32', '2025-11-12 13:33:32'),
-	(2, 4, 'Sin categoría', NULL, 'Activo', '2025-11-12 20:08:56', '2025-11-12 20:08:56');
+	(2, 4, 'Sin categoría', NULL, 'Activo', '2025-11-12 20:08:56', '2025-11-12 20:08:56'),
+	(3, 4, 'Preservativos', NULL, 'Inactivo', '2025-11-13 02:45:21', '2025-11-13 02:47:59');
 
 -- Volcando estructura para tabla bd_capyventas.customer
 DROP TABLE IF EXISTS `customer`;
@@ -103,14 +105,38 @@ CREATE TABLE IF NOT EXISTS `customer` (
   `update_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `business_id` int(11) NOT NULL,
   PRIMARY KEY (`idCustomer`),
+  UNIQUE KEY `documenttype_id_document_number_business_id` (`documenttype_id`,`document_number`,`business_id`),
   KEY `documenttype_id` (`documenttype_id`),
   KEY `business_id` (`business_id`),
   CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`documenttype_id`) REFERENCES `document_type` (`idDocumentType`),
   CONSTRAINT `customer_ibfk_2` FOREIGN KEY (`business_id`) REFERENCES `business` (`idBusiness`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.customer: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.customer: ~2 rows (aproximadamente)
 DELETE FROM `customer`;
+INSERT INTO `customer` (`idCustomer`, `fullname`, `documenttype_id`, `document_number`, `phone_number`, `email`, `direction`, `status`, `registration_date`, `update_date`, `business_id`) VALUES
+	(2, 'Sin cliente', 1, 'Sin cliente', '999999999', 'sincliente@capyventas.com', 'Sin cliente', 'Activo', '2025-11-13 01:41:03', '2025-11-13 01:41:03', 3),
+	(3, 'Sin cliente', 1, 'Sin cliente', '999999999', 'sincliente@capyventas.com', 'Sin cliente', 'Activo', '2025-11-13 01:41:08', '2025-11-13 01:41:08', 4);
+
+-- Volcando estructura para tabla bd_capyventas.discounts
+DROP TABLE IF EXISTS `discounts`;
+CREATE TABLE IF NOT EXISTS `discounts` (
+  `idDiscount` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del descuento o cupón',
+  `code` varchar(50) NOT NULL COMMENT 'Código del descuento que ingresa el usuario (ej. CAPY10)',
+  `type` enum('percentage','fixed') NOT NULL COMMENT 'Tipo de descuento: porcentaje (%) o monto fijo',
+  `value` decimal(10,2) NOT NULL COMMENT 'Valor del descuento: porcentaje o monto según el tipo',
+  `start_date` datetime DEFAULT NULL COMMENT 'Fecha y hora desde la que el descuento está vigente (incluida)',
+  `end_date` datetime DEFAULT NULL COMMENT 'Fecha y hora hasta la que el descuento está vigente (incluida)',
+  `applies_to_plan_id` int(11) DEFAULT NULL COMMENT 'ID del plan al que aplica el descuento; NULL si aplica a todos los planes',
+  `max_uses` int(11) DEFAULT NULL COMMENT 'Límite máximo de usos del descuento; NULL si no tiene límite',
+  `is_recurring` tinyint(1) DEFAULT 0 COMMENT 'Si es 1, el descuento se aplica en todos los ciclos; si es 0, solo en la primera factura',
+  PRIMARY KEY (`idDiscount`),
+  KEY `fk_discount_plan` (`applies_to_plan_id`),
+  CONSTRAINT `fk_discount_plan` FOREIGN KEY (`applies_to_plan_id`) REFERENCES `plans` (`idPlan`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tabla de descuentos y cupones promocionales, define valor, vigencia, plan asociado y si el descuento es recurrente o solo para la primera factura.';
+
+-- Volcando datos para la tabla bd_capyventas.discounts: ~0 rows (aproximadamente)
+DELETE FROM `discounts`;
 
 -- Volcando estructura para tabla bd_capyventas.document_type
 DROP TABLE IF EXISTS `document_type`;
@@ -122,10 +148,12 @@ CREATE TABLE IF NOT EXISTS `document_type` (
   `registration_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `update_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`idDocumentType`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.document_type: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.document_type: ~1 rows (aproximadamente)
 DELETE FROM `document_type`;
+INSERT INTO `document_type` (`idDocumentType`, `name`, `description`, `status`, `registration_date`, `update_date`) VALUES
+	(1, 'DNI', 'Documento de Nacional de Identidad', 'Activo', '2025-11-13 01:40:58', '2025-11-13 01:40:58');
 
 -- Volcando estructura para tabla bd_capyventas.employee
 DROP TABLE IF EXISTS `employee`;
@@ -167,6 +195,29 @@ CREATE TABLE IF NOT EXISTS `interface_app` (
 -- Volcando datos para la tabla bd_capyventas.interface_app: ~0 rows (aproximadamente)
 DELETE FROM `interface_app`;
 
+-- Volcando estructura para tabla bd_capyventas.invoices
+DROP TABLE IF EXISTS `invoices`;
+CREATE TABLE IF NOT EXISTS `invoices` (
+  `idInvoice` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la factura o intento de cobro',
+  `subscription_id` int(11) NOT NULL COMMENT 'Referencia a la suscripción asociada a esta factura',
+  `period_start` date NOT NULL COMMENT 'Fecha de inicio del periodo de servicio facturado',
+  `period_end` date NOT NULL COMMENT 'Fecha de fin del periodo de servicio facturado',
+  `subtotal` decimal(10,2) NOT NULL COMMENT 'Monto base del plan antes de aplicar descuentos',
+  `discount_amount` decimal(10,2) NOT NULL COMMENT 'Monto de descuento aplicado en esta factura',
+  `total` decimal(10,2) NOT NULL COMMENT 'Monto final a cobrar después del descuento',
+  `status` enum('pending','paid','failed') DEFAULT 'pending' COMMENT 'Estado del cobro: pendiente, pagado o fallido',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Fecha y hora en que se generó la factura',
+  `paid_at` datetime DEFAULT NULL COMMENT 'Fecha y hora en que se registró el pago exitoso; NULL si no se ha pagado',
+  PRIMARY KEY (`idInvoice`),
+  KEY `fk_invoice_subscription` (`subscription_id`),
+  CONSTRAINT `fk_invoice_subscription` FOREIGN KEY (`subscription_id`) REFERENCES `subscriptions` (`idSubscription`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Histórico de facturas y cobros de cada suscripción, con montos, descuentos aplicados, periodo de servicio y estado del pago.';
+
+-- Volcando datos para la tabla bd_capyventas.invoices: ~1 rows (aproximadamente)
+DELETE FROM `invoices`;
+INSERT INTO `invoices` (`idInvoice`, `subscription_id`, `period_start`, `period_end`, `subtotal`, `discount_amount`, `total`, `status`, `created_at`, `paid_at`) VALUES
+	(1, 1, '2025-11-12', '2025-12-12', 50.00, 50.00, 0.00, 'paid', '2025-11-13 02:38:56', '2025-11-12 21:38:57');
+
 -- Volcando estructura para tabla bd_capyventas.measurement
 DROP TABLE IF EXISTS `measurement`;
 CREATE TABLE IF NOT EXISTS `measurement` (
@@ -177,15 +228,15 @@ CREATE TABLE IF NOT EXISTS `measurement` (
   `registration_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `update_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`idMeasurement`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla bd_capyventas.measurement: ~4 rows (aproximadamente)
 DELETE FROM `measurement`;
 INSERT INTO `measurement` (`idMeasurement`, `name`, `description`, `status`, `registration_date`, `update_date`) VALUES
-	(1, 'Unid.', NULL, 'Activo', '2025-11-12 13:37:25', '2025-11-12 13:37:25'),
-	(2, 'Kg.', NULL, 'Activo', '2025-11-12 13:37:31', '2025-11-12 13:37:31'),
-	(3, 'L', NULL, 'Activo', '2025-11-12 13:37:42', '2025-11-12 13:37:42'),
-	(4, 'Cm.', NULL, 'Activo', '2025-11-12 13:37:47', '2025-11-12 13:37:47');
+	(1, 'Cm.', NULL, 'Activo', '2025-11-12 13:37:47', '2025-11-12 22:32:46'),
+	(2, 'L', NULL, 'Activo', '2025-11-12 13:37:42', '2025-11-12 22:32:44'),
+	(3, 'Kg.', NULL, 'Activo', '2025-11-12 13:37:31', '2025-11-12 22:32:50'),
+	(4, 'Unid.', NULL, 'Activo', '2025-11-12 13:37:25', '2025-11-12 22:32:27');
 
 -- Volcando estructura para tabla bd_capyventas.module_app
 DROP TABLE IF EXISTS `module_app`;
@@ -234,7 +285,7 @@ CREATE TABLE IF NOT EXISTS `people` (
   PRIMARY KEY (`idPeople`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.people: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.people: ~2 rows (aproximadamente)
 DELETE FROM `people`;
 INSERT INTO `people` (`idPeople`, `names`, `lastname`, `email`, `date_of_birth`, `country`, `telephone_prefix`, `phone_number`, `status`, `registration_date`, `update_date`) VALUES
 	(2, 'LOLITA MERCEDES', 'MASLUCAN RJOJAS', 'KzUwZU9WSCs1ZWVTZXZMT24zdCtVcC9PWm82UU02Q0R1a3dHZ1NkZE04az0=', '1984-01-23', 'PERU', '+51', '969480973', 'Activo', '2025-11-12 06:40:33', '2025-11-12 06:40:33'),
@@ -263,6 +314,28 @@ CREATE TABLE IF NOT EXISTS `permission` (
 -- Volcando datos para la tabla bd_capyventas.permission: ~0 rows (aproximadamente)
 DELETE FROM `permission`;
 
+-- Volcando estructura para tabla bd_capyventas.plans
+DROP TABLE IF EXISTS `plans`;
+CREATE TABLE IF NOT EXISTS `plans` (
+  `idPlan` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del plan',
+  `name` varchar(50) NOT NULL COMMENT 'Nombre comercial del plan (Free, Pro, Business, etc.)',
+  `description` text DEFAULT NULL COMMENT 'Descripción del plan y sus características principales',
+  `base_price` decimal(10,2) NOT NULL COMMENT 'Precio base por ciclo de facturación sin descuentos',
+  `billing_period` enum('monthly','yearly') DEFAULT 'monthly' COMMENT 'Periodo de facturación del plan: mensual o anual',
+  `is_active` tinyint(1) DEFAULT 1 COMMENT 'Indica si el plan está activo (1) o desactivado (0)',
+  PRIMARY KEY (`idPlan`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Catálogo maestro de planes disponibles en CapyVentas, define nombre, precio base y periodo de facturación.';
+
+-- Volcando datos para la tabla bd_capyventas.plans: ~6 rows (aproximadamente)
+DELETE FROM `plans`;
+INSERT INTO `plans` (`idPlan`, `name`, `description`, `base_price`, `billing_period`, `is_active`) VALUES
+	(1, 'Gratis', NULL, 0.00, 'monthly', 1),
+	(2, 'Basic', NULL, 10.00, 'monthly', 1),
+	(3, 'Pro', NULL, 20.00, 'monthly', 1),
+	(4, 'Business', NULL, 30.00, 'monthly', 1),
+	(5, 'Premium', NULL, 40.00, 'monthly', 1),
+	(7, 'Full Max', NULL, 50.00, 'monthly', 1);
+
 -- Volcando estructura para tabla bd_capyventas.product
 DROP TABLE IF EXISTS `product`;
 CREATE TABLE IF NOT EXISTS `product` (
@@ -285,13 +358,13 @@ CREATE TABLE IF NOT EXISTS `product` (
   CONSTRAINT `FK_product_supplier` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`idSupplier`),
   CONSTRAINT `product_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`idCategory`),
   CONSTRAINT `product_ibfk_2` FOREIGN KEY (`measurement_id`) REFERENCES `measurement` (`idMeasurement`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.product: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.product: ~2 rows (aproximadamente)
 DELETE FROM `product`;
 INSERT INTO `product` (`idProduct`, `category_id`, `name`, `stock`, `purchase_price`, `sales_price`, `measurement_id`, `description`, `status`, `registration_date`, `update_date`, `supplier_id`) VALUES
-	(2, 2, 'Prueba De Product', 00000000.00, 4.00, 4.00, 4, NULL, 'Activo', '2025-11-12 20:21:46', '2025-11-12 20:21:46', 2),
-	(3, 1, 'Sdfsdfsdf', 00000000.00, 4.00, 4.00, 4, NULL, 'Activo', '2025-11-12 20:43:23', '2025-11-12 20:43:23', 1);
+	(4, 3, 'Condones Piel', 00000004.00, 2.00, 4.00, 4, NULL, 'Activo', '2025-11-13 02:45:02', '2025-11-13 02:45:39', 2),
+	(5, 3, 'Condones Baratos', 00000000.00, 1.00, 4.00, 4, NULL, 'Activo', '2025-11-13 02:46:35', '2025-11-13 02:46:35', 3);
 
 -- Volcando estructura para tabla bd_capyventas.role_app
 DROP TABLE IF EXISTS `role_app`;
@@ -311,6 +384,33 @@ CREATE TABLE IF NOT EXISTS `role_app` (
 -- Volcando datos para la tabla bd_capyventas.role_app: ~0 rows (aproximadamente)
 DELETE FROM `role_app`;
 
+-- Volcando estructura para tabla bd_capyventas.subscriptions
+DROP TABLE IF EXISTS `subscriptions`;
+CREATE TABLE IF NOT EXISTS `subscriptions` (
+  `idSubscription` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la suscripción',
+  `user_app_id` int(11) NOT NULL COMMENT 'Referencia al usuario de la aplicación (tabla user_app)',
+  `plan_id` int(11) NOT NULL COMMENT 'Referencia al plan contratado por el usuario (tabla plans)',
+  `discount_id` int(11) DEFAULT NULL COMMENT 'Referencia al descuento aplicado a la suscripción, si existe',
+  `start_date` datetime NOT NULL COMMENT 'Fecha y hora de inicio de la suscripción',
+  `end_date` datetime DEFAULT NULL COMMENT 'Fecha y hora de fin de la suscripción; NULL si sigue activa o renovable',
+  `next_billing_date` datetime DEFAULT NULL COMMENT 'Próxima fecha en la que se debe intentar el cobro automático',
+  `price_per_cycle` decimal(10,2) NOT NULL COMMENT 'Precio final a cobrar por cada ciclo de facturación (ya considerando descuentos recurrentes si aplica)',
+  `status` enum('active','paused','canceled','expired') DEFAULT 'active' COMMENT 'Estado actual de la suscripción: activa, pausada, cancelada o expirada',
+  `auto_renew` tinyint(1) DEFAULT 1 COMMENT 'Indica si la suscripción se renueva automáticamente (1) o no (0)',
+  PRIMARY KEY (`idSubscription`),
+  KEY `fk_subscription_user` (`user_app_id`),
+  KEY `fk_subscription_plan` (`plan_id`),
+  KEY `fk_subscription_discount` (`discount_id`),
+  CONSTRAINT `fk_subscription_discount` FOREIGN KEY (`discount_id`) REFERENCES `discounts` (`idDiscount`),
+  CONSTRAINT `fk_subscription_plan` FOREIGN KEY (`plan_id`) REFERENCES `plans` (`idPlan`),
+  CONSTRAINT `fk_subscription_user` FOREIGN KEY (`user_app_id`) REFERENCES `user_app` (`idUserApp`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Suscripciones de los usuarios a los diferentes planes, incluyendo fechas, estado, precio por ciclo y relación con descuentos aplicados.';
+
+-- Volcando datos para la tabla bd_capyventas.subscriptions: ~1 rows (aproximadamente)
+DELETE FROM `subscriptions`;
+INSERT INTO `subscriptions` (`idSubscription`, `user_app_id`, `plan_id`, `discount_id`, `start_date`, `end_date`, `next_billing_date`, `price_per_cycle`, `status`, `auto_renew`) VALUES
+	(1, 2, 3, NULL, '2025-11-12 00:00:00', '2025-12-12 23:59:59', '2025-11-13 00:00:00', 50.00, 'active', 1);
+
 -- Volcando estructura para tabla bd_capyventas.supplier
 DROP TABLE IF EXISTS `supplier`;
 CREATE TABLE IF NOT EXISTS `supplier` (
@@ -325,16 +425,17 @@ CREATE TABLE IF NOT EXISTS `supplier` (
   `registration_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `update_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`idSupplier`),
+  UNIQUE KEY `document_number_business_id` (`document_number`,`business_id`,`registration_date`) USING BTREE,
   KEY `business_id` (`business_id`),
   CONSTRAINT `supplier_ibfk_1` FOREIGN KEY (`business_id`) REFERENCES `business` (`idBusiness`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.supplier: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.supplier: ~3 rows (aproximadamente)
 DELETE FROM `supplier`;
 INSERT INTO `supplier` (`idSupplier`, `document_number`, `company_name`, `phone_number`, `direction`, `email`, `business_id`, `status`, `registration_date`, `update_date`) VALUES
 	(1, '00000000000', 'Sin proveedor', '999999999', 'Sin proveedor', 'Sin proveedor', 3, 'Activo', '2025-11-12 13:34:34', '2025-11-12 20:26:26'),
 	(2, '00000000000', 'Sin proveedor', '999999999', 'Sin proveedor', 'Sin proveedor', 4, 'Activo', '2025-11-12 20:09:30', '2025-11-12 20:09:30'),
-	(3, NULL, 'Ewrewrew', '9999', NULL, 'bihecay427@agenra.com', 3, 'Activo', '2025-11-12 20:43:45', '2025-11-12 20:43:45');
+	(3, NULL, 'Smith El Cheroca', '', NULL, '', 4, 'Inactivo', '2025-11-13 02:45:55', '2025-11-13 02:48:23');
 
 -- Volcando estructura para tabla bd_capyventas.tb_configuration
 DROP TABLE IF EXISTS `tb_configuration`;
@@ -480,9 +581,9 @@ CREATE TABLE IF NOT EXISTS `tb_log` (
   KEY `user_id` (`user_id`),
   KEY `tb_log_ibfk_1` (`typelog_id`),
   CONSTRAINT `tb_log_ibfk_1` FOREIGN KEY (`typelog_id`) REFERENCES `tb_typelog` (`idTypeLog`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=18988 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19035 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.tb_log: ~17,957 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.tb_log: ~18,954 rows (aproximadamente)
 DELETE FROM `tb_log`;
 INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
 	(1, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-07-15 15:05:36', '2025-07-15 15:05:36', 3, 1),
@@ -4845,8 +4946,7 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(4358, 'Ocurrio un error inesperado', 'La carpeta raiz data no estaba creada, por lo que se procedio a crear', '2025-09-14 02:53:45', '2025-09-14 02:53:45', 1, 1),
 	(4359, 'Ocurrio un error inesperado', 'La carpeta raiz del usuario no estaba creada, por lo que se procedio a crear', '2025-09-14 02:53:45', '2025-09-14 02:53:45', 1, 1),
 	(4360, 'Ocurrio un error inesperado', 'La carpeta raiz data no estaba creada, por lo que se procedio a crear', '2025-09-14 02:53:45', '2025-09-14 02:53:45', 1, 1),
-	(4361, 'Logrado con exito', 'Se registro y creo de manera exitosa la carpeta', '2025-09-14 02:53:45', '2025-09-14 02:53:45', 2, 1);
-INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
+	(4361, 'Logrado con exito', 'Se registro y creo de manera exitosa la carpeta', '2025-09-14 02:53:45', '2025-09-14 02:53:45', 2, 1),
 	(4362, 'Ocurrio un error inesperado', 'El nombre de la carpeta ya existe para este usuario por favor cambie el nombre', '2025-09-14 02:53:57', '2025-09-14 02:53:57', 1, 1),
 	(4363, 'Ocurrio un error inesperado', 'La carpeta raiz Storage no estaba creada, por lo que se procedio a crear', '2025-09-14 02:54:01', '2025-09-14 02:54:01', 1, 1),
 	(4364, 'Ocurrio un error inesperado', 'La carpeta raiz data no estaba creada, por lo que se procedio a crear', '2025-09-14 02:54:01', '2025-09-14 02:54:01', 1, 1),
@@ -4984,7 +5084,8 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(4496, 'Información de navegación', 'El usuario entro a :Clust - Gestion de archivos y carpetas', '2025-09-14 03:16:28', '2025-09-14 03:16:28', 3, 46),
 	(4497, 'Información de navegación', 'El usuario entro a :Clust - Gestion de archivos y carpetas', '2025-09-14 03:16:29', '2025-09-14 03:16:29', 3, 46),
 	(4498, 'Información de navegación', 'El usuario entro a :Clust - Gestion de archivos y carpetas', '2025-09-14 03:16:29', '2025-09-14 03:16:29', 3, 46),
-	(4499, 'Información de navegación', 'El usuario entro a :Clust - Gestion de archivos y carpetas', '2025-09-14 03:16:29', '2025-09-14 03:16:29', 3, 46),
+	(4499, 'Información de navegación', 'El usuario entro a :Clust - Gestion de archivos y carpetas', '2025-09-14 03:16:29', '2025-09-14 03:16:29', 3, 46);
+INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
 	(4500, 'Información de navegación', 'El usuario entro a :Clust - Gestion de archivos y carpetas', '2025-09-14 03:16:29', '2025-09-14 03:16:29', 3, 46),
 	(4501, 'Información de navegación', 'El usuario entro a :Clust - Gestion de archivos y carpetas', '2025-09-14 03:16:29', '2025-09-14 03:16:29', 3, 46),
 	(4502, 'Información de navegación', 'El usuario entro a :Clust - Gestion de archivos y carpetas', '2025-09-14 03:16:29', '2025-09-14 03:16:29', 3, 46),
@@ -9897,8 +9998,7 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(9409, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 01:23:54', '2025-11-12 01:23:54', 1, 0),
 	(9410, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 01:23:54', '2025-11-12 01:23:54', 1, 0),
 	(9411, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 01:23:54', '2025-11-12 01:23:54', 1, 0),
-	(9412, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 01:23:54', '2025-11-12 01:23:54', 1, 0);
-INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
+	(9412, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 01:23:54', '2025-11-12 01:23:54', 1, 0),
 	(9413, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 01:23:55', '2025-11-12 01:23:55', 1, 0),
 	(9414, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 01:23:55', '2025-11-12 01:23:55', 1, 0),
 	(9415, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 01:23:55', '2025-11-12 01:23:55', 1, 0),
@@ -10118,7 +10218,8 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(9629, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 01:24:07', '2025-11-12 01:24:07', 1, 0),
 	(9630, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 01:24:07', '2025-11-12 01:24:07', 1, 0),
 	(9631, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 01:24:07', '2025-11-12 01:24:07', 1, 0),
-	(9632, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 01:24:07', '2025-11-12 01:24:07', 1, 0),
+	(9632, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 01:24:07', '2025-11-12 01:24:07', 1, 0);
+INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
 	(9633, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 01:24:07', '2025-11-12 01:24:07', 1, 0),
 	(9634, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 01:24:07', '2025-11-12 01:24:07', 1, 0),
 	(9635, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 01:24:07', '2025-11-12 01:24:07', 1, 0),
@@ -14451,8 +14552,7 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(13962, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 02:03:13', '2025-11-12 02:03:13', 1, 0),
 	(13963, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 02:03:13', '2025-11-12 02:03:13', 1, 0),
 	(13964, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 02:03:13', '2025-11-12 02:03:13', 1, 0),
-	(13965, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 02:03:13', '2025-11-12 02:03:13', 1, 0);
-INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
+	(13965, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 02:03:13', '2025-11-12 02:03:13', 1, 0),
 	(13966, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 02:03:13', '2025-11-12 02:03:13', 1, 0),
 	(13967, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 02:03:13', '2025-11-12 02:03:13', 1, 0),
 	(13968, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 02:03:13', '2025-11-12 02:03:13', 1, 0),
@@ -14780,7 +14880,8 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(14290, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 02:03:56', '2025-11-12 02:03:56', 1, 0),
 	(14291, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 02:03:56', '2025-11-12 02:03:56', 1, 0),
 	(14292, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 02:03:56', '2025-11-12 02:03:56', 1, 0),
-	(14293, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 02:03:56', '2025-11-12 02:03:56', 1, 0),
+	(14293, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 02:03:56', '2025-11-12 02:03:56', 1, 0);
+INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
 	(14294, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 02:03:56', '2025-11-12 02:03:56', 1, 0),
 	(14295, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 02:03:56', '2025-11-12 02:03:56', 1, 0),
 	(14296, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 02:03:56', '2025-11-12 02:03:56', 1, 0),
@@ -18999,8 +19100,7 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(18509, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 02:16:19', '2025-11-12 02:16:19', 1, 0),
 	(18510, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 02:16:19', '2025-11-12 02:16:19', 1, 0),
 	(18511, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 02:16:19', '2025-11-12 02:16:19', 1, 0),
-	(18512, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 02:16:19', '2025-11-12 02:16:19', 1, 0);
-INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
+	(18512, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 02:16:19', '2025-11-12 02:16:19', 1, 0),
 	(18513, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 02:16:19', '2025-11-12 02:16:19', 1, 0),
 	(18514, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - ::1', '2025-11-12 02:16:19', '2025-11-12 02:16:19', 1, 0),
 	(18515, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 02:16:19', '2025-11-12 02:16:19', 1, 0),
@@ -19415,7 +19515,8 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(18924, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - 190.119.91.42', '2025-11-12 06:54:29', '2025-11-12 06:54:29', 1, 0),
 	(18925, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 06:54:29', '2025-11-12 06:54:29', 1, 0),
 	(18926, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - 190.119.91.42', '2025-11-12 06:54:52', '2025-11-12 06:54:52', 1, 0),
-	(18927, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 06:54:52', '2025-11-12 06:54:52', 1, 0),
+	(18927, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 06:54:52', '2025-11-12 06:54:52', 1, 0);
+INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`) VALUES
 	(18928, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - 181.64.11.160', '2025-11-12 13:23:20', '2025-11-12 13:23:20', 1, 0),
 	(18929, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 13:23:20', '2025-11-12 13:23:20', 1, 0),
 	(18930, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - 181.64.11.160', '2025-11-12 13:27:35', '2025-11-12 13:27:35', 1, 0),
@@ -19474,8 +19575,55 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(18983, 'Navegación', '{"event":"page_view","page":"Clientes App","page_id":15,"container":"Customersuserapp","user_id":1,"ip":"181.64.11.160","method":"GET","url":"/im/customersuserapp","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36","timestamp":"2025-11-12T15:11:46-05:00"}', '2025-11-12 20:11:46', '2025-11-12 20:11:46', 3, 1),
 	(18984, 'Cierre de sesión', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES ha cerrado sesión en el sistema', '2025-11-12 20:11:52', '2025-11-12 20:11:52', 2, 1),
 	(18985, 'Registro de producto POS', 'Se registró el producto: Prueba De Product', '2025-11-12 20:21:46', '2025-11-12 20:21:46', 2, 3),
-	(18986, 'Registro de producto POS', 'Se registró el producto: Sdfsdfsdf', '2025-11-12 20:43:23', '2025-11-12 20:43:23', 2, 2),
-	(18987, 'Registro de proveedor POS', 'Se registró el proveedor: Ewrewrew', '2025-11-12 20:43:45', '2025-11-12 20:43:45', 2, 2);
+	(18986, 'Eliminación de producto POS', 'Se eliminó el producto: Prueba De Product', '2025-11-12 20:51:51', '2025-11-12 20:51:51', 3, 3),
+	(18987, 'Registro de producto POS', 'Se registró el producto: Prueba De Producto', '2025-11-12 20:52:08', '2025-11-12 20:52:08', 2, 3),
+	(18988, 'Eliminación de producto POS', 'Se eliminó el producto: Prueba De Producto', '2025-11-12 20:52:32', '2025-11-12 20:52:32', 3, 3),
+	(18989, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - 181.64.11.160', '2025-11-12 21:35:44', '2025-11-12 21:35:44', 1, 0),
+	(18990, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 21:35:44', '2025-11-12 21:35:44', 1, 0),
+	(18991, 'Inicio de sesión exitoso', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES, completo de manera satisfactoria el inicio de sesion', '2025-11-12 21:36:25', '2025-11-12 21:36:25', 2, 1),
+	(18992, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"181.64.11.160","method":"GET","url":"/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36","timestamp":"2025-11-12T16:36:26-05:00"}', '2025-11-12 21:36:26', '2025-11-12 21:36:26', 3, 1),
+	(18993, 'Navegación', '{"event":"page_view","page":"Clientes App","page_id":15,"container":"Customersuserapp","user_id":1,"ip":"181.64.11.160","method":"GET","url":"/im/customersuserapp","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36","timestamp":"2025-11-12T16:36:32-05:00"}', '2025-11-12 21:36:32', '2025-11-12 21:36:32', 3, 1),
+	(18994, 'Navegación', '{"event":"page_view","page":"Negocios","page_id":17,"container":"Business","user_id":1,"ip":"181.64.11.160","method":"GET","url":"/im/business","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36","timestamp":"2025-11-12T16:36:40-05:00"}', '2025-11-12 21:36:40', '2025-11-12 21:36:40', 3, 1),
+	(18995, 'Cierre de sesión', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES ha cerrado sesión en el sistema', '2025-11-12 21:37:00', '2025-11-12 21:37:00', 2, 1),
+	(18996, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - 181.64.11.160', '2025-11-12 22:02:55', '2025-11-12 22:02:55', 1, 0),
+	(18997, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 22:02:55', '2025-11-12 22:02:55', 1, 0),
+	(18998, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - 181.64.11.160', '2025-11-12 22:30:48', '2025-11-12 22:30:48', 1, 0),
+	(18999, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 22:30:48', '2025-11-12 22:30:48', 1, 0),
+	(19000, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - 179.6.81.63', '2025-11-12 23:46:43', '2025-11-12 23:46:43', 1, 0),
+	(19001, 'Ocurrio un error inesperado', 'Error: SQLSTATE[23000]: Integrity constraint violation: 1048 Column \'user_id\' cannot be null - 23000', '2025-11-12 23:46:43', '2025-11-12 23:46:43', 1, 0),
+	(19002, 'Inicio de sesión exitoso', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES, completo de manera satisfactoria el inicio de sesion', '2025-11-13 00:09:15', '2025-11-13 00:09:15', 2, 1),
+	(19003, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:09:16-05:00"}', '2025-11-13 00:09:16', '2025-11-13 00:09:16', 3, 1),
+	(19004, 'Navegación', '{"event":"page_view","page":"Clientes App","page_id":15,"container":"Customersuserapp","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/customersuserapp","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:09:21-05:00"}', '2025-11-13 00:09:21', '2025-11-13 00:09:21', 3, 1),
+	(19005, 'Navegación', '{"event":"page_view","page":"Clientes App","page_id":15,"container":"Customersuserapp","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/customersuserapp","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:09:34-05:00"}', '2025-11-13 00:09:34', '2025-11-13 00:09:34', 3, 1),
+	(19006, 'Cierre de sesión', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES ha cerrado sesión en el sistema', '2025-11-13 00:10:25', '2025-11-13 00:10:25', 2, 1),
+	(19007, 'Informacion sobre sesión de usuario', 'El usuario tenia una sesion abierta, de alguna manera se cerro, se procedio a volver a abrirla', '2025-11-13 00:10:25', '2025-11-13 00:10:25', 1, 1),
+	(19008, 'Inicio de sesión exitoso', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES, completo de manera satisfactoria el inicio de sesion', '2025-11-13 00:10:35', '2025-11-13 00:10:35', 2, 1),
+	(19009, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:10:36-05:00"}', '2025-11-13 00:10:36', '2025-11-13 00:10:36', 3, 1),
+	(19010, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:14:47-05:00"}', '2025-11-13 00:14:47', '2025-11-13 00:14:47', 3, 1),
+	(19011, 'Navegación', '{"event":"page_view","page":"Negocios","page_id":17,"container":"Business","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/business","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:14:52-05:00"}', '2025-11-13 00:14:52', '2025-11-13 00:14:52', 3, 1),
+	(19012, 'Navegación', '{"event":"page_view","page":"Negocios","page_id":17,"container":"Business","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/business","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:17:53-05:00"}', '2025-11-13 00:17:53', '2025-11-13 00:17:53', 3, 1),
+	(19013, 'Navegación', '{"event":"page_view","page":"Negocios","page_id":17,"container":"Business","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/business","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:22:00-05:00"}', '2025-11-13 00:22:00', '2025-11-13 00:22:00', 3, 1),
+	(19014, 'Navegación', '{"event":"page_view","page":"Negocios","page_id":17,"container":"Business","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/business","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:22:14-05:00"}', '2025-11-13 00:22:14', '2025-11-13 00:22:14', 3, 1),
+	(19015, 'Navegación', '{"event":"page_view","page":"Negocios","page_id":17,"container":"Business","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/business","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:24:28-05:00"}', '2025-11-13 00:24:28', '2025-11-13 00:24:28', 3, 1),
+	(19016, 'Navegación', '{"event":"page_view","page":"Clientes App","page_id":15,"container":"Customersuserapp","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/customersuserapp","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:24:36-05:00"}', '2025-11-13 00:24:36', '2025-11-13 00:24:36', 3, 1),
+	(19017, 'Navegación', '{"event":"page_view","page":"Negocios","page_id":17,"container":"Business","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/business","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:24:38-05:00"}', '2025-11-13 00:24:38', '2025-11-13 00:24:38', 3, 1),
+	(19018, 'Navegación', '{"event":"page_view","page":"Negocios","page_id":17,"container":"Business","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/business","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:25:33-05:00"}', '2025-11-13 00:25:33', '2025-11-13 00:25:33', 3, 1),
+	(19019, 'Navegación', '{"event":"page_view","page":"Negocios","page_id":17,"container":"Business","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/business","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36 OPR/122.0.0.0","timestamp":"2025-11-12T19:25:51-05:00"}', '2025-11-13 00:25:51', '2025-11-13 00:25:51', 3, 1),
+	(19020, 'Inicio de sesión exitoso', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES, completo de manera satisfactoria el inicio de sesion', '2025-11-13 02:40:49', '2025-11-13 02:40:49', 2, 1),
+	(19021, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36","timestamp":"2025-11-12T21:40:50-05:00"}', '2025-11-13 02:40:50', '2025-11-13 02:40:50', 3, 1),
+	(19022, 'Navegación', '{"event":"page_view","page":"Negocios","page_id":17,"container":"Business","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/business","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36","timestamp":"2025-11-12T21:40:57-05:00"}', '2025-11-13 02:40:57', '2025-11-13 02:40:57', 3, 1),
+	(19023, 'Navegación', '{"event":"page_view","page":"Clientes App","page_id":15,"container":"Customersuserapp","user_id":1,"ip":"190.119.91.42","method":"GET","url":"/im/customersuserapp","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36","timestamp":"2025-11-12T21:41:03-05:00"}', '2025-11-13 02:41:03', '2025-11-13 02:41:03', 3, 1),
+	(19024, 'Cierre de sesión', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES ha cerrado sesión en el sistema', '2025-11-13 02:44:26', '2025-11-13 02:44:26', 2, 1),
+	(19025, 'Registro de producto POS', 'Se registró el producto: Condones Piel', '2025-11-13 02:45:02', '2025-11-13 02:45:02', 2, 3),
+	(19026, 'Registro de categoría POS', 'Se registró la categoría: Preservativos', '2025-11-13 02:45:21', '2025-11-13 02:45:21', 2, 3),
+	(19027, 'Registro de categoría POS', 'Se registró la categoría: Hilos', '2025-11-13 02:45:28', '2025-11-13 02:45:28', 2, 3),
+	(19028, 'Actualización de producto POS', 'Se actualizó el producto: Condones Piel', '2025-11-13 02:45:39', '2025-11-13 02:45:39', 3, 3),
+	(19029, 'Registro de proveedor POS', 'Se registró el proveedor: Smith El Cheroca', '2025-11-13 02:45:55', '2025-11-13 02:45:55', 2, 3),
+	(19030, 'Registro de producto POS', 'Se registró el producto: Condones Baratos', '2025-11-13 02:46:35', '2025-11-13 02:46:35', 2, 3),
+	(19031, 'Eliminación de categoría POS', 'Se eliminó la categoría: Hilos', '2025-11-13 02:47:56', '2025-11-13 02:47:56', 3, 3),
+	(19032, 'Desactivación de categoría POS', 'Se desactivó la categoría: Preservativos', '2025-11-13 02:47:59', '2025-11-13 02:47:59', 2, 3),
+	(19033, 'Desactivación de proveedor POS', 'Se desactivó el proveedor: Smith El Cheroca', '2025-11-13 02:48:23', '2025-11-13 02:48:23', 3, 3),
+	(19034, 'Cierre de sesión', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES ha cerrado sesión en el sistema', '2025-11-13 02:54:43', '2025-11-13 02:54:43', 2, 1);
 
 -- Volcando estructura para tabla bd_capyventas.tb_module
 DROP TABLE IF EXISTS `tb_module`;
@@ -19596,7 +19744,7 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
 -- Volcando datos para la tabla bd_capyventas.tb_user: ~2 rows (aproximadamente)
 DELETE FROM `tb_user`;
 INSERT INTO `tb_user` (`idUser`, `u_user`, `u_password`, `u_email`, `u_profile`, `u_fullname`, `u_gender`, `u_dni`, `u_status`, `u_registrationDate`, `u_updateDate`, `u_online`, `role_id`, `u_login_attempts`, `u_reset_token_password`, `u_space_limit`, `u_personal_folder_name`) VALUES
-	(1, 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'ME9lN1h5LzYrVFNTeGZQdnVJVGNhV3lvaGNNV2lIbjMrcWg3Mzl6dFRSYz0=', '6866fefa42aef.jpg', 'SUPER ADMINISTRADOR SISTEMA ROLES', 'Otro', '12345678', 'Activo', '2025-01-28 18:49:20', '2025-11-12 20:11:52', 0, 1, 0, '', 0, 'root'),
+	(1, 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'ME9lN1h5LzYrVFNTeGZQdnVJVGNhV3lvaGNNV2lIbjMrcWg3Mzl6dFRSYz0=', '6866fefa42aef.jpg', 'SUPER ADMINISTRADOR SISTEMA ROLES', 'Otro', '12345678', 'Activo', '2025-01-28 18:49:20', '2025-11-13 02:44:26', 0, 1, 0, '', 0, 'root'),
 	(51, 'cnNudTFpdDN0VExRdkNTRUZZbWw1Zz09', 'cnNudTFpdDN0VExRdkNTRUZZbWw1Zz09', 'QTZYMEwrNWIyN2trMWhENVYxeGlpSXhmNTVadFV3RlIrN2pWMlV2QnFqST0=', '', 'SAJAMI GUZMAN BILL JEREMI', 'Masculino', '71111360', 'Activo', '2025-11-09 04:42:33', '2025-11-09 04:42:33', 0, 18, 0, '', 2, '71111360');
 
 -- Volcando estructura para tabla bd_capyventas.tb_userroledetail
@@ -19653,23 +19801,24 @@ INSERT INTO `tb_userroledetail` (`idUserRoleDetail`, `interface_id`, `role_id`, 
 -- Volcando estructura para tabla bd_capyventas.user_app
 DROP TABLE IF EXISTS `user_app`;
 CREATE TABLE IF NOT EXISTS `user_app` (
-  `idUserApp` int(11) NOT NULL AUTO_INCREMENT,
-  `user` varchar(255) NOT NULL,
-  `password` text DEFAULT NULL,
-  `status` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo',
-  `registration_date` timestamp NOT NULL DEFAULT current_timestamp(),
-  `update_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `people_id` int(11) NOT NULL,
+  `idUserApp` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del usuario de la app',
+  `user` varchar(255) NOT NULL COMMENT 'Nombre de usuario o correo con el que inicia sesión',
+  `password` text DEFAULT NULL COMMENT 'Contraseña del usuario almacenada de forma encriptada',
+  `status` enum('Activo','Inactivo') NOT NULL DEFAULT 'Activo' COMMENT 'Estado lógico del usuario dentro de la aplicación',
+  `registration_date` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Fecha y hora de registro del usuario en la aplicación',
+  `update_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Fecha y hora de la última actualización de datos del usuario',
+  `people_id` int(11) NOT NULL COMMENT 'Referencia a los datos personales del usuario en la tabla people',
+  `plan_expiration_date` datetime DEFAULT NULL COMMENT 'Fecha hasta la cual el usuario tiene activo un plan de pago; NULL si es usuario Free o sin plan',
   PRIMARY KEY (`idUserApp`),
   KEY `people_id` (`people_id`),
   CONSTRAINT `user_app_ibfk_1` FOREIGN KEY (`people_id`) REFERENCES `people` (`idPeople`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Usuarios que se autentican en CapyVentas, vinculados a la tabla people y con información básica del estado del plan.';
 
--- Volcando datos para la tabla bd_capyventas.user_app: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.user_app: ~2 rows (aproximadamente)
 DELETE FROM `user_app`;
-INSERT INTO `user_app` (`idUserApp`, `user`, `password`, `status`, `registration_date`, `update_date`, `people_id`) VALUES
-	(2, 'WTkxR2dvdlc2RXpHQmdObVh4OE9WUT09', 'WTkxR2dvdlc2RXpHQmdObVh4OE9WUT09', 'Activo', '2025-11-12 06:40:33', '2025-11-12 16:17:09', 2),
-	(3, 'Zm05Qm16b3VreDY1ck9BNjFGeWptdz09', 'Zm05Qm16b3VreDY1ck9BNjFGeWptdz09', 'Activo', '2025-11-12 18:56:48', '2025-11-12 18:56:48', 3);
+INSERT INTO `user_app` (`idUserApp`, `user`, `password`, `status`, `registration_date`, `update_date`, `people_id`, `plan_expiration_date`) VALUES
+	(2, 'WTkxR2dvdlc2RXpHQmdObVh4OE9WUT09', 'WTkxR2dvdlc2RXpHQmdObVh4OE9WUT09', 'Activo', '2025-11-12 06:40:33', '2025-11-13 01:57:41', 2, '2025-12-12 23:59:59'),
+	(3, 'Zm05Qm16b3VreDY1ck9BNjFGeWptdz09', 'Zm05Qm16b3VreDY1ck9BNjFGeWptdz09', 'Activo', '2025-11-12 18:56:48', '2025-11-12 18:56:48', 3, '2025-11-12 20:55:07');
 
 -- Volcando estructura para tabla bd_capyventas.voucher_detail
 DROP TABLE IF EXISTS `voucher_detail`;
