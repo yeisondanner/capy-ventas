@@ -1,4 +1,5 @@
 #Reglas del proyecto
+-Siempre revisar la base de datos mas reciente de la carpeta Bd para tener contexto de todo
 -Los nombres de las carpetas de las vistas del sistema tendran que ser escritas con la primera letra en mayuscula
 -Los controladores, los archivos deberan ser escrita con la primera letra en mayuscula
 -Los modelos, lo archivos deberan tener el mismo nombre del controlador concatenado el Model.php de igual manera con la primera letra en mayuscula y la palabra Model con la primera letra en mayuscula, ejemplo UsersModel.php
@@ -8,3 +9,5 @@
 -El nombre de los metodos deberan ser en ingles
 -Toda documentacion echa sera en español
 -Los procesos de cada funcion echa tambien se deberan documentar de manera clara
+-Solo debe usar las librerias que estan disponibles en el proyecto, caso contrario preguntar para implementarlo manualmente, si tienes la posibilidad de descargar la libreria y ponerlo en las carpetas correspondientes lo haces si no es mejor preguntar
+-Siempre que se realiza un cambio documentar en el readme en una seccion donde se coloque todos los cambios que se han realizado mediante IA, independiente del modelo que esta trabajando, colocar el nombre ejemplo: CHATGPT - (Fecha y hora)  - (Cambio realizado)
