@@ -1,8 +1,12 @@
 <?php
 class HomeModel extends Mysql
 {
-	public function __construct()
-	{
-		parent::__construct();
-	}
+        /**
+         * Inicializa el modelo base y establece la conexión con la base de datos.
+         */
+        public function __construct()
+        {
+                parent::__construct();
+        }
+
 }
