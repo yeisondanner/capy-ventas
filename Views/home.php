@@ -288,6 +288,96 @@
       font-size: 0.95rem;
     }
 
+    .pricing-section {
+      margin-top: 120px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 28px;
+    }
+
+    .pricing-card {
+      position: relative;
+      background: var(--color-card);
+      border-radius: var(--border-radius);
+      padding: 36px 32px;
+      border: 1px solid rgba(35, 67, 106, 0.12);
+      box-shadow: var(--shadow-soft);
+      display: grid;
+      gap: 18px;
+    }
+
+    .pricing-card.recommended {
+      border: 2px solid var(--color-secondary);
+      transform: translateY(-8px);
+      box-shadow: 0 24px 48px rgba(27, 191, 157, 0.22);
+    }
+
+    .plan-badge {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: linear-gradient(135deg, var(--color-secondary), #24d7b1);
+      color: #fff;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .plan-name {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+
+    .plan-description {
+      color: var(--color-muted);
+      font-size: 0.95rem;
+    }
+
+    .plan-price {
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--color-secondary);
+    }
+
+    .plan-price span {
+      font-size: 0.9rem;
+      color: var(--color-muted);
+      font-weight: 500;
+      margin-left: 6px;
+    }
+
+    .plan-features {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      color: var(--color-muted);
+      font-size: 0.95rem;
+      padding-left: 0;
+    }
+
+    .plan-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .plan-features li::before {
+      content: "✓";
+      font-weight: 700;
+      color: var(--color-secondary);
+    }
+
+    .plan-cta {
+      margin-top: 12px;
+    }
+
     .cta-panel {
       margin-top: 100px;
       background: linear-gradient(135deg, var(--color-primary), #1a3a5a 60%, rgba(20, 34, 53, 0.95));
@@ -384,13 +474,18 @@
       }
 
       .metrics-grid,
-      .features-grid {
+      .features-grid,
+      .pricing-grid {
         gap: 20px;
       }
 
       .cta-panel {
         margin-top: 80px;
         padding: 48px 26px;
+      }
+
+      .pricing-section {
+        margin-top: 80px;
       }
     }
   </style>
@@ -402,6 +497,7 @@
       <a href="#solucion">Solución</a>
       <a href="#metricas">Impacto</a>
       <a href="#funcionalidades">Funcionalidades</a>
+      <a href="#planes">Planes</a>
       <a href="#contacto">Contacto</a>
     </nav>
     <a class="btn btn-outline" href="#demo">Solicitar demo</a>
@@ -518,6 +614,59 @@
           <div class="feature-icon">IA</div>
           <h4>Asistente predictivo</h4>
           <p>Recibe alertas y recomendaciones automáticas para optimizar precios y disponibilidad.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="pricing-section" id="planes">
+      <h2 class="section-title">Planes diseñados para tu crecimiento</h2>
+      <p class="section-subtitle">
+        Selecciona el plan que mejor se adapta a tu equipo y activa Capy Ventas desde S/. 189 al mes. Todos los
+        planes incluyen implementación guiada y soporte en español.
+      </p>
+      <div class="pricing-grid">
+        <article class="pricing-card">
+          <h3 class="plan-name">Plan Esencial</h3>
+          <p class="plan-description">Ideal para puntos de venta que necesitan digitalizar procesos rápidamente.</p>
+          <p class="plan-price">S/. 189<span>/mes</span></p>
+          <ul class="plan-features">
+            <li>Hasta 5 usuarios activos</li>
+            <li>Módulos de POS e inventario</li>
+            <li>Reportes básicos de ventas</li>
+            <li>Soporte vía chat en horario laboral</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-outline" href="#demo">Probar Plan Esencial</a>
+          </div>
+        </article>
+        <article class="pricing-card recommended">
+          <span class="plan-badge">Más popular</span>
+          <h3 class="plan-name">Plan Profesional</h3>
+          <p class="plan-description">Combina analítica avanzada y CRM para acelerar la productividad comercial.</p>
+          <p class="plan-price">S/. 389<span>/mes</span></p>
+          <ul class="plan-features">
+            <li>Usuarios ilimitados</li>
+            <li>Módulos POS, inventario y CRM</li>
+            <li>Campañas automatizadas y reportes BI</li>
+            <li>Soporte prioritario 24/7</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-primary" href="#demo">Elegir Plan Profesional</a>
+          </div>
+        </article>
+        <article class="pricing-card">
+          <h3 class="plan-name">Plan Enterprise</h3>
+          <p class="plan-description">Integraciones personalizadas y acompañamiento estratégico para grandes redes.</p>
+          <p class="plan-price">S/. 729<span>/mes</span></p>
+          <ul class="plan-features">
+            <li>Gestión de múltiples sedes y bodegas</li>
+            <li>API abierta y conectores con ERP</li>
+            <li>Asesoría dedicada en analítica e IA</li>
+            <li>Capacitaciones trimestrales in-company</li>
+          </ul>
+          <div class="plan-cta">
+            <a class="btn btn-outline" href="mailto:ventas@capyventas.com">Hablar con ventas</a>
+          </div>
         </article>
       </div>
     </section>
