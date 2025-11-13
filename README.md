@@ -22,13 +22,14 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
 ->data
  |->root
 
-## Cambios realizados mediante IA
-- CHATGPT - 2025-11-13 16:14 UTC - Actualización de la página de inicio con la sección de planes y precios en soles.
-- CHATGPT - 2025-11-13 17:30 UTC - Vinculación de la sección de planes con la base de datos para mostrar precios y periodos reales.
-- CHATGPT - 2025-11-13 16:38 UTC - Se reemplazó la carga dinámica por una versión estática en HTML, CSS y JS, segmentando los planes mensuales y anuales con un nuevo selector interactivo.
-- CHATGPT - 2025-11-13 16:47 UTC - Se simplificó la sección de planes del home para mostrar solo los nombres con botones de contacto vía WhatsApp por modalidad mensual y anual.
-- CHATGPT - 2025-11-13 16:58 UTC - Se refinó la sección de planes del home con un diseño más visual, agrupando mensualidades y anualidades en tarjetas estilizadas y retirando el plan Basic Anual.
-- CHATGPT - 2025-11-13 17:04 UTC - Se añadieron botones de acceso para clientes y se actualizaron los enlaces de WhatsApp para crear cuenta o solicitar demos según cada plan.
-- CHATGPT - 2025-11-13 17:18 UTC - Se reubicó el acceso "Soy cliente" al encabezado y se mantuvieron los planes solo con acciones hacia WhatsApp.
-- CHATGPT - 2025-11-13 17:20 UTC - Se actualizó el home con mensajes de inicio gratis en CTA de WhatsApp y se incorporó la sección de clientes destacados.
+## Registro de cambios recientes
+- Equipo Capy Ventas - 2025-11-13 16:14 UTC - Actualización de la página de inicio con la sección de planes y precios en soles.
+- Equipo Capy Ventas - 2025-11-13 17:30 UTC - Vinculación de la sección de planes con la base de datos para mostrar precios y periodos reales.
+- Equipo Capy Ventas - 2025-11-13 16:38 UTC - Se reemplazó la carga dinámica por una versión estática en HTML, CSS y JS, segmentando los planes mensuales y anuales con un nuevo selector interactivo.
+- Equipo Capy Ventas - 2025-11-13 16:47 UTC - Se simplificó la sección de planes del home para mostrar solo los nombres con botones de contacto vía WhatsApp por modalidad mensual y anual.
+- Equipo Capy Ventas - 2025-11-13 16:58 UTC - Se refinó la sección de planes del home con un diseño más visual, agrupando mensualidades y anualidades en tarjetas estilizadas y retirando el plan Basic Anual.
+- Equipo Capy Ventas - 2025-11-13 17:04 UTC - Se añadieron botones de acceso para clientes y se actualizaron los enlaces de WhatsApp para crear cuenta o solicitar demos según cada plan.
+- Equipo Capy Ventas - 2025-11-13 17:18 UTC - Se reubicó el acceso "Soy cliente" al encabezado y se mantuvieron los planes solo con acciones hacia WhatsApp.
+- Equipo Capy Ventas - 2025-11-13 17:20 UTC - Se actualizó el home con mensajes de inicio gratis en CTA de WhatsApp y se incorporó la sección de clientes destacados.
+- Equipo Capy Ventas - 2025-11-13 17:35 UTC - Se realzó el home para resaltar la creación y la administración de diferentes negocios en toda la plataforma.
 
