@@ -252,4 +252,42 @@ class BusinessModel extends Mysql
         $request = $this->select_all($query);
         return $request ?? [];
     }
+    /**
+     * Metodo que se encarga de registrar 
+     * los registros iniciales de los negocios
+     * 
+     * @param int $idBusiness
+     * @return void
+     */
+    public function insert_default_data(int $idBusiness)
+    {
+        $this->idBusiness = $idBusiness;
+        $arrValues = array(
+            $this->idBusiness
+        );
+        //sql de la categoria inicial
+        $sqls = array(
+            <<<SQL
+                INSERT INTO category (`business_id`,`name`) 
+                VALUES 
+                (?,'Sin categoría');
+        SQL,
+            <<<SQL
+                INSERT INTO `supplier` (`document_number`, `company_name`, `phone_number`, `direction`, `email`, `business_id`) 
+                VALUES 
+                ('00000000000', 'Sin proveedor', '999999999', 'Sin proveedor', 'Sin proveedor', ?);
+        SQL,
+            <<<SQL
+                INSERT INTO `customer` (`fullname`, `documenttype_id`, `document_number`, `phone_number`, `email`, `direction`, `business_id`) 
+                VALUES 
+                ('Sin cliente', 1, 'Sin cliente', '999999999', 'sincliente@capyventas.com', 'Sin cliente', ?);
+        SQL
+        );
+
+        foreach ($sqls as $key => $value) {
+            $request[] = $this->insert($value, $arrValues);
+        }
+
+        return $request;
+    }
 }

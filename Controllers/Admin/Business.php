@@ -370,6 +370,12 @@ class Business extends Controllers
         $request = $this->model->insert_business($intTypeBusinessId, $strName, $direction, $city, $strDocumentNumber, $strPhoneNumber, $country, $strTelephonePrefix, $strEmail, $intUserAppId);
 
         if ($request > 0) {
+            //registramos los registros iniciales del negocio
+            $defaultConfig = $this->model->insert_default_data((int)$request);
+            //validamos si se registro las configuraciones iniciales
+            if (!$defaultConfig) {
+                registerLog("Ocurrió un error inesperado", "Negocio registrado, pero las configuraciones iniciales no se lograron registrar.", 1, $_SESSION['login_info']['idUser']);
+            }
             registerLog("Registro exitoso", "El negocio ha sido registrado correctamente en el sistema.", 2, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Registro exitoso",
