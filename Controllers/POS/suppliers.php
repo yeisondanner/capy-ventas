@@ -173,8 +173,6 @@ class Suppliers extends Controllers
             $this->responseError('No fue posible registrar el proveedor, inténtalo nuevamente.');
         }
 
-        registerLog('Registro de proveedor POS', 'Se registró el proveedor: ' . $name, 2, $userId);
-
         toJson([
             'title'   => 'Proveedor registrado',
             'message' => 'El proveedor se registró correctamente.',
@@ -241,8 +239,6 @@ class Suppliers extends Controllers
             $this->responseError('No fue posible actualizar el proveedor, inténtalo nuevamente.');
         }
 
-        registerLog('Actualización de proveedor POS', 'Se actualizó el proveedor: ' . $current['company_name'], 2, $userId);
-
         toJson([
             'title'   => 'Proveedor actualizado',
             'message' => 'Los datos del proveedor fueron actualizados correctamente.',
@@ -296,8 +292,6 @@ class Suppliers extends Controllers
                 $this->responseError('No fue posible desactivar el proveedor, inténtalo nuevamente.');
             }
 
-            registerLog('Desactivación de proveedor POS', 'Se desactivó el proveedor: ' . $supplier['company_name'], 3, $userId);
-
             toJson([
                 'title'   => 'Proveedor desactivado',
                 'message' => 'El proveedor tiene productos asociados, por lo que se desactivó y dejó de mostrarse en el listado.',
@@ -311,8 +305,6 @@ class Suppliers extends Controllers
         if (!$deleted) {
             $this->responseError('No fue posible eliminar el proveedor, inténtalo nuevamente.');
         }
-
-        registerLog('Eliminación de proveedor POS', 'Se eliminó el proveedor: ' . $supplier['company_name'], 3, $userId);
 
         toJson([
             'title'   => 'Proveedor eliminado',
@@ -362,13 +354,11 @@ class Suppliers extends Controllers
     private function validateCsrfToken(string $token, int $userId): void
     {
         if (empty($token) || empty($_SESSION['data_token']['token'])) {
-            registerLog('Seguridad POS', 'Token CSRF inválido o ausente.', 1, $userId);
             $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
         }
 
         $sessionToken = (string) $_SESSION['data_token']['token'];
         if (!hash_equals($sessionToken, (string) $token)) {
-            registerLog('Seguridad POS', 'Token CSRF no coincide.', 1, $userId);
             $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
         }
     }

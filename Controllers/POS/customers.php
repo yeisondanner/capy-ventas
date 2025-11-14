@@ -192,8 +192,6 @@ class Customers extends Controllers
             $this->responseError('No fue posible registrar el cliente, inténtalo nuevamente.');
         }
 
-        registerLog('Registro de cliente POS', 'Se registró el cliente: ' . $name, 2, $userId);
-
         toJson([
             'title'   => 'Cliente registrado',
             'message' => 'El cliente se registró correctamente.',
@@ -270,8 +268,6 @@ class Customers extends Controllers
             $this->responseError('No fue posible actualizar el cliente, inténtalo nuevamente.');
         }
 
-        registerLog('Actualización de cliente POS', 'Se actualizó el cliente: ' . ($current['fullname'] ?? ''), 2, $userId);
-
         toJson([
             'title'   => 'Cliente actualizado',
             'message' => 'Los datos del cliente fueron actualizados correctamente.',
@@ -323,8 +319,6 @@ class Customers extends Controllers
             $this->responseError('No fue posible eliminar el cliente, inténtalo nuevamente.');
         }
 
-        registerLog('Eliminación de cliente POS', 'Se eliminó el cliente: ' . ($customer['fullname'] ?? ''), 3, $userId);
-
         toJson([
             'title'   => 'Cliente eliminado',
             'message' => 'El cliente se eliminó correctamente.',
@@ -373,13 +367,11 @@ class Customers extends Controllers
     private function validateCsrfToken(string $token, int $userId): void
     {
         if (empty($token) || empty($_SESSION['data_token']['token'])) {
-            registerLog('Seguridad POS', 'Token CSRF inválido o ausente.', 1, $userId);
             $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
         }
 
         $sessionToken = (string) $_SESSION['data_token']['token'];
         if (!hash_equals($sessionToken, (string) $token)) {
-            registerLog('Seguridad POS', 'Token CSRF no coincide.', 1, $userId);
             $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
         }
     }

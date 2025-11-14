@@ -175,8 +175,6 @@ class Inventory extends Controllers
             $this->responseError('No fue posible registrar el producto, inténtalo nuevamente.');
         }
 
-        registerLog('Registro de producto POS', 'Se registró el producto: ' . $name, 2, $userId);
-
         $data = [
             'title'  => 'Registro exitoso',
             'message' => 'El producto se registró correctamente.',
@@ -338,8 +336,6 @@ class Inventory extends Controllers
             $this->responseError('No fue posible actualizar el producto, inténtalo nuevamente.');
         }
 
-        registerLog('Actualización de producto POS', 'Se actualizó el producto: ' . $name, 3, $userId);
-
         $data = [
             'title'  => 'Actualización exitosa',
             'message' => 'La información del producto se actualizó correctamente.',
@@ -383,8 +379,6 @@ class Inventory extends Controllers
         if (!$deleted) {
             $this->responseError('No fue posible eliminar el producto, inténtalo nuevamente.');
         }
-
-        registerLog('Eliminación de producto POS', 'Se eliminó el producto: ' . $product['name'], 3, $userId);
 
         $data = [
             'title'  => 'Producto eliminado',
@@ -462,8 +456,6 @@ class Inventory extends Controllers
             $this->responseError('No fue posible registrar la categoría, inténtalo nuevamente.');
         }
 
-        registerLog('Registro de categoría POS', 'Se registró la categoría: ' . $name, 2, $userId);
-
         toJson([
             'title'  => 'Categoría registrada',
             'message' => 'La categoría se registró correctamente.',
@@ -519,8 +511,6 @@ class Inventory extends Controllers
         if (!$updated) {
             $this->responseError('No fue posible actualizar la categoría, inténtalo nuevamente.');
         }
-
-        registerLog('Actualización de categoría POS', 'Se actualizó la categoría: ' . $name, 2, $userId);
 
         toJson([
             'title'  => 'Categoría actualizada',
@@ -579,8 +569,6 @@ class Inventory extends Controllers
                 $this->responseError('No fue posible desactivar la categoría, inténtalo nuevamente.');
             }
 
-            registerLog('Desactivación de categoría POS', 'Se desactivó la categoría: ' . $category['name'], 2, $userId);
-
             toJson([
                 'title'   => 'Categoría desactivada',
                 'message' => 'La categoría tiene registros asociados, por lo que se desactivó y se ocultó del listado.',
@@ -596,8 +584,6 @@ class Inventory extends Controllers
         if (!$deleted) {
             $this->responseError('No fue posible eliminar la categoría, inténtalo nuevamente.');
         }
-
-        registerLog('Eliminación de categoría POS', 'Se eliminó la categoría: ' . $category['name'], 3, $userId);
 
         toJson([
             'title'   => 'Categoría eliminada',
@@ -678,13 +664,11 @@ class Inventory extends Controllers
     private function validateCsrfToken(string $token, int $userId): void
     {
         if (empty($token) || empty($_SESSION['data_token']['token'])) {
-            registerLog('Seguridad POS', 'Token CSRF inválido o ausente.', 1, $userId);
             $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
         }
 
         $sessionToken = (string) $_SESSION['data_token']['token'];
         if (!hash_equals($sessionToken, (string) $token)) {
-            registerLog('Seguridad POS', 'Token CSRF no coincide.', 1, $userId);
             $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
         }
     }
