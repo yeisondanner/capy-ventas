@@ -81,6 +81,57 @@
       gap: 28px;
     }
 
+    .menu-toggle {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 2px solid var(--color-primary);
+      background: rgba(35, 67, 106, 0.06);
+      color: var(--color-primary);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+    }
+
+    .menu-toggle:hover {
+      background: rgba(35, 67, 106, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .menu-toggle.active {
+      background: var(--color-primary);
+      color: #ffffff;
+    }
+
+    .menu-icon {
+      display: grid;
+      gap: 5px;
+    }
+
+    .menu-icon span {
+      width: 18px;
+      height: 2px;
+      display: block;
+      background: currentColor;
+      border-radius: 999px;
+      transition: transform 0.3s ease;
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active .menu-icon span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
     .header-actions {
       display: flex;
       align-items: center;
@@ -409,6 +460,7 @@
       margin-top: 120px;
       position: relative;
       isolation: isolate;
+      overflow: hidden;
     }
 
     .pricing-section::before,
@@ -718,16 +770,38 @@
         gap: 18px;
       }
 
-      nav {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
+      .menu-toggle {
+        display: inline-flex;
+        margin-left: auto;
       }
 
+      nav,
       .header-actions {
         width: 100%;
+      }
+
+      header:not(.is-menu-open) nav,
+      header:not(.is-menu-open) .header-actions {
+        display: none;
+      }
+
+      header.is-menu-open nav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+
+      header.is-menu-open .header-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+
+      header.is-menu-open .header-actions .btn {
+        width: 100%;
         justify-content: center;
-        flex-wrap: wrap;
       }
 
       .hero {
@@ -776,13 +850,6 @@
     }
 
     @media (max-width: 768px) {
-      nav {
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 14px;
-      }
-
       main {
         width: 100%;
         padding: 20px 4% 80px;
@@ -797,6 +864,71 @@
         align-items: stretch;
         gap: 12px;
       }
+
+      .hero-buttons {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .hero-content p {
+        max-width: none;
+      }
+
+      .hero-card {
+        padding: 28px;
+      }
+
+      .metrics-grid,
+      .features-grid,
+      .pricing-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-wrapper {
+        padding: 40px 22px;
+      }
+
+      .cta-panel {
+        padding: 40px 22px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      header {
+        padding: 12px 5%;
+      }
+
+      .hero {
+        gap: 40px;
+      }
+
+      .hero-content h1 {
+        font-size: clamp(1.9rem, 9vw, 2.4rem);
+      }
+
+      .hero-card h2 {
+        font-size: 1.6rem;
+      }
+
+      .hero-metric {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .pricing-section::before,
+      .pricing-section::after {
+        display: none;
+      }
+
+      .cta-panel::before,
+      .cta-panel::after {
+        display: none;
+      }
+
+      footer {
+        padding: 30px 6% 40px;
+      }
     }
   </style>
 </head>
@@ -804,7 +936,15 @@
 <body>
   <header>
     <span class="logo">Capy Ventas</span>
-    <nav>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
+      <span class="menu-icon" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+      <span class="menu-label">Menú</span>
+    </button>
+    <nav id="primary-navigation">
       <a href="#solucion">Solución</a>
       <a href="#metricas">Impacto</a>
       <a href="#funcionalidades">Funcionalidades</a>
@@ -1262,6 +1402,9 @@
       const toggleButtons = document.querySelectorAll(".toggle-button");
       const planGroups = document.querySelectorAll("[data-plan-group]");
       const yearLabel = document.getElementById("current-year");
+      const header = document.querySelector("header");
+      const menuToggle = document.querySelector(".menu-toggle");
+      const navigation = document.getElementById("primary-navigation");
 
       toggleButtons.forEach((button) => {
         button.addEventListener("click", () => {
@@ -1280,6 +1423,30 @@
 
       if (yearLabel) {
         yearLabel.textContent = new Date().getFullYear().toString();
+      }
+
+      if (header && menuToggle && navigation) {
+        /**
+         * Alterna la visibilidad del menú principal para optimizar la
+         * experiencia en dispositivos móviles.
+         *
+         * @returns {void}
+         */
+        const alternarMenuPrincipal = () => {
+          const abierto = header.classList.toggle("is-menu-open");
+          menuToggle.classList.toggle("active", abierto);
+          menuToggle.setAttribute("aria-expanded", abierto ? "true" : "false");
+        };
+
+        menuToggle.addEventListener("click", alternarMenuPrincipal);
+
+        navigation.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            if (header.classList.contains("is-menu-open")) {
+              alternarMenuPrincipal();
+            }
+          });
+        });
       }
     });
   </script>
