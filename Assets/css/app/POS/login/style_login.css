@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
-
 @import url("https://fonts.googleapis.com/css2?family=Playwrite+HU:wght@100..400&display=swap");
 
 body {
@@ -7,11 +6,11 @@ body {
 }
 
 .material-half-bg {
-  background-color: #fff !important;
+  background-color: var(--bs-white) !important;
 }
 
 .material-half-bg .cover {
-  background-color: orange !important;
+  background-color: var(--bs-primary) !important;
 }
 
 .login-content .login-box {
@@ -33,16 +32,21 @@ body {
   text-align: center;
 }
 
+.login-content .login-box .login-form .login-message span {
+  color: var(--bs-gray-700);
+}
+
 .login-content .login-box .login-form .contacto p {
-  color: dimgray;
+  color: var(--bs-gray-700);
 }
 
 .login-content .login-box .login-form .contacto a {
-  color: orange;
+  color: var(--bs-primary);
 }
 
-.login-content .login-box .login-form .login-message span {
-  color: dimgray;
+.login-content .login-box .login-form .contacto a:hover,
+.login-content .login-box .login-form .contacto a:focus {
+  color: rgba(var(--bs-primary-rgb), 0.75);
 }
 
 .login-content .login-box .login-form .login-head {
@@ -59,7 +63,7 @@ body {
 
 .login-content .login-box .login-form .login-head h3 {
   font-family: "Playwrite HU", cursive;
-  color: dimgray;
+  color: var(--bs-gray-700);
   padding: 0;
   margin: 0;
 }
@@ -74,36 +78,43 @@ body {
   border-radius: 1.2rem;
   padding: 0.7rem 1rem;
   font-size: 1rem;
-  border-color: orange;
-  color: orange;
-  &:hover {
-    background-color: orange;
-    color: white;
-  }
+  border-color: var(--bs-primary);
+  color: var(--bs-primary);
+}
+
+.login-content .login-box .login-form .input-group button:hover,
+.login-content .login-box .login-form .input-group button:focus {
+  background-color: var(--bs-primary);
+  color: var(--bs-white);
 }
 
 .login-content .login-box .login-form .input-group .form-control {
   border-radius: 1.2rem;
   padding: 0.7rem;
   font-size: 1rem;
-  &:focus {
-    border-color: orange;
-  }
+}
+
+.login-content .login-box .login-form .input-group .form-control:focus {
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
 }
 
 .login-content .login-box .login-form .btn-container button {
   border-radius: 1.2rem;
   padding: 0.7rem;
   font-size: 1rem;
-  background-color: orange !important;
+  background-color: var(--bs-primary) !important;
   border: none;
-  &:hover {
-    background-color: #d08803 !important;
-  }
+  color: var(--bs-white);
+}
+
+.login-content .login-box .login-form .btn-container button:hover,
+.login-content .login-box .login-form .btn-container button:focus {
+  background-color: rgba(var(--bs-primary-rgb), 0.85) !important;
+  color: var(--bs-white);
 }
 
 /* Trabajamos las media query*/
-
 @media screen and (max-width: 600px) {
   .login-content {
     padding: 1rem;
