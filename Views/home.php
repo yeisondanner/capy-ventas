@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,12 +33,13 @@
       color: var(--color-dark);
       background: linear-gradient(135deg, rgba(35, 67, 106, 0.06), rgba(27, 191, 157, 0.04));
       min-height: 100vh;
-      line-height: 1.6;
+      width: 100%;
+      overflow-x: hidden;
     }
 
     header {
-      width: 100%;
-      padding: 28px 6%;
+      width: 100% !important;
+      padding: 15px 6%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -198,7 +200,7 @@
       opacity: 0.8;
     }
 
-    .hero-card > * {
+    .hero-card>* {
       position: relative;
       z-index: 2;
     }
@@ -668,7 +670,7 @@
       opacity: 0.6;
     }
 
-    .cta-panel > * {
+    .cta-panel>* {
       position: relative;
       z-index: 2;
     }
@@ -693,6 +695,7 @@
 
     @media (max-width: 960px) {
       header {
+        width: 100%;
         flex-wrap: wrap;
         gap: 18px;
       }
@@ -753,8 +756,33 @@
         grid-template-columns: 1fr;
       }
     }
+
+    @media (max-width: 768px) {
+      nav {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+
+      main {
+        width: 100%;
+        padding: 20px 4% 80px;
+      }
+
+      .hero-content h1 {
+        font-size: clamp(2rem, 8vw, 2.6rem);
+      }
+
+      .billing-toggle {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+    }
   </style>
 </head>
+
 <body>
   <header>
     <span class="logo">Capy Ventas</span>
@@ -770,10 +798,9 @@
       <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
       <a
         class="btn btn-outline"
-        href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20Capy%20Ventas"
+        href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20Capy%20Ventas"
         target="_blank"
-        rel="noopener noreferrer"
-      >
+        rel="noopener noreferrer">
         Inicia gratis
       </a>
     </div>
@@ -791,10 +818,9 @@
         <div class="hero-buttons">
           <a
             class="btn btn-primary"
-            href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20Capy%20Ventas"
+            href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20Capy%20Ventas"
             target="_blank"
-            rel="noopener noreferrer"
-          >
+            rel="noopener noreferrer">
             Inicia gratis
           </a>
           <a class="btn btn-outline" href="#contacto">Hablar con un especialista</a>
@@ -969,18 +995,16 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Gratis%20mensual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Gratis%20mensual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Gratis%20mensual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Gratis%20mensual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
@@ -992,18 +1016,16 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Basic%20mensual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Basic%20mensual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Basic%20mensual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Basic%20mensual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
@@ -1016,18 +1038,16 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Pro%20mensual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Pro%20mensual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Pro%20mensual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Pro%20mensual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
@@ -1039,18 +1059,16 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Business%20mensual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Business%20mensual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Business%20mensual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Business%20mensual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
@@ -1062,18 +1080,16 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Premium%20mensual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Premium%20mensual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Premium%20mensual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Premium%20mensual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
@@ -1085,18 +1101,16 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Full%20Max%20mensual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Full%20Max%20mensual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Full%20Max%20mensual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Full%20Max%20mensual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
@@ -1111,18 +1125,16 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Pro%20anual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Pro%20anual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Pro%20anual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Pro%20anual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
@@ -1134,18 +1146,16 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Business%20anual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Business%20anual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Business%20anual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Business%20anual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
@@ -1157,18 +1167,16 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Premium%20anual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Premium%20anual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Premium%20anual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Premium%20anual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
@@ -1180,18 +1188,16 @@
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Full%20Max%20anual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Full%20Max%20anual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Full%20Max%20anual"
+                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Full%20Max%20anual"
                   target="_blank"
-                  rel="noopener noreferrer"
-                >
+                  rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
@@ -1211,10 +1217,9 @@
         <div>
           <a
             class="btn btn-primary"
-            href="https://wa.me/5190367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20Capy%20Ventas%20y%20recibir%20acompa%C3%B1amiento"
+            href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20Capy%20Ventas%20y%20recibir%20acompa%C3%B1amiento"
             target="_blank"
-            rel="noopener noreferrer"
-          >
+            rel="noopener noreferrer">
             Inicia gratis ahora
           </a>
         </div>
@@ -1261,4 +1266,5 @@
     });
   </script>
 </body>
+
 </html>
