@@ -767,7 +767,10 @@
       header {
         width: 100%;
         flex-wrap: wrap;
+        flex-direction: column;
+        align-items: stretch;
         gap: 18px;
+        padding: 15px 5%;
       }
 
       .menu-toggle {
@@ -785,18 +788,36 @@
         display: none;
       }
 
+      header.is-menu-open {
+        align-items: stretch;
+      }
+
       header.is-menu-open nav {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 14px;
+        align-items: stretch;
+        gap: 6px;
+        padding: 12px 0;
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: 18px;
+        box-shadow: 0 18px 40px rgba(19, 47, 76, 0.16);
+      }
+
+      header.is-menu-open nav a {
+        width: 100%;
+        padding: 10px 16px;
+        text-align: center;
       }
 
       header.is-menu-open .header-actions {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 14px;
+        align-items: stretch;
+        gap: 12px;
+        padding: 16px;
+        background: rgba(255, 255, 255, 0.96);
+        border-radius: 18px;
+        box-shadow: 0 18px 40px rgba(19, 47, 76, 0.16);
       }
 
       header.is-menu-open .header-actions .btn {
@@ -806,6 +827,7 @@
 
       .hero {
         padding: 40px 0;
+        margin-top: 0;
       }
 
       .hero-content h1 {

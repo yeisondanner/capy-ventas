@@ -23,6 +23,7 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-14 21:51 UTC - Ajuste del menú móvil del home para apilar enlaces y botones con fondo propio evitando traslape sobre la sección principal en pantallas pequeñas.
 - CHATGPT - 2025-11-14 21:31 UTC - Optimización del home con menú móvil y ajustes de estilos responsivos para evitar rupturas en pantallas pequeñas.
 - Equipo Capy Ventas - 2025-11-13 16:14 UTC - Actualización de la página de inicio con la sección de planes y precios en soles.
 - Equipo Capy Ventas - 2025-11-13 17:30 UTC - Vinculación de la sección de planes con la base de datos para mostrar precios y periodos reales.
