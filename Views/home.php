@@ -6,6 +6,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Capy Ventas | Plataforma Comercial Integral</title>
 
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Descubre Capy Ventas, la plataforma comercial integral que unifica punto de venta (POS), inventario, CRM y analítica para potenciar tus ventas omnicanal. Administra múltiples negocios desde un solo lugar y convierte cada oportunidad en ingresos.">
+  <meta name="keywords" content="punto de venta, POS, CRM, inventario, ventas omnicanal, gestión de negocios, plataforma comercial, Capy Ventas, analítica de ventas, software para retail">
+  <meta name="author" content="Capy Ventas">
+  <meta name="robots" content="index, follow">
+
+  <!-- Canonical URL -->
+  <!-- Asegúrate de reemplazar 'https://www.capyventas.com' con tu dominio real -->
+  <link rel="canonical" href="https://www.capyventas.com/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.capyventas.com/">
+  <meta property="og:title" content="Capy Ventas | Plataforma Comercial Integral">
+  <meta property="og:description" content="La plataforma todo en uno para gestionar y escalar tus ventas omnicanal. Integra POS, inventario y CRM fácilmente.">
+  <!-- Asegúrate de reemplazar 'URL_DE_TU_IMAGEN_OG.png' con la URL de una imagen representativa (ej. 1200x630px) -->
+  <meta property="og:image" content="https://www.capyventas.com/assets/images/URL_DE_TU_IMAGEN_OG.png">
+
   <style>
     :root {
       --color-primary: #23436a;
