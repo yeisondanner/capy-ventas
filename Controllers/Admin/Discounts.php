@@ -8,438 +8,621 @@
  */
 class Discounts extends Controllers
 {
-    /**
-     * Constructor de la clase
-     */
-    public function __construct()
-    {
-        isSession();
-        parent::__construct();
-    }
+   /**
+    * Constructor de la clase
+    */
+   public function __construct()
+   {
+      isSession();
+      parent::__construct();
+   }
 
-    /**
-     * Muestra la vista principal de gestión de descuentos
-     *
-     * @return void
-     */
-    public function discounts()
-    {
-        $data = [
-            'page_id'          => 21,
-            'page_title'       => 'Gestión de Descuentos',
-            'page_description' => 'Gestiona los descuentos y cupones promocionales del sistema.',
-            'page_container'   => 'Discounts',
-            'page_view'        => 'discounts',
-            'page_js_css'      => 'discounts',
-            'page_vars'        => ['permission_data', 'login', 'login_info'],
-        ];
+   /**
+    * Muestra la vista principal de gestión de descuentos
+    *
+    * @return void
+    */
+   public function discounts()
+   {
+      $data = [
+         'page_id' => 21,
+         'page_title' => 'Descuentos',
+         'page_description' => 'Gestiona los descuentos y cupones promocionales del sistema.',
+         'page_container' => 'Discounts',
+         'page_view' => 'discounts',
+         'page_js_css' => 'discounts',
+         'page_vars' => ['permission_data', 'login', 'login_info'],
+      ];
 
-        permissionInterface($data['page_id']);
+      permissionInterface($data['page_id']);
 
-        $userId    = isset($_SESSION['login_info']['idUser']) ? (int) $_SESSION['login_info']['idUser'] : null;
-        $ip        = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
-        $method    = $_SERVER['REQUEST_METHOD'] ?? null;
-        $url       = $_SERVER['REQUEST_URI'] ?? null;
-        $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? substr($_SERVER['HTTP_USER_AGENT'], 0, 180) : null;
+      $userId = isset($_SESSION['login_info']['idUser']) ? (int)$_SESSION['login_info']['idUser'] : null;
+      $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? null;
+      $method = $_SERVER['REQUEST_METHOD'] ?? null;
+      $url = $_SERVER['REQUEST_URI'] ?? null;
+      $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? substr($_SERVER['HTTP_USER_AGENT'], 0, 180) : null;
 
-        $payload = [
-            'event'      => 'page_view',
-            'page'       => $data['page_title'],
-            'page_id'    => $data['page_id'],
-            'container'  => $data['page_container'],
-            'user_id'    => $userId,
-            'ip'         => $ip,
-            'method'     => $method,
-            'url'        => $url,
-            'user_agent' => $userAgent,
-            'timestamp'  => date('c'),
-        ];
+      $payload = [
+         'event' => 'page_view',
+         'page' => $data['page_title'],
+         'page_id' => $data['page_id'],
+         'container' => $data['page_container'],
+         'user_id' => $userId,
+         'ip' => $ip,
+         'method' => $method,
+         'url' => $url,
+         'user_agent' => $userAgent,
+         'timestamp' => date('c'),
+      ];
 
-        registerLog(
-            'Navegación',
-            json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-            3,
-            $userId
-        );
+      registerLog(
+         'Navegación',
+         json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+         3,
+         $userId
+      );
 
-        $this->views->getView($this, 'discounts', $data);
-    }
+      $this->views->getView($this, 'discounts', $data);
+   }
 
-    /**
-     * Obtiene la lista de descuentos para DataTables
-     *
-     * @return void
-     */
-    public function getDiscounts()
-    {
-        if (permissionInterface(21)) {
-            $arrResponse = $this->model->select_discounts_with_plans();
-            $arrData = array();
+   /**
+    * Obtiene la lista de todos los descuentos para mostrar en la tabla
+    *
+    * @return void
+    */
+   public function getDiscounts()
+   {
+      permissionInterface(21);
+      $arrData = $this->model->select_discounts();
+      $cont = 1;
+      foreach ($arrData as $key => $value) {
+         $arrData[$key]["cont"] = $cont;
 
-            for ($i = 0; $i < count($arrResponse); $i++) {
-                $btnView = '';
-                $btnEdit = '';
-                $btnDelete = '';
+         // Formatear tipo de descuento
+         $typeText = $value["type"] == "percentage" ? "Porcentaje" : "Monto Fijo";
+         $arrData[$key]["type_text"] = $typeText;
 
-                if (permissionInterface(21)) {
-                    $btnView = '<button class="btn btn-info btn-sm report-item"
-                                data-id="' . $arrResponse[$i]['idDiscount'] . '"
-                                data-code="' . $arrResponse[$i]['code'] . '"
-                                data-type="' . $arrResponse[$i]['type'] . '"
-                                data-value="' . $arrResponse[$i]['value'] . '"
-                                data-start-date="' . $arrResponse[$i]['start_date'] . '"
-                                data-end-date="' . $arrResponse[$i]['end_date'] . '"
-                                data-applies-to-plan-id="' . $arrResponse[$i]['applies_to_plan_id'] . '"
-                                data-plan-name="' . ($arrResponse[$i]['plan_name'] ?? 'Todos los planes') . '"
-                                data-max-uses="' . $arrResponse[$i]['max_uses'] . '"
-                                data-is-recurring="' . $arrResponse[$i]['is_recurring'] . '"
-                                data-status="' . $arrResponse[$i]['status'] . '"
-                                data-toggle="modal"
-                                data-target="#modalReport"
-                                title="Ver Descuento">
-                                <i class="fa fa-eye"></i>
-                            </button>';
-                }
+         // Formatear valor según el tipo
+         if ($value["type"] == "percentage") {
+            $arrData[$key]["value_formatted"] = number_format($value["value"], 2, '.', ',') . "%";
+         } else {
+            $arrData[$key]["value_formatted"] = "$ " . number_format($value["value"], 2, '.', ',');
+         }
 
-                if (permissionInterface(21)) {
-                    $btnEdit = '<button class="btn btn-success btn-sm update-item"
-                                data-id="' . $arrResponse[$i]['idDiscount'] . '"
-                                data-code="' . $arrResponse[$i]['code'] . '"
-                                data-type="' . $arrResponse[$i]['type'] . '"
-                                data-value="' . $arrResponse[$i]['value'] . '"
-                                data-start-date="' . $arrResponse[$i]['start_date'] . '"
-                                data-end-date="' . $arrResponse[$i]['end_date'] . '"
-                                data-applies-to-plan-id="' . $arrResponse[$i]['applies_to_plan_id'] . '"
-                                data-plan-name="' . ($arrResponse[$i]['plan_name'] ?? '') . '"
-                                data-max-uses="' . $arrResponse[$i]['max_uses'] . '"
-                                data-is-recurring="' . $arrResponse[$i]['is_recurring'] . '"
-                                data-status="' . $arrResponse[$i]['status'] . '"
-                                data-toggle="modal"
-                                data-target="#modalUpdate"
-                                title="Editar Descuento">
-                                <i class="fa fa-pencil"></i>
-                            </button>';
-                }
+         // Formatear fechas
+         $arrData[$key]["start_date_formatted"] = !empty($value["start_date"]) ? dateFormat($value["start_date"], "d/m/Y H:i") : "-";
+         $arrData[$key]["end_date_formatted"] = !empty($value["end_date"]) ? dateFormat($value["end_date"], "d/m/Y H:i") : "-";
 
-                if (permissionInterface(21)) {
-                    $btnDelete = '<button class="btn btn-danger btn-sm delete-item"
-                                data-id="' . $arrResponse[$i]['idDiscount'] . '"
-                                data-code="' . $arrResponse[$i]['code'] . '"
-                                data-toggle="modal"
-                                data-target="#confirmModalDelete"
-                                title="Eliminar Descuento">
-                                <i class="fa fa-trash"></i>
-                            </button>';
-                }
+         // Formatear plan aplicable
+         $arrData[$key]["plan_name_display"] = !empty($value["plan_name"]) ? $value["plan_name"] : "Todos los planes";
 
-                $arrStatus = ($arrResponse[$i]['status'] == 'Activo') ?
-                    '<span class="badge badge-success"><i class="fa fa-check"></i> Activo</span>' :
-                    '<span class="badge badge-danger"><i class="fa fa-times"></i> Inactivo</span>';
+         // Formatear máximo de usos
+         $arrData[$key]["max_uses_display"] = !empty($value["max_uses"]) ? $value["max_uses"] : "Ilimitado";
 
-                $arrType = ($arrResponse[$i]['type'] == 'percentage') ? 'Porcentaje' : 'Monto Fijo';
+         // Formatear si es recurrente
+         $isRecurringText = $value["is_recurring"] == 1 ? "Sí" : "No";
+         $arrData[$key]["is_recurring_text"] = $isRecurringText;
 
-                $arrData[$i] = array(
-                    $i + 1,
-                    $arrResponse[$i]['code'],
-                    $arrType,
-                    $arrResponse[$i]['value'],
-                    ($arrResponse[$i]['plan_name'] ?? 'Todos los planes'),
-                    dateFormat($arrResponse[$i]['start_date'], 'd/m/Y H:i'),
-                    dateFormat($arrResponse[$i]['end_date'], 'd/m/Y H:i'),
-                    $arrStatus,
-                    '<div class="btn-group">' . $btnView . $btnEdit . $btnDelete . '</div>'
-                );
-            }
+         // Botones de acción
+         $arrData[$key]["actions"] = '
+                <div class="btn-group">
+                    <button class="btn btn-success update-item" type="button"
+                        data-id="' . $value["idDiscount"] . '"
+                        data-code="' . htmlspecialchars($value["code"]) . '"
+                        data-type="' . $value["type"] . '"
+                        data-value="' . $value["value"] . '"
+                        data-start-date="' . ($value["start_date"] ?? "") . '"
+                        data-end-date="' . ($value["end_date"] ?? "") . '"
+                        data-applies-to-plan-id="' . ($value["applies_to_plan_id"] ?? "") . '"
+                        data-max-uses="' . ($value["max_uses"] ?? "") . '"
+                        data-is-recurring="' . $value["is_recurring"] . '"
+                    ><i class="fa fa-pencil"></i></button>
+                    <button class="btn btn-info report-item" type="button"
+                        data-id="' . $value["idDiscount"] . '"
+                        data-code="' . htmlspecialchars($value["code"]) . '"
+                        data-type="' . $value["type"] . '"
+                        data-type-text="' . $typeText . '"
+                        data-value="' . $value["value"] . '"
+                        data-value-formatted="' . $arrData[$key]["value_formatted"] . '"
+                        data-start-date="' . ($value["start_date"] ?? "") . '"
+                        data-start-date-formatted="' . $arrData[$key]["start_date_formatted"] . '"
+                        data-end-date="' . ($value["end_date"] ?? "") . '"
+                        data-end-date-formatted="' . $arrData[$key]["end_date_formatted"] . '"
+                        data-plan-name="' . htmlspecialchars($arrData[$key]["plan_name_display"]) . '"
+                        data-max-uses="' . ($value["max_uses"] ?? "") . '"
+                        data-max-uses-display="' . $arrData[$key]["max_uses_display"] . '"
+                        data-is-recurring="' . $value["is_recurring"] . '"
+                        data-is-recurring-text="' . $isRecurringText . '"
+                    ><i class="fa fa-user"></i></button>
+                    <button class="btn btn-danger delete-item" 
+                        data-id="' . $value["idDiscount"] . '" 
+                        data-code="' . htmlspecialchars($value["code"]) . '"
+                    ><i class="fa fa-remove"></i></button>
+                </div>
+            ';
+         $cont++;
+      }
+      echo json_encode($arrData);
+   }
 
-            echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
-        } else {
-            $arrData = array('status' => false, 'msg' => 'Permiso denegado');
-            echo json_encode($arrData, JSON_UNESCAPED_UNICODE);
-        }
-        die();
-    }
+   /**
+    * Obtiene los planes activos para usar en select
+    *
+    * @return void
+    */
+   public function getPlansSelect()
+   {
+      permissionInterface(21);
+      $arrData = $this->model->select_plans_active();
+      echo json_encode($arrData);
+   }
 
-    /**
-     * Registra un nuevo descuento
-     *
-     * @return void
-     */
-    public function setDiscount()
-    {
-        permissionInterface(21);
+   /**
+    * Registra un nuevo descuento en el sistema
+    *
+    * @return void
+    */
+   public function setDiscount()
+   {
+      permissionInterface(21);
 
-        if (!$_POST) {
-            registerLog("Ocurrió un error inesperado", "Método POST no encontrado, al momento de registrar una persona", 1, $_SESSION['login_info']['idUser']);
+      if (!$_POST) {
+         registerLog("Ocurrió un error inesperado", "Método POST no encontrado, al momento de registrar una persona", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "Método POST no encontrado",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
+
+      isCsrf();
+
+      // Obtener y limpiar datos
+      $strCode = isset($_POST["txtCode"]) ? strClean($_POST["txtCode"]) : "";
+      $strType = isset($_POST["slctType"]) ? strClean($_POST["slctType"]) : "";
+      $strValue = isset($_POST["txtValue"]) ? strClean($_POST["txtValue"]) : "";
+      $strStartDate = isset($_POST["txtStartDate"]) ? strClean($_POST["txtStartDate"]) : "";
+      $strEndDate = isset($_POST["txtEndDate"]) ? strClean($_POST["txtEndDate"]) : "";
+      $intAppliesToPlanId = isset($_POST["slctAppliesToPlanId"]) && !empty($_POST["slctAppliesToPlanId"]) ? (int)$_POST["slctAppliesToPlanId"] : null;
+      $intMaxUses = isset($_POST["txtMaxUses"]) && !empty($_POST["txtMaxUses"]) ? (int)$_POST["txtMaxUses"] : null;
+      $intIsRecurring = isset($_POST["slctIsRecurring"]) ? (int)$_POST["slctIsRecurring"] : 0;
+
+      validateFieldsEmpty(array(
+         "CÓDIGO" => $strCode,
+         "TIPO" => $strType,
+         "VALOR" => $strValue,
+      ));
+
+      // Validación de formato de código (máximo 50 caracteres, solo mayúsculas, números y guiones)
+      if (strlen($strCode) > 50) {
+         registerLog("Ocurrió un error inesperado", "El campo 'Código' excede el límite de 50 caracteres.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El campo 'Código' no puede exceder 50 caracteres.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
+
+      // Validar formato del código (solo letras, números y guiones)
+      if (!preg_match('/^[A-Z0-9\-]+$/', $strCode)) {
+         registerLog("Ocurrió un error inesperado", "El campo 'Código' contiene caracteres inválidos.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El campo 'Código' solo puede contener letras mayúsculas, números y guiones.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
+
+      // Validación de tipo de descuento
+      if (!in_array($strType, ['percentage', 'fixed'])) {
+         registerLog("Ocurrió un error inesperado", "El campo 'Tipo' tiene un valor inválido.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El campo 'Tipo' tiene un valor inválido.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
+
+      // Validación de formato de valor (debe ser numérico)
+      if (!is_numeric($strValue) || floatval($strValue) < 0) {
+         registerLog("Ocurrió un error inesperado", "El campo 'Valor' debe ser un número válido mayor o igual a 0.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El campo 'Valor' debe ser un número válido mayor o igual a 0.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
+
+      // Validación específica según el tipo
+      $floatValue = floatval($strValue);
+      if ($strType == "percentage" && ($floatValue < 0 || $floatValue > 100)) {
+         registerLog("Ocurrió un error inesperado", "El porcentaje debe estar entre 0 y 100.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El porcentaje debe estar entre 0 y 100.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
+
+      // Validación de fechas si se proporcionan
+      $startDateFormatted = null;
+      $endDateFormatted = null;
+      if (!empty($strStartDate)) {
+         $startDateFormatted = date('Y-m-d H:i:s', strtotime($strStartDate));
+         if ($startDateFormatted === false) {
+            registerLog("Ocurrió un error inesperado", "El campo 'Fecha de Inicio' no tiene un formato válido.", 1, $_SESSION['login_info']['idUser']);
             $data = array(
-                "title" => "Ocurrió un error inesperado",
-                "message" => "Método POST no encontrado",
-                "type" => "error",
-                "status" => false
+               "title" => "Ocurrió un error inesperado",
+               "message" => "El campo 'Fecha de Inicio' no tiene un formato válido.",
+               "type" => "error",
+               "status" => false
             );
             toJson($data);
-        }
+         }
+      }
 
-        isCsrf();
+      if (!empty($strEndDate)) {
+         $endDateFormatted = date('Y-m-d H:i:s', strtotime($strEndDate));
+         if ($endDateFormatted === false) {
+            registerLog("Ocurrió un error inesperado", "El campo 'Fecha de Fin' no tiene un formato válido.", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+               "title" => "Ocurrió un error inesperado",
+               "message" => "El campo 'Fecha de Fin' no tiene un formato válido.",
+               "type" => "error",
+               "status" => false
+            );
+            toJson($data);
+         }
+      }
 
-        $intIdDiscount = isset($_POST['idDiscount']) ? intval($_POST['idDiscount']) : 0;
+      // Validar que la fecha de inicio sea anterior o igual a la fecha de fin
+      if (!empty($strStartDate) && !empty($strEndDate) && strtotime($strStartDate) > strtotime($strEndDate)) {
+         registerLog("Ocurrió un error inesperado", "La fecha de inicio debe ser anterior o igual a la fecha de fin.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "La fecha de inicio debe ser anterior o igual a la fecha de fin.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
 
-        $strCode = strClean($_POST['txtCode']);
-        $strType = strClean($_POST['slctType']);
-        $strValue = floatval($_POST['txtValue']);
-        $strStartDate = strClean($_POST['txtStartDate']);
-        $strEndDate = strClean($_POST['txtEndDate']);
-        $intAppliesToPlanId = !empty($_POST['slctPlanId']) ? intval($_POST['slctPlanId']) : null;
-        $intMaxUses = !empty($_POST['txtMaxUses']) ? intval($_POST['txtMaxUses']) : null;
-        $intIsRecurring = !empty($_POST['chkIsRecurring']) ? 1 : 0;
+      // Validación de máximo de usos si se proporciona
+      if ($intMaxUses !== null && $intMaxUses < 1) {
+         registerLog("Ocurrió un error inesperado", "El máximo de usos debe ser mayor a 0.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El máximo de usos debe ser mayor a 0.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
 
-        // Validaciones
-        $arrValidation = validateFields([
-            'txtCode' => $strCode,
-            'slctType' => $strType,
-            'txtValue' => $strValue,
-            'txtStartDate' => $strStartDate,
-            'txtEndDate' => $strEndDate
-        ]);
+      // Validar que el código no exista
+      $request = $this->model->select_discount_by_code($strCode);
+      if ($request) {
+         registerLog("Ocurrió un error inesperado", "El código del descuento ingresado ya se encuentra registrado en el sistema.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El código del descuento ingresado ya se encuentra registrado en el sistema.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
+      unset($request);
 
-        $arrValidationEmpty = validateFieldsEmpty([
-            'txtCode' => $strCode,
-            'slctType' => $strType,
-            'txtValue' => $strValue,
-            'txtStartDate' => $strStartDate,
-            'txtEndDate' => $strEndDate
-        ]);
+      // Convertir código a mayúsculas
+      $strCode = strtoupper($strCode);
 
-        if ($arrValidation['status'] == false) {
-            $arrResponse = array('status' => false, 'title' => 'Error', 'message' => $arrValidation['msg'], 'type' => 'error');
-        } else if ($arrValidationEmpty['status'] == false) {
-            $arrResponse = array('status' => false, 'title' => 'Error', 'message' => $arrValidationEmpty['msg'], 'type' => 'error');
-        } else {
-            // Validar formato de fechas
-            $dateStartParts = explode(' ', $strStartDate);
-            $dateEndParts = explode(' ', $strEndDate);
+      // Insertar en la base de datos
+      $request = $this->model->insert_discount($strCode, $strType, $floatValue, $startDateFormatted, $endDateFormatted, $intAppliesToPlanId, $intMaxUses, $intIsRecurring);
 
-            if (count($dateStartParts) == 2) {
-                $dateStart = explode('-', $dateStartParts[0]);
-                if (!checkdate($dateStart[1], $dateStart[2], $dateStart[0])) {
-                    $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'Formato de fecha de inicio inválido', 'type' => 'error');
-                }
-            } else {
-                $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'Formato de fecha de inicio inválido', 'type' => 'error');
-            }
+      if ($request > 0) {
+         registerLog("Registro exitoso", "Se registró un nuevo descuento: " . $strCode, 2, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Registro exitoso",
+            "message" => "El descuento se ha registrado correctamente.",
+            "type" => "success",
+            "status" => true
+         );
+      } else {
+         registerLog("Ocurrió un error inesperado", "Error al intentar registrar el descuento: " . $strCode, 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "No se pudo registrar el descuento. Por favor, intenta nuevamente.",
+            "type" => "error",
+            "status" => false
+         );
+      }
+      toJson($data);
+   }
 
-            if (count($dateEndParts) == 2) {
-                $dateEnd = explode('-', $dateEndParts[0]);
-                if (!checkdate($dateEnd[1], $dateEnd[2], $dateEnd[0])) {
-                    $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'Formato de fecha de fin inválido', 'type' => 'error');
-                }
-            } else {
-                $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'Formato de fecha de fin inválido', 'type' => 'error');
-            }
+   /**
+    * Actualiza un descuento existente en el sistema
+    *
+    * @return void
+    */
+   public function updateDiscount()
+   {
+      permissionInterface(21);
 
-            if ($arrResponse['status'] == false) {
-                // Error en fechas, no continuar
-            } else {
-                // Verificar si el código ya existe
-                $arrDiscount = $this->model->select_discount_by_code($strCode);
+      if (!$_POST) {
+         registerLog("Ocurrió un error inesperado", "Método POST no encontrado, al momento de actualizar una persona", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "Método POST no encontrado",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
 
-                if ($arrDiscount && $arrDiscount['idDiscount'] != $intIdDiscount) {
-                    $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'El código de descuento ya existe', 'type' => 'error');
-                } else {
-                    // Validar tipo de descuento
-                    if ($strType !== 'percentage' && $strType !== 'fixed') {
-                        $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'Tipo de descuento inválido', 'type' => 'error');
-                    } else {
-                        // Validar valor positivo
-                        if ($strValue < 0) {
-                            $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'El valor del descuento debe ser positivo', 'type' => 'error');
-                        } else {
-                            // Verificar que la fecha de fin sea posterior a la de inicio
-                            if (strtotime($strEndDate) < strtotime($strStartDate)) {
-                                $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'La fecha de fin debe ser posterior a la fecha de inicio', 'type' => 'error');
-                            } else {
-                                if ($intIdDiscount == 0) {
-                                    // Insertar nuevo descuento
-                                    $request = $this->model->insert_discount(
-                                        $strCode,
-                                        $strType,
-                                        $strValue,
-                                        $strStartDate,
-                                        $strEndDate,
-                                        $intAppliesToPlanId,
-                                        $intMaxUses,
-                                        $intIsRecurring
-                                    );
+      isCsrf();
 
-                                    if ($request > 0) {
-                                        $arrResponse = array(
-                                            'status' => true,
-                                            'title' => 'Registro exitoso',
-                                            'message' => 'El descuento fue registrado satisfactoriamente en el sistema.',
-                                            'type' => 'success'
-                                        );
+      // Obtener y limpiar datos
+      $intId = isset($_POST["idDiscount"]) ? (int)$_POST["idDiscount"] : 0;
+      $strCode = isset($_POST["update_txtCode"]) ? strClean($_POST["update_txtCode"]) : "";
+      $strType = isset($_POST["update_slctType"]) ? strClean($_POST["update_slctType"]) : "";
+      $strValue = isset($_POST["update_txtValue"]) ? strClean($_POST["update_txtValue"]) : "";
+      $strStartDate = isset($_POST["update_txtStartDate"]) ? strClean($_POST["update_txtStartDate"]) : "";
+      $strEndDate = isset($_POST["update_txtEndDate"]) ? strClean($_POST["update_txtEndDate"]) : "";
+      $intAppliesToPlanId = isset($_POST["update_slctAppliesToPlanId"]) && !empty($_POST["update_slctAppliesToPlanId"]) ? (int)$_POST["update_slctAppliesToPlanId"] : null;
+      $intMaxUses = isset($_POST["update_txtMaxUses"]) && !empty($_POST["update_txtMaxUses"]) ? (int)$_POST["update_txtMaxUses"] : null;
+      $intIsRecurring = isset($_POST["update_slctIsRecurring"]) ? (int)$_POST["update_slctIsRecurring"] : 0;
 
-                                        // Registrar log
-                                        $userId = isset($_SESSION['login_info']['idUser']) ? (int) $_SESSION['login_info']['idUser'] : null;
-                                        registerLog(
-                                            'Descuentos',
-                                            'Insertar descuento: ' . $strCode,
-                                            2,
-                                            $userId
-                                        );
-                                    } else {
-                                        $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'No se pudo registrar el descuento', 'type' => 'error');
-                                    }
-                                } else {
-                                    // Actualizar descuento existente
-                                    $strStatus = strClean($_POST['slctStatus']);
-                                    if ($strStatus !== 'Activo' && $strStatus !== 'Inactivo') {
-                                        $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'Estado inválido', 'type' => 'error');
-                                    } else {
-                                        $request = $this->model->update_discount(
-                                            $intIdDiscount,
-                                            $strCode,
-                                            $strType,
-                                            $strValue,
-                                            $strStartDate,
-                                            $strEndDate,
-                                            $intAppliesToPlanId,
-                                            $intMaxUses,
-                                            $intIsRecurring,
-                                            $strStatus
-                                        );
+      validateFieldsEmpty(array(
+         "ID DEL DESCUENTO" => $intId,
+         "CÓDIGO" => $strCode,
+         "TIPO" => $strType,
+         "VALOR" => $strValue,
+      ));
 
-                                        if ($request == true) {
-                                            $arrResponse = array(
-                                                'status' => true,
-                                                'title' => 'Actualización exitosa',
-                                                'message' => 'El descuento fue actualizado satisfactoriamente en el sistema.',
-                                                'type' => 'success'
-                                            );
+      // Validar que el descuento exista
+      $requestDiscount = $this->model->select_discount_by_id($intId);
+      if (!$requestDiscount) {
+         registerLog("Ocurrió un error inesperado", "El descuento que intentas actualizar no existe en el sistema.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El descuento que intentas actualizar no existe en el sistema.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
 
-                                            // Registrar log
-                                            $userId = isset($_SESSION['login_info']['idUser']) ? (int) $_SESSION['login_info']['idUser'] : null;
-                                            registerLog(
-                                                'Descuentos',
-                                                'Actualizar descuento ID: ' . $intIdDiscount . ' - ' . $strCode,
-                                                2,
-                                                $userId
-                                            );
-                                        } else {
-                                            $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'No se pudo actualizar el descuento', 'type' => 'error');
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+      // Validación de formato de código (máximo 50 caracteres)
+      if (strlen($strCode) > 50) {
+         registerLog("Ocurrió un error inesperado", "El campo 'Código' excede el límite de 50 caracteres.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El campo 'Código' no puede exceder 50 caracteres.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
 
-        $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'Permiso denegado', 'type' => 'error');
-        echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+      // Validar formato del código (solo letras, números y guiones)
+      if (!preg_match('/^[A-Z0-9\-]+$/', $strCode)) {
+         registerLog("Ocurrió un error inesperado", "El campo 'Código' contiene caracteres inválidos.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El campo 'Código' solo puede contener letras mayúsculas, números y guiones.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
 
-        die();
-    }
+      // Validación de tipo de descuento
+      if (!in_array($strType, ['percentage', 'fixed'])) {
+         registerLog("Ocurrió un error inesperado", "El campo 'Tipo' tiene un valor inválido.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El campo 'Tipo' tiene un valor inválido.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
 
-    /**
-     * Actualiza un descuento existente
-     *
-     * @return void
-     */
-    public function updateDiscount()
-    {
-        // Este método ya está manejado en setDiscount()
-        $this->setDiscount();
-    }
+      // Validación de formato de valor (debe ser numérico)
+      if (!is_numeric($strValue) || floatval($strValue) < 0) {
+         registerLog("Ocurrió un error inesperado", "El campo 'Valor' debe ser un número válido mayor o igual a 0.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El campo 'Valor' debe ser un número válido mayor o igual a 0.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
 
-    /**
-     * Elimina un descuento
-     *
-     * @return void
-     */
-    public function deleteDiscount()
-    {
-        if (permissionInterface(21)) {
-            if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
-                $json = json_decode(file_get_contents('php://input'), true);
+      // Validación específica según el tipo
+      $floatValue = floatval($strValue);
+      if ($strType == "percentage" && ($floatValue < 0 || $floatValue > 100)) {
+         registerLog("Ocurrió un error inesperado", "El porcentaje debe estar entre 0 y 100.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El porcentaje debe estar entre 0 y 100.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
 
-                if (!isCsrf($json['token'])) {
-                    $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'Token CSRF inválido', 'type' => 'error');
-                } else {
-                    $intId = intval($json['id']);
+      // Validación de fechas si se proporcionan
+      $startDateFormatted = null;
+      $endDateFormatted = null;
+      if (!empty($strStartDate)) {
+         $startDateFormatted = date('Y-m-d H:i:s', strtotime($strStartDate));
+         if ($startDateFormatted === false) {
+            registerLog("Ocurrió un error inesperado", "El campo 'Fecha de Inicio' no tiene un formato válido.", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+               "title" => "Ocurrió un error inesperado",
+               "message" => "El campo 'Fecha de Inicio' no tiene un formato válido.",
+               "type" => "error",
+               "status" => false
+            );
+            toJson($data);
+         }
+      }
 
-                    if (empty($intId)) {
-                        $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'ID vacío', 'type' => 'error');
-                    } else {
-                        $arrDiscount = $this->model->select_discount_by_id($intId);
+      if (!empty($strEndDate)) {
+         $endDateFormatted = date('Y-m-d H:i:s', strtotime($strEndDate));
+         if ($endDateFormatted === false) {
+            registerLog("Ocurrió un error inesperado", "El campo 'Fecha de Fin' no tiene un formato válido.", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+               "title" => "Ocurrió un error inesperado",
+               "message" => "El campo 'Fecha de Fin' no tiene un formato válido.",
+               "type" => "error",
+               "status" => false
+            );
+            toJson($data);
+         }
+      }
 
-                        if (empty($arrDiscount)) {
-                            $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'Descuento no encontrado', 'type' => 'error');
-                        } else {
-                            $request = $this->model->delete_discount($intId);
+      // Validar que la fecha de inicio sea anterior o igual a la fecha de fin
+      if (!empty($strStartDate) && !empty($strEndDate) && strtotime($strStartDate) > strtotime($strEndDate)) {
+         registerLog("Ocurrió un error inesperado", "La fecha de inicio debe ser anterior o igual a la fecha de fin.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "La fecha de inicio debe ser anterior o igual a la fecha de fin.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
 
-                            if ($request) {
-                                $arrResponse = array(
-                                    'status' => true,
-                                    'title' => 'Eliminación exitosa',
-                                    'message' => 'El descuento con ID \'' . $intId . '\' y código \'' . $arrDiscount['code'] . '\' ha sido eliminado correctamente del sistema.',
-                                    'type' => 'success'
-                                );
+      // Validación de máximo de usos si se proporciona
+      if ($intMaxUses !== null && $intMaxUses < 1) {
+         registerLog("Ocurrió un error inesperado", "El máximo de usos debe ser mayor a 0.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El máximo de usos debe ser mayor a 0.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
 
-                                // Registrar log
-                                $userId = isset($_SESSION['login_info']['idUser']) ? (int) $_SESSION['login_info']['idUser'] : null;
-                                registerLog(
-                                    'Descuentos',
-                                    'Eliminar descuento ID: ' . $intId . ' - ' . $arrDiscount['code'],
-                                    2,
-                                    $userId
-                                );
-                            } else {
-                                $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'No se pudo eliminar el descuento', 'type' => 'error');
-                            }
-                        }
-                    }
-                }
+      // Validar que el código no esté duplicado (excepto el actual)
+      $requestForCode = $this->model->select_discount_by_code($strCode);
+      if ($requestForCode) {
+         if ($requestForCode['idDiscount'] != $intId) {
+            registerLog("Ocurrió un error inesperado", "El código del descuento ya existe en el sistema.", 1, $_SESSION['login_info']['idUser']);
+            $data = array(
+               "title" => "Ocurrió un error inesperado",
+               "message" => "El código del descuento ya existe. Por favor, ingrese un código diferente.",
+               "type" => "error",
+               "status" => false
+            );
+            toJson($data);
+         }
+      }
 
-                echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-            }
-        } else {
-            $arrResponse = array('status' => false, 'title' => 'Error', 'message' => 'Permiso denegado', 'type' => 'error');
-            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-        }
-        die();
-    }
+      // Convertir código a mayúsculas
+      $strCode = strtoupper($strCode);
 
-    /**
-     * Obtiene la lista de planes para el combobox
-     *
-     * @return void
-     */
-    public function getPlans()
-    {
-        if (permissionInterface(21)) {
-            // Direct database query to get active plans
-            $sql = "SELECT idPlan, name FROM plans WHERE is_active = 1 ORDER BY name";
-            $request = $this->model->select_all($sql);
+      // Actualizar en la base de datos
+      $request = $this->model->update_discount($intId, $strCode, $strType, $floatValue, $startDateFormatted, $endDateFormatted, $intAppliesToPlanId, $intMaxUses, $intIsRecurring);
 
-            if ($request) {
-                $arrResponse = array(
-                    'status' => true,
-                    'data' => $request
-                );
-            } else {
-                $arrResponse = array(
-                    'status' => false,
-                    'data' => array()
-                );
-            }
+      if ($request) {
+         registerLog("Actualización exitosa", "Se actualizó el descuento con ID: " . $intId, 2, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Actualización exitosa",
+            "message" => "El descuento se ha actualizado correctamente.",
+            "type" => "success",
+            "status" => true
+         );
+      } else {
+         registerLog("Ocurrió un error inesperado", "Error al intentar actualizar el descuento con ID: " . $intId, 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "No se pudo actualizar el descuento. Por favor, intenta nuevamente.",
+            "type" => "error",
+            "status" => false
+         );
+      }
+      toJson($data);
+   }
 
-            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-        } else {
-            $arrResponse = array('status' => false, 'data' => array());
-            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-        }
-        die();
-    }
+   /**
+    * Elimina un descuento del sistema
+    *
+    * @return void
+    */
+   public function deleteDiscount()
+   {
+      permissionInterface(21);
+
+      if ($_SERVER["REQUEST_METHOD"] != "DELETE") {
+         registerLog("Ocurrió un error inesperado", "No se encontró el método DELETE durante el intento de eliminar una persona.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "Método DELETE no encontrado",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
+
+      $request = json_decode(file_get_contents("php://input"), true);
+      isCsrf($request["token"]);
+
+      $intId = isset($request["idDiscount"]) ? (int)$request["idDiscount"] : 0;
+
+      validateFieldsEmpty(array(
+         "ID DEL DESCUENTO" => $intId,
+      ));
+
+      // Validar que el descuento exista
+      $requestDiscount = $this->model->select_discount_by_id($intId);
+      if (!$requestDiscount) {
+         registerLog("Ocurrió un error inesperado", "El descuento que intentas eliminar no existe en el sistema.", 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "El descuento que intentas eliminar no existe en el sistema.",
+            "type" => "error",
+            "status" => false
+         );
+         toJson($data);
+      }
+
+      // Eliminar de la base de datos
+      $request = $this->model->delete_discount($intId);
+
+      if ($request) {
+         registerLog("Eliminación exitosa", "Se eliminó el descuento con ID: " . $intId, 2, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Eliminación exitosa",
+            "message" => "El descuento se ha eliminado correctamente.",
+            "type" => "success",
+            "status" => true
+         );
+      } else {
+         registerLog("Ocurrió un error inesperado", "Error al intentar eliminar el descuento con ID: " . $intId, 1, $_SESSION['login_info']['idUser']);
+         $data = array(
+            "title" => "Ocurrió un error inesperado",
+            "message" => "No se pudo eliminar el descuento. Por favor, intenta nuevamente.",
+            "type" => "error",
+            "status" => false
+         );
+      }
+      toJson($data);
+   }
 }

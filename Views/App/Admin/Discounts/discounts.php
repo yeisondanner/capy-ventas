@@ -26,10 +26,11 @@
                                     <th>Código</th>
                                     <th>Tipo</th>
                                     <th>Valor</th>
-                                    <th>Plan</th>
-                                    <th>Inicio</th>
-                                    <th>Fin</th>
-                                    <th>Estado</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Fin</th>
+                                    <th>Plan Aplicable</th>
+                                    <th>Máx. Usos</th>
+                                    <th>Recurrente</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -58,10 +59,9 @@
                 <div class="tile-body">
                     <form id="formSave" autocomplete="off">
                         <?= csrf(); ?>
-                        <input type="hidden" id="idDiscount" name="idDiscount" value="0">
                         <div class="row">
                             <div class="col-md-12">
-                                <h5>Información del Descuento</h5>
+                                <h5>Datos del Descuento</h5>
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -69,102 +69,101 @@
                                             <label class="control-label" for="txtCode">Código <span class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input class="form-control" type="text" id="txtCode" name="txtCode" required
-                                                       placeholder="Ingrese el código del descuento" maxlength="50"
-                                                       pattern="^[A-Z0-9]+$"
+                                                       placeholder="Ej: CAPY10, DESCUENTO20" maxlength="50"
+                                                       pattern="^[A-Z0-9\-]+$"
+                                                       oninput="this.value = this.value.toUpperCase()"
                                                        aria-describedby="iconCode">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconCode"><i class="fa fa-tag" aria-hidden="true"></i></span>
                                                 </div>
                                             </div>
-                                            <small class="form-text text-muted">Solo letras mayúsculas y números (ej. CAPY10)</small>
+                                            <small class="form-text text-muted">Solo letras mayúsculas, números y guiones. Máximo 50 caracteres.</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label" for="slctType">Tipo de Descuento <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <select class="form-control" id="slctType" name="slctType" required aria-describedby="iconType">
-                                                    <option value="" selected disabled>Seleccione un elemento</option>
-                                                    <option value="percentage">Porcentaje</option>
-                                                    <option value="fixed">Monto Fijo</option>
-                                                </select>
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text" id="iconType"><i class="fa fa-exchange" aria-hidden="true"></i></span>
-                                                </div>
-                                            </div>
+                                            <label class="control-label" for="slctType">Tipo <span class="text-danger">*</span></label>
+                                            <select class="form-control" id="slctType" name="slctType" required>
+                                                <option value="" selected disabled>Seleccione un tipo</option>
+                                                <option value="percentage">Porcentaje (%)</option>
+                                                <option value="fixed">Monto Fijo ($)</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="control-label" for="txtValue">Valor <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <input type="number" step="0.01" min="0" class="form-control" id="txtValue" name="txtValue" required
-                                                       placeholder="Ingrese el valor del descuento" min="0"
+                                                <div class="input-group-prepend" id="valuePrefix">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                                <input class="form-control" type="number" id="txtValue" name="txtValue" required
+                                                       placeholder="0.00" step="0.01" min="0"
                                                        aria-describedby="iconValue">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconValue"><i class="fa fa-dollar" aria-hidden="true"></i></span>
                                                 </div>
                                             </div>
+                                            <small class="form-text text-muted" id="valueHelp">Para porcentaje: 0-100. Para monto fijo: mayor o igual a 0.</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label" for="slctPlanId">Plan Asociado</label>
-                                            <div class="input-group">
-                                                <select class="form-control" id="slctPlanId" name="slctPlanId" aria-describedby="iconPlan">
-                                                    <option value="">Todos los planes</option>
-                                                    <!-- Las opciones se cargarán dinámicamente -->
-                                                </select>
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text" id="iconPlan"><i class="fa fa-list" aria-hidden="true"></i></span>
-                                                </div>
-                                            </div>
+                                            <label class="control-label" for="slctAppliesToPlanId">Plan Aplicable</label>
+                                            <select class="form-control" id="slctAppliesToPlanId" name="slctAppliesToPlanId">
+                                                <option value="" selected>Todos los planes</option>
+                                            </select>
+                                            <small class="form-text text-muted">Si no se selecciona, aplica a todos los planes.</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label" for="txtStartDate">Fecha de Inicio <span class="text-danger">*</span></label>
+                                            <label class="control-label" for="txtStartDate">Fecha de Inicio</label>
                                             <div class="input-group">
-                                                <input type="datetime-local" class="form-control" id="txtStartDate" name="txtStartDate" required
+                                                <input class="form-control" type="datetime-local" id="txtStartDate" name="txtStartDate"
                                                        aria-describedby="iconStartDate">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconStartDate"><i class="fa fa-calendar" aria-hidden="true"></i></span>
                                                 </div>
                                             </div>
+                                            <small class="form-text text-muted">Opcional. Fecha y hora desde la que el descuento está vigente.</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label" for="txtEndDate">Fecha de Fin <span class="text-danger">*</span></label>
+                                            <label class="control-label" for="txtEndDate">Fecha de Fin</label>
                                             <div class="input-group">
-                                                <input type="datetime-local" class="form-control" id="txtEndDate" name="txtEndDate" required
+                                                <input class="form-control" type="datetime-local" id="txtEndDate" name="txtEndDate"
                                                        aria-describedby="iconEndDate">
                                                 <div class="input-group-append">
-                                                    <span class="input-group-text" id="iconEndDate"><i class="fa fa-calendar-times" aria-hidden="true"></i></span>
+                                                    <span class="input-group-text" id="iconEndDate"><i class="fa fa-calendar" aria-hidden="true"></i></span>
                                                 </div>
                                             </div>
+                                            <small class="form-text text-muted">Opcional. Fecha y hora hasta la que el descuento está vigente.</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label" for="txtMaxUses">Uso Máximo</label>
+                                            <label class="control-label" for="txtMaxUses">Máximo de Usos</label>
                                             <div class="input-group">
-                                                <input type="number" min="0" class="form-control" id="txtMaxUses" name="txtMaxUses"
-                                                       placeholder="Ingrese el límite de usos (deje vacío para ilimitado)" min="0"
+                                                <input class="form-control" type="number" id="txtMaxUses" name="txtMaxUses"
+                                                       placeholder="Ilimitado" min="1"
                                                        aria-describedby="iconMaxUses">
                                                 <div class="input-group-append">
                                                     <span class="input-group-text" id="iconMaxUses"><i class="fa fa-repeat" aria-hidden="true"></i></span>
                                                 </div>
                                             </div>
+                                            <small class="form-text text-muted">Opcional. Dejar vacío para uso ilimitado.</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="chkIsRecurring" name="chkIsRecurring">
-                                                <label class="form-check-label" for="chkIsRecurring">¿Es Recurrente?</label>
-                                            </div>
-                                            <small class="form-text text-muted">Si está marcado, se aplica en todos los ciclos; si no, solo en la primera factura</small>
+                                            <label class="control-label" for="slctIsRecurring">¿Es Recurrente? <span class="text-danger">*</span></label>
+                                            <select class="form-control" id="slctIsRecurring" name="slctIsRecurring" required>
+                                                <option value="0">No (Solo primera factura)</option>
+                                                <option value="1">Sí (Todos los ciclos)</option>
+                                            </select>
+                                            <small class="form-text text-muted">Si es recurrente, se aplica en todos los ciclos de facturación.</small>
                                         </div>
                                     </div>
                                 </div>
@@ -244,10 +243,6 @@
                             <td id="reportValue"></td>
                         </tr>
                         <tr>
-                            <td><strong>Plan Asociado</strong></td>
-                            <td id="reportPlanName"></td>
-                        </tr>
-                        <tr>
                             <td><strong>Fecha de Inicio</strong></td>
                             <td id="reportStartDate"></td>
                         </tr>
@@ -256,27 +251,19 @@
                             <td id="reportEndDate"></td>
                         </tr>
                         <tr>
-                            <td><strong>Uso Máximo</strong></td>
+                            <td><strong>Plan Aplicable</strong></td>
+                            <td id="reportPlanName"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Máximo de Usos</strong></td>
                             <td id="reportMaxUses"></td>
                         </tr>
                         <tr>
                             <td><strong>¿Es Recurrente?</strong></td>
                             <td id="reportIsRecurring"></td>
                         </tr>
-                        <tr>
-                            <td><strong>Estado</strong></td>
-                            <td id="reportStatus"></td>
-                        </tr>
                     </tbody>
                 </table>
-                <div class="p-3 bg-light border rounded">
-                    <p class="text-muted mb-1">
-                        <strong>Fecha de registro:</strong> <span class="text-dark" id="reportRegistrationDate"></span>
-                    </p>
-                    <p class="text-muted mb-0">
-                        <strong>Fecha de actualización:</strong> <span class="text-dark" id="reportUpdateDate"></span>
-                    </p>
-                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -299,135 +286,117 @@
                 <div class="tile-body">
                     <form id="formUpdate" autocomplete="off">
                         <?= csrf(); ?>
-                        <input type="hidden" id="update_idDiscount" name="idDiscount" value="0">
                         <div class="row">
                             <div class="col-md-12">
-                                <h5>Información del Descuento</h5>
-                                <hr>
+                                <input type="hidden" name="idDiscount" id="update_idDiscount">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="control-label" for="update_txtCode">Código <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <input class="form-control" type="text" id="update_txtCode" name="txtCode" required
-                                                       placeholder="Ingrese el código del descuento" maxlength="50"
-                                                       pattern="^[A-Z0-9]+$"
-                                                       aria-describedby="iconCodeUpdate">
+                                                <input class="form-control" type="text" id="update_txtCode" name="update_txtCode" required
+                                                       placeholder="Ej: CAPY10, DESCUENTO20" maxlength="50"
+                                                       pattern="^[A-Z0-9\-]+$"
+                                                       oninput="this.value = this.value.toUpperCase()"
+                                                       aria-describedby="iconUpdateCode">
                                                 <div class="input-group-append">
-                                                    <span class="input-group-text" id="iconCodeUpdate"><i class="fa fa-tag" aria-hidden="true"></i></span>
+                                                    <span class="input-group-text" id="iconUpdateCode"><i class="fa fa-tag" aria-hidden="true"></i></span>
                                                 </div>
                                             </div>
-                                            <small class="form-text text-muted">Solo letras mayúsculas y números (ej. CAPY10)</small>
+                                            <small class="form-text text-muted">Solo letras mayúsculas, números y guiones. Máximo 50 caracteres.</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label" for="update_slctType">Tipo de Descuento <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <select class="form-control" id="update_slctType" name="slctType" required aria-describedby="iconTypeUpdate">
-                                                    <option value="" selected disabled>Seleccione un elemento</option>
-                                                    <option value="percentage">Porcentaje</option>
-                                                    <option value="fixed">Monto Fijo</option>
-                                                </select>
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text" id="iconTypeUpdate"><i class="fa fa-exchange" aria-hidden="true"></i></span>
-                                                </div>
-                                            </div>
+                                            <label class="control-label" for="update_slctType">Tipo <span class="text-danger">*</span></label>
+                                            <select class="form-control" id="update_slctType" name="update_slctType" required>
+                                                <option value="" selected disabled>Seleccione un tipo</option>
+                                                <option value="percentage">Porcentaje (%)</option>
+                                                <option value="fixed">Monto Fijo ($)</option>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label class="control-label" for="update_txtValue">Valor <span class="text-danger">*</span></label>
                                             <div class="input-group">
-                                                <input type="number" step="0.01" min="0" class="form-control" id="update_txtValue" name="txtValue" required
-                                                       placeholder="Ingrese el valor del descuento" min="0"
-                                                       aria-describedby="iconValueUpdate">
+                                                <div class="input-group-prepend" id="updateValuePrefix">
+                                                    <span class="input-group-text">%</span>
+                                                </div>
+                                                <input class="form-control" type="number" id="update_txtValue" name="update_txtValue" required
+                                                       placeholder="0.00" step="0.01" min="0"
+                                                       aria-describedby="iconUpdateValue">
                                                 <div class="input-group-append">
-                                                    <span class="input-group-text" id="iconValueUpdate"><i class="fa fa-dollar" aria-hidden="true"></i></span>
+                                                    <span class="input-group-text" id="iconUpdateValue"><i class="fa fa-dollar" aria-hidden="true"></i></span>
                                                 </div>
                                             </div>
+                                            <small class="form-text text-muted" id="updateValueHelp">Para porcentaje: 0-100. Para monto fijo: mayor o igual a 0.</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label" for="update_slctPlanId">Plan Asociado</label>
-                                            <div class="input-group">
-                                                <select class="form-control" id="update_slctPlanId" name="slctPlanId" aria-describedby="iconPlanUpdate">
-                                                    <option value="">Todos los planes</option>
-                                                    <!-- Las opciones se cargarán dinámicamente -->
-                                                </select>
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text" id="iconPlanUpdate"><i class="fa fa-list" aria-hidden="true"></i></span>
-                                                </div>
-                                            </div>
+                                            <label class="control-label" for="update_slctAppliesToPlanId">Plan Aplicable</label>
+                                            <select class="form-control" id="update_slctAppliesToPlanId" name="update_slctAppliesToPlanId">
+                                                <option value="" selected>Todos los planes</option>
+                                            </select>
+                                            <small class="form-text text-muted">Si no se selecciona, aplica a todos los planes.</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label" for="update_txtStartDate">Fecha de Inicio <span class="text-danger">*</span></label>
+                                            <label class="control-label" for="update_txtStartDate">Fecha de Inicio</label>
                                             <div class="input-group">
-                                                <input type="datetime-local" class="form-control" id="update_txtStartDate" name="txtStartDate" required
-                                                       aria-describedby="iconStartDateUpdate">
+                                                <input class="form-control" type="datetime-local" id="update_txtStartDate" name="update_txtStartDate"
+                                                       aria-describedby="iconUpdateStartDate">
                                                 <div class="input-group-append">
-                                                    <span class="input-group-text" id="iconStartDateUpdate"><i class="fa fa-calendar" aria-hidden="true"></i></span>
+                                                    <span class="input-group-text" id="iconUpdateStartDate"><i class="fa fa-calendar" aria-hidden="true"></i></span>
                                                 </div>
                                             </div>
+                                            <small class="form-text text-muted">Opcional. Fecha y hora desde la que el descuento está vigente.</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label" for="update_txtEndDate">Fecha de Fin <span class="text-danger">*</span></label>
+                                            <label class="control-label" for="update_txtEndDate">Fecha de Fin</label>
                                             <div class="input-group">
-                                                <input type="datetime-local" class="form-control" id="update_txtEndDate" name="txtEndDate" required
-                                                       aria-describedby="iconEndDateUpdate">
+                                                <input class="form-control" type="datetime-local" id="update_txtEndDate" name="update_txtEndDate"
+                                                       aria-describedby="iconUpdateEndDate">
                                                 <div class="input-group-append">
-                                                    <span class="input-group-text" id="iconEndDateUpdate"><i class="fa fa-calendar-times" aria-hidden="true"></i></span>
+                                                    <span class="input-group-text" id="iconUpdateEndDate"><i class="fa fa-calendar" aria-hidden="true"></i></span>
                                                 </div>
                                             </div>
+                                            <small class="form-text text-muted">Opcional. Fecha y hora hasta la que el descuento está vigente.</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label class="control-label" for="update_txtMaxUses">Uso Máximo</label>
+                                            <label class="control-label" for="update_txtMaxUses">Máximo de Usos</label>
                                             <div class="input-group">
-                                                <input type="number" min="0" class="form-control" id="update_txtMaxUses" name="txtMaxUses"
-                                                       placeholder="Ingrese el límite de usos (deje vacío para ilimitado)" min="0"
-                                                       aria-describedby="iconMaxUsesUpdate">
+                                                <input class="form-control" type="number" id="update_txtMaxUses" name="update_txtMaxUses"
+                                                       placeholder="Ilimitado" min="1"
+                                                       aria-describedby="iconUpdateMaxUses">
                                                 <div class="input-group-append">
-                                                    <span class="input-group-text" id="iconMaxUsesUpdate"><i class="fa fa-repeat" aria-hidden="true"></i></span>
+                                                    <span class="input-group-text" id="iconUpdateMaxUses"><i class="fa fa-repeat" aria-hidden="true"></i></span>
                                                 </div>
                                             </div>
+                                            <small class="form-text text-muted">Opcional. Dejar vacío para uso ilimitado.</small>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="update_chkIsRecurring" name="chkIsRecurring">
-                                                <label class="form-check-label" for="update_chkIsRecurring">¿Es Recurrente?</label>
-                                            </div>
-                                            <small class="form-text text-muted">Si está marcado, se aplica en todos los ciclos; si no, solo en la primera factura</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label class="control-label" for="update_slctStatus">Estado <span class="text-danger">*</span></label>
-                                            <div class="input-group">
-                                                <select class="form-control" id="update_slctStatus" name="slctStatus" required aria-describedby="iconStatusUpdate">
-                                                    <option value="" selected disabled>Seleccione un elemento</option>
-                                                    <option value="Activo">Activo</option>
-                                                    <option value="Inactivo">Inactivo</option>
-                                                </select>
-                                                <div class="input-group-append">
-                                                    <span class="input-group-text" id="iconStatusUpdate"><i class="fa fa-check-square" aria-hidden="true"></i></span>
-                                                </div>
-                                            </div>
+                                            <label class="control-label" for="update_slctIsRecurring">¿Es Recurrente? <span class="text-danger">*</span></label>
+                                            <select class="form-control" id="update_slctIsRecurring" name="update_slctIsRecurring" required>
+                                                <option value="0">No (Solo primera factura)</option>
+                                                <option value="1">Sí (Todos los ciclos)</option>
+                                            </select>
+                                            <small class="form-text text-muted">Si es recurrente, se aplica en todos los ciclos de facturación.</small>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="d-flex justify-content-center mt-3">
-                            <button class="btn btn-success btn-block" type="submit"><i class="fa fa-fw fa-lg fa-pencil"></i>Actualizar</button>
+                            <button class="btn btn-success btn-block" type="submit"><i class="fa fa-fw fa-lg fa-save"></i>Actualizar</button>
                         </div>
                     </form>
                 </div>

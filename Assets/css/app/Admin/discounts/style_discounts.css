@@ -1,4 +1,4 @@
-/* Estilos específicos para el módulo de Tipos de Negocio */
+/* Estilos específicos para el módulo de Descuentos */
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -59,10 +59,24 @@
     border-color: #ced4da;
 }
 
-/* Estilos para textarea */
-textarea.form-control {
-    resize: vertical;
-    min-height: 80px;
+/* Estilos para el prefijo del valor */
+.input-group-prepend .input-group-text {
+    font-weight: 600;
+    min-width: 40px;
+    text-align: center;
+}
+
+.input-group-prepend .input-group-text:has-text("%") {
+    color: #28a745;
+}
+
+.input-group-prepend .input-group-text:has-text("$") {
+    color: #dc3545;
+}
+
+/* Estilos para campos de fecha */
+input[type="datetime-local"] {
+    padding: 0.375rem 0.75rem;
 }
 
 /* Estilos para botones de acción */
@@ -71,7 +85,7 @@ textarea.form-control {
 }
 
 /* Estilos para el reporte */
-#reportName {
+#reportCode {
     color: #007bff;
     margin-bottom: 1rem;
 }
@@ -92,4 +106,24 @@ textarea.form-control {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* Estilos para código de descuento */
+#txtCode,
+#update_txtCode {
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+/* Estilos para valores monetarios y porcentajes */
+.value-formatted {
+    font-weight: 600;
+}
+
+.value-formatted.percentage {
+    color: #28a745;
+}
+
+.value-formatted.fixed {
+    color: #dc3545;
 }
