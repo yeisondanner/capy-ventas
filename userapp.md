@@ -7,7 +7,7 @@
 4. [Modelo (CustomersuserappModel.php)](#modelo-customersuserappmodelphp)
 5. [Controlador (Customersuserapp.php)](#controlador-customersuserappphp)
 6. [Vista (customersuserapp.php)](#vista-customersuserappphp)
-7. [JavaScript (functions_customersuserapp.js)](#javascript-functions_customersuserappjs)
+7. [JavaScript (functions_plans.js)](#javascript-functions_customersuserappjs)
 8. [Estilos CSS (style_customersuserapp.css)](#estilos-css-style_customersuserappcss)
 9. [Flujos de Trabajo](#flujos-de-trabajo)
 10. [Validaciones y Seguridad](#validaciones-y-seguridad)
@@ -60,7 +60,7 @@ capy-ventas/
 │   │   └── app/
 │   │       └── Admin/
 │   │           └── customersuserapp/
-│   │               └── functions_customersuserapp.js  # Lógica JavaScript
+│   │               └── functions_plans.js  # Lógica JavaScript
 │   └── css/
 │       └── app/
 │           └── Admin/
@@ -854,7 +854,7 @@ Elimina una persona (DELETE).
 
 ---
 
-## JavaScript (functions_customersuserapp.js)
+## JavaScript (functions_plans.js)
 
 ### Variables Globales
 
@@ -1378,7 +1378,7 @@ El módulo se integra con el sistema de templates mediante:
 - Cargado automáticamente por el template
 
 **JavaScript:**
-- `Assets/js/app/Admin/customersuserapp/functions_customersuserapp.js`
+- `Assets/js/app/Admin/customersuserapp/functions_plans.js`
 - Cargado automáticamente por el template
 
 ### Dependencias

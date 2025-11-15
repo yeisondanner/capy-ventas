@@ -347,7 +347,7 @@ getView($controller, $view, $data = "", string $type = "Admin")
 **Controlador**: `Controllers/Admin/Customersuserapp.php`  
 **Modelo**: `Models/Admin/CustomersuserappModel.php`  
 **Vista**: `Views/App/Admin/Customersuserapp/customersuserapp.php`  
-**JS**: `Assets/js/app/Admin/customersuserapp/functions_customersuserapp.js`  
+**JS**: `Assets/js/app/Admin/customersuserapp/functions_plans.js`  
 **CSS**: `Assets/css/app/Admin/customersuserapp/style_customersuserapp.css`
 
 **Funcionalidades**:
