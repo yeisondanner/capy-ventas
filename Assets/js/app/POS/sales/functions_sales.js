@@ -10,19 +10,48 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnBackToStep1 = document.getElementById("btnBackToStep1");
   const btnToStep3 = document.getElementById("btnToStep3");
   const btnBackToStep2 = document.getElementById("btnBackToStep2");
+  const btnDesktopToStep3 = document.getElementById("btnDesktopToStep3");
+  const btnDesktopBackToStep2 = document.getElementById("btnDesktopBackToStep2");
+
+  let currentDesktopStep = 2;
 
   // Helper para saber si estamos en un dispositivo pequeño (celular)
   function isMobile() {
     return window.innerWidth <= 576;
   }
 
-  // Muestra solo el paso n en móvil. En PC se muestran todos.
+  // Controla la columna derecha en vista escritorio
+  function updateDesktopStep() {
+    if (!step2 || !step3) return;
+
+    const isMobileViewport = window.innerWidth <= 576;
+
+    if (isMobileViewport) {
+      step2.classList.remove("step-desktop-hidden");
+      step3.classList.remove("step-desktop-hidden");
+      return;
+    }
+
+    const shouldShowPayment = currentDesktopStep === 3;
+
+    if (shouldShowPayment) {
+      step2.classList.add("step-desktop-hidden");
+      step3.classList.remove("step-desktop-hidden");
+    } else {
+      step2.classList.remove("step-desktop-hidden");
+      step3.classList.add("step-desktop-hidden");
+    }
+  }
+
+  // Controla la visibilidad de las columnas en escritorio y móvil
   function showStep(n) {
+    currentDesktopStep = n === 3 ? 3 : 2;
+
     if (!isMobile()) {
-      // En PC no ocultamos ningún paso, así que quitamos la clase de "activo".
       step1.classList.remove("active-step");
       step2.classList.remove("active-step");
       step3.classList.remove("active-step");
+      updateDesktopStep();
       return;
     }
 
@@ -43,22 +72,26 @@ document.addEventListener("DOMContentLoaded", function () {
     if (isMobile()) {
       // En móvil empezamos en el paso 1 (productos)
       showStep(1);
+    } else {
+      updateDesktopStep();
     }
 
     // Al cambiar el tamaño de la ventana, reajustamos la vista
     window.addEventListener("resize", function () {
       if (!isMobile()) {
-        // En PC quitamos el control de active-step
+        // En PC quitamos el control de active-step y sincronizamos la columna
         step1.classList.remove("active-step");
         step2.classList.remove("active-step");
         step3.classList.remove("active-step");
+        updateDesktopStep();
       } else if (
         !step1.classList.contains("active-step") &&
         !step2.classList.contains("active-step") &&
         !step3.classList.contains("active-step")
       ) {
-        // En móvil, si por alguna razón ningún paso está activo, volvemos al 1
-        showStep(1);
+        // En móvil, si por alguna razón ningún paso está activo, volvemos al paso actual
+        const mobileStep = currentDesktopStep === 3 ? 3 : 2;
+        showStep(mobileStep);
       }
     });
   }
@@ -79,6 +112,25 @@ document.addEventListener("DOMContentLoaded", function () {
       showStep(3);
       if (isMobile() && step3) {
         step3.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }
+
+  // Navegar de Canasta -> Pago en escritorio
+  if (btnDesktopToStep3) {
+    btnDesktopToStep3.addEventListener("click", function () {
+      currentDesktopStep = 3;
+      updateDesktopStep();
+    });
+  }
+
+  // Volver de Pago -> Canasta en escritorio
+  if (btnDesktopBackToStep2) {
+    btnDesktopBackToStep2.addEventListener("click", function () {
+      currentDesktopStep = 2;
+      updateDesktopStep();
+      if (!isMobile() && step2) {
+        step2.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
   }

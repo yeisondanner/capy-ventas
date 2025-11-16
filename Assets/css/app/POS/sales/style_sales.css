@@ -1,4 +1,17 @@
 /* Título de cada paso (1, 2, 3) */
+.pos-step-card {
+  min-height: clamp(560px, 82vh, 720px);
+  display: flex;
+  flex-direction: column;
+}
+
+.pos-step-card .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
 .pos-step-title {
   font-size: 1.2rem;
   font-weight: 700;
@@ -41,6 +54,14 @@
 .product-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+}
+
+.product-grid-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  overflow-y: auto;
+  padding-right: 0.35rem;
 }
 
 /* Fondo cuadrado donde va el emoji del producto */
@@ -179,7 +200,9 @@
 
 /* Scroll interno para la lista de la canasta, sin afectar toda la página */
 .basket-scroll {
-  max-height: 320px;
+  flex: 1 1 auto;
+  max-height: none;
+  min-height: 0;
   overflow-y: auto;
 }
 
@@ -244,6 +267,10 @@
 @media (min-width: 992px) {
   .product-card {
     padding: 1rem 0.9rem;
+  }
+
+  .step-desktop-hidden {
+    display: none !important;
   }
 
   .product-thumb {
