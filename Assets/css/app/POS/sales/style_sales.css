@@ -20,6 +20,31 @@
   font-weight: 700;
 }
 
+:root {
+  --pos-step-height: 640px;
+}
+
+.pos-step-card {
+  height: 100%;
+  min-height: var(--pos-step-height);
+  display: flex;
+  flex-direction: column;
+}
+
+.step-card-body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+}
+
+.product-grid-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 0.25rem 0 0.5rem;
+}
+
 /* Tarjeta de producto tipo "Netflix" */
 .product-card {
   width: 100%;
@@ -117,6 +142,10 @@
   margin-bottom: 1rem;
 }
 
+.desktop-step {
+  display: block;
+}
+
 /* Ítems de la canasta presentados como tarjetas (no tabla) */
 .basket-item {
   padding: 0.75rem 1rem;
@@ -179,8 +208,9 @@
 
 /* Scroll interno para la lista de la canasta, sin afectar toda la página */
 .basket-scroll {
-  max-height: 320px;
+  flex: 1 1 auto;
   overflow-y: auto;
+  min-height: 0;
 }
 
 /* Tamaños responsivos para las cards de producto en pantallas pequeñas */
@@ -257,6 +287,14 @@
 
   .product-name {
     font-size: 0.95rem;
+  }
+
+  .desktop-step {
+    display: none;
+  }
+
+  .desktop-step.active-desktop {
+    display: block;
   }
 }
 
