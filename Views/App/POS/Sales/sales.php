@@ -117,44 +117,46 @@ foreach ($basketDemo as $index => $item) {
                     </div>
                 </div>
                 <div class="card-body d-flex flex-column">
-                    <!-- Buscador interno de productos dentro del paso 1 -->
-                    <div class="mb-3">
-                        <label class="form-label small mb-1">Buscar producto</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-search"></i></span>
-                            <input type="text" class="form-control" placeholder="Escribe nombre o código del producto...">
+                    <div class="pos-step-content">
+                        <!-- Buscador interno de productos dentro del paso 1 -->
+                        <div class="mb-3">
+                            <label class="form-label small mb-1">Buscar producto</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control" placeholder="Escribe nombre o código del producto...">
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Categorías rápidas (chips) de productos populares -->
-                    <div class="mb-3">
-                        <small class="text-muted d-block mb-1">Categorías populares</small>
-                        <div class="d-flex flex-wrap gap-2">
-                            <button type="button" class="btn btn-outline_secondary btn-sm">Todos</button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm">Accesorios PC</button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm">Audio</button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm">Almacenamiento</button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm">Ofertas</button>
+                        <!-- Categorías rápidas (chips) de productos populares -->
+                        <div class="mb-3">
+                            <small class="text-muted d-block mb-1">Categorías populares</small>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-outline_secondary btn-sm">Todos</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm">Accesorios PC</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm">Audio</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm">Almacenamiento</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm">Ofertas</button>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Grid de productos. Cada card es grande/tocable y amigable para Samuel :) -->
-                    <div class="row g-2">
-                        <?php foreach ($productosDemo as $producto): ?>
-                        <div class="col-6 col-md-4 col-xl-3">
-                            <button class="product-card">
-                                <div class="product-thumb">
-                                    <span class="emoji"><?= $producto["emoji"] ?></span>
-                                </div>
-                                <div class="product-price text-dark">S/ <?= number_format($producto["precio"], 2) ?></div>
-                                <div class="product-name"><?= $producto["nombre"] ?></div>
-                                <span class="badge product-stock-badge mt-1" data-stock="<?= $producto["stock"] ?>">
-                                    <i class="bi bi-info-circle"></i>
-                                    <?= $producto["stock"] ?> disponibles
-                                </span>
-                            </button>
+                        <!-- Grid de productos. Cada card es grande/tocable y amigable para Samuel :) -->
+                        <div class="row g-2">
+                            <?php foreach ($productosDemo as $producto): ?>
+                            <div class="col-6 col-md-4 col-xl-3">
+                                <button class="product-card">
+                                    <div class="product-thumb">
+                                        <span class="emoji"><?= $producto["emoji"] ?></span>
+                                    </div>
+                                    <div class="product-price text-dark">S/ <?= number_format($producto["precio"], 2) ?></div>
+                                    <div class="product-name"><?= $producto["nombre"] ?></div>
+                                    <span class="badge product-stock-badge mt-1" data-stock="<?= $producto["stock"] ?>">
+                                        <i class="bi bi-info-circle"></i>
+                                        <?= $producto["stock"] ?> disponibles
+                                    </span>
+                                </button>
+                            </div>
+                            <?php endforeach; ?>
                         </div>
-                        <?php endforeach; ?>
                     </div>
 
                     <!-- Botón para pasar a la canasta en móvil -->
@@ -269,74 +271,76 @@ foreach ($basketDemo as $index => $item) {
                             </div>
                         </div>
                         <div class="card-body d-flex flex-column">
-                            <!-- Totales de la venta con descuento -->
-                            <div class="d-flex justify-content-between mb-1 small">
-                                <span>Subtotal</span>
-                                <span id="lblSubtotal" data-valor="<?= number_format($basketSubtotal, 2, '.', '') ?>">S/ <?= number_format($basketSubtotal, 2) ?></span>
-                            </div>
+                            <div class="pos-step-content">
+                                <!-- Totales de la venta con descuento -->
+                                <div class="d-flex justify-content-between mb-1 small">
+                                    <span>Subtotal</span>
+                                    <span id="lblSubtotal" data-valor="<?= number_format($basketSubtotal, 2, '.', '') ?>">S/ <?= number_format($basketSubtotal, 2) ?></span>
+                                </div>
 
-                            <!-- Bloque de descuento con monto y porcentaje sincronizados -->
-                            <div class="d-flex justify-content-between mb-1 small align-items-start">
-                                <span>Descuento</span>
-                                <div class="descuento-wrap">
-                                    <div class="small text-muted w-100 text-end mb-1">
-                                        Monto o porcentaje, se calculan juntos
-                                    </div>
-                                    <!-- Descuento en monto fijo -->
-                                    <div class="input-group input-group-sm descuento-group">
-                                        <span class="input-group-text">S/</span>
-                                        <input
-                                            type="number"
-                                            class="form-control text-end"
-                                            id="descuentoMonto"
-                                            value="0"
-                                            min="0"
-                                            step="0.10"
-                                            placeholder="Monto">
-                                    </div>
-                                    <!-- Descuento en porcentaje -->
-                                    <div class="input-group input-group-sm descuento-group">
-                                        <input
-                                            type="number"
-                                            class="form-control text-end"
-                                            id="descuentoPorc"
-                                            value="0"
-                                            min="0"
-                                            step="0.10"
-                                            placeholder="%">
-                                        <span class="input-group-text">%</span>
+                                <!-- Bloque de descuento con monto y porcentaje sincronizados -->
+                                <div class="d-flex justify-content-between mb-1 small align-items-start">
+                                    <span>Descuento</span>
+                                    <div class="descuento-wrap">
+                                        <div class="small text-muted w-100 text-end mb-1">
+                                            Monto o porcentaje, se calculan juntos
+                                        </div>
+                                        <!-- Descuento en monto fijo -->
+                                        <div class="input-group input-group-sm descuento-group">
+                                            <span class="input-group-text">S/</span>
+                                            <input
+                                                type="number"
+                                                class="form-control text-end"
+                                                id="descuentoMonto"
+                                                value="0"
+                                                min="0"
+                                                step="0.10"
+                                                placeholder="Monto">
+                                        </div>
+                                        <!-- Descuento en porcentaje -->
+                                        <div class="input-group input-group-sm descuento-group">
+                                            <input
+                                                type="number"
+                                                class="form-control text-end"
+                                                id="descuentoPorc"
+                                                value="0"
+                                                min="0"
+                                                step="0.10"
+                                                placeholder="%">
+                                            <span class="input-group-text">%</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Total final luego del descuento -->
-                            <div class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos">
-                                <span>Total a pagar</span>
-                                <span id="lblTotal">S/ <?= number_format($basketSubtotal, 2) ?></span>
-                            </div>
+                                <!-- Total final luego del descuento -->
+                                <div class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos">
+                                    <span>Total a pagar</span>
+                                    <span id="lblTotal">S/ <?= number_format($basketSubtotal, 2) ?></span>
+                                </div>
 
-                            <!-- Datos básicos de la venta -->
-                            <div class="row g-2 align-items-end">
-                                <div class="col-12 col-sm-6">
-                                    <label class="form-label form-label-sm mb-1 small">Fecha de venta</label>
-                                    <input type="date" id="fechaVenta" class="form-control form-control-sm">
-                                </div>
-                                <div class="col-12 col-sm-6">
-                                    <label class="form-label form-label-sm mb-1 small">Medio de pago</label>
-                                    <select class="form-select form-select-sm">
-                                        <option>Efectivo</option>
-                                        <option>Tarjeta</option>
-                                        <option>Yape/Plin</option>
-                                    </select>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label form-label-sm mb-1 small">Cliente</label>
-                                    <select class="form-select form-select-sm">
-                                        <option value="" selected>Sin cliente</option>
-                                        <option value="cliente1">Juan Pérez</option>
-                                        <option value="cliente2">María López</option>
-                                        <option value="cliente3">Cliente frecuente</option>
-                                    </select>
+                                <!-- Datos básicos de la venta -->
+                                <div class="row g-2 align-items-end">
+                                    <div class="col-12 col-sm-6">
+                                        <label class="form-label form-label-sm mb-1 small">Fecha de venta</label>
+                                        <input type="date" id="fechaVenta" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-12 col-sm-6">
+                                        <label class="form-label form-label-sm mb-1 small">Medio de pago</label>
+                                        <select class="form-select form-select-sm">
+                                            <option>Efectivo</option>
+                                            <option>Tarjeta</option>
+                                            <option>Yape/Plin</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label form-label-sm mb-1 small">Cliente</label>
+                                        <select class="form-select form-select-sm">
+                                            <option value="" selected>Sin cliente</option>
+                                            <option value="cliente1">Juan Pérez</option>
+                                            <option value="cliente2">María López</option>
+                                            <option value="cliente3">Cliente frecuente</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
 
