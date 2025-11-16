@@ -23,6 +23,7 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-16 03:59 UTC - Alineación de altura en las tres secciones de ventas POS colocando productos, canasta y pago como columnas equivalentes.
 - CHATGPT - 2025-11-16 03:53 UTC - Uniformización de la altura de productos, canasta y pago en la vista de ventas POS para una experiencia visual pareja.
 - CHATGPT - 2025-11-14 22:40 UTC - Ajuste de los estilos del login POS para emplear las variables de color definidas en el main.css y mantener la coherencia cromática.
 - CHATGPT - 2025-11-14 22:15 UTC - Eliminación de llamadas a registerLog en el sistema POS para evitar registros innecesarios en las operaciones de clientes, productos y proveedores.
