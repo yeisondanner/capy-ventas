@@ -32,7 +32,12 @@ function login() {
         icon: "error",
         timer: 4000,
       };
-      showAlert(data);
+      showAlert({
+        title: "Ocurrio un error inesperado",
+        message: "Ocurrio un error con el servidor: " + error.name,
+        icon: "error",
+        timer: 4000,
+      });
     }
   });
 }

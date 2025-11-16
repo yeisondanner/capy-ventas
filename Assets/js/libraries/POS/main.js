@@ -24,13 +24,13 @@
 /**
  * Creamos una funcion de tipos de alertas con sweetalert2
  */
-function showAlert(data, type = "float") {
+function showAlert(data = {}, type = "float") {
   switch (type) {
     case "float":
       Swal.fire({
-        icon: data.icon,
-        title: data.title,
-        text: data.message,
+        icon: data.icon ?? "success",
+        title: data.title ?? "Satisfactorio",
+        text: data.message ?? "Conexión exitosa",
         html: data.html ?? "",
         toast: true,
         position: "top-end",

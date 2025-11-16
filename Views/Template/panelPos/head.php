@@ -4,6 +4,7 @@ $name_sesion = config_sesion(1)['name'];
 $nameVarLogin = $name_sesion . 'login';
 $nameVarBusiness = $name_sesion . 'business_active';
 $nameVarLoginInfo = $name_sesion . 'login_info';
+$nameVarCart = $name_sesion . 'cart';
 //vaiables de las rutas del css
 $pageCssFolder = strtolower($data["page_container"]);
 $pageCssFile = "style_" . strtolower($data["page_js_css"]) . ".css?" . versionSystem();

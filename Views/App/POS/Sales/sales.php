@@ -1,30 +1,5 @@
 <?= headerPos($data) ?>
 <?php
-// Datos de ejemplo para la grilla de productos (50 registros)
-$productTemplates = [
-    ["emoji" => "🎧", "precio" => 89.90, "nombre" => "Audífonos inalámbricos", "stock" => 24],
-    ["emoji" => "🖱️", "precio" => 59.90, "nombre" => "Mouse gamer RGB", "stock" => 14],
-    ["emoji" => "⌨️", "precio" => 199.00, "nombre" => "Teclado mecánico", "stock" => 18],
-    ["emoji" => "🔊", "precio" => 129.00, "nombre" => "Parlante bluetooth", "stock" => 11],
-    ["emoji" => "🔋", "precio" => 69.90, "nombre" => "Power bank 20k", "stock" => 8],
-    ["emoji" => "📱", "precio" => 109.00, "nombre" => "Soporte magnético", "stock" => 30],
-    ["emoji" => "🎮", "precio" => 249.00, "nombre" => "Control inalámbrico", "stock" => 6],
-    ["emoji" => "💻", "precio" => 3199.00, "nombre" => "Laptop ultrabook", "stock" => 4],
-    ["emoji" => "🖥️", "precio" => 1499.00, "nombre" => "Monitor 2K", "stock" => 7],
-    ["emoji" => "🧊", "precio" => 39.90, "nombre" => "Cooler USB", "stock" => 22],
-];
-
-$productosDemo = [];
-for ($i = 0; $i < 50; $i++) {
-    $base = $productTemplates[$i % count($productTemplates)];
-    $productosDemo[] = [
-        "emoji" => $base["emoji"],
-        "precio" => $base["precio"],
-        "nombre" => $base["nombre"] . " #" . str_pad((string) ($i + 1), 2, "0", STR_PAD_LEFT),
-        "stock" => max(0, $base["stock"] - ($i % 9)),
-    ];
-}
-
 // Datos de ejemplo para la canasta (20 registros)
 $basketTemplates = [
     ["nombre" => "Audífonos Bluetooth", "stock" => -24, "precio" => 89.90, "cantidad" => 1],
@@ -140,23 +115,8 @@ foreach ($basketDemo as $index => $item) {
                         </div>
 
                         <!-- Grid de productos. Cada card es grande/tocable y amigable para Samuel :) -->
-                        <div class="row g-2">
-                            <?php foreach ($productosDemo as $producto): ?>
-                            <div class="col-6 col-md-4 col-xl-3">
-                                <button class="product-card" data-selected="0">
-                                    <span class="product-counter-badge" aria-label="Productos seleccionados">0</span>
-                                    <div class="product-thumb">
-                                        <span class="emoji"><?= $producto["emoji"] ?></span>
-                                    </div>
-                                    <div class="product-price text-dark">S/ <?= number_format($producto["precio"], 2) ?></div>
-                                    <div class="product-name"><?= $producto["nombre"] ?></div>
-                                    <span class="badge product-stock-badge mt-1" data-stock="<?= $producto["stock"] ?>">
-                                        <i class="bi bi-info-circle"></i>
-                                        <?= $producto["stock"] ?> disponibles
-                                    </span>
-                                </button>
-                            </div>
-                            <?php endforeach; ?>
+                        <div class="row g-2" id="listProducts">
+
                         </div>
                     </div>
 
@@ -179,7 +139,7 @@ foreach ($basketDemo as $index => $item) {
                     <div class="card shadow-sm border-0 pos-step-card h-100">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
                             <div class="pos-step-title">
-                                <div class="pos-step-badge">2</div>
+                                <div class="pos-step-badge bg-info">2</div>
                                 <span><i class="bi bi-basket me-2"></i> Canasta</span>
                             </div>
                             <button class="btn btn-sm btn-outline-danger">
@@ -190,46 +150,46 @@ foreach ($basketDemo as $index => $item) {
                             <!-- Lista de productos en la canasta con scroll propio -->
                             <div class="basket-list basket-scroll">
                                 <?php foreach ($basketDemo as $basketItem): ?>
-                                <div class="basket-item">
-                                    <div class="basket-header">
-                                        <div class="basket-info">
-                                            <div class="basket-icon">
-                                                <i class="bi bi-bag"></i>
+                                    <div class="basket-item">
+                                        <div class="basket-header">
+                                            <div class="basket-info">
+                                                <div class="basket-icon">
+                                                    <i class="bi bi-bag"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="basket-name"><?= $basketItem["nombre"] ?></div>
+                                                    <div class="basket-stock <?= getBasketStockClass((int) $basketItem["stock"]) ?>">
+                                                        <?= formatBasketStockLabel((int) $basketItem["stock"]) ?>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <div class="basket-name"><?= $basketItem["nombre"] ?></div>
-                                                <div class="basket-stock <?= getBasketStockClass((int) $basketItem["stock"]) ?>">
-                                                    <?= formatBasketStockLabel((int) $basketItem["stock"]) ?>
+                                            <button class="btn btn-outline-danger btn-sm rounded-circle">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Cantidad y precio mitad / mitad -->
+                                        <div class="basket-controls">
+                                            <div class="basket-half">
+                                                <div class="input-group input-group-sm">
+                                                    <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
+                                                    <input type="number" class="form-control text-center" value="<?= $basketItem["cantidad"] ?>" min="0">
+                                                    <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="basket-half">
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text">S/</span>
+                                                    <input type="text" class="form-control text-end" value="<?= number_format($basketItem["precio"], 2) ?>">
                                                 </div>
                                             </div>
                                         </div>
-                                        <button class="btn btn-outline-danger btn-sm rounded-circle">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
 
-                                    <!-- Cantidad y precio mitad / mitad -->
-                                    <div class="basket-controls">
-                                        <div class="basket-half">
-                                            <div class="input-group input-group-sm">
-                                                <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
-                                                <input type="number" class="form-control text-center" value="<?= $basketItem["cantidad"] ?>" min="0">
-                                                <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
-                                            </div>
-                                        </div>
-                                        <div class="basket-half">
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text">S/</span>
-                                                <input type="text" class="form-control text-end" value="<?= number_format($basketItem["precio"], 2) ?>">
-                                            </div>
+                                        <div class="basket-price-line text-muted mt-1">
+                                            Precio por <span class="fw-semibold"><?= $basketItem["cantidad"] ?></span> unidades:
+                                            <span class="fw-semibold">S/ <?= number_format($basketItem["total"], 2) ?></span>
                                         </div>
                                     </div>
-
-                                    <div class="basket-price-line text-muted mt-1">
-                                        Precio por <span class="fw-semibold"><?= $basketItem["cantidad"] ?></span> unidades:
-                                        <span class="fw-semibold">S/ <?= number_format($basketItem["total"], 2) ?></span>
-                                    </div>
-                                </div>
                                 <?php endforeach; ?>
                             </div>
 

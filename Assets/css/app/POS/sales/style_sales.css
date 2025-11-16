@@ -107,8 +107,8 @@
 
 /* Fondo cuadrado donde va el emoji del producto */
 .product-thumb {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   border-radius: 1rem;
   background: #f4e6ff;
   display: flex;
@@ -120,6 +120,9 @@
 .product-thumb .emoji {
   font-size: 1.9rem;
   opacity: 0.9;
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
 }
 
 .product-counter-badge {
