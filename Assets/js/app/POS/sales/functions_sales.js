@@ -27,7 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
   // Muestra el paso n
   // - En móvil: solo se ve un paso a la vez (1, 2 o 3)
   // - En escritorio: el paso 1 siempre está visible a la izquierda
-  //   y a la derecha se mantienen visibles Canasta (2) y Pago (3)
+  //   y a la derecha solo se muestra Canasta (2) o Pago (3) para
+  //   reutilizar el mismo espacio.
   function showStep(n) {
     if (!step1 || !step2 || !step3) return;
     currentStep = n;
@@ -45,10 +46,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     } else {
-      // ESCRITORIO: todos los pasos permanecen visibles para mantener alineación
-      [step1, step2, step3].forEach(function (step) {
-        step.classList.remove("d-none", "active-step");
-      });
+      // ESCRITORIO: Productos siempre visible y alternamos Canasta/Pago
+      step1.classList.remove("d-none", "active-step");
+
+      if (n === 3) {
+        step2.classList.add("d-none");
+        step3.classList.remove("d-none", "active-step");
+      } else {
+        step2.classList.remove("d-none", "active-step");
+        step3.classList.add("d-none");
+      }
     }
   }
 

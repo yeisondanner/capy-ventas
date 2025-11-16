@@ -23,6 +23,7 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-16 04:10 UTC - En escritorio se muestran productos y canasta inicialmente y el paso de pago reemplaza la canasta al avanzar.
 - CHATGPT - 2025-11-16 04:05 UTC - Mantener visibles las tres secciones de ventas en escritorio para evitar que Pago se desplace al cambiar desde la canasta.
 - CHATGPT - 2025-11-16 03:59 UTC - Alineación de altura en las tres secciones de ventas POS colocando productos, canasta y pago como columnas equivalentes.
 - CHATGPT - 2025-11-16 03:53 UTC - Uniformización de la altura de productos, canasta y pago en la vista de ventas POS para una experiencia visual pareja.
