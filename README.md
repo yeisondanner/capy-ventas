@@ -23,6 +23,7 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-16 04:45 UTC - Mejora del flujo de ventas POS con transición escritorio entre canasta y pago, alturas unificadas y datos de demostración ampliados.
 - CHATGPT - 2025-11-14 22:40 UTC - Ajuste de los estilos del login POS para emplear las variables de color definidas en el main.css y mantener la coherencia cromática.
 - CHATGPT - 2025-11-14 22:15 UTC - Eliminación de llamadas a registerLog en el sistema POS para evitar registros innecesarios en las operaciones de clientes, productos y proveedores.
 - CHATGPT - 2025-11-14 21:51 UTC - Ajuste del menú móvil del home para apilar enlaces y botones con fondo propio evitando traslape sobre la sección principal en pantallas pequeñas.

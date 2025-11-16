@@ -10,10 +10,34 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnBackToStep1 = document.getElementById("btnBackToStep1");
   const btnToStep3 = document.getElementById("btnToStep3");
   const btnBackToStep2 = document.getElementById("btnBackToStep2");
+  const btnDesktopToStep3 = document.getElementById("btnDesktopToStep3");
+  const btnDesktopBackToStep2 = document.getElementById("btnDesktopBackToStep2");
+
+  // Control de flujo en escritorio (canasta -> pago)
+  let desktopStep = 2;
 
   // Helper para saber si estamos en un dispositivo pequeño (celular)
   function isMobile() {
     return window.innerWidth <= 576;
+  }
+
+  /**
+   * Muestra u oculta las tarjetas laterales (canasta/pago) en escritorio.
+   * Mantiene el estado actual para reusarlo si el usuario redimensiona la ventana.
+   *
+   * @param {number} stepNumber Paso a mostrar en escritorio (2 = canasta, 3 = pago)
+   */
+  function showDesktopStep(stepNumber) {
+    if (!step2 || !step3 || isMobile()) return;
+
+    desktopStep = stepNumber;
+    if (stepNumber === 2) {
+      step2.classList.remove("desktop-hidden");
+      step3.classList.add("desktop-hidden");
+    } else {
+      step2.classList.add("desktop-hidden");
+      step3.classList.remove("desktop-hidden");
+    }
   }
 
   // Muestra solo el paso n en móvil. En PC se muestran todos.
@@ -41,24 +65,35 @@ document.addEventListener("DOMContentLoaded", function () {
   // Estado inicial de los pasos
   if (step1 && step2 && step3) {
     if (isMobile()) {
-      // En móvil empezamos en el paso 1 (productos)
-      showStep(1);
+      // En móvil empezamos en el paso 1 (productos) o conservamos el paso de pago si estaba activo en escritorio
+      showStep(desktopStep === 3 ? 3 : 1);
+    } else {
+      // En escritorio solo mostramos productos + canasta por defecto
+      showDesktopStep(desktopStep);
     }
 
     // Al cambiar el tamaño de la ventana, reajustamos la vista
     window.addEventListener("resize", function () {
       if (!isMobile()) {
-        // En PC quitamos el control de active-step
+        // En PC quitamos el control de active-step y respetamos el flujo lateral
         step1.classList.remove("active-step");
         step2.classList.remove("active-step");
         step3.classList.remove("active-step");
-      } else if (
-        !step1.classList.contains("active-step") &&
-        !step2.classList.contains("active-step") &&
-        !step3.classList.contains("active-step")
-      ) {
-        // En móvil, si por alguna razón ningún paso está activo, volvemos al 1
-        showStep(1);
+        showDesktopStep(desktopStep);
+      } else {
+        // En móvil se vuelven a mostrar todos los pasos y se aplica el activo correspondiente
+        step2.classList.remove("desktop-hidden");
+        step3.classList.remove("desktop-hidden");
+
+        if (
+          step1.classList.contains("active-step") ||
+          step2.classList.contains("active-step") ||
+          step3.classList.contains("active-step")
+        ) {
+          return;
+        }
+
+        showStep(desktopStep === 3 ? 3 : 1);
       }
     });
   }
@@ -67,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (btnToStep2) {
     btnToStep2.addEventListener("click", function () {
       showStep(2);
+      desktopStep = 2;
       if (isMobile() && step2) {
         step2.scrollIntoView({ behavior: "smooth", block: "start" });
       }
@@ -77,6 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (btnToStep3) {
     btnToStep3.addEventListener("click", function () {
       showStep(3);
+      desktopStep = 3;
       if (isMobile() && step3) {
         step3.scrollIntoView({ behavior: "smooth", block: "start" });
       }
@@ -87,6 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (btnBackToStep1) {
     btnBackToStep1.addEventListener("click", function () {
       showStep(1);
+      desktopStep = 2;
       if (isMobile() && step1) {
         step1.scrollIntoView({ behavior: "smooth", block: "start" });
       }
@@ -97,7 +135,27 @@ document.addEventListener("DOMContentLoaded", function () {
   if (btnBackToStep2) {
     btnBackToStep2.addEventListener("click", function () {
       showStep(2);
+      desktopStep = 2;
       if (isMobile() && step2) {
+        step2.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }
+
+  // Navegación en escritorio entre canasta y pago
+  if (btnDesktopToStep3) {
+    btnDesktopToStep3.addEventListener("click", function () {
+      showDesktopStep(3);
+      if (!isMobile() && step3) {
+        step3.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }
+
+  if (btnDesktopBackToStep2) {
+    btnDesktopBackToStep2.addEventListener("click", function () {
+      showDesktopStep(2);
+      if (!isMobile() && step2) {
         step2.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
