@@ -99,9 +99,6 @@ document.addEventListener("DOMContentLoaded", function () {
   if (btnToStep3Desktop) {
     btnToStep3Desktop.addEventListener("click", function () {
       showStep(3);
-      if (!isMobile() && step3) {
-        step3.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
     });
   }
 

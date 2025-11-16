@@ -2,7 +2,7 @@
 
 /* 🔥 NUEVO: Alinear altura de todas las secciones (Paso 1, 2 y 3) */
 .pos-layout {
-  min-height: calc(100vh - 220px);
+  min-height: calc(100vh - 140px);
 }
 
 .pos-column {
@@ -25,6 +25,21 @@
 #step3 {
   display: flex;
   flex-direction: column;
+}
+
+@media (min-width: 992px) {
+  .app-content {
+    min-height: 100vh;
+  }
+
+  .pos-layout {
+    height: calc(100vh - 140px);
+  }
+
+  .pos-column,
+  .pos-card {
+    min-height: 100%;
+  }
 }
 
 /* Fondo neutro general */
