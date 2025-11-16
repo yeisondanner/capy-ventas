@@ -11,95 +11,92 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnToStep3 = document.getElementById("btnToStep3");
   const btnBackToStep2 = document.getElementById("btnBackToStep2");
 
+  // Botones de navegación en escritorio
+  const btnDesktopToStep3 = document.getElementById("btnDesktopToStep3");
+  const btnDesktopBackToStep2 = document.getElementById("btnDesktopBackToStep2");
+
   // Helper para saber si estamos en un dispositivo pequeño (celular)
   function isMobile() {
     return window.innerWidth <= 576;
   }
 
-  // Muestra solo el paso n en móvil. En PC se muestran todos.
-  function showStep(n) {
-    if (!isMobile()) {
-      // En PC no ocultamos ningún paso, así que quitamos la clase de "activo".
-      step1.classList.remove("active-step");
-      step2.classList.remove("active-step");
-      step3.classList.remove("active-step");
-      return;
-    }
+  // Controla el paso visible en móvil y en escritorio
+  let currentStep = isMobile() ? 1 : 2;
 
+  function renderSteps() {
     const steps = [step1, step2, step3];
-    steps.forEach(function (step, index) {
-      if (!step) return;
-      // Si coincide el índice, es el paso activo
-      if (index === n - 1) {
-        step.classList.add("active-step");
-      } else {
-        step.classList.remove("active-step");
-      }
-    });
-  }
+    const mobile = isMobile();
 
-  // Estado inicial de los pasos
-  if (step1 && step2 && step3) {
-    if (isMobile()) {
-      // En móvil empezamos en el paso 1 (productos)
-      showStep(1);
+    if (mobile) {
+      steps.forEach(function (step, index) {
+        if (!step) return;
+        step.classList.toggle("active-step", currentStep === index + 1);
+      });
+      if (step2) step2.classList.remove("active-desktop");
+      if (step3) step3.classList.remove("active-desktop");
+    } else {
+      const desktopStep = currentStep === 3 ? 3 : 2;
+      steps.forEach(function (step) {
+        step?.classList.remove("active-step");
+      });
+      if (step2) step2.classList.toggle("active-desktop", desktopStep === 2);
+      if (step3) step3.classList.toggle("active-desktop", desktopStep === 3);
     }
-
-    // Al cambiar el tamaño de la ventana, reajustamos la vista
-    window.addEventListener("resize", function () {
-      if (!isMobile()) {
-        // En PC quitamos el control de active-step
-        step1.classList.remove("active-step");
-        step2.classList.remove("active-step");
-        step3.classList.remove("active-step");
-      } else if (
-        !step1.classList.contains("active-step") &&
-        !step2.classList.contains("active-step") &&
-        !step3.classList.contains("active-step")
-      ) {
-        // En móvil, si por alguna razón ningún paso está activo, volvemos al 1
-        showStep(1);
-      }
-    });
   }
+
+  function goToStep(stepNumber) {
+    currentStep = stepNumber;
+    renderSteps();
+
+    if (isMobile()) {
+      const targets = [step1, step2, step3];
+      const target = targets[stepNumber - 1];
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }
+
+  renderSteps();
+  window.addEventListener("resize", renderSteps);
 
   // Navegar de Paso 1 -> Paso 2 (móvil)
   if (btnToStep2) {
     btnToStep2.addEventListener("click", function () {
-      showStep(2);
-      if (isMobile() && step2) {
-        step2.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      goToStep(2);
     });
   }
 
-  // Navegar de Paso 2 -> Paso 3 (móvil)
+  // Navegar de Paso 2 -> Paso 3 (móvil y escritorio)
   if (btnToStep3) {
     btnToStep3.addEventListener("click", function () {
-      showStep(3);
-      if (isMobile() && step3) {
-        step3.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      goToStep(3);
+    });
+  }
+
+  if (btnDesktopToStep3) {
+    btnDesktopToStep3.addEventListener("click", function () {
+      goToStep(3);
     });
   }
 
   // Volver de Paso 2 -> Paso 1 (móvil)
   if (btnBackToStep1) {
     btnBackToStep1.addEventListener("click", function () {
-      showStep(1);
-      if (isMobile() && step1) {
-        step1.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      goToStep(1);
     });
   }
 
-  // Volver de Paso 3 -> Paso 2 (móvil)
+  // Volver de Paso 3 -> Paso 2 (móvil y escritorio)
   if (btnBackToStep2) {
     btnBackToStep2.addEventListener("click", function () {
-      showStep(2);
-      if (isMobile() && step2) {
-        step2.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      goToStep(2);
+    });
+  }
+
+  if (btnDesktopBackToStep2) {
+    btnDesktopBackToStep2.addEventListener("click", function () {
+      goToStep(2);
     });
   }
 

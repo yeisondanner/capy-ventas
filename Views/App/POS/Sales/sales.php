@@ -1,4 +1,172 @@
 <?= headerPos($data) ?>
+<?php
+// Listado de productos demostrativos para poblar la vista.
+$demoProducts = [
+    [
+        'emoji' => '🎧',
+        'name' => 'Audífonos inalámbricos',
+        'price' => 89.90,
+        'stock' => 18,
+    ],
+    [
+        'emoji' => '🖱️',
+        'name' => 'Mouse ergonómico',
+        'price' => 64.90,
+        'stock' => 6,
+    ],
+    [
+        'emoji' => '⌨️',
+        'name' => 'Teclado mecánico',
+        'price' => 219.00,
+        'stock' => 14,
+    ],
+    [
+        'emoji' => '🔊',
+        'name' => 'Parlante bluetooth',
+        'price' => 129.00,
+        'stock' => 22,
+    ],
+    [
+        'emoji' => '🔋',
+        'name' => 'Power bank 20 000 mAh',
+        'price' => 119.90,
+        'stock' => 31,
+    ],
+    [
+        'emoji' => '📱',
+        'name' => 'Soporte para celular',
+        'price' => 24.90,
+        'stock' => 11,
+    ],
+    [
+        'emoji' => '💡',
+        'name' => 'Foco inteligente WiFi',
+        'price' => 45.50,
+        'stock' => 8,
+    ],
+    [
+        'emoji' => '🖥️',
+        'name' => 'Monitor 27" 144Hz',
+        'price' => 1599.00,
+        'stock' => 4,
+    ],
+    [
+        'emoji' => '🎮',
+        'name' => 'Control inalámbrico',
+        'price' => 249.00,
+        'stock' => 16,
+    ],
+    [
+        'emoji' => '📸',
+        'name' => 'Cámara web Full HD',
+        'price' => 189.90,
+        'stock' => 7,
+    ],
+    [
+        'emoji' => '🧊',
+        'name' => 'Cooler para laptop',
+        'price' => 79.90,
+        'stock' => 25,
+    ],
+    [
+        'emoji' => '📦',
+        'name' => 'Organizador de cables',
+        'price' => 29.90,
+        'stock' => 42,
+    ],
+];
+
+$emojiPool = ['🧾', '🧮', '🛰️', '🛜', '💻', '🔌', '📀', '⌚', '🧰', '🧴', '⌛', '📚'];
+
+while (count($demoProducts) < 50) {
+    $index = count($demoProducts) + 1;
+    $demoProducts[] = [
+        'emoji' => $emojiPool[$index % count($emojiPool)],
+        'name' => "Producto destacado {$index}",
+        'price' => (float) number_format(21.90 + ($index * 3.15), 2, '.', ''),
+        'stock' => ($index * 2) % 35,
+    ];
+}
+
+$basketItems = [
+    [
+        'name' => 'Audífonos Bluetooth',
+        'stock' => -24,
+        'qty' => 1,
+        'price' => 89.90,
+    ],
+    [
+        'name' => 'Mouse Gamer RGB',
+        'stock' => -1,
+        'qty' => 2,
+        'price' => 59.90,
+    ],
+    [
+        'name' => 'Teclado mecánico',
+        'stock' => 15,
+        'qty' => 1,
+        'price' => 199.00,
+    ],
+    [
+        'name' => 'Memoria RAM 16GB',
+        'stock' => 14,
+        'qty' => 1,
+        'price' => 310.00,
+    ],
+    [
+        'name' => 'Router WiFi 6',
+        'stock' => 6,
+        'qty' => 1,
+        'price' => 459.00,
+    ],
+    [
+        'name' => 'Hub USB-C 6 en 1',
+        'stock' => 12,
+        'qty' => 1,
+        'price' => 189.90,
+    ],
+    [
+        'name' => 'Cámara de seguridad',
+        'stock' => 3,
+        'qty' => 1,
+        'price' => 349.00,
+    ],
+    [
+        'name' => 'Silla gamer',
+        'stock' => 5,
+        'qty' => 1,
+        'price' => 920.00,
+    ],
+    [
+        'name' => 'Laptop ultrabook',
+        'stock' => 2,
+        'qty' => 1,
+        'price' => 5290.00,
+    ],
+    [
+        'name' => 'Smartwatch deportivo',
+        'stock' => 9,
+        'qty' => 1,
+        'price' => 780.00,
+    ],
+];
+
+$basketSeed = 1;
+while (count($basketItems) < 20) {
+    $basketItems[] = [
+        'name' => "Accesorio demo {$basketSeed}",
+        'stock' => ($basketSeed % 4 === 0) ? 0 : (9 - $basketSeed),
+        'qty' => ($basketSeed % 3) + 1,
+        'price' => (float) number_format(35 + ($basketSeed * 6.75), 2, '.', ''),
+    ];
+    $basketSeed++;
+}
+
+$basketSubtotal = 0;
+foreach ($basketItems as $item) {
+    $basketSubtotal += $item['qty'] * $item['price'];
+}
+?>
 <main class="app-content">
     <div class="app-title">
         <div>
@@ -10,17 +178,17 @@
             <li class="breadcrumb-item"><a href="<?= base_url() ?>/pos/sales">Ventas</a></li>
         </ul>
     </div>
-    <div class="row g-2 p-0">
+    <div class="row g-2 p-0 align-items-stretch">
         <!-- PASO 1: Elegir producto -->
-        <div class="col-12 col-lg-8 step-mobile" id="step1">
-            <div class="card shadow-sm border-0">
+        <div class="col-12 col-lg-8 step-mobile active-step" id="step1">
+            <div class="card shadow-sm border-0 pos-step-card">
                 <div class="card-header bg-white">
                     <div class="pos-step-title">
                         <div class="pos-step-badge">1</div>
                         <span><i class="bi bi-box-seam me-2"></i> Elegir producto</span>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body step-card-body">
                     <!-- Buscador interno de productos dentro del paso 1 -->
                     <div class="mb-3">
                         <label class="form-label small mb-1">Buscar producto</label>
@@ -42,81 +210,24 @@
                         </div>
                     </div>
 
-                    <!-- Grid de productos. Cada card es grande/tocable y amigable para Samuel :) -->
-                    <div class="row g-2">
-                        <!-- Producto 1 -->
-                        <div class="col-6 col-md-4 col-xl-3">
-                            <button class="product-card">
-                                <div class="product-thumb">
-                                    <span class="emoji">🎧</span>
+                    <!-- Grid de productos con scroll interno y 50 artículos de muestra -->
+                    <div class="product-grid-scroll">
+                        <div class="row g-2" id="productGrid">
+                            <?php foreach ($demoProducts as $product): ?>
+                                <div class="col-6 col-md-4 col-xl-3">
+                                    <button class="product-card">
+                                        <div class="product-thumb">
+                                            <span class="emoji"><?= $product['emoji'] ?></span>
+                                        </div>
+                                        <div class="product-price text-dark">S/ <?= number_format($product['price'], 2) ?></div>
+                                        <div class="product-name"><?= $product['name'] ?></div>
+                                        <span class="badge product-stock-badge mt-1" data-stock="<?= $product['stock'] ?>">
+                                            <i class="bi bi-info-circle"></i>
+                                            <?= $product['stock'] ?> disponibles
+                                        </span>
+                                    </button>
                                 </div>
-                                <div class="product-price text-dark">S/ 89.90</div>
-                                <div class="product-name">Audífonos</div>
-                                <span class="badge product-stock-badge mt-1" data-stock="3">
-                                    <i class="bi bi-info-circle"></i>
-                                    3 disponibles
-                                </span>
-                            </button>
-                        </div>
-
-                        <!-- Producto 2 -->
-                        <div class="col-6 col-md-4 col-xl-3">
-                            <button class="product-card">
-                                <div class="product-thumb">
-                                    <span class="emoji">🖱️</span>
-                                </div>
-                                <div class="product-price text-dark">S/ 59.90</div>
-                                <div class="product-name">Mouse</div>
-                                <span class="badge product-stock-badge mt-1" data-stock="0">
-                                    <i class="bi bi-info-circle"></i>
-                                    0 disponibles
-                                </span>
-                            </button>
-                        </div>
-
-                        <!-- Producto 3 -->
-                        <div class="col-6 col-md-4 col-xl-3">
-                            <button class="product-card">
-                                <div class="product-thumb">
-                                    <span class="emoji">⌨️</span>
-                                </div>
-                                <div class="product-price text-dark">S/ 199.00</div>
-                                <div class="product-name">Teclado</div>
-                                <span class="badge product-stock-badge mt-1" data-stock="12">
-                                    <i class="bi bi-info-circle"></i>
-                                    12 disponibles
-                                </span>
-                            </button>
-                        </div>
-
-                        <!-- Producto 4 -->
-                        <div class="col-6 col-md-4 col-xl-3">
-                            <button class="product-card">
-                                <div class="product-thumb">
-                                    <span class="emoji">🔊</span>
-                                </div>
-                                <div class="product-price text-dark">S/ 129.00</div>
-                                <div class="product-name">Parlante</div>
-                                <span class="badge product-stock-badge mt-1" data-stock="8">
-                                    <i class="bi bi-info-circle"></i>
-                                    8 disponibles
-                                </span>
-                            </button>
-                        </div>
-
-                        <!-- Producto 5 -->
-                        <div class="col-6 col-md-4 col-xl-3">
-                            <button class="product-card">
-                                <div class="product-thumb">
-                                    <span class="emoji">🔋</span>
-                                </div>
-                                <div class="product-price text-dark">S/ 69.90</div>
-                                <div class="product-name">Power Bank</div>
-                                <span class="badge product-stock-badge mt-1" data-stock="20">
-                                    <i class="bi bi-info-circle"></i>
-                                    20 disponibles
-                                </span>
-                            </button>
+                            <?php endforeach; ?>
                         </div>
                     </div>
 
@@ -130,13 +241,13 @@
             </div>
         </div>
 
-        <!-- Columna derecha (en PC): Canasta arriba y Pago abajo -->
+        <!-- Columna derecha (en PC): Canasta o Pago -->
         <div class="col-12 col-lg-4">
             <div class="row g-3">
 
                 <!-- PASO 2: Canasta / Rectificar cantidades -->
-                <div class="col-12 step-mobile" id="step2">
-                    <div class="card shadow-sm border-0">
+                <div class="col-12 step-mobile desktop-step active-desktop" id="step2">
+                    <div class="card shadow-sm border-0 pos-step-card">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
                             <div class="pos-step-title">
                                 <div class="pos-step-badge">2</div>
@@ -146,134 +257,66 @@
                                 <i class="bi bi-trash me-1"></i> Vaciar
                             </button>
                         </div>
-                        <div class="card-body p-0">
+                        <div class="card-body p-0 step-card-body">
                             <!-- Lista de productos en la canasta con scroll propio -->
                             <div class="basket-list basket-scroll">
-
-                                <!-- Ítem 1 -->
-                                <div class="basket-item">
-                                    <div class="basket-header">
-                                        <div class="basket-info">
-                                            <div class="basket-icon">
-                                                <i class="bi bi-bag"></i>
+                                <?php foreach ($basketItems as $item): ?>
+                                    <?php
+                                    $stockText = $item['stock'] . ' Disponibles';
+                                    $stockClass = 'text-muted';
+                                    if ($item['stock'] <= 0) {
+                                        $stockClass = 'text-danger';
+                                    } elseif ($item['stock'] <= 3) {
+                                        $stockClass = 'text-warning';
+                                    }
+                                    $lineSubtotal = $item['qty'] * $item['price'];
+                                    ?>
+                                    <div class="basket-item">
+                                        <div class="basket-header">
+                                            <div class="basket-info">
+                                                <div class="basket-icon">
+                                                    <i class="bi bi-bag"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="basket-name"><?= $item['name'] ?></div>
+                                                    <div class="basket-stock <?= $stockClass ?>"><?= $stockText ?></div>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <div class="basket-name">Audífonos Bluetooth</div>
-                                                <div class="basket-stock text-danger">-24 Disponibles</div>
+                                            <button class="btn btn-outline-danger btn-sm rounded-circle">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Cantidad y precio mitad / mitad -->
+                                        <div class="basket-controls">
+                                            <div class="basket-half">
+                                                <div class="input-group input-group-sm">
+                                                    <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
+                                                    <input type="number" class="form-control text-center" value="<?= $item['qty'] ?>" min="0">
+                                                    <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="basket-half">
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text">S/</span>
+                                                    <input type="text" class="form-control text-end" value="<?= number_format($item['price'], 2) ?>">
+                                                </div>
                                             </div>
                                         </div>
-                                        <button class="btn btn-outline-danger btn-sm rounded-circle">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
 
-                                    <!-- Cantidad y precio mitad / mitad -->
-                                    <div class="basket-controls">
-                                        <div class="basket-half">
-                                            <div class="input-group input-group-sm">
-                                                <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
-                                                <input type="number" class="form-control text-center" value="1" min="0">
-                                                <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
-                                            </div>
-                                        </div>
-                                        <div class="basket-half">
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text">S/</span>
-                                                <input type="text" class="form-control text-end" value="89.90">
-                                            </div>
+                                        <div class="basket-price-line text-muted mt-1">
+                                            Precio por <span class="fw-semibold"><?= $item['qty'] ?></span> unidades:
+                                            <span class="fw-semibold">S/ <?= number_format($lineSubtotal, 2) ?></span>
                                         </div>
                                     </div>
-
-                                    <div class="basket-price-line text-muted mt-1">
-                                        Precio por <span class="fw-semibold">1</span> unidades:
-                                        <span class="fw-semibold">S/ 89.90</span>
-                                    </div>
-                                </div>
-
-                                <!-- Ítem 2 -->
-                                <div class="basket-item">
-                                    <div class="basket-header">
-                                        <div class="basket-info">
-                                            <div class="basket-icon">
-                                                <i class="bi bi-bag"></i>
-                                            </div>
-                                            <div>
-                                                <div class="basket-name">Mouse Gamer RGB</div>
-                                                <div class="basket-stock text-danger">-1 Disponible</div>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-outline-danger btn-sm rounded-circle">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-
-                                    <div class="basket-controls">
-                                        <div class="basket-half">
-                                            <div class="input-group input-group-sm">
-                                                <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
-                                                <input type="number" class="form-control text-center" value="2" min="0">
-                                                <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
-                                            </div>
-                                        </div>
-                                        <div class="basket-half">
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text">S/</span>
-                                                <input type="text" class="form-control text-end" value="59.90">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="basket-price-line text-muted mt-1">
-                                        Precio por <span class="fw-semibold">2</span> unidades:
-                                        <span class="fw-semibold">S/ 119.80</span>
-                                    </div>
-                                </div>
-
-                                <!-- Ítem 3 -->
-                                <div class="basket-item">
-                                    <div class="basket-header">
-                                        <div class="basket-info">
-                                            <div class="basket-icon">
-                                                <i class="bi bi-bag"></i>
-                                            </div>
-                                            <div>
-                                                <div class="basket-name">Teclado mecánico</div>
-                                                <div class="basket-stock text-muted">15 disponibles</div>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-outline-danger btn-sm rounded-circle">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-
-                                    <div class="basket-controls">
-                                        <div class="basket-half">
-                                            <div class="input-group input-group-sm">
-                                                <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
-                                                <input type="number" class="form-control text-center" value="1" min="0">
-                                                <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
-                                            </div>
-                                        </div>
-                                        <div class="basket-half">
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text">S/</span>
-                                                <input type="text" class="form-control text-end" value="199.00">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="basket-price-line text-muted mt-1">
-                                        Precio por <span class="fw-semibold">1</span> unidades:
-                                        <span class="fw-semibold">S/ 199.00</span>
-                                    </div>
-                                </div>
+                                <?php endforeach; ?>
                             </div>
 
                             <!-- Subtotal visible en la parte inferior de la canasta -->
                             <div class="p-3 border-top">
                                 <div class="d-flex justify-content-between mb-2 fw-bold fs-5 totales-pos">
                                     <span>Subtotal</span>
-                                    <span>S/ 209.70</span>
+                                    <span>S/ <?= number_format($basketSubtotal, 2) ?></span>
                                 </div>
 
                                 <!-- Navegación móvil compacta entre paso 1 y 3 -->
@@ -285,26 +328,36 @@
                                         Cobrar <i class="bi bi-arrow-right-circle ms-1"></i>
                                     </button>
                                 </div>
+
+                                <!-- Cambio de paso en escritorio -->
+                                <div class="d-none d-lg-block mt-3">
+                                    <button id="btnDesktopToStep3" class="btn btn-success w-100 btn-nav">
+                                        Cobrar y pasar a pago <i class="bi bi-arrow-right-circle ms-1"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- PASO 3: Pago / Nueva venta -->
-                <div class="col-12 step-mobile" id="step3">
-                    <div class="card shadow-sm border-0 mb-3">
-                        <div class="card-header bg-white">
+                <div class="col-12 step-mobile desktop-step" id="step3">
+                    <div class="card shadow-sm border-0 mb-3 pos-step-card">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
                             <div class="pos-step-title">
                                 <!-- Badge morado para diferenciar el paso 3 -->
                                 <div class="pos-step-badge" style="background:#6f42c1;">3</div>
                                 <span><i class="bi bi-cash-stack me-2"></i> Pago / Nueva venta</span>
                             </div>
+                            <button id="btnDesktopBackToStep2" class="btn btn-outline-secondary btn-sm d-none d-lg-inline-flex">
+                                <i class="bi bi-arrow-left-circle me-1"></i> Canasta
+                            </button>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body step-card-body">
                             <!-- Totales de la venta con descuento -->
                             <div class="d-flex justify-content-between mb-1 small">
                                 <span>Subtotal</span>
-                                <span id="lblSubtotal" data-valor="209.70">S/ 209.70</span>
+                                <span id="lblSubtotal" data-valor="<?= number_format($basketSubtotal, 2, '.', '') ?>">S/ <?= number_format($basketSubtotal, 2) ?></span>
                             </div>
 
                             <!-- Bloque de descuento con monto y porcentaje sincronizados -->
@@ -344,7 +397,7 @@
                             <!-- Total final luego del descuento -->
                             <div class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos">
                                 <span>Total a pagar</span>
-                                <span id="lblTotal">S/ 209.70</span>
+                                <span id="lblTotal">S/ <?= number_format($basketSubtotal, 2) ?></span>
                             </div>
 
                             <!-- Datos básicos de la venta -->

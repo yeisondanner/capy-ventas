@@ -37,3 +37,5 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
 - Equipo Capy Ventas - 2025-11-13 17:20 UTC - Se actualizó el home con mensajes de inicio gratis en CTA de WhatsApp y se incorporó la sección de clientes destacados.
 - Equipo Capy Ventas - 2025-11-13 17:35 UTC - Se realzó el home para resaltar la creación y la administración de diferentes negocios en toda la plataforma.
 
+
+- CHATGPT - 2025-11-16 04:48 UTC - Flujo de ventas POS con canasta y pago secuenciales en escritorio, alturas unificadas y más datos de productos/canasta para pruebas visuales.
