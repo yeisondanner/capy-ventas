@@ -106,7 +106,7 @@ foreach ($basketDemo as $index => $item) {
             <li class="breadcrumb-item"><a href="<?= base_url() ?>/pos/sales">Ventas</a></li>
         </ul>
     </div>
-    <div class="row g-2 p-0">
+    <div class="row g-2 p-0 pos-steps-row">
         <!-- PASO 1: Elegir producto -->
         <div class="col-12 col-lg-8 step-mobile" id="step1">
             <div class="card shadow-sm border-0 pos-step-card h-100">
