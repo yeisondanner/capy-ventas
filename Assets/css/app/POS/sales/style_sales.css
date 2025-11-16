@@ -1,0 +1,349 @@
+/* Título de cada paso (1, 2, 3) */
+.pos-step-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Circulito numerado de los pasos */
+.pos-step-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #198754;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+/* Tarjeta de producto tipo "Netflix" */
+.product-card {
+  width: 100%;
+  text-align: center;
+  padding: 0.9rem 0.75rem;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 1rem;
+  border: 1px solid #e5e5f0;
+  background-color: #ffffff;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Efecto al pasar el mouse sobre un producto */
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12);
+}
+
+/* Fondo cuadrado donde va el emoji del producto */
+.product-thumb {
+  width: 70px;
+  height: 70px;
+  border-radius: 1rem;
+  background: #f4e6ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.15rem;
+}
+
+.product-thumb .emoji {
+  font-size: 1.9rem;
+  opacity: 0.9;
+}
+
+/* Precio destacado dentro de la card de producto */
+.product-price {
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.product-name {
+  font-size: 0.9rem;
+}
+
+/* Badge que indica stock de cada producto */
+.product-stock-badge {
+  font-size: 0.75rem;
+  border-radius: 999px;
+  padding: 0.15rem 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: none;
+}
+
+.product-stock-badge i {
+  font-size: 0.8rem;
+}
+
+/* Tamaño de texto en las líneas de totales */
+.totales-pos span {
+  font-size: 1.05rem;
+}
+
+/* Botón principal de cobro (grande) */
+.btn-cobrar {
+  font-size: 1.2rem;
+  padding: 0.75rem 0.9rem;
+}
+
+/* Animación suave para botones de navegación */
+.btn-nav {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-nav:active {
+  transform: scale(0.96);
+  box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+/* Versión compacta de botones (celular) */
+.btn-nav-small {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.9rem;
+}
+
+/* Margen inferior general de cada paso en móvil */
+.step-mobile {
+  margin-bottom: 1rem;
+}
+
+/* Ítems de la canasta presentados como tarjetas (no tabla) */
+.basket-item {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.basket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.basket-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.basket-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.75rem;
+  background: #f1f1f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: #6c757d;
+}
+
+.basket-name {
+  font-weight: 600;
+}
+
+.basket-stock {
+  font-size: 0.8rem;
+}
+
+/* Contiene controles de cantidad y precio, mitad y mitad */
+.basket-controls {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.basket-controls .basket-half {
+  flex: 1;
+  min-width: 0;
+}
+
+.basket-price-line {
+  font-size: 0.85rem;
+}
+
+/* Scroll interno para la lista de la canasta, sin afectar toda la página */
+.basket-scroll {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+/* Tamaños responsivos para las cards de producto en pantallas pequeñas */
+@media (max-width: 576px) {
+  .product-card {
+    padding: 0.6rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .product-thumb {
+    width: 56px;
+    height: 56px;
+  }
+
+  .product-price {
+    font-size: 0.9rem;
+  }
+
+  .product-name {
+    font-size: 0.8rem;
+  }
+
+  .product-stock-badge {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.55rem;
+  }
+
+  .navbar-brand {
+    font-size: 1rem;
+  }
+
+  .pos-step-title {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .pos-step-badge {
+    width: 28px;
+    height: 28px;
+  }
+
+  .card-body {
+    padding: 0.75rem 0.75rem;
+  }
+
+  .totales-pos span {
+    font-size: 1rem;
+  }
+
+  /* En celular solo se ve el paso activo, el resto se oculta */
+  .step-mobile {
+    display: none;
+  }
+
+  .step-mobile.active-step {
+    display: block;
+  }
+}
+
+/* Ajustes para pantallas medianas y grandes (más espacio) */
+@media (min-width: 992px) {
+  .product-card {
+    padding: 1rem 0.9rem;
+  }
+
+  .product-thumb {
+    width: 80px;
+    height: 80px;
+  }
+
+  .product-price {
+    font-size: 1.1rem;
+  }
+
+  .product-name {
+    font-size: 0.95rem;
+  }
+}
+
+/* Duplicamos algunos ajustes de móvil para asegurar consistencia */
+@media (max-width: 576px) {
+  .navbar-brand {
+    font-size: 1rem;
+  }
+
+  .pos-step-title {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .pos-step-badge {
+    width: 28px;
+    height: 28px;
+  }
+
+  .card-body {
+    padding: 0.75rem 0.75rem;
+  }
+
+  .totales-pos span {
+    font-size: 1rem;
+  }
+
+  .step-mobile {
+    display: none;
+  }
+
+  .step-mobile.active-step {
+    display: block;
+  }
+}
+
+/* Contenedor de los dos inputs de descuento (monto y porcentaje) */
+.descuento-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  justify-content: flex-end;
+  max-width: 260px;
+}
+
+.descuento-group {
+  max-width: 120px;
+  flex: 1 1 auto;
+}
+
+@media (max-width: 576px) {
+  .descuento-wrap {
+    justify-content: flex-end;
+  }
+
+  .descuento-group {
+    max-width: 100%;
+  }
+}
+
+/* Estilo tipo voucher para el modal de venta finalizada */
+#modalPostVenta .modal-content {
+  border-radius: 1.25rem;
+  border: none;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.35);
+}
+
+#modalPostVenta .modal-header {
+  border-bottom: none;
+  justify-content: center;
+}
+
+#modalPostVenta .modal-body {
+  background: #f8fafc;
+  border-top: 1px dashed #e2e8f0;
+  border-bottom: 1px dashed #e2e8f0;
+}
+
+#modalPostVenta .modal-footer {
+  border-top: none;
+  justify-content: center;
+}
+
+#modalPostVenta .voucher-total span:last-child {
+  font-size: 1.25rem;
+}
+
+#modalPostVenta .btn-sm {
+  border-radius: 999px;
+}
