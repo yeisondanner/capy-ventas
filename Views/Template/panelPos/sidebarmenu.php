@@ -24,7 +24,7 @@
                     </div>
 
                     <!-- Caret / Dropdown selector -->
-                   <!-- <div class="dropdown ms-auto">
+                    <!-- <div class="dropdown ms-auto">
                         <button class="btn btn-link p-0 text-secondary" id="businessDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Seleccionar negocio">
                             <i class="bi bi-chevron-down"></i>
                         </button>
@@ -72,6 +72,7 @@
     <ul class="app-menu">
         <li><a class="app-menu__item active" href="<?= base_url() ?>/pos/dashboard"><i class="app-menu__icon bi bi-house-door"></i>
                 <span class="app-menu__label">Inicio</span></a></li>
+        <li><a class="app-menu__item " href="<?= base_url() ?>/pos/sales"><i class="app-menu__icon bi bi-cart"></i><span class="app-menu__label">Vender</span></a></li>
         <li><a class="app-menu__item " href="<?= base_url() ?>/pos/inventory"><i class="app-menu__icon bi bi-box-seam"></i><span class="app-menu__label">Inventario</span></a></li>
         <li><a class="app-menu__item " href="<?= base_url() ?>/pos/customers"><i class="app-menu__icon bi bi-person-lines-fill"></i><span class="app-menu__label">Clientes</span></a></li>
         <li><a class="app-menu__item " href="<?= base_url() ?>/pos/suppliers"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label">Proveedores</span></a></li>
