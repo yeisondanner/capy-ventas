@@ -22,6 +22,19 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   /**
+   * Reproduce una animación suave al mostrar un paso.
+   * Remueve y añade la clase para permitir repetición en cambios consecutivos.
+   *
+   * @param {HTMLElement|null} stepElement Elemento raíz del paso.
+   */
+  function playStepAnimation(stepElement) {
+    if (!stepElement) return;
+    stepElement.classList.remove("pos-step-animate");
+    void stepElement.offsetHeight; // Reflujo para reiniciar la animación
+    stepElement.classList.add("pos-step-animate");
+  }
+
+  /**
    * Muestra u oculta las tarjetas laterales (canasta/pago) en escritorio.
    * Mantiene el estado actual para reusarlo si el usuario redimensiona la ventana.
    *
@@ -34,9 +47,11 @@ document.addEventListener("DOMContentLoaded", function () {
     if (stepNumber === 2) {
       step2.classList.remove("desktop-hidden");
       step3.classList.add("desktop-hidden");
+      playStepAnimation(step2);
     } else {
       step2.classList.add("desktop-hidden");
       step3.classList.remove("desktop-hidden");
+      playStepAnimation(step3);
     }
   }
 
@@ -56,6 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Si coincide el índice, es el paso activo
       if (index === n - 1) {
         step.classList.add("active-step");
+        playStepAnimation(step);
       } else {
         step.classList.remove("active-step");
       }
@@ -185,6 +201,35 @@ document.addEventListener("DOMContentLoaded", function () {
       // Sin stock -> rojo
       badge.classList.add("bg-danger", "text-white");
     }
+  });
+
+  // --- Indicador de cantidad seleccionada en las tarjetas de producto ---
+  const productCards = document.querySelectorAll(".product-card");
+  productCards.forEach(function (card) {
+    const counter = card.querySelector(".product-counter-badge");
+
+    function updateCounter(value) {
+      const safeValue = Math.max(0, value);
+      card.dataset.selected = String(safeValue);
+      card.classList.toggle("has-selection", safeValue > 0);
+      if (counter) {
+        counter.textContent = safeValue;
+        counter.setAttribute(
+          "aria-label",
+          "Productos seleccionados: " + safeValue
+        );
+      }
+    }
+
+    const initial = parseInt(card.dataset.selected || "0", 10);
+    updateCounter(Number.isNaN(initial) ? 0 : initial);
+
+    card.addEventListener("click", function (event) {
+      event.preventDefault();
+      const current = parseInt(card.dataset.selected || "0", 10) || 0;
+      updateCounter(current + 1);
+      playStepAnimation(card);
+    });
   });
 
   // --- Colocar la fecha actual en el input de fecha de venta ---

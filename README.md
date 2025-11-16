@@ -23,6 +23,7 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-16 14:49 UTC - Transiciones suaves entre pasos POS y contador visible de productos seleccionados en la grilla de ventas.
 - CHATGPT - 2025-11-16 14:38 UTC - Se fijaron las tarjetas de ventas POS a la altura de la pantalla usando overflow interno para los listados.
 - CHATGPT - 2025-11-16 14:32 UTC - Se agregó desplazamiento interno a las tarjetas de ventas POS para mantener visibles los botones de navegación en las tres secciones.
 - CHATGPT - 2025-11-16 04:45 UTC - Mejora del flujo de ventas POS con transición escritorio entre canasta y pago, alturas unificadas y datos de demostración ampliados.

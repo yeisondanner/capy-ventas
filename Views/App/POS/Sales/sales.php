@@ -143,7 +143,8 @@ foreach ($basketDemo as $index => $item) {
                         <div class="row g-2">
                             <?php foreach ($productosDemo as $producto): ?>
                             <div class="col-6 col-md-4 col-xl-3">
-                                <button class="product-card">
+                                <button class="product-card" data-selected="0">
+                                    <span class="product-counter-badge" aria-label="Productos seleccionados">0</span>
                                     <div class="product-thumb">
                                         <span class="emoji"><?= $producto["emoji"] ?></span>
                                     </div>
@@ -171,7 +172,7 @@ foreach ($basketDemo as $index => $item) {
 
         <!-- Columna derecha (en PC): Canasta arriba y Pago abajo -->
         <div class="col-12 col-lg-4">
-            <div class="row g-3">
+            <div class="row g-3 desktop-steps-stack">
 
                 <!-- PASO 2: Canasta / Rectificar cantidades -->
                 <div class="col-12 step-mobile desktop-step" id="step2">
