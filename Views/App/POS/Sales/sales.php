@@ -12,7 +12,7 @@
     </div>
     <div class="row g-2 p-0">
         <!-- PASO 1: Elegir producto -->
-        <div class="col-12 col-md-7 col-lg-8 step-mobile" id="step1">
+        <div class="col-12 col-lg-8 step-mobile" id="step1">
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-white">
                     <div class="pos-step-title">
@@ -20,7 +20,7 @@
                         <span><i class="bi bi-box-seam me-2"></i> Elegir producto</span>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body d-flex flex-column">
                     <!-- Buscador interno de productos dentro del paso 1 -->
                     <div class="mb-3">
                         <label class="form-label small mb-1">Buscar producto</label>
@@ -44,8 +44,8 @@
 
                     <!-- Grid de productos. Cada card es grande/tocable y amigable para Samuel :) -->
                     <div class="row g-2">
-                        <!-- Producto 1 -->
-                        <div class="col-6 col-md-6 col-lg-3">
+                        <!-- Producto único -->
+                        <div class="col-6 col-md-4 col-xl-3">
                             <button class="product-card">
                                 <div class="product-thumb">
                                     <span class="emoji">🎧</span>
@@ -55,66 +55,6 @@
                                 <span class="badge product-stock-badge mt-1" data-stock="3">
                                     <i class="bi bi-info-circle"></i>
                                     3 disponibles
-                                </span>
-                            </button>
-                        </div>
-
-                        <!-- Producto 2 -->
-                        <div class="col-6 col-md-6 col-lg-3">
-                            <button class="product-card">
-                                <div class="product-thumb">
-                                    <span class="emoji">🖱️</span>
-                                </div>
-                                <div class="product-price text-dark">S/ 59.90</div>
-                                <div class="product-name">Mouse</div>
-                                <span class="badge product-stock-badge mt-1" data-stock="0">
-                                    <i class="bi bi-info-circle"></i>
-                                    0 disponibles
-                                </span>
-                            </button>
-                        </div>
-
-                        <!-- Producto 3 -->
-                        <div class="col-6 col-md-6 col-lg-3">
-                            <button class="product-card">
-                                <div class="product-thumb">
-                                    <span class="emoji">⌨️</span>
-                                </div>
-                                <div class="product-price text-dark">S/ 199.00</div>
-                                <div class="product-name">Teclado</div>
-                                <span class="badge product-stock-badge mt-1" data-stock="12">
-                                    <i class="bi bi-info-circle"></i>
-                                    12 disponibles
-                                </span>
-                            </button>
-                        </div>
-
-                        <!-- Producto 4 -->
-                        <div class="col-6 col-md-6 col-lg-3">
-                            <button class="product-card">
-                                <div class="product-thumb">
-                                    <span class="emoji">🔊</span>
-                                </div>
-                                <div class="product-price text-dark">S/ 129.00</div>
-                                <div class="product-name">Parlante</div>
-                                <span class="badge product-stock-badge mt-1" data-stock="8">
-                                    <i class="bi bi-info-circle"></i>
-                                    8 disponibles
-                                </span>
-                            </button>
-                        </div>
-
-                        <!-- Producto 5 -->
-                        <div class="col-6 col-md-6 col-lg-3">
-                            <button class="product-card">
-                                <div class="product-thumb">
-                                    <span class="emoji">🔋</span>
-                                </div>
-                                <div class="product-price text-dark">S/ 69.90</div>
-                                <div class="product-name">Power Bank</div>
-                                <span class="badge product-stock-badge mt-1" data-stock="20">
-                                    <i class="bi bi-info-circle"></i>
-                                    20 disponibles
                                 </span>
                             </button>
                         </div>
@@ -129,9 +69,11 @@
                 </div>
             </div>
         </div>
+
         <!-- Columna derecha (en PC): Canasta arriba y Pago abajo -->
-        <div class="col-12 col-md-5 col-lg-4">
-            <div class="row">
+        <div class="col-12 col-lg-4">
+            <div class="row g-3">
+
                 <!-- PASO 2: Canasta / Rectificar cantidades -->
                 <div class="col-12 step-mobile" id="step2">
                     <div class="card shadow-sm border-0">
@@ -144,10 +86,11 @@
                                 <i class="bi bi-trash me-1"></i> Vaciar
                             </button>
                         </div>
-                        <div class="card-body p-0">
+                        <div class="card-body p-0 d-flex flex-column">
                             <!-- Lista de productos en la canasta con scroll propio -->
-                            <div class="basket-list basket-scroll">
-                                <!-- Ítem 1 -->
+                            <div class="basket-list basket-scroll flex-grow-1">
+
+                                <!-- Ítem único -->
                                 <div class="basket-item">
                                     <div class="basket-header">
                                         <div class="basket-info">
@@ -156,7 +99,7 @@
                                             </div>
                                             <div>
                                                 <div class="basket-name">Audífonos Bluetooth</div>
-                                                <div class="basket-stock text-danger">-24 Disponibles</div>
+                                                <div class="basket-stock text-muted">3 disponibles</div>
                                             </div>
                                         </div>
                                         <button class="btn btn-outline-danger btn-sm rounded-circle">
@@ -186,91 +129,20 @@
                                         <span class="fw-semibold">S/ 89.90</span>
                                     </div>
                                 </div>
-
-                                <!-- Ítem 2 -->
-                                <div class="basket-item">
-                                    <div class="basket-header">
-                                        <div class="basket-info">
-                                            <div class="basket-icon">
-                                                <i class="bi bi-bag"></i>
-                                            </div>
-                                            <div>
-                                                <div class="basket-name">Mouse Gamer RGB</div>
-                                                <div class="basket-stock text-danger">-1 Disponible</div>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-outline-danger btn-sm rounded-circle">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-
-                                    <div class="basket-controls">
-                                        <div class="basket-half">
-                                            <div class="input-group input-group-sm">
-                                                <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
-                                                <input type="number" class="form-control text-center" value="2" min="0">
-                                                <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
-                                            </div>
-                                        </div>
-                                        <div class="basket-half">
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text">S/</span>
-                                                <input type="text" class="form-control text-end" value="59.90">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="basket-price-line text-muted mt-1">
-                                        Precio por <span class="fw-semibold">2</span> unidades:
-                                        <span class="fw-semibold">S/ 119.80</span>
-                                    </div>
-                                </div>
-
-                                <!-- Ítem 3 -->
-                                <div class="basket-item">
-                                    <div class="basket-header">
-                                        <div class="basket-info">
-                                            <div class="basket-icon">
-                                                <i class="bi bi-bag"></i>
-                                            </div>
-                                            <div>
-                                                <div class="basket-name">Teclado mecánico</div>
-                                                <div class="basket-stock text-muted">15 disponibles</div>
-                                            </div>
-                                        </div>
-                                        <button class="btn btn-outline-danger btn-sm rounded-circle">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-
-                                    <div class="basket-controls">
-                                        <div class="basket-half">
-                                            <div class="input-group input-group-sm">
-                                                <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
-                                                <input type="number" class="form-control text-center" value="1" min="0">
-                                                <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
-                                            </div>
-                                        </div>
-                                        <div class="basket-half">
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text">S/</span>
-                                                <input type="text" class="form-control text-end" value="199.00">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="basket-price-line text-muted mt-1">
-                                        Precio por <span class="fw-semibold">1</span> unidades:
-                                        <span class="fw-semibold">S/ 199.00</span>
-                                    </div>
-                                </div>
                             </div>
 
                             <!-- Subtotal visible en la parte inferior de la canasta -->
-                            <div class="p-3 border-top">
+                            <div class="p-3 border-top mt-auto">
                                 <div class="d-flex justify-content-between mb-2 fw-bold fs-5 totales-pos">
                                     <span>Subtotal</span>
-                                    <span>S/ 209.70</span>
+                                    <span>S/ 89.90</span>
+                                </div>
+
+                                <!-- Navegación escritorio: solo se ve en pantallas grandes -->
+                                <div class="d-none d-lg-flex justify-content-end gap-2 mt-2">
+                                    <button id="btnToStep3Desktop" class="btn btn-success btn-nav btn-nav-small">
+                                        Siguiente: Pago <i class="bi bi-arrow-right-circle ms-1"></i>
+                                    </button>
                                 </div>
 
                                 <!-- Navegación móvil compacta entre paso 1 y 3 -->
@@ -286,6 +158,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- PASO 3: Pago / Nueva venta -->
                 <div class="col-12 step-mobile" id="step3">
                     <div class="card shadow-sm border-0 mb-3">
@@ -297,98 +170,101 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <div>
-                                <!-- Totales de la venta con descuento -->
-                                <div class="d-flex justify-content-between mb-1 small">
-                                    <span>Subtotal</span>
-                                    <span id="lblSubtotal" data-valor="209.70">S/ 209.70</span>
-                                </div>
+                            <!-- Totales de la venta con descuento -->
+                            <div class="d-flex justify-content-between mb-1 small">
+                                <span>Subtotal</span>
+                                <span id="lblSubtotal" data-valor="89.90">S/ 89.90</span>
+                            </div>
 
-                                <!-- Bloque de descuento con monto y porcentaje sincronizados -->
-                                <div class="d-flex justify-content-between mb-1 small align-items-start">
-                                    <span>Descuento</span>
-                                    <div class="descuento-wrap">
-                                        <div class="small text-muted w-100 text-end mb-1">
-                                            Monto o porcentaje, se calculan juntos
-                                        </div>
-                                        <!-- Descuento en monto fijo -->
-                                        <div class="input-group input-group-sm descuento-group">
-                                            <span class="input-group-text">S/</span>
-                                            <input
-                                                type="number"
-                                                class="form-control text-end"
-                                                id="descuentoMonto"
-                                                value="0"
-                                                min="0"
-                                                step="0.10"
-                                                placeholder="Monto">
-                                        </div>
-                                        <!-- Descuento en porcentaje -->
-                                        <div class="input-group input-group-sm descuento-group">
-                                            <input
-                                                type="number"
-                                                class="form-control text-end"
-                                                id="descuentoPorc"
-                                                value="0"
-                                                min="0"
-                                                step="0.10"
-                                                placeholder="%">
-                                            <span class="input-group-text">%</span>
-                                        </div>
+                            <!-- Bloque de descuento con monto y porcentaje sincronizados -->
+                            <div class="d-flex justify-content-between mb-1 small align-items-start">
+                                <span>Descuento</span>
+                                <div class="descuento-wrap">
+                                    <div class="small text-muted w-100 text-end mb-1">
+                                        Monto o porcentaje, se calculan juntos
                                     </div>
-                                </div>
-
-                                <!-- Total final luego del descuento -->
-                                <div class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos">
-                                    <span>Total a pagar</span>
-                                    <span id="lblTotal">S/ 209.70</span>
-                                </div>
-
-                                <!-- Datos básicos de la venta -->
-                                <div class="row g-2 align-items-end">
-                                    <div class="col-12 col-sm-6">
-                                        <label class="form-label form-label-sm mb-1 small">Fecha de venta</label>
-                                        <input type="date" id="fechaVenta" class="form-control form-control-sm">
+                                    <!-- Descuento en monto fijo -->
+                                    <div class="input-group input-group-sm descuento-group">
+                                        <span class="input-group-text">S/</span>
+                                        <input
+                                            type="number"
+                                            class="form-control text-end"
+                                            id="descuentoMonto"
+                                            value="0"
+                                            min="0"
+                                            step="0.10"
+                                            placeholder="Monto">
                                     </div>
-                                    <div class="col-12 col-sm-6">
-                                        <label class="form-label form-label-sm mb-1 small">Medio de pago</label>
-                                        <select class="form-select form-select-sm">
-                                            <option>Efectivo</option>
-                                            <option>Tarjeta</option>
-                                            <option>Yape/Plin</option>
-                                        </select>
+                                    <!-- Descuento en porcentaje -->
+                                    <div class="input-group input-group-sm descuento-group">
+                                        <input
+                                            type="number"
+                                            class="form-control text-end"
+                                            id="descuentoPorc"
+                                            value="0"
+                                            min="0"
+                                            step="0.10"
+                                            placeholder="%">
+                                        <span class="input-group-text">%</span>
                                     </div>
-                                    <div class="col-12">
-                                        <label class="form-label form-label-sm mb-1 small">Cliente</label>
-                                        <select class="form-select form-select-sm">
-                                            <option value="" selected>Sin cliente</option>
-                                            <option value="cliente1">Juan Pérez</option>
-                                            <option value="cliente2">María López</option>
-                                            <option value="cliente3">Cliente frecuente</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Navegación móvil debajo del formulario de pago -->
-                                <div class="mt-3 d-lg-none d-flex justify-content-between gap-2">
-                                    <button id="btnBackToStep2" class="btn btn-outline-secondary w-50 btn-nav btn-nav-small">
-                                        <i class="bi bi-arrow-left-circle me-1"></i> Canasta
-                                    </button>
-                                    <!-- Botón de cobrar en móvil -->
-                                    <button class="btn btn-success w-50 btn-cobrar btn-nav">
-                                        <i class="bi bi-cash-stack me-1"></i> Cobrar
-                                    </button>
                                 </div>
                             </div>
-                            <!-- Botón grande de cobro para pantallas grandes -->
-                            <div class="mt-3 d-none d-lg-block">
-                                <button class="btn btn-success w-100 btn-cobrar btn-nav">
+
+                            <!-- Total final luego del descuento -->
+                            <div class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos">
+                                <span>Total a pagar</span>
+                                <span id="lblTotal">S/ 89.90</span>
+                            </div>
+
+                            <!-- Datos básicos de la venta -->
+                            <div class="row g-2 align-items-end">
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label form-label-sm mb-1 small">Fecha de venta</label>
+                                    <input type="date" id="fechaVenta" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <label class="form-label form-label-sm mb-1 small">Medio de pago</label>
+                                    <select class="form-select form-select-sm">
+                                        <option>Efectivo</option>
+                                        <option>Tarjeta</option>
+                                        <option>Yape/Plin</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label form-label-sm mb-1 small">Cliente</label>
+                                    <select class="form-select form-select-sm">
+                                        <option value="" selected>Sin cliente</option>
+                                        <option value="cliente1">Juan Pérez</option>
+                                        <option value="cliente2">María López</option>
+                                        <option value="cliente3">Cliente frecuente</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Navegación móvil debajo del formulario de pago -->
+                            <div class="mt-3 d-lg-none d-flex justify-content-between gap-2 mt-auto">
+                                <button id="btnBackToStep2" class="btn btn-outline-secondary w-50 btn-nav btn-nav-small">
+                                    <i class="bi bi-arrow-left-circle me-1"></i> Canasta
+                                </button>
+                                <!-- Botón de cobrar en móvil -->
+                                <button class="btn btn-success w-50 btn-cobrar btn-nav">
+                                    <i class="bi bi-cash-stack me-1"></i> Cobrar
+                                </button>
+                            </div>
+
+                            <!-- Navegación escritorio debajo del formulario de pago -->
+                            <div class="mt-3 d-none d-lg-flex justify-content-between gap-2 mt-auto mt-2">
+                                <button id="btnBackToStep2Desktop" class="btn btn-outline-secondary w-50 btn-nav btn-nav-small">
+                                    <i class="bi bi-arrow-left-circle me-1"></i> Canasta
+                                </button>
+                                <button class="btn btn-success w-50 btn-cobrar btn-nav">
                                     <i class="bi bi-cash-stack me-1"></i> Cobrar
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

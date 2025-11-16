@@ -10,32 +10,60 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnBackToStep1 = document.getElementById("btnBackToStep1");
   const btnToStep3 = document.getElementById("btnToStep3");
   const btnBackToStep2 = document.getElementById("btnBackToStep2");
+  // Botones de navegación en escritorio
+  const btnToStep3Desktop = document.getElementById("btnToStep3Desktop");
+  const btnBackToStep2Desktop = document.getElementById(
+    "btnBackToStep2Desktop"
+  );
 
   // Helper para saber si estamos en un dispositivo pequeño (celular)
   function isMobile() {
     return window.innerWidth <= 576;
   }
 
-  // Muestra solo el paso n en móvil. En PC se muestran todos.
+  // Paso actual (1: productos, 2: canasta, 3: pago)
+  let currentStep = 1;
+
+  // Muestra el paso n
+  // - En móvil: solo se ve un paso a la vez (1, 2 o 3)
+  // - En escritorio: el paso 1 siempre está visible a la izquierda
+  //   y a la derecha se alternan Canasta (2) y Pago (3)
   function showStep(n) {
-    if (!isMobile()) {
-      // En PC no ocultamos ningún paso, así que quitamos la clase de "activo".
+    if (!step1 || !step2 || !step3) return;
+    currentStep = n;
+
+    if (isMobile()) {
+      const steps = [step1, step2, step3];
+      steps.forEach(function (step, index) {
+        if (!step) return;
+        // En móvil manejamos visibilidad con active-step
+        step.classList.remove("d-none");
+        if (index === n - 1) {
+          step.classList.add("active-step");
+        } else {
+          step.classList.remove("active-step");
+        }
+      });
+    } else {
+      // ESCRITORIO
+      // El paso 1 (productos) siempre visible
+      step1.classList.remove("d-none");
       step1.classList.remove("active-step");
+
+      // Limpiamos estados de canasta y pago
       step2.classList.remove("active-step");
       step3.classList.remove("active-step");
-      return;
-    }
 
-    const steps = [step1, step2, step3];
-    steps.forEach(function (step, index) {
-      if (!step) return;
-      // Si coincide el índice, es el paso activo
-      if (index === n - 1) {
-        step.classList.add("active-step");
+      // Alternamos entre Canasta (2) y Pago (3) usando d-none
+      if (n === 3) {
+        step2.classList.add("d-none");
+        step3.classList.remove("d-none");
       } else {
-        step.classList.remove("active-step");
+        // Por defecto mostramos Canasta
+        step2.classList.remove("d-none");
+        step3.classList.add("d-none");
       }
-    });
+    }
   }
 
   // Estado inicial de los pasos
@@ -43,23 +71,14 @@ document.addEventListener("DOMContentLoaded", function () {
     if (isMobile()) {
       // En móvil empezamos en el paso 1 (productos)
       showStep(1);
+    } else {
+      // En escritorio empezamos mostrando Canasta a la derecha
+      showStep(2);
     }
 
     // Al cambiar el tamaño de la ventana, reajustamos la vista
     window.addEventListener("resize", function () {
-      if (!isMobile()) {
-        // En PC quitamos el control de active-step
-        step1.classList.remove("active-step");
-        step2.classList.remove("active-step");
-        step3.classList.remove("active-step");
-      } else if (
-        !step1.classList.contains("active-step") &&
-        !step2.classList.contains("active-step") &&
-        !step3.classList.contains("active-step")
-      ) {
-        // En móvil, si por alguna razón ningún paso está activo, volvemos al 1
-        showStep(1);
-      }
+      showStep(currentStep);
     });
   }
 
@@ -83,6 +102,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Navegar de Paso 2 -> Paso 3 (escritorio)
+  if (btnToStep3Desktop) {
+    btnToStep3Desktop.addEventListener("click", function () {
+      showStep(3);
+    });
+  }
+
   // Volver de Paso 2 -> Paso 1 (móvil)
   if (btnBackToStep1) {
     btnBackToStep1.addEventListener("click", function () {
@@ -103,31 +129,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // --- Colorear badges de stock según la cantidad disponible ---
-  const stockBadges = document.querySelectorAll(".product-stock-badge");
-  stockBadges.forEach(function (badge) {
-    const stock = parseInt(badge.getAttribute("data-stock"), 10);
-    // Quitamos clases posibles antes de aplicar las nuevas
-    badge.classList.remove(
-      "bg-success",
-      "bg-warning",
-      "bg-danger",
-      "text-white",
-      "text-dark"
-    );
-    if (isNaN(stock)) return;
-
-    if (stock > 10) {
-      // Mucho stock -> verde
-      badge.classList.add("bg-success", "text-white");
-    } else if (stock > 0) {
-      // Poco stock -> amarillo
-      badge.classList.add("bg-warning", "text-dark");
-    } else {
-      // Sin stock -> rojo
-      badge.classList.add("bg-danger", "text-white");
-    }
-  });
+  // Volver de Paso 3 -> Paso 2 (escritorio)
+  if (btnBackToStep2Desktop) {
+    btnBackToStep2Desktop.addEventListener("click", function () {
+      showStep(2);
+    });
+  }
 
   // --- Colocar la fecha actual en el input de fecha de venta ---
   const inputFechaVenta = document.getElementById("fechaVenta");
