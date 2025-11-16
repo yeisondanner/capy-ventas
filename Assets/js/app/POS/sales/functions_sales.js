@@ -10,10 +10,34 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnBackToStep1 = document.getElementById("btnBackToStep1");
   const btnToStep3 = document.getElementById("btnToStep3");
   const btnBackToStep2 = document.getElementById("btnBackToStep2");
+  const btnToStep3Desktop = document.getElementById("btnToStep3Desktop");
+  const btnBackToStep2Desktop = document.getElementById("btnBackToStep2Desktop");
 
   // Helper para saber si estamos en un dispositivo pequeño (celular)
   function isMobile() {
     return window.innerWidth <= 576;
+  }
+
+  let desktopStep = 2;
+
+  function showDesktopStep(targetStep = 2) {
+    if (!step2 || !step3) return;
+
+    desktopStep = targetStep;
+
+    if (isMobile()) {
+      step2.classList.remove("desktop-hidden");
+      step3.classList.remove("desktop-hidden");
+      return;
+    }
+
+    if (targetStep === 3) {
+      step2.classList.add("desktop-hidden");
+      step3.classList.remove("desktop-hidden");
+    } else {
+      step2.classList.remove("desktop-hidden");
+      step3.classList.add("desktop-hidden");
+    }
   }
 
   // Muestra solo el paso n en móvil. En PC se muestran todos.
@@ -23,8 +47,12 @@ document.addEventListener("DOMContentLoaded", function () {
       step1.classList.remove("active-step");
       step2.classList.remove("active-step");
       step3.classList.remove("active-step");
+      showDesktopStep(desktopStep);
       return;
     }
+
+    step2.classList.remove("desktop-hidden");
+    step3.classList.remove("desktop-hidden");
 
     const steps = [step1, step2, step3];
     steps.forEach(function (step, index) {
@@ -43,6 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
     if (isMobile()) {
       // En móvil empezamos en el paso 1 (productos)
       showStep(1);
+    } else {
+      showDesktopStep(2);
     }
 
     // Al cambiar el tamaño de la ventana, reajustamos la vista
@@ -52,6 +82,7 @@ document.addEventListener("DOMContentLoaded", function () {
         step1.classList.remove("active-step");
         step2.classList.remove("active-step");
         step3.classList.remove("active-step");
+        showDesktopStep(desktopStep);
       } else if (
         !step1.classList.contains("active-step") &&
         !step2.classList.contains("active-step") &&
@@ -83,6 +114,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  if (btnToStep3Desktop) {
+    btnToStep3Desktop.addEventListener("click", function () {
+      showDesktopStep(3);
+      if (!isMobile() && step3) {
+        step3.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }
+
   // Volver de Paso 2 -> Paso 1 (móvil)
   if (btnBackToStep1) {
     btnBackToStep1.addEventListener("click", function () {
@@ -98,6 +138,15 @@ document.addEventListener("DOMContentLoaded", function () {
     btnBackToStep2.addEventListener("click", function () {
       showStep(2);
       if (isMobile() && step2) {
+        step2.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }
+
+  if (btnBackToStep2Desktop) {
+    btnBackToStep2Desktop.addEventListener("click", function () {
+      showDesktopStep(2);
+      if (!isMobile() && step2) {
         step2.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     });
