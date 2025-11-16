@@ -1,6 +1,21 @@
 /* Fondo neutro general */
 
 /* 🔥 NUEVO: Alinear altura de todas las secciones (Paso 1, 2 y 3) */
+.pos-layout {
+  min-height: calc(100vh - 220px);
+}
+
+.pos-layout > [class*="col-"] {
+  display: flex;
+}
+
+#step1,
+#step2,
+#step3 {
+  display: flex;
+  flex-direction: column;
+}
+
 #step1 .card,
 #step2 .card,
 #step3 .card {
@@ -10,13 +25,20 @@
   flex-direction: column;
 }
 
-/* Hace que todas las columnas se estiren parejo */
-.row.g-3 > [class^="col"] {
+/* Sidebar con canasta y pago ocupando la misma altura */
+.pos-sidebar {
   display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
 }
 
-/* Las cards llenan la columna completa */
-.row.g-3 > [class^="col"] > .card {
+.pos-sidebar > [class^="col"] {
+  display: flex;
+  flex: 1 1 0;
+}
+
+.pos-sidebar > [class^="col"] > .card {
   flex: 1;
 }
 
@@ -223,6 +245,11 @@ body {
 }
 
 /* Scroll interno para la lista de la canasta, sin afectar toda la página */
+.basket-list {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .basket-scroll {
   max-height: 320px;
   overflow-y: auto;
@@ -281,7 +308,17 @@ body {
   }
 
   .step-mobile.active-step {
-    display: block;
+    display: flex;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .pos-layout {
+    min-height: auto;
+  }
+
+  .pos-sidebar {
+    height: auto;
   }
 }
 

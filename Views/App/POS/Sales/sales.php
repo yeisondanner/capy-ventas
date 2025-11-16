@@ -10,10 +10,10 @@
             <li class="breadcrumb-item"><a href="<?= base_url() ?>/pos/sales">Ventas</a></li>
         </ul>
     </div>
-    <div class="row g-2 p-0">
+    <div class="row g-2 p-0 pos-layout align-items-stretch">
         <!-- PASO 1: Elegir producto -->
-        <div class="col-12 col-lg-8 step-mobile" id="step1">
-            <div class="card shadow-sm border-0">
+        <div class="col-12 col-lg-8 step-mobile d-flex" id="step1">
+            <div class="card shadow-sm border-0 flex-fill">
                 <div class="card-header bg-white">
                     <div class="pos-step-title">
                         <div class="pos-step-badge">1</div>
@@ -71,12 +71,12 @@
         </div>
 
         <!-- Columna derecha (en PC): Canasta arriba y Pago abajo -->
-        <div class="col-12 col-lg-4">
-            <div class="row g-3">
+        <div class="col-12 col-lg-4 d-flex">
+            <div class="row g-3 pos-sidebar flex-fill">
 
                 <!-- PASO 2: Canasta / Rectificar cantidades -->
-                <div class="col-12 step-mobile" id="step2">
-                    <div class="card shadow-sm border-0">
+                <div class="col-12 step-mobile d-flex" id="step2">
+                    <div class="card shadow-sm border-0 flex-fill">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
                             <div class="pos-step-title">
                                 <div class="pos-step-badge">2</div>
@@ -160,8 +160,8 @@
                 </div>
 
                 <!-- PASO 3: Pago / Nueva venta -->
-                <div class="col-12 step-mobile" id="step3">
-                    <div class="card shadow-sm border-0 mb-3">
+                <div class="col-12 step-mobile d-flex" id="step3">
+                    <div class="card shadow-sm border-0 flex-fill">
                         <div class="card-header bg-white">
                             <div class="pos-step-title">
                                 <!-- Badge morado para diferenciar el paso 3 -->
@@ -169,7 +169,7 @@
                                 <span><i class="bi bi-cash-stack me-2"></i> Pago / Nueva venta</span>
                             </div>
                         </div>
-                        <div class="card-body">
+                        <div class="card-body d-flex flex-column">
                             <!-- Totales de la venta con descuento -->
                             <div class="d-flex justify-content-between mb-1 small">
                                 <span>Subtotal</span>
