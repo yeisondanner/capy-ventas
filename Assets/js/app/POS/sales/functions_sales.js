@@ -263,6 +263,7 @@
 
     let modalCobro = null;
     let modalPostVenta = null;
+    let pendingPostSaleModal = false;
 
     // Creamos instancias de los modales si Bootstrap está disponible
     if (modalCobroEl && typeof bootstrap !== "undefined") {
@@ -271,6 +272,18 @@
 
     if (modalPostVentaEl && typeof bootstrap !== "undefined") {
       modalPostVenta = new bootstrap.Modal(modalPostVentaEl);
+    }
+
+    if (modalCobroEl && typeof bootstrap !== "undefined") {
+      modalCobroEl.addEventListener("hidden.bs.modal", function () {
+        if (!pendingPostSaleModal) return;
+
+        pendingPostSaleModal = false;
+
+        if (modalPostVenta) {
+          modalPostVenta.show();
+        }
+      });
     }
 
     // Referencias a elementos dentro del modal de cobro
@@ -317,6 +330,8 @@
 
     if (btnFinalizarVenta) {
       btnFinalizarVenta.addEventListener("click", function () {
+        pendingPostSaleModal = true;
+
         // Cerramos el modal de cobro si existe
         const modalCobroInstance = modalCobro;
         if (modalCobroInstance) {
@@ -329,8 +344,9 @@
           spanResumenTotal.textContent = total.toFixed(2);
         }
 
-        // Mostramos el modal post-venta tipo voucher
-        if (modalPostVenta) {
+        // Si no existe el modal de cobro, abrimos directamente el voucher
+        if (!modalCobroInstance && modalPostVenta) {
+          pendingPostSaleModal = false;
           modalPostVenta.show();
         }
       });
