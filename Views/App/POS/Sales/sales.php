@@ -34,13 +34,7 @@
                         <!-- Categorías rápidas (chips) de productos populares -->
                         <div class="mb-3">
                             <small class="text-muted d-block mb-1">Categorías populares</small>
-                            <div class="d-flex flex-wrap gap-2">
-                                <button type="button" class="btn btn-outline_secondary btn-sm">Todos</button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm">Accesorios PC</button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm">Audio</button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm">Almacenamiento</button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm">Ofertas</button>
-                            </div>
+                            <div class="d-flex flex-wrap gap-2" id="popularCategories"></div>
                         </div>
 
                         <!-- Grid de productos. Cada card es grande/tocable y amigable para Samuel :) -->

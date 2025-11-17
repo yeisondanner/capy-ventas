@@ -29,6 +29,9 @@
   const inputFechaVenta = document.getElementById("fechaVenta");
   const selectPaymentMethod = document.getElementById("paymentMethod");
   const productSearchInput = document.getElementById("productSearchInput");
+  const popularCategoriesContainer = document.getElementById(
+    "popularCategories"
+  );
   const inputNombreVenta = document.getElementById("nombreVenta");
   const btnGuardarNombreVenta = document.getElementById(
     "btnGuardarNombreVenta"
@@ -44,6 +47,8 @@
   let lastVoucherName = "";
   let cachedProducts = [];
   let cachedCartItems = [];
+  let activeCategory = "all";
+  let lastSearchTerm = "";
 
   /**
    * Metodo que inicializa todas las funciones de la vista
@@ -144,6 +149,9 @@
     }
 
     refreshVoucherNameButtonState();
+
+    // Pinta las categorías populares con el estado inicial de "Todos".
+    renderPopularCategories([]);
 
     bindProductSearch();
 
@@ -542,6 +550,8 @@
     bindEmptyCart();
     //cargamos los productos
     getProducts();
+    //cargamos las categorías populares
+    loadPopularCategories();
     //cargamos los clientes
     loadCustomers();
     //cargamos la canasta
@@ -643,23 +653,126 @@
   }
 
   /**
+   * Determina si el producto pertenece a la categoría activa.
+   *
+   * @param {string} productCategory Nombre de la categoría del producto.
+   * @param {string} normalizedCategory Categoría activa normalizada.
+   * @returns {boolean} Verdadero si coincide o si no hay filtro.
+   */
+  function matchesCategory(productCategory, normalizedCategory) {
+    if (normalizedCategory === "all" || normalizedCategory === "") {
+      return true;
+    }
+
+    return (
+      String(productCategory ?? "").toLowerCase().trim() === normalizedCategory
+    );
+  }
+
+  /**
+   * Aplica los filtros de búsqueda y categoría activa, actualizando la grilla.
+   */
+  function applyCombinedFilter() {
+    const normalizedCategory = (activeCategory || "all").toLowerCase().trim();
+    const filteredProducts = cachedProducts.filter((product) => {
+      const matchesTerm = matchesProduct(product, lastSearchTerm);
+      const matchesPopularCategory = matchesCategory(
+        product.category,
+        normalizedCategory
+      );
+
+      return matchesTerm && matchesPopularCategory;
+    });
+
+    updateProductGrid(filteredProducts);
+  }
+
+  /**
    * Filtra la lista de productos según el término ingresado y actualiza la grilla.
    *
    * @param {string} term Término de búsqueda.
    */
   function applyProductFilter(term) {
-    const normalizedTerm = (term || "").trim().toLowerCase();
+    lastSearchTerm = (term || "").trim().toLowerCase();
+    applyCombinedFilter();
+  }
 
-    if (!normalizedTerm) {
-      updateProductGrid(cachedProducts);
-      return;
-    }
+  /**
+   * Cambia la categoría activa y aplica el filtro combinado.
+   *
+   * @param {string} categoryValue Categoría seleccionada.
+   */
+  function setActiveCategory(categoryValue) {
+    activeCategory = (categoryValue || "all").toLowerCase().trim();
+    updateCategoryButtonsState();
+    applyCombinedFilter();
+  }
 
-    const filteredProducts = cachedProducts.filter((product) =>
-      matchesProduct(product, normalizedTerm)
+  /**
+   * Marca visualmente el botón de categoría activo.
+   */
+  function updateCategoryButtonsState() {
+    if (!popularCategoriesContainer) return;
+
+    const buttons = popularCategoriesContainer.querySelectorAll(
+      "button[data-category]"
     );
 
-    updateProductGrid(filteredProducts);
+    buttons.forEach((button) => {
+      if (button.dataset.category === activeCategory) {
+        button.classList.add("active");
+      } else {
+        button.classList.remove("active");
+      }
+    });
+  }
+
+  /**
+   * Genera un botón de categoría.
+   *
+   * @param {string} label Nombre visible de la categoría.
+   * @param {string} normalizedValue Valor normalizado usado para filtrar.
+   * @returns {HTMLButtonElement} Botón listo para usarse en la vista.
+   */
+  function createCategoryButton(label, normalizedValue) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.classList.add("btn", "btn-outline-secondary", "btn-sm");
+    button.dataset.category = normalizedValue;
+    button.textContent = label;
+    button.addEventListener("click", () => setActiveCategory(normalizedValue));
+
+    return button;
+  }
+
+  /**
+   * Pinta las categorías populares disponibles y agrega el botón de "Todos".
+   *
+   * @param {Array} categories Listado de categorías con su venta total.
+   */
+  function renderPopularCategories(categories) {
+    if (!popularCategoriesContainer) return;
+
+    popularCategoriesContainer.innerHTML = "";
+    popularCategoriesContainer.appendChild(createCategoryButton("Todos", "all"));
+
+    const validCategories = Array.isArray(categories) ? categories : [];
+
+    validCategories.forEach((category) => {
+      const label = (category.category || category.name || "").trim();
+      if (label === "") return;
+
+      const normalizedValue = label.toLowerCase();
+      const button = createCategoryButton(label, normalizedValue);
+
+      if (typeof category.total_sold !== "undefined") {
+        button.title = `Ventas registradas: ${category.total_sold}`;
+      }
+
+      popularCategoriesContainer.appendChild(button);
+    });
+
+    updateCategoryButtonsState();
   }
   /**
    * Metodo que se encarga de obtener los productos asociados
@@ -675,10 +788,10 @@
       if (listProducts) {
         if (data.status) {
           cachedProducts = Array.isArray(data.products) ? data.products : [];
-          updateProductGrid(cachedProducts);
+          applyCombinedFilter();
         } else {
           cachedProducts = [];
-          renderEmptyProducts();
+          applyCombinedFilter();
         }
       }
     } catch (error) {
@@ -689,6 +802,33 @@
         message: "No es posible obtener los productos. Inténtalo nuevamente",
         html: `<pre>${error}</pre>`,
       });
+    }
+  }
+
+  /**
+   * Recupera las categorías más vendidas para mostrarlas como atajos.
+   */
+  async function loadPopularCategories() {
+    if (!popularCategoriesContainer) return;
+
+    const url = base_url + "/pos/Sales/getPopularCategories";
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(response.statusText + " - " + response.status);
+      }
+
+      const data = await response.json();
+      if (data.status) {
+        renderPopularCategories(data.categories || []);
+        return;
+      }
+
+      renderPopularCategories([]);
+    } catch (error) {
+      console.error("Error obteniendo categorías populares", error);
+      renderPopularCategories([]);
     }
   }
 

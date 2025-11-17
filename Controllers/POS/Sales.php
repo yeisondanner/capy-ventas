@@ -73,6 +73,39 @@ class Sales extends Controllers
     }
 
     /**
+     * Devuelve las categorías más vendidas del negocio activo.
+     *
+     * @return void
+     */
+    public function getPopularCategories(): void
+    {
+        $businessId = $this->getBusinessId();
+        $categories = $this->model->selectPopularCategories($businessId, 5);
+
+        if (!is_array($categories) || count($categories) === 0) {
+            toJson([
+                'status'     => true,
+                'categories' => [],
+            ]);
+
+            return;
+        }
+
+        $response = array_map(static function ($category) {
+            return [
+                'idcategory' => (int) ($category['idCategory'] ?? 0),
+                'category'   => (string) ($category['category'] ?? ''),
+                'total_sold' => (float) ($category['total_sold'] ?? 0),
+            ];
+        }, $categories);
+
+        toJson([
+            'status'     => true,
+            'categories' => $response,
+        ]);
+    }
+
+    /**
      * Devuelve los clientes vinculados al negocio que inició sesión.
      *
      * @return void

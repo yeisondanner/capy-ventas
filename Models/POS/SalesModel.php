@@ -44,6 +44,36 @@ class SalesModel extends Mysql
     }
 
     /**
+     * Obtiene las categorías con mayores ventas para el negocio activo.
+     *
+     * @param int $idBusiness Identificador del negocio activo.
+     * @param int $limit      Cantidad de categorías a devolver.
+     *
+     * @return array
+     */
+    public function selectPopularCategories(int $idBusiness, int $limit = 5): array
+    {
+        $limit = max(1, (int) $limit);
+
+        $sql = <<<SQL
+            SELECT
+                c.idCategory AS idCategory,
+                c.name       AS category,
+                SUM(vd.stock_product) AS total_sold
+            FROM voucher_detail AS vd
+            INNER JOIN voucher_header AS vh ON vh.idVoucherHeader = vd.voucherheader_id
+            INNER JOIN product AS p ON p.idProduct = vd.product_id
+            INNER JOIN category AS c ON c.idCategory = p.category_id
+            WHERE vh.business_id = ?
+            GROUP BY c.idCategory, c.name
+            ORDER BY total_sold DESC
+            LIMIT $limit;
+        SQL;
+
+        return $this->select_all($sql, [$idBusiness]);
+    }
+
+    /**
      * Obtiene los clientes asociados al negocio que ha iniciado sesión.
      *
      * @param int $idBusiness Identificador del negocio activo.
