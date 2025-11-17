@@ -1,75 +1,4 @@
 <?= headerPos($data) ?>
-<?php
-// Datos de ejemplo para la canasta (20 registros)
-$basketTemplates = [
-    ["nombre" => "Audífonos Bluetooth", "stock" => -24, "precio" => 89.90, "cantidad" => 1],
-    ["nombre" => "Mouse Gamer RGB", "stock" => -1, "precio" => 59.90, "cantidad" => 2],
-    ["nombre" => "Teclado mecánico", "stock" => 15, "precio" => 199.00, "cantidad" => 1],
-    ["nombre" => "Parlante portátil", "stock" => 4, "precio" => 129.00, "cantidad" => 1],
-    ["nombre" => "Silla ergonómica", "stock" => 9, "precio" => 799.00, "cantidad" => 1],
-    ["nombre" => "Mousepad XL", "stock" => 37, "precio" => 49.90, "cantidad" => 3],
-    ["nombre" => "Base para laptop", "stock" => 6, "precio" => 119.00, "cantidad" => 1],
-    ["nombre" => "USB 128GB", "stock" => 28, "precio" => 79.90, "cantidad" => 2],
-    ["nombre" => "Hub USB-C", "stock" => 12, "precio" => 159.00, "cantidad" => 1],
-    ["nombre" => "Cámara web", "stock" => 5, "precio" => 249.00, "cantidad" => 1],
-];
-
-$basketDemo = [];
-for ($i = 0; $i < 20; $i++) {
-    $base = $basketTemplates[$i % count($basketTemplates)];
-    $basketDemo[] = [
-        "nombre" => $base["nombre"] . " Lote " . ($i + 1),
-        "stock" => $base["stock"] - ($i % 3),
-        "precio" => $base["precio"],
-        "cantidad" => $base["cantidad"],
-    ];
-}
-
-/**
- * Devuelve la etiqueta de stock para la canasta.
- *
- * @param int $stock Nivel de stock o faltante para el producto.
- * @return string Texto listo para mostrarse en la vista.
- */
-function formatBasketStockLabel(int $stock): string
-{
-    if ($stock < 0) {
-        return $stock . " Disponibles";
-    }
-
-    if ($stock === 0) {
-        return "Sin stock";
-    }
-
-    return $stock . " disponibles";
-}
-
-/**
- * Determina la clase de color para la etiqueta de stock.
- *
- * @param int $stock Nivel de stock o faltante para el producto.
- * @return string Clase de texto sugerida para el estado.
- */
-function getBasketStockClass(int $stock): string
-{
-    if ($stock < 0) {
-        return "text-danger";
-    }
-
-    if ($stock === 0) {
-        return "text-warning";
-    }
-
-    return "text-muted";
-}
-
-$basketSubtotal = 0;
-foreach ($basketDemo as $index => $item) {
-    $total = $item["precio"] * $item["cantidad"];
-    $basketDemo[$index]["total"] = $total;
-    $basketSubtotal += $total;
-}
-?>
 <main class="app-content">
     <div class="app-title">
         <div>
@@ -148,56 +77,14 @@ foreach ($basketDemo as $index => $item) {
                         </div>
                         <div class="card-body d-flex flex-column p-0">
                             <!-- Lista de productos en la canasta con scroll propio -->
-                            <div class="basket-list basket-scroll">
-                                <?php foreach ($basketDemo as $basketItem): ?>
-                                    <div class="basket-item">
-                                        <div class="basket-header">
-                                            <div class="basket-info">
-                                                <div class="basket-icon">
-                                                    <i class="bi bi-bag"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="basket-name"><?= $basketItem["nombre"] ?></div>
-                                                    <div class="basket-stock <?= getBasketStockClass((int) $basketItem["stock"]) ?>">
-                                                        <?= formatBasketStockLabel((int) $basketItem["stock"]) ?>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <button class="btn btn-outline-danger btn-sm rounded-circle">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-
-                                        <!-- Cantidad y precio mitad / mitad -->
-                                        <div class="basket-controls">
-                                            <div class="basket-half">
-                                                <div class="input-group input-group-sm">
-                                                    <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
-                                                    <input type="number" class="form-control text-center" value="<?= $basketItem["cantidad"] ?>" min="0">
-                                                    <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="basket-half">
-                                                <div class="input-group input-group-sm">
-                                                    <span class="input-group-text">S/</span>
-                                                    <input type="text" class="form-control text-end" value="<?= number_format($basketItem["precio"], 2) ?>">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="basket-price-line text-muted mt-1">
-                                            Precio por <span class="fw-semibold"><?= $basketItem["cantidad"] ?></span> unidades:
-                                            <span class="fw-semibold">S/ <?= number_format($basketItem["total"], 2) ?></span>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
+                            <div class="basket-list basket-scroll" id="listCart">
                             </div>
 
                             <!-- Subtotal visible en la parte inferior de la canasta -->
                             <div class="p-3 border-top mt-auto bg-white">
                                 <div class="d-flex justify-content-between mb-2 fw-bold fs-5 totales-pos">
                                     <span>Subtotal</span>
-                                    <span>S/ <?= number_format($basketSubtotal, 2) ?></span>
+                                    <span>S/ 0.00</span>
                                 </div>
 
                                 <!-- Navegación móvil compacta entre paso 1 y 3 -->
@@ -236,7 +123,7 @@ foreach ($basketDemo as $index => $item) {
                                 <!-- Totales de la venta con descuento -->
                                 <div class="d-flex justify-content-between mb-1 small">
                                     <span>Subtotal</span>
-                                    <span id="lblSubtotal" data-valor="<?= number_format($basketSubtotal, 2, '.', '') ?>">S/ <?= number_format($basketSubtotal, 2) ?></span>
+                                    <span id="lblSubtotal" data-valor="0.00">S/ 0.00</span>
                                 </div>
 
                                 <!-- Bloque de descuento con monto y porcentaje sincronizados -->
@@ -308,7 +195,7 @@ foreach ($basketDemo as $index => $item) {
                             <!-- Navegación móvil debajo del formulario de pago -->
                             <div class="mt-3 d-lg-none d-flex justify-content-between gap-2">
                                 <button id="btnBackToStep2" class="btn btn-outline-secondary w-50 btn-nav btn-nav-small">
-                                    <i class="bi bi-arrow-left-circle me-1"></i> Canasta
+                                    <i class="bi bi-arrow-left-circle me-1"></i> Atras: Canasta
                                 </button>
                                 <!-- Botón de cobrar en móvil -->
                                 <button class="btn btn-success w-50 btn-cobrar btn-nav">
@@ -319,7 +206,7 @@ foreach ($basketDemo as $index => $item) {
                             <!-- Botón grande de cobro y navegación para pantallas grandes -->
                             <div class="mt-3 d-none d-lg-flex gap-2">
                                 <button id="btnDesktopBackToStep2" class="btn btn-outline-secondary w-50 btn-nav">
-                                    <i class="bi bi-arrow-left-circle me-1"></i> Canasta
+                                    <i class="bi bi-arrow-left-circle me-1"></i> Atras:Canasta
                                 </button>
                                 <button class="btn btn-success w-50 btn-cobrar btn-nav">
                                     <i class="bi bi-cash-stack me-1"></i> Cobrar

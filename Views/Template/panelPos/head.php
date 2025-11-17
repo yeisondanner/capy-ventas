@@ -5,6 +5,8 @@ $nameVarLogin = $name_sesion . 'login';
 $nameVarBusiness = $name_sesion . 'business_active';
 $nameVarLoginInfo = $name_sesion . 'login_info';
 $nameVarCart = $name_sesion . 'cart';
+//destruimos cualquier valor agregado al carro
+unset($_SESSION[$nameVarCart]);
 //vaiables de las rutas del css
 $pageCssFolder = strtolower($data["page_container"]);
 $pageCssFile = "style_" . strtolower($data["page_js_css"]) . ".css?" . versionSystem();

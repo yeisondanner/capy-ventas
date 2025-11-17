@@ -265,6 +265,7 @@
 
 .basket-name {
   font-weight: 600;
+  display: block;
 }
 
 .basket-stock {

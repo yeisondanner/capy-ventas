@@ -91,6 +91,7 @@ class Sales extends Controllers
         $supplier = strClean($_POST['supplier']);
         $category = strClean($_POST['category']);
         $selected = strClean($_POST['selected']);
+        $measurement = strClean($_POST['measurement']);
         $userId = $this->getUserId();
         if (!isset($_SESSION[$this->nameVarCart])) {
             $_SESSION[$this->nameVarCart][0] = array(
@@ -105,6 +106,7 @@ class Sales extends Controllers
                 'category' => $category,
                 'selected' => $selected,
                 'userId' => $userId,
+                'measurement' => $measurement
             );
         } else {
             $length = count($_SESSION[$this->nameVarCart]);
@@ -134,6 +136,7 @@ class Sales extends Controllers
                 'category' => $category,
                 'selected' => $selected,
                 'userId' => $userId,
+                'measurement' => $measurement
             );
         }
         toJson([
@@ -142,6 +145,18 @@ class Sales extends Controllers
             'message' => $selected . ' ' . $product . ' agregado al carrito.',
             'icon' => 'success'
         ]);
+    }
+    /**
+     * Metodo que se encarga de obtener todos los productos del carrito
+     * 
+     * @return void
+     */
+    public function getCart(): void
+    {
+        if (!isset($_SESSION[$this->nameVarCart])) {
+            $this->responseError('No se encontraron productos en el carrito.');
+        }
+        toJson(['cart' => $_SESSION[$this->nameVarCart], 'status' => true]);
     }
     /**
      * Obtiene el identificador del negocio activo desde la sesión.

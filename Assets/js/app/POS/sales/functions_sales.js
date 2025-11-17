@@ -345,6 +345,8 @@
   }
   // Esperamos a que todo el DOM esté cargado antes de manipular elementos
   document.addEventListener("DOMContentLoaded", function () {
+    //preugamos si realmente quiere refrescar la pagina
+
     //inicializamos las funciones de la vista
     init();
     //cargamos los productos
@@ -366,7 +368,7 @@
           const products = data.products;
           listProducts.innerHTML = "";
           products.forEach((product) => {
-            const divCardProduct = showProductCard(product);
+            const divCardProduct = renderProductCard(product);
             listProducts.appendChild(divCardProduct);
           });
         }
@@ -384,8 +386,38 @@
       });
     }
   }
+  /**
+   * Metodo que se encarga de obtener los productos cargados a la canasta
+   * @returns
+   */
+  async function getCart() {
+    const listCart = document.getElementById("listCart");
+    listCart.innerHTML = "";
+    const url = base_url + "/pos/Sales/getCart";
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(response.statusText + " - " + response.status);
+      }
+      const data = await response.json();
+      if (data.status) {
+        data.cart.forEach((product) => {
+          const divProduct = renderProductCart(product);
+          listCart.appendChild(divProduct);
+        });
+      }
+    } catch (error) {
+      showAlert({
+        title: "Ocurrio un error inesperado",
+        message: "Ocurrio un error con el servidor: " + error.name,
+        html: `<pre>${error}</pre>`,
+        icon: "error",
+        timer: 4000,
+      });
+    }
+  }
   //obtenemos el carda de los productos
-  function showProductCard(product) {
+  function renderProductCard(product) {
     const divCardProduct = document.createElement("div");
     const buttonProduct = document.createElement("button");
     const spanCounter = document.createElement("span");
@@ -413,6 +445,7 @@
     buttonProduct.dataset.stock = product.stock;
     buttonProduct.dataset.supplier = product.supplier;
     buttonProduct.dataset.category = product.category;
+    buttonProduct.dataset.measurement = product.measurement;
     //asignacion de valores
     spanCounter.textContent = "0";
     divImg.innerHTML = `<img class="emoji" src="${base_url}/Storage/Products/product.png" alt="${product.product}">`;
@@ -428,6 +461,110 @@
     buttonProduct.appendChild(spanStock);
     divCardProduct.appendChild(buttonProduct);
     return divCardProduct;
+  }
+  //funcion que encarga de renderizar los productos del carrito
+  function renderProductCart(product) {
+    const amount = (product.selected * product.price).toFixed(2);
+    //creamos los elementos necesarios
+    const divProduct = document.createElement("div");
+    const divHeader = document.createElement("div");
+    const divInfo = document.createElement("div");
+    const divIcon = document.createElement("div");
+    const divNameStock = document.createElement("div");
+    const spanName = document.createElement("span");
+    const spanStock = document.createElement("span");
+    const btnDelete = document.createElement("button");
+    const divControls = document.createElement("div");
+    const divPriceLine = document.createElement("div");
+    //asignamos las clases
+    divProduct.classList.add("basket-item");
+    divHeader.classList.add("basket-header");
+    divInfo.classList.add("basket-info");
+    divIcon.classList.add("basket-icon");
+    spanName.classList.add("basket-name");
+    if (product.stock <= 0) {
+      spanStock.classList.add("basket-stock", "text-danger");
+    } else {
+      spanStock.classList.add("basket-stock", "text-muted");
+    }
+    btnDelete.classList.add(
+      "btn",
+      "btn-outline-danger",
+      "btn-sm",
+      "rounded-circle"
+    );
+    divControls.classList.add("basket-controls");
+    divPriceLine.classList.add("basket-price-line", "text-muted", "mt-1");
+    //llenamos la data
+    divIcon.innerHTML = `<i class="bi bi-bag"></i>`;
+    spanName.textContent = `${product.product} ${product.selected}`;
+    spanStock.textContent = `${parseFloat(product.stock)} Disponibles`;
+    btnDelete.innerHTML = `<i class="bi bi-trash"></i>`;
+    divControls.innerHTML = `
+                                            <div class="basket-half">
+                                                <div class="input-group input-group-sm">
+                                                    <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
+                                                    <input type="number" class="form-control text-center" value="${product.selected}" min="0">
+                                                    <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="basket-half">
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text">S/</span>
+                                                    <input type="text" class="form-control text-end" value="${amount}" readonly>
+                                                </div>
+                                            </div> `;
+    divPriceLine.innerHTML = `Precio por <span class="fw-semibold">${product.selected}</span> ${product.measurement}: <span class="fw-semibold">${getcurrency} ${amount}</span>`;
+    //renderizamos la informacion
+    divNameStock.appendChild(spanName);
+    divNameStock.appendChild(spanStock);
+    divInfo.appendChild(divIcon);
+    divInfo.appendChild(divNameStock);
+    divHeader.appendChild(divInfo);
+    divHeader.appendChild(btnDelete);
+    divProduct.appendChild(divHeader);
+    divProduct.appendChild(divControls);
+    divProduct.appendChild(divPriceLine);
+    return divProduct;
+    `<div class="basket-item">
+                                        <div class="basket-header">
+                                            <div class="basket-info">
+                                                <div class="basket-icon">
+                                                    <i class="bi bi-bag"></i>
+                                                </div>
+                                                <div>
+                                                    <div class="basket-name">Audífonos Bluetooth Lote 1</div>
+                                                    <div class="basket-stock text-danger">
+                                                        -24 Disponibles                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-outline-danger btn-sm rounded-circle">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Cantidad y precio mitad / mitad -->
+                                        <div class="basket-controls">
+                                            <div class="basket-half">
+                                                <div class="input-group input-group-sm">
+                                                    <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
+                                                    <input type="number" class="form-control text-center" value="1" min="0">
+                                                    <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="basket-half">
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text">S/</span>
+                                                    <input type="text" class="form-control text-end" value="89.90">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="basket-price-line text-muted mt-1">
+                                            Precio por <span class="fw-semibold">1</span> unidades:
+                                            <span class="fw-semibold">S/ 89.90</span>
+                                        </div>
+                                    </div>`;
   }
   //funcion que se encarga de colorear los badges del stock
   function badgeColor() {
@@ -496,6 +633,7 @@
         formdata.append("supplier", card.dataset.supplier);
         formdata.append("category", card.dataset.category);
         formdata.append("selected", card.dataset.selected);
+        formdata.append("measurement", card.dataset.measurement);
         const url = base_url + "/pos/Sales/addCart";
         const config = {
           method: "POST",
@@ -509,6 +647,8 @@
           const data = await response.json();
           if (data.status) {
             playStepAnimation(card);
+            //actualizamos los datos del cart
+            getCart();
           }
           showAlert({
             icon: data.icon,
