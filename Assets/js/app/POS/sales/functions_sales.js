@@ -4,6 +4,8 @@
    * Variables de los elementos necesarios
    */
   const listProducts = document.getElementById("listProducts");
+  const listCart = document.getElementById("listCart");
+  const basketSubtotal = document.getElementById("basketSubtotal");
   // Referencias a los 3 pasos principales
   const step1 = document.getElementById("step1");
   const step2 = document.getElementById("step2");
@@ -15,9 +17,22 @@
   const btnToStep3 = document.getElementById("btnToStep3");
   const btnBackToStep2 = document.getElementById("btnBackToStep2");
   const btnDesktopToStep3 = document.getElementById("btnDesktopToStep3");
-  const btnDesktopBackToStep2 = document.getElementById(
-    "btnDesktopBackToStep2"
-  );
+  const btnDesktopBackToStep2 = document.getElementById("btnDesktopBackToStep2");
+  const btnEmptyCart = document.getElementById("btnEmptyCart");
+
+  // Totales y descuentos
+  const inputDescuentoMonto = document.getElementById("descuentoMonto");
+  const inputDescuentoPorc = document.getElementById("descuentoPorc");
+  const lblSubtotal = document.getElementById("lblSubtotal");
+  const lblTotal = document.getElementById("lblTotal");
+
+  // Modal de cobro
+  const btnFinalizarVenta = document.getElementById("btnFinalizarVenta");
+  const spanResumenTotal = document.getElementById("resumenTotalVenta");
+
+  let actualizarDesdeMonto = null;
+  let actualizarDesdePorcentaje = null;
+
   /**
    * Metodo que inicializa todas las funciones de la vista
    */
@@ -184,20 +199,8 @@
     }
 
     // --- Descuento: recalcular total a pagar (monto fijo y porcentaje) ---
-    const inputDescuentoMonto = document.getElementById("descuentoMonto");
-    const inputDescuentoPorc = document.getElementById("descuentoPorc");
-    const lblSubtotal = document.getElementById("lblSubtotal");
-    const lblTotal = document.getElementById("lblTotal");
-
-    // Cuando el usuario escribe un monto de descuento fijo
-    function actualizarDesdeMonto() {
-      if (
-        !lblSubtotal ||
-        !lblTotal ||
-        !inputDescuentoMonto ||
-        !inputDescuentoPorc
-      )
-        return;
+    actualizarDesdeMonto = function () {
+      if (!lblSubtotal || !lblTotal || !inputDescuentoMonto || !inputDescuentoPorc) return;
 
       const subtotal = parseFloat(lblSubtotal.dataset.valor) || 0;
       let monto = parseFloat(inputDescuentoMonto.value) || 0;
@@ -216,17 +219,10 @@
       // Total nunca menor que cero
       const total = Math.max(subtotal - monto, 0);
       lblTotal.textContent = "S/ " + total.toFixed(2);
-    }
+    };
 
-    // Cuando el usuario escribe un porcentaje de descuento
-    function actualizarDesdePorcentaje() {
-      if (
-        !lblSubtotal ||
-        !lblTotal ||
-        !inputDescuentoMonto ||
-        !inputDescuentoPorc
-      )
-        return;
+    actualizarDesdePorcentaje = function () {
+      if (!lblSubtotal || !lblTotal || !inputDescuentoMonto || !inputDescuentoPorc) return;
 
       const subtotal = parseFloat(lblSubtotal.dataset.valor) || 0;
       let porcentaje = parseFloat(inputDescuentoPorc.value) || 0;
@@ -243,7 +239,7 @@
 
       const total = Math.max(subtotal - monto, 0);
       lblTotal.textContent = "S/ " + total.toFixed(2);
-    }
+    };
 
     // Escuchamos cambios en el input de monto
     if (inputDescuentoMonto) {
@@ -318,16 +314,12 @@
       });
     });
 
-    // Botón para finalizar la venta en el modal de cobro
-    const btnFinalizarVenta = document.getElementById("btnFinalizarVenta");
-    // Donde mostraremos el total en el resumen tipo voucher
-    const spanResumenTotal = document.getElementById("resumenTotalVenta");
-
     if (btnFinalizarVenta) {
       btnFinalizarVenta.addEventListener("click", function () {
         // Cerramos el modal de cobro si existe
-        if (modalCobro) {
-          modalCobro.hide();
+        const modalCobroInstance = modalCobro;
+        if (modalCobroInstance) {
+          modalCobroInstance.hide();
         }
 
         // Copiamos el total que se veía en el modal de cobro al resumen final
@@ -345,12 +337,13 @@
   }
   // Esperamos a que todo el DOM esté cargado antes de manipular elementos
   document.addEventListener("DOMContentLoaded", function () {
-    //preugamos si realmente quiere refrescar la pagina
-
-    //inicializamos las funciones de la vista
     init();
+    bindCartActions();
+    bindEmptyCart();
     //cargamos los productos
     getProducts();
+    //cargamos la canasta
+    getCart();
   });
   /**
    * Metodo que se encarga de obtener los productos asociados
@@ -391,7 +384,7 @@
    * @returns
    */
   async function getCart() {
-    const listCart = document.getElementById("listCart");
+    if (!listCart) return;
     listCart.innerHTML = "";
     const url = base_url + "/pos/Sales/getCart";
     try {
@@ -400,12 +393,23 @@
         throw new Error(response.statusText + " - " + response.status);
       }
       const data = await response.json();
-      if (data.status) {
-        data.cart.forEach((product) => {
-          const divProduct = renderProductCart(product);
-          listCart.appendChild(divProduct);
-        });
+      if (!data.status) {
+        renderEmptyCart();
+        updateTotals(0);
+        return;
       }
+      const cartProducts = data.cart || [];
+      if (cartProducts.length === 0) {
+        renderEmptyCart();
+        updateTotals(0);
+        return;
+      }
+      cartProducts.forEach((product) => {
+        const divProduct = renderProductCart(product);
+        listCart.appendChild(divProduct);
+      });
+      lockPriceInputs();
+      updateTotals(parseFloat(data.subtotal) || 0);
     } catch (error) {
       showAlert({
         title: "Ocurrio un error inesperado",
@@ -464,7 +468,9 @@
   }
   //funcion que encarga de renderizar los productos del carrito
   function renderProductCart(product) {
-    const amount = (product.selected * product.price).toFixed(2);
+    const quantity = Math.max(1, parseInt(product.selected, 10) || 1);
+    const price = parseFloat(product.price) || 0;
+    const amount = (quantity * price).toFixed(2);
     //creamos los elementos necesarios
     const divProduct = document.createElement("div");
     const divHeader = document.createElement("div");
@@ -476,6 +482,15 @@
     const btnDelete = document.createElement("button");
     const divControls = document.createElement("div");
     const divPriceLine = document.createElement("div");
+    const divControlLeft = document.createElement("div");
+    const divControlRight = document.createElement("div");
+    const inputGroupQty = document.createElement("div");
+    const inputGroupPrice = document.createElement("div");
+    const btnMinus = document.createElement("button");
+    const btnPlus = document.createElement("button");
+    const inputQty = document.createElement("input");
+    const spanPrefix = document.createElement("span");
+    const inputPrice = document.createElement("input");
     //asignamos las clases
     divProduct.classList.add("basket-item");
     divHeader.classList.add("basket-header");
@@ -491,30 +506,42 @@
       "btn",
       "btn-outline-danger",
       "btn-sm",
-      "rounded-circle"
+      "rounded-circle",
+      "btn-delete-cart"
     );
     divControls.classList.add("basket-controls");
     divPriceLine.classList.add("basket-price-line", "text-muted", "mt-1");
+    divControlLeft.classList.add("basket-half");
+    divControlRight.classList.add("basket-half");
+    inputGroupQty.classList.add("input-group", "input-group-sm");
+    inputGroupPrice.classList.add("input-group", "input-group-sm");
+    btnMinus.classList.add("btn", "btn-outline-secondary", "btn-cart-decrease");
+    btnPlus.classList.add("btn", "btn-outline-secondary", "btn-cart-increase");
+    inputQty.classList.add("form-control", "text-center", "cart-quantity-input");
+    spanPrefix.classList.add("input-group-text");
+    inputPrice.classList.add("form-control", "text-end", "cart-price-input");
+    //datos auxiliares
+    divProduct.dataset.idproduct = product.idproduct;
+    divProduct.dataset.stock = product.stock;
+    divProduct.dataset.price = price.toFixed(2);
     //llenamos la data
     divIcon.innerHTML = `<i class="bi bi-bag"></i>`;
-    spanName.textContent = `${product.product} ${product.selected}`;
+    spanName.textContent = product.product;
     spanStock.textContent = `${parseFloat(product.stock)} Disponibles`;
     btnDelete.innerHTML = `<i class="bi bi-trash"></i>`;
-    divControls.innerHTML = `
-                                            <div class="basket-half">
-                                                <div class="input-group input-group-sm">
-                                                    <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
-                                                    <input type="number" class="form-control text-center" value="${product.selected}" min="0">
-                                                    <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="basket-half">
-                                                <div class="input-group input-group-sm">
-                                                    <span class="input-group-text">S/</span>
-                                                    <input type="text" class="form-control text-end" value="${amount}" readonly>
-                                                </div>
-                                            </div> `;
-    divPriceLine.innerHTML = `Precio por <span class="fw-semibold">${product.selected}</span> ${product.measurement}: <span class="fw-semibold">${getcurrency} ${amount}</span>`;
+    btnMinus.innerHTML = `<i class="bi bi-dash"></i>`;
+    btnPlus.innerHTML = `<i class="bi bi-plus"></i>`;
+    inputQty.type = "number";
+    inputQty.value = quantity;
+    inputQty.min = "1";
+    inputQty.readOnly = true;
+    spanPrefix.textContent = "S/";
+    inputPrice.type = "text";
+    inputPrice.value = amount;
+    inputPrice.readOnly = true;
+    inputPrice.setAttribute("aria-label", "Precio total del producto en canasta");
+    inputPrice.setAttribute("tabindex", "-1");
+    divPriceLine.innerHTML = `Precio por <span class="fw-semibold">${quantity}</span> ${product.measurement}: <span class="fw-semibold">${getcurrency} ${amount}</span>`;
     //renderizamos la informacion
     divNameStock.appendChild(spanName);
     divNameStock.appendChild(spanStock);
@@ -522,49 +549,25 @@
     divInfo.appendChild(divNameStock);
     divHeader.appendChild(divInfo);
     divHeader.appendChild(btnDelete);
+
+    inputGroupQty.appendChild(btnMinus);
+    inputGroupQty.appendChild(inputQty);
+    inputGroupQty.appendChild(btnPlus);
+
+    inputGroupPrice.appendChild(spanPrefix);
+    inputGroupPrice.appendChild(inputPrice);
+
+    divControlLeft.appendChild(inputGroupQty);
+    divControlRight.appendChild(inputGroupPrice);
+
+    divControls.appendChild(divControlLeft);
+    divControls.appendChild(divControlRight);
+
     divProduct.appendChild(divHeader);
     divProduct.appendChild(divControls);
     divProduct.appendChild(divPriceLine);
+
     return divProduct;
-    `<div class="basket-item">
-                                        <div class="basket-header">
-                                            <div class="basket-info">
-                                                <div class="basket-icon">
-                                                    <i class="bi bi-bag"></i>
-                                                </div>
-                                                <div>
-                                                    <div class="basket-name">Audífonos Bluetooth Lote 1</div>
-                                                    <div class="basket-stock text-danger">
-                                                        -24 Disponibles                                                    </div>
-                                                </div>
-                                            </div>
-                                            <button class="btn btn-outline-danger btn-sm rounded-circle">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </div>
-
-                                        <!-- Cantidad y precio mitad / mitad -->
-                                        <div class="basket-controls">
-                                            <div class="basket-half">
-                                                <div class="input-group input-group-sm">
-                                                    <button class="btn btn-outline-secondary"><i class="bi bi-dash"></i></button>
-                                                    <input type="number" class="form-control text-center" value="1" min="0">
-                                                    <button class="btn btn-outline-secondary"><i class="bi bi-plus"></i></button>
-                                                </div>
-                                            </div>
-                                            <div class="basket-half">
-                                                <div class="input-group input-group-sm">
-                                                    <span class="input-group-text">S/</span>
-                                                    <input type="text" class="form-control text-end" value="89.90">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="basket-price-line text-muted mt-1">
-                                            Precio por <span class="fw-semibold">1</span> unidades:
-                                            <span class="fw-semibold">S/ 89.90</span>
-                                        </div>
-                                    </div>`;
   }
   //funcion que se encarga de colorear los badges del stock
   function badgeColor() {
@@ -677,5 +680,245 @@
     stepElement.classList.remove("pos-step-animate");
     void stepElement.offsetHeight; // Reflujo para reiniciar la animación
     stepElement.classList.add("pos-step-animate");
+  }
+
+  /**
+   * Bloquea los campos de precio de la canasta para evitar modificaciones manuales.
+   */
+  function lockPriceInputs() {
+    if (!listCart) return;
+    const priceInputs = listCart.querySelectorAll(".cart-price-input");
+    priceInputs.forEach((input) => {
+      input.readOnly = true;
+      input.setAttribute("tabindex", "-1");
+      input.classList.add("bg-light");
+    });
+  }
+
+  /**
+   * Renderiza un estado vacio para la canasta.
+   */
+  function renderEmptyCart() {
+    if (!listCart) return;
+    listCart.innerHTML = `
+      <div class="p-3 text-center text-muted">
+        <i class="bi bi-basket fs-3 d-block mb-2"></i>
+        <span>Tu canasta está vacía. Agrega productos para empezar.</span>
+      </div>`;
+  }
+
+  /**
+   * Actualiza los totales visibles en pantalla.
+   *
+   * @param {number} subtotal Monto acumulado de la canasta
+   */
+  function updateTotals(subtotal) {
+    const value = Number(subtotal) || 0;
+    const formatted = value.toFixed(2);
+    if (basketSubtotal) {
+      basketSubtotal.textContent = `${getcurrency} ${formatted}`;
+    }
+    if (lblSubtotal) {
+      lblSubtotal.dataset.valor = formatted;
+      lblSubtotal.textContent = `${getcurrency} ${formatted}`;
+    }
+    if (typeof actualizarDesdeMonto === "function") {
+      actualizarDesdeMonto();
+    }
+  }
+
+  /**
+   * Vincula los eventos de la canasta (sumar, restar y eliminar).
+   */
+  function bindCartActions() {
+    if (!listCart) return;
+    listCart.addEventListener("click", function (event) {
+      const btnIncrease = event.target.closest(".btn-cart-increase");
+      if (btnIncrease) {
+        handleQuantityChange(btnIncrease, "increment");
+        return;
+      }
+      const btnDecrease = event.target.closest(".btn-cart-decrease");
+      if (btnDecrease) {
+        handleQuantityChange(btnDecrease, "decrement");
+        return;
+      }
+      const btnDelete = event.target.closest(".btn-delete-cart");
+      if (btnDelete) {
+        handleDelete(btnDelete);
+      }
+    });
+  }
+
+  /**
+   * Obtiene los datos asociados a un item del carrito.
+   *
+   * @param {HTMLElement} element Elemento hijo dentro del item de canasta
+   * @returns {object|null}
+   */
+  function getCartItemContext(element) {
+    const item = element.closest(".basket-item");
+    if (!item) return null;
+    const idproduct = item.dataset.idproduct || "";
+    const stock = parseFloat(item.dataset.stock || "0");
+    const quantityInput = item.querySelector(".cart-quantity-input");
+    const quantity = parseInt(quantityInput?.value || "0", 10);
+    return { item, idproduct, stock, quantity };
+  }
+
+  /**
+   * Controla el incremento o decremento de la cantidad.
+   *
+   * @param {HTMLElement} element Botón presionado
+   * @param {"increment"|"decrement"} action Acción solicitada
+   */
+  function handleQuantityChange(element, action) {
+    const context = getCartItemContext(element);
+    if (!context) return;
+
+    if (action === "increment" && context.stock > 0 && context.quantity >= context.stock) {
+      showAlert({
+        icon: "warning",
+        title: "Stock insuficiente",
+        message: "No hay más stock disponible para este producto.",
+      });
+      return;
+    }
+
+    if (action === "decrement" && context.quantity <= 1) {
+      showAlert({
+        icon: "info",
+        title: "Cantidad mínima",
+        message: "La cantidad no puede ser menor a 1. Usa el botón eliminar para quitar el producto.",
+      });
+      return;
+    }
+
+    updateCartItemQuantity(context.idproduct, action);
+  }
+
+  /**
+   * Gestiona la eliminación de un item del carrito.
+   *
+   * @param {HTMLElement} element Botón de eliminar
+   */
+  function handleDelete(element) {
+    const context = getCartItemContext(element);
+    if (!context) return;
+    removeCartItem(context.idproduct);
+  }
+
+  /**
+   * Solicita al servidor el ajuste de cantidad.
+   *
+   * @param {string} idproduct Identificador del producto en el carrito
+   * @param {"increment"|"decrement"} action Acción a ejecutar
+   */
+  async function updateCartItemQuantity(idproduct, action) {
+    const formdata = new FormData();
+    formdata.append("idproduct", idproduct);
+    formdata.append("action", action);
+    const url = base_url + "/pos/Sales/updateCartItem";
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: formdata,
+      });
+      if (!response.ok) {
+        throw new Error(response.statusText + " - " + response.status);
+      }
+      const data = await response.json();
+      showAlert({
+        icon: data.icon,
+        title: data.title,
+        message: data.message,
+      });
+      if (data.status) {
+        getCart();
+      }
+    } catch (error) {
+      showAlert({
+        title: "Ocurrio un error inesperado",
+        message: "Ocurrio un error con el servidor: " + error.name,
+        icon: "error",
+        timer: 4000,
+      });
+    }
+  }
+
+  /**
+   * Elimina un producto del carrito en el servidor.
+   *
+   * @param {string} idproduct Identificador del producto
+   */
+  async function removeCartItem(idproduct) {
+    const formdata = new FormData();
+    formdata.append("idproduct", idproduct);
+    const url = base_url + "/pos/Sales/deleteCartItem";
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: formdata,
+      });
+      if (!response.ok) {
+        throw new Error(response.statusText + " - " + response.status);
+      }
+      const data = await response.json();
+      showAlert({
+        icon: data.icon,
+        title: data.title,
+        message: data.message,
+      });
+      if (data.status) {
+        getCart();
+      }
+    } catch (error) {
+      showAlert({
+        title: "Ocurrio un error inesperado",
+        message: "Ocurrio un error con el servidor: " + error.name,
+        icon: "error",
+        timer: 4000,
+      });
+    }
+  }
+
+  /**
+   * Vincula el botón de vaciar canasta con la petición correspondiente.
+   */
+  function bindEmptyCart() {
+    if (!btnEmptyCart) return;
+    btnEmptyCart.addEventListener("click", function () {
+      clearCart();
+    });
+  }
+
+  /**
+   * Solicita el vaciado completo de la canasta.
+   */
+  async function clearCart() {
+    const url = base_url + "/pos/Sales/clearCart";
+    try {
+      const response = await fetch(url, { method: "POST" });
+      if (!response.ok) {
+        throw new Error(response.statusText + " - " + response.status);
+      }
+      const data = await response.json();
+      showAlert({
+        icon: data.icon,
+        title: data.title,
+        message: data.message,
+      });
+      if (data.status) {
+        renderEmptyCart();
+        updateTotals(0);
+      }
+    } catch (error) {
+      showAlert({
+        title: "Ocurrio un error inesperado",
+        message: "Ocurrio un error con el servidor: " + error.name,
+        icon: "error",
+        timer: 4000,
+      });
+    }
   }
 })();

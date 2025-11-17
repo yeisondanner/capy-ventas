@@ -81,17 +81,20 @@ class Sales extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-        $idproduct = strClean($_POST['idproduct']);
-        $idsupplier = strClean($_POST['idsupplier']);
+        $idproduct    = strClean($_POST['idproduct']);
+        $idsupplier   = strClean($_POST['idsupplier']);
         $idmeasurement = strClean($_POST['idmeasurement']);
-        $idcategory = strClean($_POST['idcategory']);
-        $price = strClean($_POST['price']);
-        $product = strClean($_POST['product']);
-        $stock = strClean($_POST['stock']);
-        $supplier = strClean($_POST['supplier']);
-        $category = strClean($_POST['category']);
-        $selected = strClean($_POST['selected']);
-        $measurement = strClean($_POST['measurement']);
+        $idcategory   = strClean($_POST['idcategory']);
+        $price        = (float) strClean($_POST['price']);
+        $product      = strClean($_POST['product']);
+        $stock        = (float) strClean($_POST['stock']);
+        $supplier     = strClean($_POST['supplier']);
+        $category     = strClean($_POST['category']);
+        $selected     = max(1, (int) strClean($_POST['selected']));
+        $measurement  = strClean($_POST['measurement']);
+        if ($stock > 0) {
+            $selected = min($selected, (int) $stock);
+        }
         $userId = $this->getUserId();
         if (!isset($_SESSION[$this->nameVarCart])) {
             $_SESSION[$this->nameVarCart][0] = array(
@@ -115,13 +118,9 @@ class Sales extends Controllers
                 // --- 5. Comprueba la doble condición ---
                 if ($item['idproduct'] == $idproduct && $item['product'] == $product) {
                     $_SESSION[$this->nameVarCart][$key]['selected'] = $selected;
-                    toJson([
-                        'status' => true,
-                        'title' => 'Cantidad actualizada.',
-                        'message' => $selected . ' ' . $product . ' agregado al carrito.',
-                        'icon' => 'success'
-                    ]);
-                    break; // ¡Encontrado! No necesitas seguir buscando.
+                    toJson($this->getCartPayload('Cantidad actualizada.', $product, $selected));
+
+                    return;
                 }
             }
             $_SESSION[$this->nameVarCart][$length] = array(
@@ -139,24 +138,133 @@ class Sales extends Controllers
                 'measurement' => $measurement
             );
         }
-        toJson([
-            'status' => true,
-            'title' => 'Producto agregado al carrito.',
-            'message' => $selected . ' ' . $product . ' agregado al carrito.',
-            'icon' => 'success'
-        ]);
+        toJson($this->getCartPayload('Producto agregado al carrito.', $product, $selected));
+
+        return;
     }
     /**
      * Metodo que se encarga de obtener todos los productos del carrito
-     * 
+     *
      * @return void
      */
     public function getCart(): void
     {
-        if (!isset($_SESSION[$this->nameVarCart])) {
-            $this->responseError('No se encontraron productos en el carrito.');
+        $cart = $this->normalizeCart();
+        $subtotal = $this->calculateSubtotal($cart);
+        toJson([
+            'cart' => $cart,
+            'subtotal' => $subtotal,
+            'status' => true,
+        ]);
+    }
+
+    /**
+     * Actualiza la cantidad seleccionada de un producto dentro del carrito.
+     *
+     * @return void
+     */
+    public function updateCartItem(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
         }
-        toJson(['cart' => $_SESSION[$this->nameVarCart], 'status' => true]);
+
+        if (!isset($_SESSION[$this->nameVarCart])) {
+            $this->responseError('El carrito está vacío.');
+        }
+
+        $idproduct = strClean($_POST['idproduct'] ?? '');
+        $action    = strClean($_POST['action'] ?? '');
+
+        if ($idproduct === '' || $action === '') {
+            $this->responseError('Los datos del producto son obligatorios.');
+        }
+
+        foreach ($_SESSION[$this->nameVarCart] as $index => $item) {
+            if ($item['idproduct'] !== $idproduct) {
+                continue;
+            }
+
+            $current  = (int) $item['selected'];
+            $stock    = (float) $item['stock'];
+            $newValue = $current;
+
+            if ($action === 'increment') {
+                if ($stock > 0 && $current >= $stock) {
+                    $this->responseError('No hay más stock disponible para este producto.');
+                }
+                $newValue = $stock > 0 ? min($current + 1, (int) $stock) : $current + 1;
+            } elseif ($action === 'decrement') {
+                $newValue = max($current - 1, 1);
+            } else {
+                $this->responseError('Acción no reconocida.');
+            }
+
+            $_SESSION[$this->nameVarCart][$index]['selected'] = $newValue;
+
+            toJson($this->getCartPayload('Cantidad actualizada.', $item['product'], $newValue));
+
+            return;
+        }
+
+        $this->responseError('Producto no encontrado en el carrito.');
+    }
+
+    /**
+     * Elimina un producto específico del carrito.
+     *
+     * @return void
+     */
+    public function deleteCartItem(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        if (!isset($_SESSION[$this->nameVarCart])) {
+            $this->responseError('El carrito está vacío.');
+        }
+
+        $idproduct = strClean($_POST['idproduct'] ?? '');
+        if ($idproduct === '') {
+            $this->responseError('El producto es obligatorio.');
+        }
+
+        foreach ($_SESSION[$this->nameVarCart] as $index => $item) {
+            if ($item['idproduct'] !== $idproduct) {
+                continue;
+            }
+
+            unset($_SESSION[$this->nameVarCart][$index]);
+            $_SESSION[$this->nameVarCart] = array_values($_SESSION[$this->nameVarCart]);
+
+            toJson($this->getCartPayload('Producto eliminado del carrito.', $item['product'], 0));
+
+            return;
+        }
+
+        $this->responseError('No se encontró el producto en el carrito.');
+    }
+
+    /**
+     * Vacía por completo el carrito de compras.
+     *
+     * @return void
+     */
+    public function clearCart(): void
+    {
+        if (isset($_SESSION[$this->nameVarCart])) {
+            unset($_SESSION[$this->nameVarCart]);
+        }
+
+        toJson([
+            'status' => true,
+            'title'  => 'Carrito vaciado',
+            'message' => 'Todos los productos fueron eliminados de la canasta.',
+            'icon'   => 'success',
+            'cart'   => [],
+            'subtotal' => 0,
+        ]);
     }
     /**
      * Obtiene el identificador del negocio activo desde la sesión.
@@ -201,5 +309,62 @@ class Sales extends Controllers
         }
 
         return (int) $_SESSION[$this->nameVarLoginInfo]['idUser'];
+    }
+
+    /**
+     * Calcula el subtotal del carrito.
+     *
+     * @param array $cart Lista de productos en el carrito.
+     *
+     * @return float
+     */
+    private function calculateSubtotal(array $cart): float
+    {
+        $subtotal = 0;
+        foreach ($cart as $item) {
+            $subtotal += (float) $item['price'] * (int) $item['selected'];
+        }
+
+        return round($subtotal, 2);
+    }
+
+    /**
+     * Devuelve el carrito normalizado para evitar saltos de índices.
+     *
+     * @return array
+     */
+    private function normalizeCart(): array
+    {
+        if (!isset($_SESSION[$this->nameVarCart])) {
+            return [];
+        }
+
+        return array_values($_SESSION[$this->nameVarCart]);
+    }
+
+    /**
+     * Construye la respuesta estándar del carrito incluyendo el subtotal.
+     *
+     * @param string $title    Título descriptivo de la acción realizada.
+     * @param string $product  Nombre del producto afectado.
+     * @param int    $selected Cantidad seleccionada del producto.
+     *
+     * @return array
+     */
+    private function getCartPayload(string $title, string $product, int $selected): array
+    {
+        $cart = $this->normalizeCart();
+        $subtotal = $this->calculateSubtotal($cart);
+
+        return [
+            'status' => true,
+            'title'  => $title,
+            'message' => $selected > 0
+                ? $selected . ' ' . $product . ' en la canasta.'
+                : $product . ' eliminado de la canasta.',
+            'icon'      => 'success',
+            'cart'      => $cart,
+            'subtotal'  => $subtotal,
+        ];
     }
 }

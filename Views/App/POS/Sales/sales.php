@@ -71,7 +71,7 @@
                                 <div class="pos-step-badge bg-info">2</div>
                                 <span><i class="bi bi-basket me-2"></i> Canasta</span>
                             </div>
-                            <button class="btn btn-sm btn-outline-danger">
+                            <button class="btn btn-sm btn-outline-danger" id="btnEmptyCart">
                                 <i class="bi bi-trash me-1"></i> Vaciar
                             </button>
                         </div>
@@ -84,7 +84,7 @@
                             <div class="p-3 border-top mt-auto bg-white">
                                 <div class="d-flex justify-content-between mb-2 fw-bold fs-5 totales-pos">
                                     <span>Subtotal</span>
-                                    <span>S/ 0.00</span>
+                                    <span id="basketSubtotal">S/ 0.00</span>
                                 </div>
 
                                 <!-- Navegación móvil compacta entre paso 1 y 3 -->
