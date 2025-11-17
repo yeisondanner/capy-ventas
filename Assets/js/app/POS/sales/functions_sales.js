@@ -433,7 +433,12 @@
     const spanName = document.createElement("span");
     const spanStock = document.createElement("span");
     //asignacion de clases
-    divCardProduct.classList.add("col-6", "col-md-4", "col-xl-3");
+    divCardProduct.classList.add(
+      "col-6",
+      "col-md-4",
+      "col-xl-3",
+      "product-card-wrapper"
+    );
     buttonProduct.classList.add("product-card");
     spanCounter.classList.add("product-counter-badge");
     divImg.classList.add("product-thumb");
