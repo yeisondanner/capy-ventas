@@ -120,6 +120,7 @@ class Sales extends Controllers
         $idmeasurement = strClean($_POST['idmeasurement']);
         $idcategory   = strClean($_POST['idcategory']);
         $price        = (float) strClean($_POST['price']);
+        $purchasePrice = (float) strClean($_POST['purchase_price'] ?? 0);
         $product      = strClean($_POST['product']);
         $stock        = (float) strClean($_POST['stock']);
         $supplier     = strClean($_POST['supplier']);
@@ -137,6 +138,7 @@ class Sales extends Controllers
                 'idmeasurement' => $idmeasurement,
                 'idcategory' => $idcategory,
                 'price' => $price,
+                'purchase_price' => $purchasePrice,
                 'product' => $product,
                 'stock' => $stock,
                 'supplier' => $supplier,
@@ -163,6 +165,7 @@ class Sales extends Controllers
                 'idmeasurement' => $idmeasurement,
                 'idcategory' => $idcategory,
                 'price' => $price,
+                'purchase_price' => $purchasePrice,
                 'product' => $product,
                 'stock' => $stock,
                 'supplier' => $supplier,
@@ -421,5 +424,147 @@ class Sales extends Controllers
             'cart'      => $cart,
             'subtotal'  => $subtotal,
         ];
+    }
+
+    /**
+     * Registra la venta en las tablas voucher_header y voucher_detail.
+     *
+     * @return void
+     */
+    public function finalizeSale(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        $cart = $this->normalizeCart();
+        if (count($cart) === 0) {
+            $this->responseError('No hay productos en el carrito para registrar la venta.');
+        }
+
+        $saleDate          = strClean($_POST['saleDate'] ?? '');
+        $paymentMethodId   = (int) strClean($_POST['paymentMethodId'] ?? '0');
+        $customerId        = (int) strClean($_POST['customerId'] ?? '0');
+        $voucherName       = trim(strClean($_POST['voucherName'] ?? ''));
+        $discountAmount    = (float) strClean($_POST['discountAmount'] ?? 0);
+        $discountPercent   = (float) strClean($_POST['discountPercentage'] ?? 0);
+        $paidAmount        = max(0, (float) strClean($_POST['paidAmount'] ?? 0));
+
+        if ($paymentMethodId <= 0) {
+            $this->responseError('Selecciona un método de pago válido.');
+        }
+
+        $businessId = $this->getBusinessId();
+        $subtotal   = $this->calculateSubtotal($cart);
+
+        $discountAmount  = max(0, min($discountAmount, $subtotal));
+        $discountPercent = $subtotal > 0
+            ? min(round(($discountAmount / $subtotal) * 100, 2), 100)
+            : 0;
+        $totalAmount     = max($subtotal - $discountAmount, 0);
+
+        $saleDateTime = date('Y-m-d H:i:s');
+        if ($saleDate !== '') {
+            $date = DateTime::createFromFormat('Y-m-d', $saleDate);
+            if ($date !== false) {
+                $saleDateTime = $date->format('Y-m-d') . ' ' . date('H:i:s');
+            }
+        }
+
+        $paymentMethod = $this->model->selectPaymentMethod($paymentMethodId);
+        if (!$paymentMethod) {
+            $this->responseError('El método de pago elegido no existe o está inactivo.');
+        }
+
+        $businessInfo = $this->model->selectBusinessById($businessId);
+        if (!$businessInfo) {
+            $this->responseError('No se encontró la información del negocio para registrar la venta.');
+        }
+
+        $customerInfo = $customerId > 0
+            ? $this->model->selectCustomerById($customerId, $businessId)
+            : null;
+
+        $customerName      = $customerInfo['fullname'] ?? 'Sin cliente';
+        $customerDirection = $customerInfo['direction'] ?? 'Sin dirección';
+
+        $productIds = array_values(array_unique(array_map(static function ($item) {
+            return (int) ($item['idproduct'] ?? 0);
+        }, $cart)));
+
+        if (count($productIds) === 0) {
+            $this->responseError('No se encontraron productos válidos para registrar en la venta.');
+        }
+
+        $productsInfo = $this->model->selectProductsForVoucher($productIds, $businessId);
+        $productsById = [];
+
+        foreach ($productsInfo as $product) {
+            $productsById[(int) ($product['idproduct'] ?? 0)] = $product;
+        }
+
+        $headerId = $this->model->insertVoucherHeader([
+            'name_customer'      => $customerName,
+            'direction_customer' => $customerDirection,
+            'name_bussines'      => (string) ($businessInfo['name'] ?? ''),
+            'document_bussines'  => (string) ($businessInfo['document_number'] ?? ''),
+            'direction_bussines' => (string) ($businessInfo['direction'] ?? ''),
+            'date_time'          => $saleDateTime,
+            'amount'             => $totalAmount,
+            'percentage_discount' => $discountPercent,
+            'fixed_discount'     => $discountAmount,
+            'how_much_do_i_pay'  => $paidAmount,
+            'voucher_name'       => $voucherName !== '' ? $voucherName : null,
+            'payment_method_id'  => $paymentMethodId,
+            'business_id'        => $businessId,
+        ]);
+
+        if ($headerId <= 0) {
+            $this->responseError('No fue posible registrar la cabecera de la venta.');
+        }
+
+        foreach ($cart as $item) {
+            $productId = (int) ($item['idproduct'] ?? 0);
+            if ($productId === 0) {
+                continue;
+            }
+
+            $quantity = max(0, (float) ($item['selected'] ?? 0));
+            if ($quantity === 0.0) {
+                continue;
+            }
+
+            $productData   = $productsById[$productId] ?? [];
+            $salesPrice    = (float) ($item['price'] ?? 0);
+            $purchasePrice = (float) ($productData['purchase_price'] ?? ($item['purchase_price'] ?? 0));
+            $detailSubtotal = round($salesPrice * $quantity, 2);
+
+            $detailId = $this->model->insertVoucherDetail([
+                'product_id'             => $productId,
+                'voucherheader_id'       => $headerId,
+                'name_product'           => (string) ($productData['product'] ?? ($item['product'] ?? '')),
+                'unit_of_measurement'    => (string) ($productData['measurement'] ?? ($item['measurement'] ?? '')),
+                'name_category'          => (string) ($productData['category'] ?? ($item['category'] ?? '')),
+                'sales_price_product'    => $salesPrice,
+                'purchase_price_product' => $purchasePrice,
+                'stock_product'          => $quantity,
+                'subtotal'               => $detailSubtotal,
+            ]);
+
+            if ($detailId <= 0) {
+                $this->responseError('No fue posible registrar el detalle de la venta.');
+            }
+        }
+
+        unset($_SESSION[$this->nameVarCart]);
+
+        toJson([
+            'status'  => true,
+            'title'   => 'Venta registrada',
+            'message' => 'La venta se registró correctamente.',
+            'icon'    => 'success',
+            'sale_id' => $headerId,
+            'total'   => $totalAmount,
+        ]);
     }
 }

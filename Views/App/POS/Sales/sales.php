@@ -174,10 +174,11 @@
                                     </div>
                                     <div class="col-12 col-sm-6">
                                         <label class="form-label form-label-sm mb-1 small">Medio de pago</label>
-                                        <select class="form-select form-select-sm">
-                                            <option>Efectivo</option>
-                                            <option>Tarjeta</option>
-                                            <option>Yape/Plin</option>
+                                        <select class="form-select form-select-sm" id="paymentMethod">
+                                            <option value="" selected>Selecciona</option>
+                                            <option value="1">Efectivo</option>
+                                            <option value="2">Yape</option>
+                                            <option value="3">Plin</option>
                                         </select>
                                     </div>
                                     <div class="col-12">

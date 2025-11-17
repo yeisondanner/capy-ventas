@@ -26,6 +26,9 @@
   const lblSubtotal = document.getElementById("lblSubtotal");
   const lblTotal = document.getElementById("lblTotal");
   const selectCustomer = document.getElementById("customerSelect");
+  const inputFechaVenta = document.getElementById("fechaVenta");
+  const selectPaymentMethod = document.getElementById("paymentMethod");
+  const inputNombreVenta = document.getElementById("nombreVenta");
 
   // Modal de cobro
   const btnFinalizarVenta = document.getElementById("btnFinalizarVenta");
@@ -189,7 +192,6 @@
       });
     }
     // --- Colocar la fecha actual en el input de fecha de venta ---
-    const inputFechaVenta = document.getElementById("fechaVenta");
     if (inputFechaVenta) {
       const hoy = new Date();
       const yyyy = hoy.getFullYear();
@@ -329,25 +331,105 @@
     });
 
     if (btnFinalizarVenta) {
-      btnFinalizarVenta.addEventListener("click", function () {
-        pendingPostSaleModal = true;
-
-        // Cerramos el modal de cobro si existe
-        const modalCobroInstance = modalCobro;
-        if (modalCobroInstance) {
-          modalCobroInstance.hide();
+      btnFinalizarVenta.addEventListener("click", async function () {
+        const subtotal = parseFloat(lblSubtotal?.dataset.valor || "0");
+        if (!subtotal || subtotal <= 0) {
+          showAlert({
+            icon: "info",
+            title: "Sin productos",
+            message: "Agrega productos a la canasta antes de finalizar la venta.",
+          });
+          return;
         }
 
-        // Copiamos el total que se veía en el modal de cobro al resumen final
-        if (spanModalTotal && spanResumenTotal) {
-          const total = parseFloat(spanModalTotal.textContent) || 0;
-          spanResumenTotal.textContent = total.toFixed(2);
+        const paymentMethodId = parseInt(
+          selectPaymentMethod?.value || "0",
+          10
+        );
+
+        if (!paymentMethodId) {
+          showAlert({
+            icon: "warning",
+            title: "Método de pago requerido",
+            message: "Selecciona un método de pago para continuar.",
+          });
+          return;
         }
 
-        // Si no existe el modal de cobro, abrimos directamente el voucher
-        if (!modalCobroInstance && modalPostVenta) {
-          pendingPostSaleModal = false;
-          modalPostVenta.show();
+        const formdata = new FormData();
+        formdata.append("saleDate", inputFechaVenta?.value || "");
+        formdata.append("paymentMethodId", paymentMethodId);
+        formdata.append("customerId", selectCustomer?.value || "");
+        formdata.append("voucherName", inputNombreVenta?.value.trim() || "");
+        formdata.append(
+          "discountAmount",
+          inputDescuentoMonto?.value || "0"
+        );
+        formdata.append(
+          "discountPercentage",
+          inputDescuentoPorc?.value || "0"
+        );
+        formdata.append("paidAmount", inputMontoPaga?.value || "0");
+
+        const originalText = btnFinalizarVenta.innerHTML;
+        btnFinalizarVenta.disabled = true;
+        btnFinalizarVenta.innerHTML =
+          '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Registrando...';
+
+        try {
+          const response = await fetch(
+            base_url + "/pos/Sales/finalizeSale",
+            {
+              method: "POST",
+              body: formdata,
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(response.statusText + " - " + response.status);
+          }
+
+          const data = await response.json();
+
+          showAlert({
+            icon: data.icon,
+            title: data.title,
+            message: data.message,
+          });
+
+          if (data.status) {
+            pendingPostSaleModal = true;
+            const totalResponse = Number.parseFloat(data.total ?? "0");
+            const total = Number.isNaN(totalResponse)
+              ? Number.parseFloat(spanModalTotal?.textContent || "0") || 0
+              : totalResponse;
+
+            if (spanResumenTotal) {
+              spanResumenTotal.textContent = total.toFixed(2);
+            }
+
+            if (modalCobro) {
+              modalCobro.hide();
+            } else if (modalPostVenta) {
+              pendingPostSaleModal = false;
+              modalPostVenta.show();
+            }
+
+            if (inputNombreVenta) {
+              inputNombreVenta.value = "";
+            }
+
+            getCart();
+          }
+        } catch (error) {
+          showAlert({
+            icon: "error",
+            title: "Ocurrió un error",
+            message: `No se pudo registrar la venta. ${error}`,
+          });
+        } finally {
+          btnFinalizarVenta.disabled = false;
+          btnFinalizarVenta.innerHTML = originalText;
         }
       });
     }
@@ -540,6 +622,7 @@
     buttonProduct.dataset.idmeasurement = product.idmeasurement;
     buttonProduct.dataset.idcategory = product.idcategory;
     buttonProduct.dataset.price = product.price;
+    buttonProduct.dataset.purchasePrice = product.purchase_price ?? 0;
     buttonProduct.dataset.product = product.product;
     buttonProduct.dataset.stock = product.stock;
     buttonProduct.dataset.supplier = product.supplier;
@@ -726,6 +809,7 @@
         formdata.append("idmeasurement", card.dataset.idmeasurement);
         formdata.append("idcategory", card.dataset.idcategory);
         formdata.append("price", card.dataset.price);
+        formdata.append("purchase_price", card.dataset.purchasePrice || "0");
         formdata.append("product", card.dataset.product);
         formdata.append("stock", card.dataset.stock);
         formdata.append("supplier", card.dataset.supplier);

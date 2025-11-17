@@ -23,6 +23,7 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-17 02:58 UTC - Registro de ventas en voucher_header y voucher_detail al finalizar ventas POS.
 - CHATGPT - 2025-11-17 02:46 UTC - Apertura automática del modal de comprobante al finalizar la venta en POS.
 - CHATGPT - 2025-11-17 02:40 UTC - Carga automática de clientes del negocio en el selector de ventas POS.
 - CHATGPT - 2025-11-17 02:28 UTC - Unificación de alturas en las tarjetas de productos de ventas POS para alinear todas según el tamaño mayor.
