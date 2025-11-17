@@ -23,6 +23,7 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-17 02:40 UTC - Carga automática de clientes del negocio en el selector de ventas POS.
 - CHATGPT - 2025-11-17 02:28 UTC - Unificación de alturas en las tarjetas de productos de ventas POS para alinear todas según el tamaño mayor.
 - CHATGPT - 2025-11-17 02:13 UTC - Edición manual de cantidades en canasta POS con eliminación al ingresar cero y respeto de stock.
 - CHATGPT - 2025-11-17 02:06 UTC - Se limpian los indicadores de productos al eliminar o vaciar la canasta en ventas POS.

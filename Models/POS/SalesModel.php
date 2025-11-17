@@ -41,4 +41,29 @@ class SalesModel extends Mysql
         $result = $this->select_all($sql, [$this->idBusiness, $this->idBusiness]);
         return $result;
     }
+
+    /**
+     * Obtiene los clientes asociados al negocio que ha iniciado sesión.
+     *
+     * @param int $idBusiness Identificador del negocio activo.
+     *
+     * @return array
+     */
+    public function selectCustomers(int $idBusiness): array
+    {
+        $sql = <<<SQL
+            SELECT
+                c.idCustomer AS idCustomer,
+                c.fullname   AS fullname,
+                c.document_number AS document_number,
+                dt.name AS document_type
+            FROM customer AS c
+            INNER JOIN document_type AS dt ON dt.idDocumentType = c.documenttype_id
+            WHERE c.business_id = ?
+              AND c.status = 'Activo'
+            ORDER BY c.fullname ASC;
+        SQL;
+
+        return $this->select_all($sql, [$idBusiness]);
+    }
 }

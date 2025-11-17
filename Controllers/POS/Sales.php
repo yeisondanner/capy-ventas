@@ -71,6 +71,40 @@ class Sales extends Controllers
         }
         toJson(['products' => $products, 'status' => true]);
     }
+
+    /**
+     * Devuelve los clientes vinculados al negocio que inició sesión.
+     *
+     * @return void
+     */
+    public function getCustomers(): void
+    {
+        $businessId = $this->getBusinessId();
+        $customers  = $this->model->selectCustomers($businessId);
+
+        if (!is_array($customers) || count($customers) === 0) {
+            toJson([
+                'status'    => true,
+                'customers' => [],
+            ]);
+
+            return;
+        }
+
+        $response = array_map(static function ($customer) {
+            return [
+                'id'             => (int) ($customer['idCustomer'] ?? 0),
+                'name'           => (string) ($customer['fullname'] ?? ''),
+                'document'       => (string) ($customer['document_number'] ?? ''),
+                'document_type'  => (string) ($customer['document_type'] ?? ''),
+            ];
+        }, $customers);
+
+        toJson([
+            'status'    => true,
+            'customers' => $response,
+        ]);
+    }
     /**
      * Agrega un producto al carrito de compras.
      *

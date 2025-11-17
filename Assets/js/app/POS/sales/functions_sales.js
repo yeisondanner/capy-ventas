@@ -25,6 +25,7 @@
   const inputDescuentoPorc = document.getElementById("descuentoPorc");
   const lblSubtotal = document.getElementById("lblSubtotal");
   const lblTotal = document.getElementById("lblTotal");
+  const selectCustomer = document.getElementById("customerSelect");
 
   // Modal de cobro
   const btnFinalizarVenta = document.getElementById("btnFinalizarVenta");
@@ -342,6 +343,8 @@
     bindEmptyCart();
     //cargamos los productos
     getProducts();
+    //cargamos los clientes
+    loadCustomers();
     //cargamos la canasta
     getCart();
   });
@@ -378,6 +381,74 @@
         html: `<pre>${error}</pre>`,
       });
     }
+  }
+
+  /**
+   * Obtiene los clientes vinculados al negocio para llenar el select.
+   */
+  async function loadCustomers() {
+    if (!selectCustomer) return;
+
+    const url = base_url + "/pos/Sales/getCustomers";
+
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(response.statusText + " - " + response.status);
+      }
+
+      const data = await response.json();
+
+      if (!data.status) return;
+
+      renderCustomersOptions(Array.isArray(data.customers) ? data.customers : []);
+    } catch (error) {
+      console.error("No se pudo cargar el listado de clientes", error);
+    }
+  }
+
+  /**
+   * Rellena las opciones del select de clientes.
+   *
+   * @param {Array} customers Listado de clientes proveniente del backend.
+   */
+  function renderCustomersOptions(customers) {
+    if (!selectCustomer) return;
+
+    selectCustomer.innerHTML = "";
+
+    const fragment = document.createDocumentFragment();
+    const defaultOption = document.createElement("option");
+    defaultOption.value = "";
+    defaultOption.textContent = "Sin cliente";
+    fragment.appendChild(defaultOption);
+
+    if (!Array.isArray(customers) || customers.length === 0) {
+      selectCustomer.appendChild(fragment);
+      return;
+    }
+
+    customers.forEach((customer) => {
+      const option = document.createElement("option");
+      option.value = customer.id ?? "";
+
+      const name = customer.name || "Sin nombre";
+      const documentType = customer.document_type || "";
+      const documentNumber = customer.document || "";
+
+      if (documentType && documentNumber) {
+        option.textContent = `${name} (${documentType}: ${documentNumber})`;
+      } else if (documentNumber) {
+        option.textContent = `${name} (${documentNumber})`;
+      } else {
+        option.textContent = name;
+      }
+
+      fragment.appendChild(option);
+    });
+
+    selectCustomer.appendChild(fragment);
   }
   /**
    * Metodo que se encarga de obtener los productos cargados a la canasta

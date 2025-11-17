@@ -182,11 +182,8 @@
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label form-label-sm mb-1 small">Cliente</label>
-                                        <select class="form-select form-select-sm">
+                                        <select class="form-select form-select-sm" id="customerSelect">
                                             <option value="" selected>Sin cliente</option>
-                                            <option value="cliente1">Juan Pérez</option>
-                                            <option value="cliente2">María López</option>
-                                            <option value="cliente3">Cliente frecuente</option>
                                         </select>
                                     </div>
                                 </div>
