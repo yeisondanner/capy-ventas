@@ -537,7 +537,7 @@
     inputQty.type = "number";
     inputQty.value = quantity;
     inputQty.min = "1";
-    inputQty.readOnly = true;
+    inputQty.readOnly = false;
     spanPrefix.textContent = "S/";
     inputPrice.type = "text";
     inputPrice.value = amount;
@@ -783,6 +783,13 @@
         handleDelete(btnDelete);
       }
     });
+
+    listCart.addEventListener("change", function (event) {
+      const quantityInput = event.target.closest(".cart-quantity-input");
+      if (quantityInput) {
+        handleQuantityInput(quantityInput);
+      }
+    });
   }
 
   /**
@@ -798,7 +805,7 @@
     const stock = parseFloat(item.dataset.stock || "0");
     const quantityInput = item.querySelector(".cart-quantity-input");
     const quantity = parseInt(quantityInput?.value || "0", 10);
-    return { item, idproduct, stock, quantity };
+    return { item, idproduct, stock, quantity, quantityInput };
   }
 
   /**
@@ -833,6 +840,44 @@
   }
 
   /**
+   * Gestiona la edición manual de la cantidad desde el input numérico.
+   * El mínimo permitido es 1 y, si el usuario ingresa 0 o un negativo,
+   * el producto se elimina de la canasta.
+   *
+   * @param {HTMLInputElement} input Input de cantidad editado manualmente
+   */
+  function handleQuantityInput(input) {
+    const context = getCartItemContext(input);
+    if (!context) return;
+
+    const rawValue = parseInt(input.value, 10);
+    if (Number.isNaN(rawValue)) {
+      input.value = context.quantity;
+      return;
+    }
+
+    if (rawValue <= 0) {
+      removeCartItem(context.idproduct);
+      return;
+    }
+
+    let desired = rawValue;
+    if (context.stock > 0 && rawValue > context.stock) {
+      desired = context.stock;
+      input.value = desired;
+      showAlert({
+        icon: "warning",
+        title: "Stock insuficiente",
+        message: "Se ajustó la cantidad al máximo disponible en inventario.",
+      });
+    }
+
+    if (desired === context.quantity) return;
+
+    updateCartItemQuantity(context.idproduct, "set", desired);
+  }
+
+  /**
    * Gestiona la eliminación de un item del carrito.
    *
    * @param {HTMLElement} element Botón de eliminar
@@ -849,10 +894,13 @@
    * @param {string} idproduct Identificador del producto en el carrito
    * @param {"increment"|"decrement"} action Acción a ejecutar
    */
-  async function updateCartItemQuantity(idproduct, action) {
+  async function updateCartItemQuantity(idproduct, action, quantity = null) {
     const formdata = new FormData();
     formdata.append("idproduct", idproduct);
     formdata.append("action", action);
+    if (action === "set" && quantity !== null) {
+      formdata.append("quantity", quantity);
+    }
     const url = base_url + "/pos/Sales/updateCartItem";
     try {
       const response = await fetch(url, {

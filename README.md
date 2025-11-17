@@ -23,6 +23,7 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-17 02:13 UTC - Edición manual de cantidades en canasta POS con eliminación al ingresar cero y respeto de stock.
 - CHATGPT - 2025-11-17 02:06 UTC - Se limpian los indicadores de productos al eliminar o vaciar la canasta en ventas POS.
 - CHATGPT - 2025-11-17 01:51 UTC - Canasta de ventas POS con control de cantidades, eliminación, bloqueo de precios y vaciado rápido.
 - CHATGPT - 2025-11-16 14:49 UTC - Transiciones suaves entre pasos POS y contador visible de productos seleccionados en la grilla de ventas.

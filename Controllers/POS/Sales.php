@@ -175,6 +175,7 @@ class Sales extends Controllers
 
         $idproduct = strClean($_POST['idproduct'] ?? '');
         $action    = strClean($_POST['action'] ?? '');
+        $quantity  = $_POST['quantity'] ?? null;
 
         if ($idproduct === '' || $action === '') {
             $this->responseError('Los datos del producto son obligatorios.');
@@ -196,6 +197,26 @@ class Sales extends Controllers
                 $newValue = $stock > 0 ? min($current + 1, (int) $stock) : $current + 1;
             } elseif ($action === 'decrement') {
                 $newValue = max($current - 1, 1);
+            } elseif ($action === 'set') {
+                if ($quantity === null || $quantity === '') {
+                    $this->responseError('La cantidad es obligatoria.');
+                }
+
+                if (!is_numeric($quantity)) {
+                    $this->responseError('La cantidad ingresada no es válida.');
+                }
+
+                $requested = (int) $quantity;
+
+                if ($requested <= 0) {
+                    unset($_SESSION[$this->nameVarCart][$index]);
+                    $_SESSION[$this->nameVarCart] = $this->normalizeCart();
+                    toJson($this->getCartPayload('Producto eliminado del carrito.', $item['product'], 0));
+
+                    return;
+                }
+
+                $newValue = $stock > 0 ? min($requested, (int) $stock) : $requested;
             } else {
                 $this->responseError('Acción no reconocida.');
             }
