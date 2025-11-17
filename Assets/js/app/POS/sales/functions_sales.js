@@ -396,12 +396,14 @@
       if (!data.status) {
         renderEmptyCart();
         updateTotals(0);
+        syncProductCardSelection([]);
         return;
       }
       const cartProducts = data.cart || [];
       if (cartProducts.length === 0) {
         renderEmptyCart();
         updateTotals(0);
+        syncProductCardSelection([]);
         return;
       }
       cartProducts.forEach((product) => {
@@ -410,6 +412,7 @@
       });
       lockPriceInputs();
       updateTotals(parseFloat(data.subtotal) || 0);
+      syncProductCardSelection(cartProducts);
     } catch (error) {
       showAlert({
         title: "Ocurrio un error inesperado",
@@ -708,6 +711,38 @@
   }
 
   /**
+   * Sincroniza los contadores visuales de las tarjetas de producto con las
+   * cantidades efectivas en la canasta.
+   *
+   * @param {Array} cartItems Lista de productos en la canasta
+   */
+  function syncProductCardSelection(cartItems) {
+    if (!listProducts) return;
+    const quantities = {};
+    cartItems.forEach(function (item) {
+      const qty = parseInt(item.selected ?? "0", 10);
+      quantities[item.idproduct] = Number.isNaN(qty) ? 0 : Math.max(qty, 0);
+    });
+
+    const cards = listProducts.querySelectorAll(".product-card");
+    cards.forEach(function (card) {
+      const id = card.dataset.idproduct || "";
+      const value = quantities[id] || 0;
+      card.dataset.selected = String(value);
+      card.classList.toggle("has-selection", value > 0);
+
+      const counter = card.querySelector(".product-counter-badge");
+      if (counter) {
+        counter.textContent = value;
+        counter.setAttribute(
+          "aria-label",
+          "Productos seleccionados: " + value
+        );
+      }
+    });
+  }
+
+  /**
    * Actualiza los totales visibles en pantalla.
    *
    * @param {number} subtotal Monto acumulado de la canasta
@@ -911,6 +946,7 @@
       if (data.status) {
         renderEmptyCart();
         updateTotals(0);
+        syncProductCardSelection([]);
       }
     } catch (error) {
       showAlert({
