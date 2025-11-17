@@ -564,7 +564,53 @@ class Sales extends Controllers
             'message' => 'La venta se registró correctamente.',
             'icon'    => 'success',
             'sale_id' => $headerId,
+            'voucher_name' => $voucherName !== '' ? $voucherName : null,
             'total'   => $totalAmount,
+        ]);
+    }
+
+    /**
+     * Actualiza el nombre del voucher recién generado tras finalizar la venta.
+     *
+     * @return void
+     */
+    public function updateVoucherName(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        $voucherId  = (int) strClean($_POST['saleId'] ?? '0');
+        $voucherName = trim(strClean($_POST['voucherName'] ?? ''));
+
+        if ($voucherId <= 0) {
+            $this->responseError('El identificador de la venta no es válido.');
+        }
+
+        if ($voucherName === '') {
+            $this->responseError('El nombre del comprobante es obligatorio.');
+        }
+
+        $businessId = $this->getBusinessId();
+
+        $voucher = $this->model->selectVoucherById($voucherId, $businessId);
+        if (!$voucher) {
+            $this->responseError('No se encontró el comprobante solicitado para tu negocio.');
+        }
+
+        $updated = $this->model->updateVoucherName($voucherId, $voucherName, $businessId);
+
+        if (!$updated) {
+            $this->responseError('No se pudo actualizar el nombre del comprobante.');
+        }
+
+        toJson([
+            'status'       => true,
+            'title'        => 'Nombre actualizado',
+            'message'      => 'Se guardó el nombre del voucher generado.',
+            'icon'         => 'success',
+            'sale_id'      => $voucherId,
+            'voucher_name' => $voucherName,
         ]);
     }
 }

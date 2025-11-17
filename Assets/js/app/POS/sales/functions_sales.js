@@ -29,6 +29,9 @@
   const inputFechaVenta = document.getElementById("fechaVenta");
   const selectPaymentMethod = document.getElementById("paymentMethod");
   const inputNombreVenta = document.getElementById("nombreVenta");
+  const btnGuardarNombreVenta = document.getElementById(
+    "btnGuardarNombreVenta"
+  );
 
   // Modal de cobro
   const btnFinalizarVenta = document.getElementById("btnFinalizarVenta");
@@ -36,6 +39,8 @@
 
   let actualizarDesdeMonto = null;
   let actualizarDesdePorcentaje = null;
+  let lastSaleId = null;
+  let lastVoucherName = "";
 
   /**
    * Metodo que inicializa todas las funciones de la vista
@@ -47,6 +52,12 @@
     // Helper para saber si estamos en un dispositivo pequeño (celular)
     function isMobile() {
       return window.innerWidth <= 576;
+    }
+
+    function refreshVoucherNameButtonState() {
+      if (!btnGuardarNombreVenta) return;
+
+      btnGuardarNombreVenta.disabled = !lastSaleId;
     }
 
     /**
@@ -128,6 +139,8 @@
         }
       });
     }
+
+    refreshVoucherNameButtonState();
 
     // Navegar de Paso 1 -> Paso 2 (móvil)
     if (btnToStep2) {
@@ -398,6 +411,15 @@
           });
 
           if (data.status) {
+            lastSaleId = Number.isInteger(data.sale_id)
+              ? data.sale_id
+              : parseInt(data.sale_id, 10) || null;
+            const voucherNameResponse =
+              typeof data.voucher_name === "string"
+                ? data.voucher_name
+                : inputNombreVenta?.value.trim() || "";
+            lastVoucherName = voucherNameResponse;
+
             pendingPostSaleModal = true;
             const totalResponse = Number.parseFloat(data.total ?? "0");
             const total = Number.isNaN(totalResponse)
@@ -416,10 +438,11 @@
             }
 
             if (inputNombreVenta) {
-              inputNombreVenta.value = "";
+              inputNombreVenta.value = voucherNameResponse;
             }
 
             getCart();
+            refreshVoucherNameButtonState();
           }
         } catch (error) {
           showAlert({
@@ -430,6 +453,79 @@
         } finally {
           btnFinalizarVenta.disabled = false;
           btnFinalizarVenta.innerHTML = originalText;
+        }
+      });
+    }
+
+    if (btnGuardarNombreVenta) {
+      btnGuardarNombreVenta.addEventListener("click", async function () {
+        if (!lastSaleId) {
+          showAlert({
+            icon: "info",
+            title: "Sin venta registrada",
+            message:
+              "Finaliza una venta para poder asignarle o actualizar su nombre.",
+          });
+          return;
+        }
+
+        const voucherName = inputNombreVenta?.value.trim() || "";
+        if (voucherName === "") {
+          showAlert({
+            icon: "warning",
+            title: "Nombre requerido",
+            message: "Escribe un nombre para el comprobante antes de guardar.",
+          });
+          return;
+        }
+
+        const originalText = btnGuardarNombreVenta.innerHTML;
+        btnGuardarNombreVenta.disabled = true;
+        btnGuardarNombreVenta.innerHTML =
+          '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Guardando...';
+
+        try {
+          const formdata = new FormData();
+          formdata.append("saleId", lastSaleId);
+          formdata.append("voucherName", voucherName);
+
+          const response = await fetch(
+            base_url + "/pos/Sales/updateVoucherName",
+            {
+              method: "POST",
+              body: formdata,
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(response.statusText + " - " + response.status);
+          }
+
+          const data = await response.json();
+
+          showAlert({
+            icon: data.icon,
+            title: data.title,
+            message: data.message,
+          });
+
+          if (data.status) {
+            lastVoucherName = voucherName;
+          }
+        } catch (error) {
+          showAlert({
+            icon: "error",
+            title: "No se pudo guardar",
+            message: `Actualiza el nombre manualmente más tarde. ${error}`,
+          });
+
+          if (inputNombreVenta) {
+            inputNombreVenta.value = lastVoucherName;
+          }
+        } finally {
+          btnGuardarNombreVenta.disabled = false;
+          btnGuardarNombreVenta.innerHTML = originalText;
+          refreshVoucherNameButtonState();
         }
       });
     }

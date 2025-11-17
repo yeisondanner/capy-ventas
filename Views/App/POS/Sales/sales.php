@@ -287,7 +287,12 @@
                 <!-- Nombre opcional para identificar la venta luego -->
                 <div class="mb-3">
                     <label class="form-label form-label-sm small">Nombre de la venta (opcional)</label>
-                    <input type="text" class="form-control form-control-sm" id="nombreVenta" placeholder="Ej. Venta Samuel - Audífonos">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" id="nombreVenta" placeholder="Ej. Venta Samuel - Audífonos">
+                        <button class="btn btn-primary" type="button" id="btnGuardarNombreVenta">
+                            <i class="bi bi-save me-1"></i> Guardar
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Total resumido de la venta -->

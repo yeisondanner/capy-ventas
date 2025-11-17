@@ -258,4 +258,52 @@ class SalesModel extends Mysql
 
         return (int) $this->insert($sql, $values);
     }
+
+    /**
+     * Recupera la cabecera de un comprobante para validar su pertenencia al negocio.
+     *
+     * @param int $voucherId  Identificador del comprobante.
+     * @param int $idBusiness Identificador del negocio activo.
+     *
+     * @return array|null
+     */
+    public function selectVoucherById(int $voucherId, int $idBusiness): ?array
+    {
+        $sql = <<<SQL
+            SELECT
+                idVoucherHeader AS id,
+                voucher_name
+            FROM voucher_header
+            WHERE idVoucherHeader = ?
+              AND business_id = ?
+            LIMIT 1;
+        SQL;
+
+        return $this->select($sql, [$voucherId, $idBusiness]);
+    }
+
+    /**
+     * Actualiza el nombre del comprobante generado.
+     *
+     * @param int    $voucherId  Identificador del comprobante.
+     * @param string $voucherName Nombre a registrar.
+     * @param int    $idBusiness Identificador del negocio activo.
+     *
+     * @return bool
+     */
+    public function updateVoucherName(
+        int $voucherId,
+        string $voucherName,
+        int $idBusiness
+    ): bool {
+        $sql = <<<SQL
+            UPDATE voucher_header
+            SET voucher_name = ?
+            WHERE idVoucherHeader = ?
+              AND business_id = ?
+            LIMIT 1;
+        SQL;
+
+        return (bool) $this->update($sql, [$voucherName, $voucherId, $idBusiness]);
+    }
 }
