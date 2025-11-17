@@ -218,7 +218,6 @@
         </div>
     </div>
 </main>
-<?= footerPos($data) ?>
 <!-- Modal de cobro: se abre cuando se presiona "Cobrar" -->
 <div class="modal fade" id="modalCobro" tabindex="-1" aria-labelledby="modalCobroLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -324,3 +323,5 @@
         </div>
     </div>
 </div>
+
+<?= footerPos($data) ?>
