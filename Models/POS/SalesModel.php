@@ -260,6 +260,34 @@ class SalesModel extends Mysql
     }
 
     /**
+     * Descuenta el stock del producto vendido, permitiendo valores negativos cuando no hay inventario.
+     *
+     * @param int   $productId   Identificador del producto vendido.
+     * @param int   $idBusiness  Identificador del negocio activo.
+     * @param float $quantity    Cantidad vendida a descontar.
+     *
+     * @return bool
+     */
+    public function decreaseProductStock(
+        int $productId,
+        int $idBusiness,
+        float $quantity
+    ): bool {
+        $sql = <<<SQL
+            UPDATE product AS p
+            INNER JOIN category AS c ON c.idCategory = p.category_id
+            INNER JOIN supplier AS s ON s.idSupplier = p.supplier_id
+            SET p.stock = p.stock - ?
+            WHERE p.idProduct = ?
+              AND c.business_id = ?
+              AND s.business_id = ?
+            LIMIT 1;
+        SQL;
+
+        return (bool) $this->update($sql, [$quantity, $productId, $idBusiness, $idBusiness]);
+    }
+
+    /**
      * Recupera la cabecera de un comprobante para validar su pertenencia al negocio.
      *
      * @param int $voucherId  Identificador del comprobante.

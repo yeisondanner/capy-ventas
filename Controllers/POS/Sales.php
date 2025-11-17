@@ -554,6 +554,11 @@ class Sales extends Controllers
             if ($detailId <= 0) {
                 $this->responseError('No fue posible registrar el detalle de la venta.');
             }
+
+            $stockUpdated = $this->model->decreaseProductStock($productId, $businessId, $quantity);
+            if (!$stockUpdated) {
+                $this->responseError('No fue posible actualizar el stock del producto vendido.');
+            }
         }
 
         unset($_SESSION[$this->nameVarCart]);

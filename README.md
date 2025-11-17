@@ -23,6 +23,7 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-17 03:34 UTC - Descuento de stock al registrar ventas POS permitiendo inventario negativo cuando no hay unidades disponibles.
 - CHATGPT - 2025-11-17 03:27 UTC - Botón para guardar el nombre del voucher generado tras finalizar venta POS.
 - CHATGPT - 2025-11-17 03:17 UTC - Reubicación de los modales de cobro y voucher antes del pie de página para activar el botón Finalizar venta.
 - CHATGPT - 2025-11-17 02:58 UTC - Registro de ventas en voucher_header y voucher_detail al finalizar ventas POS.
