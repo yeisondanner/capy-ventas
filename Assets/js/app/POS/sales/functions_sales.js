@@ -28,6 +28,7 @@
   const selectCustomer = document.getElementById("customerSelect");
   const inputFechaVenta = document.getElementById("fechaVenta");
   const selectPaymentMethod = document.getElementById("paymentMethod");
+  const productSearchInput = document.getElementById("productSearchInput");
   const inputNombreVenta = document.getElementById("nombreVenta");
   const btnGuardarNombreVenta = document.getElementById(
     "btnGuardarNombreVenta"
@@ -41,6 +42,8 @@
   let actualizarDesdePorcentaje = null;
   let lastSaleId = null;
   let lastVoucherName = "";
+  let cachedProducts = [];
+  let cachedCartItems = [];
 
   /**
    * Metodo que inicializa todas las funciones de la vista
@@ -141,6 +144,8 @@
     }
 
     refreshVoucherNameButtonState();
+
+    bindProductSearch();
 
     // Navegar de Paso 1 -> Paso 2 (móvil)
     if (btnToStep2) {
@@ -542,6 +547,120 @@
     //cargamos la canasta
     getCart();
   });
+
+  /**
+   * Dibuja la grilla de productos, aplicando estilos y
+   * reanudando las acciones de selección y sincronización con la canasta.
+   *
+   * @param {Array} products Listado de productos a mostrar.
+   */
+  function updateProductGrid(products) {
+    renderProducts(products);
+    badgeColor();
+    addCart();
+    syncProductCardSelection(cachedCartItems);
+  }
+
+  /**
+   * Pinta las tarjetas de producto o muestra un estado vacío cuando
+   * no hay resultados disponibles.
+   *
+   * @param {Array} products Listado de productos a renderizar.
+   */
+  function renderProducts(products) {
+    if (!listProducts) return;
+
+    listProducts.innerHTML = "";
+
+    const validProducts = Array.isArray(products) ? products : [];
+    if (validProducts.length === 0) {
+      renderEmptyProducts();
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    validProducts.forEach((product) => {
+      const divCardProduct = renderProductCard(product);
+      fragment.appendChild(divCardProduct);
+    });
+    listProducts.appendChild(fragment);
+  }
+
+  /**
+   * Muestra un mensaje de sin resultados dentro de la grilla de productos.
+   */
+  function renderEmptyProducts() {
+    if (!listProducts) return;
+
+    listProducts.innerHTML = `
+      <div class="col-12 text-center text-muted py-4">
+        <i class="bi bi-box-seam fs-3 d-block mb-2"></i>
+        <span>No se encontraron productos con el criterio de búsqueda.</span>
+      </div>`;
+  }
+
+  /**
+   * Conecta el input de búsqueda con el filtrado de productos.
+   */
+  function bindProductSearch() {
+    if (!productSearchInput) return;
+
+    let debounceTimer = null;
+    productSearchInput.addEventListener("input", function (event) {
+      const term = event.target.value || "";
+      clearTimeout(debounceTimer);
+
+      debounceTimer = setTimeout(() => {
+        applyProductFilter(term);
+      }, 150);
+    });
+  }
+
+  /**
+   * Evalúa si un producto coincide con el término de búsqueda.
+   *
+   * @param {any} product Producto a evaluar.
+   * @param {string} normalizedTerm Término de búsqueda en minúsculas.
+   * @returns {boolean} Verdadero si el producto coincide.
+   */
+  function matchesProduct(product, normalizedTerm) {
+    if (!normalizedTerm) return true;
+
+    const fields = [
+      product.product,
+      product.category,
+      product.supplier,
+      product.measurement,
+      product.price,
+      product.purchase_price,
+      product.stock,
+    ];
+
+    return fields.some((field) => {
+      const value = String(field ?? "").toLowerCase();
+      return value.includes(normalizedTerm);
+    });
+  }
+
+  /**
+   * Filtra la lista de productos según el término ingresado y actualiza la grilla.
+   *
+   * @param {string} term Término de búsqueda.
+   */
+  function applyProductFilter(term) {
+    const normalizedTerm = (term || "").trim().toLowerCase();
+
+    if (!normalizedTerm) {
+      updateProductGrid(cachedProducts);
+      return;
+    }
+
+    const filteredProducts = cachedProducts.filter((product) =>
+      matchesProduct(product, normalizedTerm)
+    );
+
+    updateProductGrid(filteredProducts);
+  }
   /**
    * Metodo que se encarga de obtener los productos asociados
    */
@@ -555,17 +674,13 @@
       const data = await response.json();
       if (listProducts) {
         if (data.status) {
-          const products = data.products;
-          listProducts.innerHTML = "";
-          products.forEach((product) => {
-            const divCardProduct = renderProductCard(product);
-            listProducts.appendChild(divCardProduct);
-          });
+          cachedProducts = Array.isArray(data.products) ? data.products : [];
+          updateProductGrid(cachedProducts);
+        } else {
+          cachedProducts = [];
+          renderEmptyProducts();
         }
       }
-      //ejecutamos las acciones que correspondes a esta accion
-      badgeColor();
-      addCart();
     } catch (error) {
       console.error("Error guardando proveedor", error);
       showAlert({
@@ -659,12 +774,14 @@
       }
       const data = await response.json();
       if (!data.status) {
+        cachedCartItems = [];
         renderEmptyCart();
         updateTotals(0);
         syncProductCardSelection([]);
         return;
       }
       const cartProducts = data.cart || [];
+      cachedCartItems = cartProducts;
       if (cartProducts.length === 0) {
         renderEmptyCart();
         updateTotals(0);

@@ -27,7 +27,7 @@
                             <label class="form-label small mb-1">Buscar producto</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" placeholder="Escribe nombre o código del producto...">
+                                <input type="text" class="form-control" id="productSearchInput" placeholder="Escribe nombre, proveedor o categoría...">
                             </div>
                         </div>
 
