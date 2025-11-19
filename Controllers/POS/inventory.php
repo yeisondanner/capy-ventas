@@ -10,7 +10,7 @@ class Inventory extends Controllers
     protected string $nameVarBusiness;
 
     /**
-     * Nombre de la variable de sesión que contiene la información del usuario POS.
+     * Nombre de la variable de sesión que contiene la información del usuario POS.DDD
      *
      * @var string
      */
