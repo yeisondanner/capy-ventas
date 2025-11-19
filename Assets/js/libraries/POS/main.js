@@ -188,8 +188,8 @@ function createBusiness(form, token) {
 
       resetBusinessForm(form);
       closeModal("addBusinessModal");
+      updateActiveBusinessUI(result?.data);
       loadUserBusinesses();
-      setTimeout(() => window.location.reload(), 600);
     })
     .catch(() => {
       Swal.fire({
@@ -233,7 +233,8 @@ function setActiveBusiness(businessId, token) {
         message: result.message || "Negocio activo actualizado.",
       });
 
-      setTimeout(() => window.location.reload(), 500);
+      updateActiveBusinessUI(result?.data);
+      loadUserBusinesses();
     })
     .catch(() => {
       showAlert({
@@ -254,6 +255,39 @@ function resetBusinessForm(form) {
   const prefixField = document.getElementById("businessTelephonePrefix");
   if (prefixField) {
     prefixField.value = prefixField.getAttribute("value") || "+51";
+  }
+}
+
+/**
+ * Actualiza la información mostrada del negocio activo sin recargar la página.
+ * @param {Object} business
+ */
+function updateActiveBusinessUI(business) {
+  if (!business) return;
+
+  const nameElement = document.getElementById("currentBusinessName");
+  const categoryElement = document.getElementById("currentBusinessCategory");
+  const dropdownList = document.getElementById("businessListDropdown");
+
+  if (nameElement) {
+    nameElement.textContent = business.business || "Negocio";
+  }
+
+  if (categoryElement) {
+    categoryElement.textContent = business.category || "Propietario";
+  }
+
+  if (dropdownList) {
+    dropdownList.querySelectorAll("[data-business-id]").forEach((item) => {
+      const businessId = item.getAttribute("data-business-id");
+      const icon = item.querySelector("i");
+      const isActive = `${businessId}` === `${business.idBusiness || business.id || ""}`;
+
+      item.classList.toggle("active", isActive);
+      if (icon) {
+        icon.className = isActive ? "bi bi-check-lg me-2" : "me-2";
+      }
+    });
   }
 }
 
