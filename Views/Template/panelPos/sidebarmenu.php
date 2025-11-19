@@ -24,7 +24,7 @@
                     </div>
 
                     <!-- Caret / Dropdown selector -->
-                    <!-- <div class="dropdown ms-auto">
+                    <div class="dropdown ms-auto">
                         <button class="btn btn-link p-0 text-secondary" id="businessDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Seleccionar negocio">
                             <i class="bi bi-chevron-down"></i>
                         </button>
@@ -48,21 +48,21 @@
                                 </a>
                             </li>
                         </ul>
-                    </div>-->
+                    </div>
                 </div>
 
                 <hr class="my-3">
 
                 <!-- Opciones -->
                 <div class="list-group list-group-flush">
-                    <!--<a href="#" class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0">
+                    <a href="#" class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0">
                         <i class="bi bi-gear"></i>
                         <span>Configuraciones</span>
                     </a>
                     <a href="#" class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0" data-bs-toggle="modal" data-bs-target="#addBusinessModal">
                         <i class="bi bi-plus-circle"></i>
                         <span>Agregar otro negocio</span>
-                    </a>-->
+                    </a>
                 </div>
             </div>
         </div>
@@ -70,8 +70,7 @@
 
     </div>
     <ul class="app-menu">
-        <li><a class="app-menu__item active" href="<?= base_url() ?>/pos/dashboard"><i class="app-menu__icon bi bi-house-door"></i>
-                <span class="app-menu__label">Inicio</span></a></li>
+        <li><a class="app-menu__item active" href="<?= base_url() ?>/pos/dashboard"><i class="app-menu__icon bi bi-house-door"></i><span class="app-menu__label">Inicio</span></a></li>
         <li><a class="app-menu__item " href="<?= base_url() ?>/pos/sales"><i class="app-menu__icon bi bi-cart"></i><span class="app-menu__label">Vender</span></a></li>
         <li><a class="app-menu__item " href="<?= base_url() ?>/pos/movements"><i class="app-menu__icon bi bi-pc-display-horizontal"></i><span class="app-menu__label">Movimientos</span></a></li>
         <li><a class="app-menu__item " href="<?= base_url() ?>/pos/inventory"><i class="app-menu__icon bi bi-box-seam"></i><span class="app-menu__label">Inventario</span></a></li>
