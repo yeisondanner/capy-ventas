@@ -23,6 +23,7 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-17 04:30 UTC - Modal POS para registrar nuevos negocios, listarlos en el selector y activar el negocio elegido desde el panel lateral.
 - CHATGPT - 2025-11-17 03:54 UTC - Botones de categorías populares dinámicos en ventas POS con filtro "Todos" y top 5 por ventas.
 - CHATGPT - 2025-11-17 03:44 UTC - Búsqueda en la sección de productos de ventas POS por nombre, proveedor, categoría y datos clave.
 - CHATGPT - 2025-11-17 03:34 UTC - Descuento de stock al registrar ventas POS permitiendo inventario negativo cuando no hay unidades disponibles.

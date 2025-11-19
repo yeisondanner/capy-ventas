@@ -14,13 +14,13 @@
                 <div class="d-flex align-items-center gap-1">
                     <!-- Avatar -->
 
-                    <img class="app-sidebar__user-avatar p-0 m-0" src="<?= GENERAR_PERFIL ?><?= $_SESSION[$nameVarBusiness]['business'] ?>" alt="User Image">
+                    <img class="app-sidebar__user-avatar p-0 m-0" id="currentBusinessAvatar" src="<?= GENERAR_PERFIL ?><?= htmlspecialchars($_SESSION[$nameVarBusiness]['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8'); ?>" alt="User Image">
 
 
                     <!-- Nombre y rol -->
                     <div class="flex-grow-1">
-                        <div class="fw-semibold"><?= $_SESSION[$nameVarBusiness]['business'] ?></div>
-                        <div class="text-muted small">Propietario</div>
+                        <div class="fw-semibold" id="currentBusinessName"><?= htmlspecialchars($_SESSION[$nameVarBusiness]['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8'); ?></div>
+                        <div class="text-muted small" id="currentBusinessCategory"><?= htmlspecialchars($_SESSION[$nameVarBusiness]['category'] ?? 'Propietario', ENT_QUOTES, 'UTF-8'); ?></div>
                     </div>
 
                     <!-- Caret / Dropdown selector -->
@@ -28,25 +28,8 @@
                         <button class="btn btn-link p-0 text-secondary" id="businessDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Seleccionar negocio">
                             <i class="bi bi-chevron-down"></i>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="businessDropdownBtn">
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center active" href="#" aria-current="true">
-                                    <i class="bi bi-check-lg me-2"></i>
-                                    CyD Tech
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <i class="me-2"></i>
-                                    Mi Tienda
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
-                                    <i class="me-2"></i>
-                                    Otra Empresa
-                                </a>
-                            </li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="businessDropdownBtn" id="businessListDropdown">
+                            <li class="px-3 py-2 text-muted small">Cargando negocios...</li>
                         </ul>
                     </div>
                 </div>
@@ -79,3 +62,63 @@
         <li><a class="app-menu__item " href="<?= base_url() ?>/pos/employee"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label">Empleados</span></a></li>
     </ul>
 </aside>
+
+<!-- Modal: Registrar nuevo negocio -->
+<div class="modal fade" id="addBusinessModal" tabindex="-1" aria-labelledby="addBusinessModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <form class="modal-content" id="formAddBusiness" autocomplete="off">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addBusinessModalLabel">Registrar nuevo negocio</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="businessToken" name="token" value="<?= csrf(false); ?>">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="businessType" class="form-label">Tipo de negocio <span class="text-danger">*</span></label>
+                        <select class="form-select" id="businessType" name="businessType" required>
+                            <option value="" selected disabled>Selecciona un tipo de negocio</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="businessName" class="form-label">Nombre del negocio <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="businessName" name="businessName" maxlength="255" required placeholder="Ingresa el nombre comercial">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="businessDocument" class="form-label">Número de documento <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="businessDocument" name="businessDocument" maxlength="11" required placeholder="RUC o documento">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="businessEmail" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="businessEmail" name="businessEmail" maxlength="255" required placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="businessTelephonePrefix" class="form-label">Prefijo telefónico <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="businessTelephonePrefix" name="businessTelephonePrefix" maxlength="7" required placeholder="+51" value="+51">
+                    </div>
+                    <div class="col-md-8">
+                        <label for="businessPhone" class="form-label">Teléfono <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="businessPhone" name="businessPhone" maxlength="11" required placeholder="Número de contacto">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="businessCountry" class="form-label">País</label>
+                        <input type="text" class="form-control" id="businessCountry" name="businessCountry" maxlength="100" placeholder="País del negocio">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="businessCity" class="form-label">Ciudad</label>
+                        <input type="text" class="form-control" id="businessCity" name="businessCity" maxlength="250" placeholder="Ciudad o provincia">
+                    </div>
+                    <div class="col-12">
+                        <label for="businessDirection" class="form-label">Dirección</label>
+                        <textarea class="form-control" id="businessDirection" name="businessDirection" rows="2" placeholder="Dirección comercial"></textarea>
+                    </div>
+                </div>
+                <p class="text-muted small mt-3 mb-0">Los campos marcados con * son obligatorios.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar negocio</button>
+            </div>
+        </form>
+    </div>
+</div>
