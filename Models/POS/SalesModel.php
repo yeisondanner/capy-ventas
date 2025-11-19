@@ -364,4 +364,16 @@ class SalesModel extends Mysql
 
         return (bool) $this->update($sql, [$voucherName, $voucherId, $idBusiness]);
     }
+    /**
+     * Metodo que se encarga de obtener todos los metodos de pagos
+     * @return void
+     */
+    public function selectPaymentMethods(): array
+    {
+        $sql = <<<SQL
+            SELECT*FROM payment_method AS pm WHERE pm.`status`='Activo' ORDER BY pm.idPaymentMethod ASC;
+        SQL;
+        $result = $this->select_all($sql);
+        return $result ?? [];
+    }
 }

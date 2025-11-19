@@ -651,4 +651,14 @@ class Sales extends Controllers
             'voucher_name' => $voucherName,
         ]);
     }
+    /**
+     * Metodo que se encarga de otbener todos los metodos de pagos
+     * 
+     * @return void
+     */
+    public function getPaymentMethods(): void
+    {
+        $paymentMethods = $this->model->selectPaymentMethods();
+        toJson(['status'=> true, 'payment_methods' => $paymentMethods]);
+    }
 }

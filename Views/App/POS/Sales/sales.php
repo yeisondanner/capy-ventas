@@ -164,21 +164,16 @@
                                 <div class="row g-2 align-items-end">
                                     <div class="col-12 col-sm-6">
                                         <label class="form-label form-label-sm mb-1 small">Fecha de venta</label>
-                                        <input type="date" id="fechaVenta" class="form-control form-control-sm">
+                                        <input type="date" id="fechaVenta" class="form-control">
                                     </div>
                                     <div class="col-12 col-sm-6">
                                         <label class="form-label form-label-sm mb-1 small">Medio de pago</label>
-                                        <select class="form-select form-select-sm" id="paymentMethod">
-                                            <option value="" selected>Selecciona</option>
-                                            <option value="1">Efectivo</option>
-                                            <option value="2">Yape</option>
-                                            <option value="3">Plin</option>
+                                        <select class="form-select" id="paymentMethod">
                                         </select>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label form-label-sm mb-1 small">Cliente</label>
-                                        <select class="form-select form-select-sm" id="customerSelect">
-                                            <option value="" selected>Sin cliente</option>
+                                        <select class="form-select" id="customerSelect">
                                         </select>
                                     </div>
                                 </div>

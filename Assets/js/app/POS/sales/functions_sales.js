@@ -17,7 +17,9 @@
   const btnToStep3 = document.getElementById("btnToStep3");
   const btnBackToStep2 = document.getElementById("btnBackToStep2");
   const btnDesktopToStep3 = document.getElementById("btnDesktopToStep3");
-  const btnDesktopBackToStep2 = document.getElementById("btnDesktopBackToStep2");
+  const btnDesktopBackToStep2 = document.getElementById(
+    "btnDesktopBackToStep2"
+  );
   const btnEmptyCart = document.getElementById("btnEmptyCart");
 
   // Totales y descuentos
@@ -29,9 +31,8 @@
   const inputFechaVenta = document.getElementById("fechaVenta");
   const selectPaymentMethod = document.getElementById("paymentMethod");
   const productSearchInput = document.getElementById("productSearchInput");
-  const popularCategoriesContainer = document.getElementById(
-    "popularCategories"
-  );
+  const popularCategoriesContainer =
+    document.getElementById("popularCategories");
   const inputNombreVenta = document.getElementById("nombreVenta");
   const btnGuardarNombreVenta = document.getElementById(
     "btnGuardarNombreVenta"
@@ -229,7 +230,13 @@
 
     // --- Descuento: recalcular total a pagar (monto fijo y porcentaje) ---
     actualizarDesdeMonto = function () {
-      if (!lblSubtotal || !lblTotal || !inputDescuentoMonto || !inputDescuentoPorc) return;
+      if (
+        !lblSubtotal ||
+        !lblTotal ||
+        !inputDescuentoMonto ||
+        !inputDescuentoPorc
+      )
+        return;
 
       const subtotal = parseFloat(lblSubtotal.dataset.valor) || 0;
       let monto = parseFloat(inputDescuentoMonto.value) || 0;
@@ -251,7 +258,13 @@
     };
 
     actualizarDesdePorcentaje = function () {
-      if (!lblSubtotal || !lblTotal || !inputDescuentoMonto || !inputDescuentoPorc) return;
+      if (
+        !lblSubtotal ||
+        !lblTotal ||
+        !inputDescuentoMonto ||
+        !inputDescuentoPorc
+      )
+        return;
 
       const subtotal = parseFloat(lblSubtotal.dataset.valor) || 0;
       let porcentaje = parseFloat(inputDescuentoPorc.value) || 0;
@@ -363,15 +376,13 @@
           showAlert({
             icon: "info",
             title: "Sin productos",
-            message: "Agrega productos a la canasta antes de finalizar la venta.",
+            message:
+              "Agrega productos a la canasta antes de finalizar la venta.",
           });
           return;
         }
 
-        const paymentMethodId = parseInt(
-          selectPaymentMethod?.value || "0",
-          10
-        );
+        const paymentMethodId = parseInt(selectPaymentMethod?.value || "0", 10);
 
         if (!paymentMethodId) {
           showAlert({
@@ -387,14 +398,8 @@
         formdata.append("paymentMethodId", paymentMethodId);
         formdata.append("customerId", selectCustomer?.value || "");
         formdata.append("voucherName", inputNombreVenta?.value.trim() || "");
-        formdata.append(
-          "discountAmount",
-          inputDescuentoMonto?.value || "0"
-        );
-        formdata.append(
-          "discountPercentage",
-          inputDescuentoPorc?.value || "0"
-        );
+        formdata.append("discountAmount", inputDescuentoMonto?.value || "0");
+        formdata.append("discountPercentage", inputDescuentoPorc?.value || "0");
         formdata.append("paidAmount", inputMontoPaga?.value || "0");
 
         const originalText = btnFinalizarVenta.innerHTML;
@@ -403,13 +408,10 @@
           '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Registrando...';
 
         try {
-          const response = await fetch(
-            base_url + "/pos/Sales/finalizeSale",
-            {
-              method: "POST",
-              body: formdata,
-            }
-          );
+          const response = await fetch(base_url + "/pos/Sales/finalizeSale", {
+            method: "POST",
+            body: formdata,
+          });
 
           if (!response.ok) {
             throw new Error(response.statusText + " - " + response.status);
@@ -554,6 +556,8 @@
     loadPopularCategories();
     //cargamos los clientes
     loadCustomers();
+    //cargamos los metodos de pagos
+    loadPaymentMethods();
     //cargamos la canasta
     getCart();
   });
@@ -665,7 +669,9 @@
     }
 
     return (
-      String(productCategory ?? "").toLowerCase().trim() === normalizedCategory
+      String(productCategory ?? "")
+        .toLowerCase()
+        .trim() === normalizedCategory
     );
   }
 
@@ -754,7 +760,9 @@
     if (!popularCategoriesContainer) return;
 
     popularCategoriesContainer.innerHTML = "";
-    popularCategoriesContainer.appendChild(createCategoryButton("Todos", "all"));
+    popularCategoriesContainer.appendChild(
+      createCategoryButton("Todos", "all")
+    );
 
     const validCategories = Array.isArray(categories) ? categories : [];
 
@@ -851,12 +859,38 @@
 
       if (!data.status) return;
 
-      renderCustomersOptions(Array.isArray(data.customers) ? data.customers : []);
+      renderCustomersOptions(
+        Array.isArray(data.customers) ? data.customers : []
+      );
     } catch (error) {
       console.error("No se pudo cargar el listado de clientes", error);
     }
   }
+  /**
+   * Obtiene los metodos de pago disponibles para llenar el select
+   */
+  async function loadPaymentMethods() {
+    if (!selectPaymentMethod) return;
 
+    const url = base_url + "/pos/Sales/getPaymentMethods";
+
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(response.statusText + " - " + response.status);
+      }
+      const data = await response.json();
+
+      if (!data.status) return;
+
+      renderPaymentMethodOptions(
+        Array.isArray(data.payment_methods) ? data.payment_methods : []
+      );
+    } catch (error) {
+      console.error("No se pudo cargar el listado de metodos de pago", error);
+    }
+  }
   /**
    * Rellena las opciones del select de clientes.
    *
@@ -866,17 +900,6 @@
     if (!selectCustomer) return;
 
     selectCustomer.innerHTML = "";
-
-    const fragment = document.createDocumentFragment();
-    const defaultOption = document.createElement("option");
-    defaultOption.value = "";
-    defaultOption.textContent = "Sin cliente";
-    fragment.appendChild(defaultOption);
-
-    if (!Array.isArray(customers) || customers.length === 0) {
-      selectCustomer.appendChild(fragment);
-      return;
-    }
 
     customers.forEach((customer) => {
       const option = document.createElement("option");
@@ -893,11 +916,22 @@
       } else {
         option.textContent = name;
       }
-
-      fragment.appendChild(option);
+      selectCustomer.appendChild(option);
     });
-
-    selectCustomer.appendChild(fragment);
+  }
+  /**
+   * Rellena las opciones del select de los metodos de pago
+   * @param {Array} paymentMethod Listadeo de los metodos de pagos del backend
+   */
+  function renderPaymentMethodOptions(paymentMethod) {
+    if (!selectPaymentMethod) return;
+    selectPaymentMethod.innerHTML = "";
+    paymentMethod.forEach((method) => {
+      const option = document.createElement("option");
+      option.value = method.idPaymentMethod ?? "";
+      option.textContent = method.name;
+      selectPaymentMethod.appendChild(option);
+    });
   }
   /**
    * Metodo que se encarga de obtener los productos cargados a la canasta
@@ -1048,7 +1082,11 @@
     inputGroupPrice.classList.add("input-group", "input-group-sm");
     btnMinus.classList.add("btn", "btn-outline-secondary", "btn-cart-decrease");
     btnPlus.classList.add("btn", "btn-outline-secondary", "btn-cart-increase");
-    inputQty.classList.add("form-control", "text-center", "cart-quantity-input");
+    inputQty.classList.add(
+      "form-control",
+      "text-center",
+      "cart-quantity-input"
+    );
     spanPrefix.classList.add("input-group-text");
     inputPrice.classList.add("form-control", "text-end", "cart-price-input");
     //datos auxiliares
@@ -1070,7 +1108,10 @@
     inputPrice.type = "text";
     inputPrice.value = amount;
     inputPrice.readOnly = true;
-    inputPrice.setAttribute("aria-label", "Precio total del producto en canasta");
+    inputPrice.setAttribute(
+      "aria-label",
+      "Precio total del producto en canasta"
+    );
     inputPrice.setAttribute("tabindex", "-1");
     divPriceLine.innerHTML = `Precio por <span class="fw-semibold">${quantity}</span> ${product.measurement}: <span class="fw-semibold">${getcurrency} ${amount}</span>`;
     //renderizamos la informacion
@@ -1263,10 +1304,7 @@
       const counter = card.querySelector(".product-counter-badge");
       if (counter) {
         counter.textContent = value;
-        counter.setAttribute(
-          "aria-label",
-          "Productos seleccionados: " + value
-        );
+        counter.setAttribute("aria-label", "Productos seleccionados: " + value);
       }
     });
   }
@@ -1347,7 +1385,11 @@
     const context = getCartItemContext(element);
     if (!context) return;
 
-    if (action === "increment" && context.stock > 0 && context.quantity >= context.stock) {
+    if (
+      action === "increment" &&
+      context.stock > 0 &&
+      context.quantity >= context.stock
+    ) {
       showAlert({
         icon: "warning",
         title: "Stock insuficiente",
@@ -1360,7 +1402,8 @@
       showAlert({
         icon: "info",
         title: "Cantidad mínima",
-        message: "La cantidad no puede ser menor a 1. Usa el botón eliminar para quitar el producto.",
+        message:
+          "La cantidad no puede ser menor a 1. Usa el botón eliminar para quitar el producto.",
       });
       return;
     }
