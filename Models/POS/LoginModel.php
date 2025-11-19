@@ -52,19 +52,23 @@ class LoginModel extends Mysql
         {
                 $this->iduser = $id;
                 $sql = <<<SQL
-                       SELECT
-                                b.idBusiness,
-                                b.`name` AS 'business',
-                                bt.`name` AS 'category'
-                        FROM
-                                business AS b
-                                INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
-                        WHERE
-                                b.`status` = 'Activo' AND b.userapp_id = ?
-                        ORDER BY
-                                b.idBusiness DESC
-                        LIMIT
-                                1;
+                                                                                SELECT
+                                                                        b.idBusiness,
+                                                                        b.`name` AS 'business',
+                                                                        bt.`name` AS 'category',
+                                                                        b.direction,
+                                                                        b.city,
+                                                                        b.country,
+                                                                        b.email,
+                                                                        b.document_number
+                                                                FROM
+                                                                        business AS b
+                                                                        INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
+                                                                WHERE
+                                                                        b.`status` = 'Activo' AND b.userapp_id = ?
+                                                                ORDER BY
+                                                                        b.idBusiness ASC
+                                                                LIMIT 1;
                 SQL;
                 $request = $this->select($sql, [$this->iduser]);
                 return $request ?? [];

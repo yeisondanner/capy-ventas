@@ -169,7 +169,16 @@ class Business extends Controllers
         toJson([
             'status'  => true,
             'title'   => 'Negocio seleccionado',
-            'message' => 'Actualizamos el negocio activo.',
+            'message' => $business['business'] . ' ha sido seleccionado como el negocio actual.',
+            'html'    => <<<HTML
+                <div class="alert alert-success d-flex align-items-center" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <div>
+                        ¡Negocio cambiado con éxito! Ahora estás gestionando <strong>{$business['business']}</strong>.
+                    </div>
+                </div>
+            HTML,
+            'timer' => 6000,
             'data'    => $business,
         ]);
     }

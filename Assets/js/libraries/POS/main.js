@@ -128,7 +128,9 @@ function renderBusinessList(dropdownList, businesses) {
     const isActive = Boolean(business.is_active);
     const iconClass = isActive ? "bi bi-check-lg me-2" : "me-2";
     const activeClass = isActive ? "active" : "";
-    const category = business.category ? `<small class="text-muted d-block">${business.category}</small>` : "";
+    const category = business.category
+      ? `<small class="text-muted d-block">${business.category}</small>`
+      : "";
 
     const item = document.createElement("li");
     item.innerHTML = `
@@ -227,11 +229,7 @@ function setActiveBusiness(businessId, token) {
         return;
       }
 
-      showAlert({
-        icon: "success",
-        title: result.title || "Negocio seleccionado",
-        message: result.message || "Negocio activo actualizado.",
-      });
+      showAlert(result);
 
       updateActiveBusinessUI(result?.data);
       loadUserBusinesses();
@@ -260,17 +258,25 @@ function resetBusinessForm(form) {
 
 /**
  * Actualiza la información mostrada del negocio activo sin recargar la página.
+ * Actualiza el nombre, categoria e imagen
  * @param {Object} business
  */
 function updateActiveBusinessUI(business) {
   if (!business) return;
 
   const nameElement = document.getElementById("currentBusinessName");
+  const currentBusinessAvatar = document.getElementById(
+    "currentBusinessAvatar"
+  );
   const categoryElement = document.getElementById("currentBusinessCategory");
   const dropdownList = document.getElementById("businessListDropdown");
 
   if (nameElement) {
     nameElement.textContent = business.business || "Negocio";
+    currentBusinessAvatar.src =
+      generate_profile + business.business || "Negocio";
+    currentBusinessAvatar.alt = business.business || "Negocio";
+    currentBusinessAvatar.title = business.business || "Negocio";
   }
 
   if (categoryElement) {
@@ -281,7 +287,8 @@ function updateActiveBusinessUI(business) {
     dropdownList.querySelectorAll("[data-business-id]").forEach((item) => {
       const businessId = item.getAttribute("data-business-id");
       const icon = item.querySelector("i");
-      const isActive = `${businessId}` === `${business.idBusiness || business.id || ""}`;
+      const isActive =
+        `${businessId}` === `${business.idBusiness || business.id || ""}`;
 
       item.classList.toggle("active", isActive);
       if (icon) {
@@ -301,7 +308,9 @@ function closeModal(modalId) {
   if (!modalElement) return;
 
   if (window.bootstrap && bootstrap.Modal) {
-    const instance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+    const instance =
+      bootstrap.Modal.getInstance(modalElement) ||
+      new bootstrap.Modal(modalElement);
     if (instance?.hide) instance.hide();
   } else if (window.$) {
     $(modalElement).modal("hide");
@@ -320,7 +329,8 @@ function loadBusinessTypes() {
     .then((result) => {
       if (!result?.status || !Array.isArray(result.data)) return;
 
-      select.innerHTML = '<option value="" disabled selected>Selecciona un tipo de negocio</option>';
+      select.innerHTML =
+        '<option value="" disabled selected>Selecciona un tipo de negocio</option>';
 
       result.data.forEach((type) => {
         const option = document.createElement("option");

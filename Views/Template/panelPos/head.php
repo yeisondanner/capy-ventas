@@ -42,6 +42,8 @@ $pageContainer = ucfirst($data["page_container"]);
         const base_url = "<?= base_url(); ?>";
         // TODO: Moneda
         const getcurrency = "<?= getCurrency(); ?>";
+        //TODO: Generar perfil
+        const generate_profile = "<?= GENERAR_PERFIL ?>";
     </script>
 </head>
 
