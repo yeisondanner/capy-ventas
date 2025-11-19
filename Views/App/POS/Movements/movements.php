@@ -2,7 +2,7 @@
 <main class="app-content">
     <div class="app-title">
         <div>
-            <h1><i class="bi bi-box-seam"></i> Movimientos</h1>
+            <h1><i class="bi bi-pc-display-horizontal"></i> Movimientos</h1>
             <p>Administra los movimientos de tu negocio</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
