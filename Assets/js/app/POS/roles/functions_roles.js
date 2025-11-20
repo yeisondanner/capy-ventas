@@ -73,8 +73,26 @@
       idField.value = "0";
     }
 
+    toggleStatusField(false);
     updateModalTexts(false);
-    document.getElementById("txtRoleAppStatus").value = "Activo";
+  }
+
+  /**
+   * Muestra u oculta el selector de estado según el modo.
+   * @param {boolean} isVisible
+   */
+  function toggleStatusField(isVisible) {
+    const statusGroup = document.getElementById("roleStatusGroup");
+    const statusField = document.getElementById("txtRoleAppStatus");
+
+    if (statusGroup) {
+      statusGroup.classList.toggle("d-none", !isVisible);
+    }
+
+    if (statusField) {
+      statusField.disabled = !isVisible;
+      statusField.value = "Activo";
+    }
   }
 
   /**
@@ -111,6 +129,7 @@
     document.getElementById("txtRoleAppDescription").value = role.description || "";
     document.getElementById("txtRoleAppStatus").value = role.status || "Activo";
 
+    toggleStatusField(true);
     updateModalTexts(true);
   }
 

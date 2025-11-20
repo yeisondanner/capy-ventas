@@ -104,7 +104,6 @@ class Roles extends Controllers
         $businessId  = $this->getBusinessId();
         $name        = ucwords(strClean($_POST['txtRoleAppName'] ?? ''));
         $description = strClean($_POST['txtRoleAppDescription'] ?? '');
-        $status      = $_POST['txtRoleAppStatus'] === 'Inactivo' ? 'Inactivo' : 'Activo';
 
         if ($name === '') {
             $this->responseError('El nombre del rol es obligatorio.');
@@ -118,7 +117,7 @@ class Roles extends Controllers
         $payload = [
             'name'        => $name,
             'description' => $description,
-            'status'      => $status,
+            'status'      => 'Activo',
         ];
 
         $inserted = $this->model->insertRole($businessId, $payload);

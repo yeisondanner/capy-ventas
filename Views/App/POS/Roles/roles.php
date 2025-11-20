@@ -66,9 +66,9 @@
                     <textarea class="form-control" id="txtRoleAppDescription" name="txtRoleAppDescription" rows="3"
                         placeholder="Describe las funciones o alcance del rol"></textarea>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3 d-none" id="roleStatusGroup">
                     <label for="txtRoleAppStatus" class="form-label">Estado</label>
-                    <select class="form-select" id="txtRoleAppStatus" name="txtRoleAppStatus">
+                    <select class="form-select" id="txtRoleAppStatus" name="txtRoleAppStatus" disabled>
                         <option value="Activo" selected>Activo</option>
                         <option value="Inactivo">Inactivo</option>
                     </select>
