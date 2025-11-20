@@ -40,7 +40,7 @@ export class Login {
         showAlert(data);
         if (data.status) {
           setTimeout(() => {
-            window.location.href = data.url;
+            // window.location.href = data.url;
           }, data.timer);
           return;
         }

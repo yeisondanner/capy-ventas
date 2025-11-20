@@ -27,6 +27,97 @@ class Login extends Controllers
 	 */
 	public function isLogIn()
 	{
+		//llamamos a la funcion que valida los campos del formulario
+		$request = self::session_validations();
+		toJson($request);
+		//verificamos si la cuenta se encuentra activa
+		if ($request["u_status"] === "Inactivo") {
+			$data = array(
+				"title" => "Ocurrió un error inesperado",
+				"message" => "La cuenta del usuario actualmente se encuentra en estado Inactivo",
+				"type" => "error",
+				"icon" => "error",
+				"status" => false
+			);
+			unset($request);
+			toJson($data);
+		}
+		//verificamos si la cuenta se encuentra activa
+		if ($request["p_status"] === "Inactivo") {
+			$data = array(
+				"title" => "Ocurrió un error inesperado",
+				"message" => "Los datos del usuario estan desactivados",
+				"type" => "error",
+				"icon" => "error",
+				"status" => false
+			);
+			unset($request);
+			toJson($data);
+		}
+		//obtenemos los negocios asociasdos al usuario
+		$bussiness = $this->model->select_business($request["idUserApp"]);
+		//creamos las variables de session para el usuario
+		$data_session = array(
+			"idUser" => $request["idUserApp"],
+			"user" => $request["user"],
+			"email" => $request["email"],
+			"profile" => '',
+			"fullName" => $request["names"] . ' ' . $request['lastname'],
+			"name" => $request["names"],
+			"lastname" =>  $request['lastname'],
+			"gender" => '',
+			"status" => $request["u_status"],
+			"p_status" => $request["p_status"]
+		);
+		//preparacion de nombres de variables de acuerdo a la sesion creada
+		$name_sesion = config_sesion(1)['name'];
+		$nameVarLogin = $name_sesion . 'login';
+		$nameVarLoginInfo = $name_sesion . 'login_info';
+		$nameVarBusiness = $name_sesion . 'business_active';
+		$data_session = json_encode($data_session);
+		//creacion de variables de sesion
+		$_SESSION[$nameVarLogin] = true;
+		$_SESSION[$nameVarBusiness] = $bussiness;
+		$_SESSION[$nameVarLoginInfo] = json_decode($data_session, true);
+		//creamos las cookies para el usuario
+		setcookie($nameVarLoginInfo, $data_session, time() + (86400 * 30), "/"); // 86400 = 1 day => 30 days
+		setcookie($nameVarLogin, true, time() + (86400 * 30), "/"); // 86400 = 1 day => 30 days
+		//preparamos las alertas de bienvenida
+		$nombres = $request["names"];
+		$apellidos = $request['lastname'];
+		$data = array(
+			"title" => "Inicio de sesion exitoso",
+			"message" => "Hola " . $request["names"] . " " . $request['lastname'] . "",
+			"html" => <<<HTML
+							<div class="text-center">           
+								<div class="d-flex align-items-center justify-content-center gap-3 mb-3">
+									<div class="text-start">
+										<h3 class="fs-4 mb-0 fw-bold">{$nombres} {$apellidos}</h3>
+										<span class="badge bg-success rounded-pill fs-6"><i class="bi bi-person-fill"></i> Bienvenido</span>
+									</div>
+								</div>
+								<p class="text-muted mt-4 mb-2">Redirigiendo al panel...</p>
+								<div class="spinner-border text-success" role="status">
+									<span class="visually-hidden">Cargando...</span>
+								</div>
+							</div>
+				HTML,
+			"type" => "success",
+			"icon" => "success",
+			"timer" => 500,
+			"status" => true,
+			"url" => base_url() . "/pos/dashboard"
+		);
+		//destruimos la variable que contiene la información del usuario
+		unset($request);
+		toJson($data);
+	}
+	/**
+	 * Funcion que valida los campos del formulario de login
+	 * @return array $request
+	 */
+	protected function session_validations()
+	{
 		//validacion del Método POST
 		if (!$_POST) {
 			$data = array(
@@ -117,91 +208,7 @@ class Login extends Controllers
 		//encriptamos el usuario
 		$txtPassword = encryption($txtPassword);
 		//validamos si la contraseña coinciden
-		if (($txtPassword === $request['password'])) {
-
-			//verificamos si la cuenta se encuentra activa
-			if ($request["u_status"] === "Inactivo") {
-				$data = array(
-					"title" => "Ocurrió un error inesperado",
-					"message" => "La cuenta del usuario actualmente se encuentra en estado Inactivo",
-					"type" => "error",
-					"icon" => "error",
-					"status" => false
-				);
-				unset($request);
-				toJson($data);
-			}
-			//verificamos si la cuenta se encuentra activa
-			if ($request["p_status"] === "Inactivo") {
-				$data = array(
-					"title" => "Ocurrió un error inesperado",
-					"message" => "Los datos del usuario estan desactivados",
-					"type" => "error",
-					"icon" => "error",
-					"status" => false
-				);
-				unset($request);
-				toJson($data);
-			}
-			//obtenemos los negocios asociasdos al usuario
-			$bussiness = $this->model->select_business($request["idUserApp"]);
-			//creamos las variables de session para el usuario
-			$data_session = array(
-				"idUser" => $request["idUserApp"],
-				"user" => $request["user"],
-				"email" => $request["email"],
-				"profile" => '',
-				"fullName" => $request["names"] . ' ' . $request['lastname'],
-				"name" => $request["names"],
-				"lastname" =>  $request['lastname'],
-				"gender" => '',
-				"status" => $request["u_status"],
-				"p_status" => $request["p_status"]
-			);
-			//preparacion de nombres de variables de acuerdo a la sesion creada
-			$name_sesion = config_sesion(1)['name'];
-			$nameVarLogin = $name_sesion . 'login';
-			$nameVarLoginInfo = $name_sesion . 'login_info';
-			$nameVarBusiness = $name_sesion . 'business_active';
-			$data_session = json_encode($data_session);
-			//creacion de variables de sesion
-			$_SESSION[$nameVarLogin] = true;
-			$_SESSION[$nameVarBusiness] = $bussiness;
-			$_SESSION[$nameVarLoginInfo] = json_decode($data_session, true);
-			//creamos las cookies para el usuario
-			setcookie($nameVarLoginInfo, $data_session, time() + (86400 * 30), "/"); // 86400 = 1 day => 30 days
-			setcookie($nameVarLogin, true, time() + (86400 * 30), "/"); // 86400 = 1 day => 30 days
-			//preparamos las alertas de bienvenida
-			$nombres = $request["names"];
-			$apellidos = $request['lastname'];
-			$txtUser = decryption($txtUser);
-			$data = array(
-				"title" => "Inicio de sesion exitoso",
-				"message" => "Hola " . $request["names"] . " " . $request['lastname'] . "",
-				"html" => <<<HTML
-							<div class="text-center">           
-								<div class="d-flex align-items-center justify-content-center gap-3 mb-3">
-									<div class="text-start">
-										<h3 class="fs-4 mb-0 fw-bold">{$nombres} {$apellidos}</h3>
-										<span class="badge bg-success rounded-pill fs-6"><i class="bi bi-person-fill"></i> Bienvenido</span>
-									</div>
-								</div>
-								<p class="text-muted mt-4 mb-2">Redirigiendo al panel...</p>
-								<div class="spinner-border text-success" role="status">
-									<span class="visually-hidden">Cargando...</span>
-								</div>
-							</div>
-				HTML,
-				"type" => "success",
-				"icon" => "success",
-				"timer" => 2000,
-				"status" => true,
-				"url" => base_url() . "/pos/dashboard"
-			);
-			//destruimos la variable que contiene la información del usuario
-			unset($request);
-			toJson($data);
-		} else {
+		if (($txtPassword !== $request['password'])) {
 			$data = array(
 				"title" => "Ocurrió un error inesperado",
 				"message" => "Usuario o contraseña inválidos",
@@ -213,5 +220,6 @@ class Login extends Controllers
 			toJson($data);
 			return;
 		}
+		return $request;
 	}
 }
