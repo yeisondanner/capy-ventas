@@ -33,6 +33,8 @@ class EmployeeModel extends Mysql
                 e.registration_date,
                 e.update_date,
                 ua.user AS user_app_user,
+                ua.idUserApp AS user_app_id,
+                COALESCE(p.idPeople, p2.idPeople) AS person_id,
                 COALESCE(p.names, p2.names) AS person_names,
                 COALESCE(p.lastname, p2.lastname) AS person_lastname,
                 COALESCE(p.email, p2.email) AS person_email,
@@ -64,6 +66,7 @@ class EmployeeModel extends Mysql
             SELECT
                 e.*,
                 ua.user AS user_app_user,
+                ua.idUserApp AS user_app_id,
                 COALESCE(p.names, p2.names) AS person_names,
                 COALESCE(p.lastname, p2.lastname) AS person_lastname,
                 COALESCE(p.email, p2.email) AS person_email,
@@ -352,6 +355,65 @@ class EmployeeModel extends Mysql
     {
         $sql = 'SELECT * FROM user_app WHERE user = ? LIMIT 1;';
         $result = $this->select($sql, [$user]);
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Busca un usuario de aplicación por su usuario o por el correo de la persona asociada.
+     *
+     * @param string $identifier Valor encriptado que representa el usuario o el correo.
+     *
+     * @return array
+     */
+    public function selectUserAppByIdentifier(string $identifier): array
+    {
+        $sql = <<<SQL
+            SELECT
+                ua.idUserApp,
+                ua.user,
+                ua.status,
+                p.idPeople,
+                p.names,
+                p.lastname,
+                p.email
+            FROM user_app AS ua
+            INNER JOIN people AS p ON p.idPeople = ua.people_id
+            WHERE ua.status = 'Activo'
+              AND (ua.user = ? OR p.email = ?)
+            LIMIT 1;
+        SQL;
+
+        $result = $this->select($sql, [$identifier, $identifier]);
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Obtiene un usuario de aplicación y su persona asociada por identificador.
+     *
+     * @param int $userappId Identificador del usuario de aplicación.
+     *
+     * @return array
+     */
+    public function selectUserAppWithPerson(int $userappId): array
+    {
+        $sql = <<<SQL
+            SELECT
+                ua.idUserApp,
+                ua.user,
+                ua.status,
+                p.idPeople,
+                p.names,
+                p.lastname,
+                p.email
+            FROM user_app AS ua
+            INNER JOIN people AS p ON p.idPeople = ua.people_id
+            WHERE ua.idUserApp = ?
+            LIMIT 1;
+        SQL;
+
+        $result = $this->select($sql, [$userappId]);
 
         return is_array($result) ? $result : [];
     }

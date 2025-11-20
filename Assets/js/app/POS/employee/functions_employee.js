@@ -90,24 +90,114 @@
   }
 
   /**
-   * Muestra u oculta los campos de usuario según el checkbox.
-   * @param {boolean} show
+   * Limpia los campos de información de usuario según el prefijo indicado.
    * @param {"create"|"update"} prefix
    */
-  function toggleUserFields(show, prefix) {
-    const container = document.getElementById(
-      `${prefix === "update" ? "update_" : ""}employeeUserFields`
-    );
-    if (!container) return;
+  function resetUserInfo(prefix) {
+    const currentPrefix = prefix === "update" ? "update_" : "";
+    const mappings = [
+      "txtEmployeeUserappId",
+      "txtEmployeePeopleId",
+      "txtEmployeeNames",
+      "txtEmployeeLastname",
+      "txtEmployeeEmail",
+    ];
 
-    if (show) {
-      container.classList.remove("d-none");
-    } else {
-      container.classList.add("d-none");
-      const userInput = container.querySelector("input[name$='EmployeeUser']");
-      const passInput = container.querySelector("input[name$='EmployeePassword']");
-      if (userInput) userInput.value = "";
-      if (passInput) passInput.value = "";
+    mappings.forEach((id) => {
+      const input = document.getElementById(`${currentPrefix}${id}`);
+      if (input) {
+        input.value = "";
+      }
+    });
+  }
+
+  /**
+   * Establece los datos del usuario encontrado en el formulario indicado.
+   * @param {"create"|"update"} prefix
+   * @param {{idUserApp:number,people_id:number,names:string,lastname:string,email:string,user:string}} user
+   */
+  function fillUserInfo(prefix, user) {
+    const currentPrefix = prefix === "update" ? "update_" : "";
+
+    const idInput = document.getElementById(`${currentPrefix}txtEmployeeUserappId`);
+    const peopleInput = document.getElementById(`${currentPrefix}txtEmployeePeopleId`);
+    const namesInput = document.getElementById(`${currentPrefix}txtEmployeeNames`);
+    const lastnameInput = document.getElementById(`${currentPrefix}txtEmployeeLastname`);
+    const emailInput = document.getElementById(`${currentPrefix}txtEmployeeEmail`);
+    const searchInput = document.getElementById(`${currentPrefix}txtEmployeeUserSearch`);
+
+    if (idInput) idInput.value = user.idUserApp || "";
+    if (peopleInput) peopleInput.value = user.people_id || "";
+    if (namesInput) namesInput.value = user.names || "";
+    if (lastnameInput) lastnameInput.value = user.lastname || "";
+    if (emailInput) emailInput.value = user.email || "";
+    if (searchInput && user.user) {
+      searchInput.value = user.user;
+    }
+  }
+
+  /**
+   * Consulta al backend un usuario por identificador y lo muestra en el formulario.
+   * @param {"create"|"update"} prefix
+   * @param {number|null} excludeEmployeeId
+   */
+  async function searchUser(prefix, excludeEmployeeId = null) {
+    const currentPrefix = prefix === "update" ? "update_" : "";
+    const input = document.getElementById(`${currentPrefix}txtEmployeeUserSearch`);
+
+    if (!input) return;
+
+    const identifier = input.value.trim();
+    if (!identifier) {
+      showAlert({
+        icon: "warning",
+        title: "Dato requerido",
+        message: "Ingresa un usuario o correo para realizar la búsqueda.",
+      });
+      return;
+    }
+
+    try {
+      const params = new URLSearchParams({ identifier });
+      if (excludeEmployeeId) {
+        params.append("exclude_employee_id", String(excludeEmployeeId));
+      }
+
+      const response = await fetch(
+        `${base_url}/pos/Employee/findUserApp?${params.toString()}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.status) {
+        resetUserInfo(prefix);
+        showAlert({
+          icon: data.icon || "error",
+          title: data.title || "Ocurrió un error",
+          message: data.message || "No fue posible encontrar el usuario indicado.",
+        });
+        return;
+      }
+
+      fillUserInfo(prefix, data.data);
+      showAlert({
+        icon: "success",
+        title: "Usuario encontrado",
+        message: "El usuario está disponible para asignarlo como empleado.",
+      });
+    } catch (error) {
+      console.error("Error buscando usuario", error);
+      resetUserInfo(prefix);
+      showAlert({
+        icon: "error",
+        title: "Ocurrió un error",
+        message:
+          "No fue posible buscar el usuario. Verifica el dato ingresado e inténtalo nuevamente.",
+      });
     }
   }
 
@@ -266,8 +356,7 @@
       cachedRoleApps,
       "Selecciona un rol"
     );
-
-    toggleUserFields(false, "create");
+    resetUserInfo("create");
 
     showModal(modalCreate);
   }
@@ -283,6 +372,16 @@
       event.preventDefault();
 
       const formData = new FormData(form);
+      const userId = formData.get("txtEmployeeUserappId");
+
+      if (!userId) {
+        showAlert({
+          icon: "warning",
+          title: "Usuario requerido",
+          message: "Busca y selecciona un usuario antes de registrar al empleado.",
+        });
+        return;
+      }
       try {
         const response = await fetch(`${base_url}/pos/Employee/setEmployee`, {
           method: "POST",
@@ -336,6 +435,16 @@
       event.preventDefault();
 
       const formData = new FormData(form);
+      const userId = formData.get("update_txtEmployeeUserappId");
+
+      if (!userId) {
+        showAlert({
+          icon: "warning",
+          title: "Usuario requerido",
+          message: "Busca y selecciona un usuario disponible antes de actualizar.",
+        });
+        return;
+      }
       try {
         const response = await fetch(
           `${base_url}/pos/Employee/updateEmployee`,
@@ -520,15 +629,20 @@
       document.getElementById("update_txtEmployeeLastname").value = employee.lastname || "";
       document.getElementById("update_txtEmployeeEmail").value = employee.person_email || "";
       document.getElementById("update_txtEmployeeId").value = employee.idEmployee;
+      document.getElementById("update_txtEmployeeUserappId").value = employee.userapp_id || "";
+      document.getElementById("update_txtEmployeePeopleId").value = employee.people_id || "";
+      document.getElementById("update_txtEmployeeUserSearch").value =
+        employee.user_app_user || employee.person_email || "";
       document.getElementById("update_txtEmployeeRolapp").value = employee.rolapp_id;
       document.getElementById("update_txtEmployeeStatus").value = employee.status;
-
-      const updateCheckbox = document.getElementById("update_chkEmployeeCreateUser");
-      const hasUser = Boolean(employee.user_app_user);
-      updateCheckbox.checked = hasUser;
-      document.getElementById("update_txtEmployeeUser").value = employee.user_app_user || "";
-      document.getElementById("update_txtEmployeePassword").value = "";
-      toggleUserFields(hasUser, "update");
+      fillUserInfo("update", {
+        idUserApp: employee.userapp_id,
+        people_id: employee.people_id,
+        names: employee.names,
+        lastname: employee.lastname,
+        email: employee.person_email,
+        user: employee.user_app_user,
+      });
 
       showModal(modalUpdate);
     } catch (error) {
@@ -661,26 +775,24 @@
     handleCreate();
     handleUpdate();
 
-    const chkCreateUser = document.getElementById("chkEmployeeCreateUser");
-    if (chkCreateUser) {
-      chkCreateUser.addEventListener("change", (event) => {
-        toggleUserFields(event.target.checked, "create");
-      });
-      toggleUserFields(chkCreateUser.checked, "create");
-    }
-
-    const chkUpdateUser = document.getElementById("update_chkEmployeeCreateUser");
-    if (chkUpdateUser) {
-      chkUpdateUser.addEventListener("change", (event) => {
-        toggleUserFields(event.target.checked, "update");
-      });
-      toggleUserFields(chkUpdateUser.checked, "update");
-    }
-
     const btnOpenEmployeeModal = document.getElementById("btnOpenEmployeeModal");
     if (btnOpenEmployeeModal) {
       btnOpenEmployeeModal.addEventListener("click", () => {
         openCreateModal();
+      });
+    }
+
+    const btnSearchCreate = document.getElementById("btnSearchEmployeeUser");
+    if (btnSearchCreate) {
+      btnSearchCreate.addEventListener("click", () => searchUser("create"));
+    }
+
+    const btnSearchUpdate = document.getElementById("btnSearchEmployeeUserUpdate");
+    if (btnSearchUpdate) {
+      btnSearchUpdate.addEventListener("click", () => {
+        const employeeIdField = document.getElementById("update_txtEmployeeId");
+        const employeeId = employeeIdField ? Number(employeeIdField.value || 0) : null;
+        searchUser("update", employeeId);
       });
     }
   });

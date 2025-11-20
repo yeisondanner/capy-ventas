@@ -23,6 +23,7 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-20 03:15 UTC - Empleados POS vinculados a usuarios existentes por correo o usuario, validando disponibilidad antes de asociar rol y negocio.
 - CHATGPT - 2025-11-20 03:10 UTC - Registro automático de roles como activos, edición con estado visible y baja que desactiva los roles asociados antes de eliminarlos.
 - CHATGPT - 2025-11-20 02:40 UTC - Módulo POS para gestionar roles de aplicación, con CRUD, listados y controles de asociaciones.
 - CHATGPT - 2025-11-19 22:52 UTC - Perfil POS con datos personales, suscripción activa y negocios vinculados en /pos/Profile.
