@@ -130,16 +130,10 @@ class Employee extends Controllers
 
         $this->ensureUserappAvailability($userappId, $businessId);
 
-        $personId = (int) ($userAppData['idPeople'] ?? 0);
-        if ($personId <= 0) {
-            $this->responseError('El usuario seleccionado no cuenta con datos de persona válidos.');
-        }
-
         $payload = [
             'bussines_id' => $businessId,
             'userapp_id'  => $userappId,
             'rolapp_id'   => $rolappId,
-            'people_id'   => $personId,
             'status'      => $status,
         ];
 
@@ -188,7 +182,6 @@ class Employee extends Controllers
                 'idEmployee'      => (int) $employee['idEmployee'],
                 'userapp_id'      => !empty($employee['userapp_id']) ? (int) $employee['userapp_id'] : null,
                 'rolapp_id'       => (int) $employee['rolapp_id'],
-                'people_id'       => !empty($employee['person_id']) ? (int) $employee['person_id'] : null,
                 'status'          => $employee['status'],
                 'names'           => $employee['person_names'] ?? '',
                 'lastname'        => $employee['person_lastname'] ?? '',
@@ -262,17 +255,11 @@ class Employee extends Controllers
 
         $this->ensureUserappAvailability($userappId, $businessId, $employeeId);
 
-        $personId = (int) ($userAppData['idPeople'] ?? 0);
-        if ($personId <= 0) {
-            $this->responseError('El usuario seleccionado no cuenta con datos de persona válidos.');
-        }
-
         $payload = [
             'idEmployee'  => $employeeId,
             'bussines_id' => $businessId,
             'userapp_id'  => $userappId,
             'rolapp_id'   => $rolappId,
-            'people_id'   => $personId,
             'status'      => $status,
         ];
 

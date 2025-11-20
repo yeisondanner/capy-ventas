@@ -65,10 +65,6 @@
                         <small class="text-muted">Carga un usuario existente para vincularlo como empleado.</small>
                         <datalist id="employeeUserSuggestions"></datalist>
                         <input type="hidden" id="txtEmployeeUserappId" name="txtEmployeeUserappId">
-                        <input type="hidden" id="txtEmployeePeopleId" name="txtEmployeePeopleId">
-                        <input type="hidden" id="txtEmployeeNames" name="txtEmployeeNames">
-                        <input type="hidden" id="txtEmployeeLastname" name="txtEmployeeLastname">
-                        <input type="hidden" id="txtEmployeeEmail" name="txtEmployeeEmail">
                     </div>
                     <div class="col-md-4">
                         <label for="txtEmployeeRolapp" class="form-label">Rol de Aplicación <span class="text-danger">*</span></label>
@@ -152,10 +148,6 @@
                 <?= csrf(); ?>
                 <input type="hidden" name="update_txtEmployeeId" id="update_txtEmployeeId">
                 <input type="hidden" name="update_txtEmployeeUserappId" id="update_txtEmployeeUserappId">
-                <input type="hidden" name="update_txtEmployeePeopleId" id="update_txtEmployeePeopleId">
-                <input type="hidden" name="update_txtEmployeeNames" id="update_txtEmployeeNames">
-                <input type="hidden" name="update_txtEmployeeLastname" id="update_txtEmployeeLastname">
-                <input type="hidden" name="update_txtEmployeeEmail" id="update_txtEmployeeEmail">
                 <div class="row g-3">
                     <div class="col-md-8">
                         <label for="update_txtEmployeeUserSearch" class="form-label">Usuario o correo <span class="text-danger">*</span></label>

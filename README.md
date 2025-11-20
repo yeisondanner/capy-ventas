@@ -23,6 +23,7 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-20 03:44 UTC - Ajuste del módulo de empleados POS al esquema actual de employee sin columna people_id.
 - CHATGPT - 2025-11-20 04:10 UTC - Vista previa estilizada de los datos del usuario seleccionado al vincular empleados POS.
 - CHATGPT - 2025-11-20 03:40 UTC - Búsqueda predictiva por usuario o correo en empleados POS para vincular rápidamente cuentas activas.
 - CHATGPT - 2025-11-20 03:15 UTC - Empleados POS vinculados a usuarios existentes por correo o usuario, validando disponibilidad antes de asociar rol y negocio.

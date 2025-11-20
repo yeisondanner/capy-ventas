@@ -28,22 +28,20 @@ class EmployeeModel extends Mysql
                 e.bussines_id,
                 e.userapp_id,
                 e.rolapp_id,
-                e.people_id,
                 e.status,
                 e.registration_date,
                 e.update_date,
                 ua.user AS user_app_user,
                 ua.idUserApp AS user_app_id,
-                COALESCE(p.idPeople, p2.idPeople) AS person_id,
-                COALESCE(p.names, p2.names) AS person_names,
-                COALESCE(p.lastname, p2.lastname) AS person_lastname,
-                COALESCE(p.email, p2.email) AS person_email,
+                p.idPeople AS person_id,
+                p.names AS person_names,
+                p.lastname AS person_lastname,
+                p.email AS person_email,
                 ra.name AS role_app_name,
                 ra.description AS role_app_description
             FROM employee AS e
             LEFT JOIN user_app AS ua ON ua.idUserApp = e.userapp_id
             LEFT JOIN people AS p ON p.idPeople = ua.people_id
-            LEFT JOIN people AS p2 ON p2.idPeople = e.people_id
             INNER JOIN role_app AS ra ON ra.idRoleApp = e.rolapp_id
             WHERE e.bussines_id = ?
             ORDER BY e.registration_date DESC;
@@ -67,15 +65,14 @@ class EmployeeModel extends Mysql
                 e.*,
                 ua.user AS user_app_user,
                 ua.idUserApp AS user_app_id,
-                COALESCE(p.names, p2.names) AS person_names,
-                COALESCE(p.lastname, p2.lastname) AS person_lastname,
-                COALESCE(p.email, p2.email) AS person_email,
+                p.names AS person_names,
+                p.lastname AS person_lastname,
+                p.email AS person_email,
                 ra.name AS role_app_name,
                 ra.description AS role_app_description
             FROM employee AS e
             LEFT JOIN user_app AS ua ON ua.idUserApp = e.userapp_id
             LEFT JOIN people AS p ON p.idPeople = ua.people_id
-            LEFT JOIN people AS p2 ON p2.idPeople = e.people_id
             INNER JOIN role_app AS ra ON ra.idRoleApp = e.rolapp_id
             WHERE e.idEmployee = ?
               AND e.bussines_id = ?
@@ -98,16 +95,15 @@ class EmployeeModel extends Mysql
     {
         $sql = <<<SQL
             INSERT INTO employee
-                (bussines_id, userapp_id, rolapp_id, people_id, status)
+                (bussines_id, userapp_id, rolapp_id, status)
             VALUES
-                (?, ?, ?, ?, ?);
+                (?, ?, ?, ?);
         SQL;
 
         $params = [
             $data['bussines_id'],
             $data['userapp_id'] ?? null,
             $data['rolapp_id'],
-            $data['people_id'],
             $data['status'],
         ];
 
@@ -128,7 +124,6 @@ class EmployeeModel extends Mysql
             SET
                 userapp_id = ?,
                 rolapp_id = ?,
-                people_id = ?,
                 status = ?
             WHERE idEmployee = ?
               AND bussines_id = ?
@@ -138,7 +133,6 @@ class EmployeeModel extends Mysql
         $params = [
             $data['userapp_id'] ?? null,
             $data['rolapp_id'],
-            $data['people_id'],
             $data['status'],
             $data['idEmployee'],
             $data['bussines_id'],

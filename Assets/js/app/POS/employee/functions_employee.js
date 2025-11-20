@@ -110,20 +110,12 @@
   function resetUserInfo(prefix) {
     const currentPrefix = prefix === "update" ? "update_" : "";
     const displayPrefix = prefix === "update" ? "update_" : "";
-    const mappings = [
-      "txtEmployeeUserappId",
-      "txtEmployeePeopleId",
-      "txtEmployeeNames",
-      "txtEmployeeLastname",
-      "txtEmployeeEmail",
-    ];
-
-    mappings.forEach((id) => {
-      const input = document.getElementById(`${currentPrefix}${id}`);
-      if (input) {
-        input.value = "";
-      }
-    });
+    const userInput = document.getElementById(
+      `${currentPrefix}txtEmployeeUserappId`
+    );
+    if (userInput) {
+      userInput.value = "";
+    }
 
     const defaultName = "Sin usuario seleccionado";
     const defaultEmail = "-";
@@ -155,26 +147,18 @@
   /**
    * Establece los datos del usuario encontrado en el formulario indicado.
    * @param {"create"|"update"} prefix
-   * @param {{idUserApp:number,people_id:number,names:string,lastname:string,email:string,user:string}} user
+   * @param {{idUserApp:number,names:string,lastname:string,email:string,user:string}} user
    */
   function fillUserInfo(prefix, user) {
     const currentPrefix = prefix === "update" ? "update_" : "";
     const displayPrefix = prefix === "update" ? "update_" : "";
 
     const idInput = document.getElementById(`${currentPrefix}txtEmployeeUserappId`);
-    const peopleInput = document.getElementById(`${currentPrefix}txtEmployeePeopleId`);
-    const namesInput = document.getElementById(`${currentPrefix}txtEmployeeNames`);
-    const lastnameInput = document.getElementById(`${currentPrefix}txtEmployeeLastname`);
-    const emailInput = document.getElementById(`${currentPrefix}txtEmployeeEmail`);
     const searchInput = document.getElementById(`${currentPrefix}txtEmployeeUserSearch`);
 
     const fullName = `${user.names || ""} ${user.lastname || ""}`.trim();
 
     if (idInput) idInput.value = user.idUserApp || "";
-    if (peopleInput) peopleInput.value = user.people_id || "";
-    if (namesInput) namesInput.value = user.names || "";
-    if (lastnameInput) lastnameInput.value = user.lastname || "";
-    if (emailInput) emailInput.value = user.email || "";
     if (searchInput && user.user) {
       searchInput.value = user.user;
     }
@@ -569,7 +553,7 @@
             cachedRoleApps,
             "Selecciona un rol"
           );
-          toggleUserFields(false, "create");
+          resetUserInfo("create");
           hideModal(modalCreate);
           employeesTable.ajax.reload(null, false);
         }
@@ -787,19 +771,14 @@
         "Selecciona un rol"
       );
 
-      document.getElementById("update_txtEmployeeNames").value = employee.names || "";
-      document.getElementById("update_txtEmployeeLastname").value = employee.lastname || "";
-      document.getElementById("update_txtEmployeeEmail").value = employee.person_email || "";
       document.getElementById("update_txtEmployeeId").value = employee.idEmployee;
       document.getElementById("update_txtEmployeeUserappId").value = employee.userapp_id || "";
-      document.getElementById("update_txtEmployeePeopleId").value = employee.people_id || "";
       document.getElementById("update_txtEmployeeUserSearch").value =
         employee.user_app_user || employee.person_email || "";
       document.getElementById("update_txtEmployeeRolapp").value = employee.rolapp_id;
       document.getElementById("update_txtEmployeeStatus").value = employee.status;
       fillUserInfo("update", {
         idUserApp: employee.userapp_id,
-        people_id: employee.people_id,
         names: employee.names,
         lastname: employee.lastname,
         email: employee.person_email,
