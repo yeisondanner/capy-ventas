@@ -29,7 +29,6 @@ class Login extends Controllers
 	{
 		//llamamos a la funcion que valida los campos del formulario
 		$request = self::session_validations();
-		toJson($request);
 		//verificamos si la cuenta se encuentra activa
 		if ($request["u_status"] === "Inactivo") {
 			$data = array(
@@ -67,7 +66,8 @@ class Login extends Controllers
 			"lastname" =>  $request['lastname'],
 			"gender" => '',
 			"status" => $request["u_status"],
-			"p_status" => $request["p_status"]
+			"p_status" => $request["p_status"],
+			"plan_expiration_date" => $request["plan_expiration_date"]
 		);
 		//preparacion de nombres de variables de acuerdo a la sesion creada
 		$name_sesion = config_sesion(1)['name'];

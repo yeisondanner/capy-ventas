@@ -96,14 +96,14 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                 </div>
                 <div class="row g-3 mt-3">
                     <div class="col-md-4">
-                        <div class="info-box">
+                        <div class="info-box border border-primary">
                             <p class="text-muted mb-1">Plan</p>
                             <h5 class="mb-0"><?= htmlspecialchars($subscription['plan'] ?? 'Sin plan', ENT_QUOTES, 'UTF-8'); ?></h5>
                             <small class="text-muted text-uppercase"><?= htmlspecialchars($subscription['billingPeriod'] ?? 'sin periodo', ENT_QUOTES, 'UTF-8'); ?></small>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-box">
+                        <div class="info-box border border-warning">
                             <p class="text-muted mb-1">Monto por ciclo</p>
                             <h5 class="mb-0">
                                 <?php if (!empty($subscription['price'])): ?>
@@ -116,7 +116,7 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-box">
+                        <div class="info-box border border-success">
                             <p class="text-muted mb-1">Descuento</p>
                             <h5 class="mb-0"><?= htmlspecialchars($subscription['discount'] ?? 'Sin descuento', ENT_QUOTES, 'UTF-8'); ?></h5>
                             <small class="text-muted">Aplicado al ciclo</small>
@@ -127,15 +127,15 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                 <div class="row g-3">
                     <div class="col-md-4">
                         <p class="text-muted mb-1">Inicio</p>
-                        <p class="fw-semibold mb-0"><?= formatDateProfile($subscription['startDate'] ?? null); ?></p>
+                        <p class="fw-semibold mb-0 text-primary"><i class="bi bi-calendar4-event"></i> <?= formatDateProfile($subscription['startDate'] ?? null); ?></p>
                     </div>
                     <div class="col-md-4">
                         <p class="text-muted mb-1">Próxima facturación</p>
-                        <p class="fw-semibold mb-0"><?= formatDateProfile($subscription['nextBilling'] ?? null); ?></p>
+                        <p class="fw-semibold mb-0 text-info"><i class="bi bi-credit-card-2-back"></i> <?= formatDateProfile($subscription['nextBilling'] ?? null); ?></p>
                     </div>
                     <div class="col-md-4">
                         <p class="text-muted mb-1">Fin de ciclo</p>
-                        <p class="fw-semibold mb-0"><?= formatDateProfile($subscription['endDate'] ?? null); ?></p>
+                        <p class="fw-semibold mb-0 text-danger"><i class="bi bi-calendar4-event"></i> <?= formatDateProfile($subscription['endDate'] ?? null); ?></p>
                     </div>
                 </div>
             </div>

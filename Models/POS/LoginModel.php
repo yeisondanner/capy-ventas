@@ -29,6 +29,7 @@ class LoginModel extends Mysql
                                 up.user,
                                 up.password,
                                 up.`status` AS 'u_status',
+                                up.plan_expiration_date,
                                 p.*,
                                 p.`status` AS 'p_status'
                                 

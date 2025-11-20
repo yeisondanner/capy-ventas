@@ -10,13 +10,9 @@
             <li class="breadcrumb-item"><a href="<?= base_url() ?>/pos/dashboard">Inicio</a></li>
         </ul>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="tile">
-
-
-
-            </div>
+    <div class="tile">
+        <div class="alert alert-info" role="alert">
+            <strong>¡Atención!</strong> Esta es una alerta en HTML.
         </div>
     </div>
 </main>
