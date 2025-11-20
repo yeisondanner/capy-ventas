@@ -13,45 +13,45 @@
     <div class="row">
         <div class="col-md-12">
     <div class="tile">
-        <div class="row g-3"> 
+        <div class="row g-3">
 
-            <div class="col-12 col-md-4">
-                <div class="card border-0 shadow-sm">
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card border-0 shadow-sm h-100 card-enhanced">
                     <div class="card-body d-flex align-items-center">
-                        <div class="rounded-circle bg-success-subtle d-flex align-items-center justify-content-center me-3 p-3">
+                        <div class="icon-container bg-success-subtle d-flex align-items-center justify-content-center me-3">
                             <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
                         </div>
                         <div>
                             <div class="small text-muted">Balance</div>
-                            <div class="fw-semibold fs-5">S/ 15</div>
+                            <div class="fw-semibold fs-5" id="balance">S/ <?= number_format($data['totals']['balance'], 2, '.', ',') ?></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-12 col-md-4">
-                <div class="card border-0 shadow-sm">
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card border-0 shadow-sm h-100 card-enhanced">
                     <div class="card-body d-flex align-items-center">
-                        <div class="rounded-circle bg-success-subtle d-flex align-items-center justify-content-center me-3 p-3">
+                        <div class="icon-container bg-success-subtle d-flex align-items-center justify-content-center me-3">
                             <i class="bi bi-cash-stack fs-4 text-success"></i>
                         </div>
                         <div>
                             <div class="small text-muted">Ventas totales</div>
-                            <div class="fw-semibold fs-5 text-success">S/ 15</div>
+                            <div class="fw-semibold fs-5 text-success" id="totalSales">S/ <?= number_format($data['totals']['total_sales'], 2, '.', ',') ?></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-12 col-md-4">
-                <div class="card border-0 shadow-sm">
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card border-0 shadow-sm h-100 card-enhanced">
                     <div class="card-body d-flex align-items-center">
-                        <div class="rounded-circle bg-danger-subtle d-flex align-items-center justify-content-center me-3 p-3">
-                            <i class="bi bi-cash-stack fs-4 text-danger"></i>
+                        <div class="icon-container bg-danger-subtle d-flex align-items-center justify-content-center me-3">
+                            <i class="bi bi-currency-dollar fs-4 text-danger"></i>
                         </div>
                         <div>
                             <div class="small text-muted">Gastos totales</div>
-                            <div class="fw-semibold fs-5 text-danger">S/ 0</div>
+                            <div class="fw-semibold fs-5 text-danger" id="totalExpenses">S/ <?= number_format($data['totals']['total_expenses'], 2, '.', ',') ?></div>
                         </div>
                     </div>
                 </div>
@@ -69,10 +69,12 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
+                                    <th>Acciones</th>
                                     <th>Concepto</th>
                                     <th>Valor</th>
                                     <th>Medios de Pago</th>
                                     <th>Fecha y Hora</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -149,147 +151,104 @@
     </div>
 </div>
 
-<!-- Modal: Reporte de producto -->
-<div class="modal fade" id="modalProductReport" tabindex="-1" aria-labelledby="modalProductReportLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-secondary text-white">
-                <h5 class="modal-title" id="modalProductReportLabel">Reporte del producto</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+<!-- Modal Comprobante -->
+<div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="voucherModalLabel">Comprobante de venta</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="voucher-container p-3">
+
+          <!-- ENCABEZADO -->
+          <div class="text-center mb-3">
+            <h5 class="mb-0 fw-bold" id="name_bussines">NOMBRE DEL NEGOCIO</h5>
+            <div class="small text-muted" id="direction_bussines">Dirección del negocio</div>
+            <div class="small text-muted">
+              RUC / Documento: <span id="document_bussines">00000000000</span>
             </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <h4 class="mb-0" id="reportProductName">Nombre del producto</h4>
-                    <small class="text-muted" id="reportProductStatus">Estado</small>
+            <div class="small text-muted">
+              Fecha y hora: <span id="date_time">2025-11-19 10:00:00</span>
+            </div>
+          </div>
+
+          <hr class="my-2">
+
+          <!-- DATOS DE LOS CLIENTES -->
+          <div class="mb-3">
+            <div class="row g-2">
+              <div class="col-12 col-sm-6">
+                <div class="small">
+                  <span class="fw-semibold">Cliente:</span>
+                  <span id="name_customer">CLIENTE MOSTRADOR</span>
                 </div>
-                <dl class="row mb-0">
-                    <dt class="col-sm-4">Categoría</dt>
-                    <dd class="col-sm-8" id="reportProductCategory">-</dd>
-                    <dt class="col-sm-4">Proveedor</dt>
-                    <dd class="col-sm-8" id="reportProductSupplier">-</dd>
-                    <dt class="col-sm-4">Unidad de medida</dt>
-                    <dd class="col-sm-8" id="reportProductMeasurement">-</dd>
-                    <dt class="col-sm-4">Stock disponible</dt>
-                    <dd class="col-sm-8" id="reportProductStock">-</dd>
-                    <dt class="col-sm-4">Precio de compra</dt>
-                    <dd class="col-sm-8" id="reportProductPurchase">-</dd>
-                    <dt class="col-sm-4">Precio de venta</dt>
-                    <dd class="col-sm-8" id="reportProductSale">-</dd>
-                    <dt class="col-sm-4">Descripción</dt>
-                    <dd class="col-sm-8" id="reportProductDescription">Sin descripción registrada.</dd>
-                </dl>
+              </div>
+              <div class="col-12 col-sm-6">
+                <div class="small">
+                  <span class="fw-semibold">Dirección:</span>
+                  <span id="direction_customer">Sin dirección</span>
+                </div>
+              </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+
+          <!-- DETALLE DE LOS PRODUCTOS -->
+          <div class="table-responsive mb-3">
+            <table class="table table-sm table-borderless mb-0">
+              <thead class="border-bottom">
+                <tr class="text-uppercase small">
+                  <th class="fw-semibold" style="width: 10%;">Cant.</th>
+                  <th class="fw-semibold">Descripción</th>
+                  <th class="text-end fw-semibold" style="width: 15%;">P. Unit.</th>
+                  <th class="text-end fw-semibold" style="width: 15%;">Importe</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyVoucherDetails">
+              </tbody>
+            </table>
+          </div>
+
+          <hr class="my-2">
+
+          <!-- TOTALES -->
+          <div class="row justify-content-end">
+            <div class="col-12 col-md-6">
+              <div class="d-flex justify-content-between small mb-1">
+                <span>Subtotal:</span>
+                <span id="subtotal_amount">S/ 0.00</span>
+              </div>
+              <div class="d-flex justify-content-between small mb-1">
+                <span>Descuento (<span id="percentage_discount">0</span>%):</span>
+                <span id="discount_amount">S/ 0.00</span>
+              </div>
+              <div class="d-flex justify-content-between fw-semibold border-top pt-2">
+                <span>Total:</span>
+                <span id="total_amount">S/ 0.00</span>
+              </div>
             </div>
+          </div>
+
+          <hr class="my-3">
+
+          <!-- PIE DEL COMPROBANTE -->
+          <div class="text-center small">
+            <div class="fw-bold text-success mb-1">¡GRACIAS POR SU COMPRA!</div>
+            <div class="text-muted">Conserve este comprobante para cualquier consulta.</div>
+          </div>
+
         </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+
     </div>
+  </div>
 </div>
 
-<!-- Modal: Gestionar categorías -->
-<div class="modal fade" id="modalCategory" tabindex="-1" aria-labelledby="modalCategoryLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title" id="modalCategoryLabel">Categorías</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <h6 class="fw-semibold">Registrar nueva categoría</h6>
-                    <form class="row g-2 align-items-center" id="formCreateCategory" autocomplete="off">
-                        <?= csrf(); ?>
-                        <div class="col-sm-8 col-md-9">
-                            <label for="txtCategoryName" class="visually-hidden">Nombre de la categoría</label>
-                            <input type="text" class="form-control" id="txtCategoryName" name="txtCategoryName" maxlength="255"
-                                required placeholder="Ej. Bebidas calientes">
-                        </div>
-                        <div class="col-sm-4 col-md-3 d-grid">
-                            <button class="btn btn-info text-white" type="submit">
-                                <i class="bi bi-plus-lg"></i> Registrar
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                <div>
-                    <h6 class="fw-semibold">Categorías registradas</h6>
-                    <ul class="list-group" id="categoryList">
-                        <li class="list-group-item text-center text-muted">No hay categorías registradas.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Modal: Actualizar producto -->
-<div class="modal fade" id="modalUpdateProduct" tabindex="-1" aria-labelledby="modalUpdateProductLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <form class="modal-content" id="formUpdateProduct" autocomplete="off">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="modalUpdateProductLabel">Actualizar producto</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <?= csrf(); ?>
-                <input type="hidden" name="update_txtProductId" id="update_txtProductId">
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="update_txtProductName" class="form-label">Nombre <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="update_txtProductName" name="update_txtProductName"
-                            maxlength="255" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="update_txtProductCategory" class="form-label">Categoría <span class="text-danger">*</span></label>
-                        <select class="form-select" id="update_txtProductCategory" name="update_txtProductCategory" required>
-                            <option value="" selected disabled>Selecciona una categoría</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="update_txtProductSupplier" class="form-label">Proveedor <span class="text-danger">*</span></label>
-                        <select class="form-select" id="update_txtProductSupplier" name="update_txtProductSupplier" required>
-                            <option value="" selected disabled>Selecciona un proveedor</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="update_txtProductMeasurement" class="form-label">Unidad de medida <span class="text-danger">*</span></label>
-                        <select class="form-select" id="update_txtProductMeasurement" name="update_txtProductMeasurement" required>
-                            <option value="" selected disabled>Selecciona una unidad</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="update_txtProductStatus" class="form-label">Estado <span class="text-danger">*</span></label>
-                        <select class="form-select" id="update_txtProductStatus" name="update_txtProductStatus" required>
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="update_txtProductStock" class="form-label">Stock (opcional)</label>
-                        <input type="number" step="0.01" min="0" class="form-control" id="update_txtProductStock"
-                            name="update_txtProductStock">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="update_txtProductPurchasePrice" class="form-label">Precio compra <span class="text-danger">*</span></label>
-                        <input type="number" step="0.01" min="0" class="form-control" id="update_txtProductPurchasePrice"
-                            name="update_txtProductPurchasePrice" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="update_txtProductSalesPrice" class="form-label">Precio venta <span class="text-danger">*</span></label>
-                        <input type="number" step="0.01" min="0" class="form-control" id="update_txtProductSalesPrice"
-                            name="update_txtProductSalesPrice" required>
-                    </div>
-                    <div class="col-12">
-                        <label for="update_txtProductDescription" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="update_txtProductDescription" name="update_txtProductDescription"
-                            rows="3"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-success"><i class="bi bi-pencil-square"></i> Actualizar</button>
-            </div>
-        </form>
-    </div>
-</div>

@@ -10,7 +10,7 @@ class Movements extends Controllers
     protected string $nameVarBusiness;
 
     /**
-     * Nombre de la variable de sesión que contiene la información del usuario POS.DDD
+     * Nombre de la variable de sesión que contiene la información del usuario POS.
      *
      * @var string
      */
@@ -29,12 +29,15 @@ class Movements extends Controllers
         parent::__construct("POS");
 
         $sessionName = config_sesion(1)['name'] ?? '';
-        $this->nameVarBusiness = $sessionName . 'business_active';
-        $this->nameVarLoginInfo = $sessionName . 'login_info';
+        $this->nameVarBusiness   = $sessionName . 'business_active';
+        $this->nameVarLoginInfo  = $sessionName . 'login_info';
     }
 
     public function movements()
     {
+        $businessId = $this->getBusinessId();
+        $totals = $this->model->getTotals($businessId);
+
         $data = [
             'page_id'          => 0,
             'page_title'       => 'Inventario de productos',
@@ -42,47 +45,162 @@ class Movements extends Controllers
             'page_container'   => 'Movements',
             'page_view'        => 'movements',
             'page_js_css'      => 'movements',
+            'totals'           => $totals,
         ];
         $this->views->getView($this, "movements", $data, "POS");
     }
 
-    public function getMovements()
+    /**
+     * Devuelve los movimientos (ventas) del negocio activo para DataTables.
+     *
+     * @return void
+     */
+    public function getMovements(): void
     {
-       
-        $arrData = $this->model->select_movements();
-        $cont = 1; //Contador para la tabla
+        // ID del negocio desde la sesión
+        $businessId = $this->getBusinessId();
+
+        // Traemos solo los movimientos de ese negocio
+        $arrData = $this->model->select_movements($businessId);
+
+        $cont = 1; // Contador para la tabla
+
         foreach ($arrData as $key => $value) {
-            $arrData[$key]["cont"] = $cont;
-            //agregamos un badge para el estado
-            // if ($value["status"] == 'Activo') {
-            //     $arrData[$key]["status_badge"] = '<span class="badge badge-success"> <i class="fa fa-check"></i> Activo</span>';
-            // } else {
-            //     $arrData[$key]["status_badge"] = '<span class="badge badge-danger"> <i class="fa fa-close"></i> Inactivo</span>';
-            // }
-            // $arrData[$key]["actions"] = '
-            // <div class="btn-group">
-            //     <button class="btn btn-success update-item" title="Editar registro" 
-            //     data-id="' . $value["idCategory"] . '" 
-            //     data-name="' . $value["name"] . '" 
-            //     data-status="' . $value['status'] . '"  
-            //     data-description="' . $value["description"] . '" 
-            //     type="button"><i class="fa fa-pencil"></i></button>
-            //     <button class="btn btn-info report-item" title="Ver reporte" 
-            //     data-id="' . $value["idCategory"] . '"
-            //     data-name="' . $value["name"] . '" 
-            //     data-status="' . $value['status'] . '"  
-            //     data-description="' . $value["description"] . '" 
-            //     data-registrationDate="' . dateFormat($value['dateRegistration']) . '" 
-            //     data-updateDate="' . dateFormat($value['dateUpdate']) . '" 
-            //     type="button"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></button>
-            //     <button class="btn btn-danger delete-item" title ="Eliminar registro" data-id="' . $value["idCategory"] . '" data-name="' . $value["name"] . '" ><i class="fa fa-remove"></i></button>
-            //     <a href="' . base_url() . '/pdf/category/' . encryption($value["idCategory"]) . '" target="_Blank" class="btn btn-warning"><i class="fa fa-print  text-white"></i></a>
-            //     </div>
-            //      ';
+            $idVoucher = $value['idVoucherHeader'];
+
+            $arrData[$key]['cont'] = $cont;
+
+            $arrData[$key]['actions'] = '
+                <div class="btn-group">
+                    <button 
+                        class="btn btn-info report-item" 
+                        title="Ver reporte"
+                        type="button"
+                        data-idvoucher="' . $idVoucher . '">
+                        <i class="bi bi-clipboard2-data-fill"></i>
+                    </button>
+                </div>
+            ';
 
             $cont++;
         }
+
         toJson($arrData);
     }
 
+    /**
+     * Devuelve el detalle de un comprobante (voucher) del negocio activo.
+     *
+     * @return void
+     */
+    public function getVoucher(): void
+    {
+        if (!$_POST) {
+            $this->responseError('Solicitud inválida.');
+        }
+
+        $idVoucherHeader = intval($_POST['idVoucherHeader'] ?? 0);
+
+        if ($idVoucherHeader <= 0) {
+            $this->responseError('Identificador de comprobante no válido.');
+        }
+
+        // ID del negocio desde la sesión
+        $businessId = $this->getBusinessId();
+
+        $rows = $this->model->select_voucher($idVoucherHeader, $businessId);
+
+        if (empty($rows)) {
+            $arrResponse = [
+                'status' => false,
+                'msg'    => 'No se encontraron datos para este comprobante.'
+            ];
+            toJson($arrResponse);
+            return;
+        }
+
+        // Cabecera desde la primera fila
+        $headerRow = $rows[0];
+
+        $header = [
+            'name_bussines'       => $headerRow['name_bussines'],
+            'direction_bussines'  => $headerRow['direction_bussines'],
+            'document_bussines'   => $headerRow['document_bussines'],
+            'date_time'           => $headerRow['date_time'],
+            'name_customer'       => $headerRow['name_customer'],
+            'direction_customer'  => $headerRow['direction_customer'],
+            'amount'              => $headerRow['amount'],
+            'percentage_discount' => $headerRow['percentage_discount'],
+        ];
+
+        // Detalle (todas las filas)
+        $details = [];
+        foreach ($rows as $row) {
+            $details[] = [
+                'name_product'        => $row['name_product'],
+                'unit_of_measurement' => $row['unit_of_measurement'],
+                'sales_price_product' => $row['sales_price_product'],
+            ];
+        }
+
+        $arrResponse = [
+            'status'  => true,
+            'header'  => $header,
+            'details' => $details,
+        ];
+
+        toJson($arrResponse);
+    }
+
+    /**
+     * Obtiene el identificador del negocio activo desde la sesión.
+     *
+     * @return int
+     */
+    private function getBusinessId(): int
+    {
+        if (!isset($_SESSION[$this->nameVarBusiness]['idBusiness'])) {
+            $this->responseError('No se encontró el negocio activo en la sesión.');
+        }
+
+        return (int) $_SESSION[$this->nameVarBusiness]['idBusiness'];
+    }
+
+    /**
+     * Obtiene los totales de movimientos para mostrar en las cards dinámicas.
+     *
+     * @return void
+     */
+    public function getTotals(): void
+    {
+        $businessId = $this->getBusinessId();
+        $totals = $this->model->getTotals($businessId);
+
+        $arrResponse = [
+            'status' => true,
+            'totals' => $totals,
+        ];
+
+        toJson($arrResponse);
+    }
+
+    /**
+     * Envía una respuesta de error estándar en formato JSON y finaliza la ejecución.
+     *
+     * @param string $message Mensaje descriptivo del error.
+     *
+     * @return void
+     */
+    private function responseError(string $message): void
+    {
+        $data = [
+            'title'   => 'Ocurrió un error',
+            'message' => $message,
+            'type'    => 'error',
+            'icon'    => 'error',
+            'status'  => false,
+        ];
+
+        toJson($data);
+    }
 }
