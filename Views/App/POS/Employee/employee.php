@@ -66,6 +66,9 @@
                         <datalist id="employeeUserSuggestions"></datalist>
                         <input type="hidden" id="txtEmployeeUserappId" name="txtEmployeeUserappId">
                         <input type="hidden" id="txtEmployeePeopleId" name="txtEmployeePeopleId">
+                        <input type="hidden" id="txtEmployeeNames" name="txtEmployeeNames">
+                        <input type="hidden" id="txtEmployeeLastname" name="txtEmployeeLastname">
+                        <input type="hidden" id="txtEmployeeEmail" name="txtEmployeeEmail">
                     </div>
                     <div class="col-md-4">
                         <label for="txtEmployeeRolapp" class="form-label">Rol de Aplicación <span class="text-danger">*</span></label>
@@ -73,17 +76,26 @@
                             <option value="" selected disabled>Selecciona un rol</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <label for="txtEmployeeNames" class="form-label">Nombres</label>
-                        <input type="text" class="form-control" id="txtEmployeeNames" name="txtEmployeeNames" maxlength="100" readonly>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="txtEmployeeLastname" class="form-label">Apellidos</label>
-                        <input type="text" class="form-control" id="txtEmployeeLastname" name="txtEmployeeLastname" maxlength="100" readonly>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="txtEmployeeEmail" class="form-label">Correo electrónico</label>
-                        <input type="email" class="form-control" id="txtEmployeeEmail" name="txtEmployeeEmail" maxlength="120" readonly>
+                    <div class="col-12">
+                        <div class="employee-user-preview shadow-sm">
+                            <div class="employee-user-preview__icon text-primary">
+                                <i class="bi bi-person-badge"></i>
+                            </div>
+                            <div class="employee-user-preview__content">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                    <div>
+                                        <p class="text-muted small mb-1">Nombre completo</p>
+                                        <h5 class="mb-1" id="displayEmployeeFullName">Sin usuario seleccionado</h5>
+                                        <p class="mb-0 text-muted" id="displayEmployeeEmail">-</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="text-muted small mb-1">Usuario</p>
+                                        <span class="badge bg-info text-dark" id="displayEmployeeUser">No asignado</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2 text-muted small" id="displayEmployeeNote">Busca un usuario para mostrar sus datos antes de guardar.</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -141,6 +153,9 @@
                 <input type="hidden" name="update_txtEmployeeId" id="update_txtEmployeeId">
                 <input type="hidden" name="update_txtEmployeeUserappId" id="update_txtEmployeeUserappId">
                 <input type="hidden" name="update_txtEmployeePeopleId" id="update_txtEmployeePeopleId">
+                <input type="hidden" name="update_txtEmployeeNames" id="update_txtEmployeeNames">
+                <input type="hidden" name="update_txtEmployeeLastname" id="update_txtEmployeeLastname">
+                <input type="hidden" name="update_txtEmployeeEmail" id="update_txtEmployeeEmail">
                 <div class="row g-3">
                     <div class="col-md-8">
                         <label for="update_txtEmployeeUserSearch" class="form-label">Usuario o correo <span class="text-danger">*</span></label>
@@ -157,17 +172,26 @@
                             <option value="" selected disabled>Selecciona un rol</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <label for="update_txtEmployeeNames" class="form-label">Nombres</label>
-                        <input type="text" class="form-control" id="update_txtEmployeeNames" name="update_txtEmployeeNames" maxlength="100" readonly>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="update_txtEmployeeLastname" class="form-label">Apellidos</label>
-                        <input type="text" class="form-control" id="update_txtEmployeeLastname" name="update_txtEmployeeLastname" maxlength="100" readonly>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="update_txtEmployeeEmail" class="form-label">Correo electrónico</label>
-                        <input type="email" class="form-control" id="update_txtEmployeeEmail" name="update_txtEmployeeEmail" maxlength="120" readonly>
+                    <div class="col-12">
+                        <div class="employee-user-preview shadow-sm">
+                            <div class="employee-user-preview__icon text-success">
+                                <i class="bi bi-person-check"></i>
+                            </div>
+                            <div class="employee-user-preview__content">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                    <div>
+                                        <p class="text-muted small mb-1">Nombre completo</p>
+                                        <h5 class="mb-1" id="update_displayEmployeeFullName">Sin usuario seleccionado</h5>
+                                        <p class="mb-0 text-muted" id="update_displayEmployeeEmail">-</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="text-muted small mb-1">Usuario</p>
+                                        <span class="badge bg-success bg-opacity-75 text-dark" id="update_displayEmployeeUser">No asignado</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2 text-muted small" id="update_displayEmployeeNote">Busca un usuario activo para actualizar la asignación.</div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="update_txtEmployeeStatus" class="form-label">Estado <span class="text-danger">*</span></label>

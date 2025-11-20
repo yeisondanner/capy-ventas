@@ -109,6 +109,7 @@
    */
   function resetUserInfo(prefix) {
     const currentPrefix = prefix === "update" ? "update_" : "";
+    const displayPrefix = prefix === "update" ? "update_" : "";
     const mappings = [
       "txtEmployeeUserappId",
       "txtEmployeePeopleId",
@@ -123,6 +124,32 @@
         input.value = "";
       }
     });
+
+    const defaultName = "Sin usuario seleccionado";
+    const defaultEmail = "-";
+    const defaultUser = "No asignado";
+    const defaultNote =
+      prefix === "update"
+        ? "Busca un usuario activo para actualizar la asignación."
+        : "Busca un usuario para mostrar sus datos antes de guardar.";
+
+    const fullNameElement = document.getElementById(
+      `${displayPrefix}displayEmployeeFullName`
+    );
+    const emailElement = document.getElementById(
+      `${displayPrefix}displayEmployeeEmail`
+    );
+    const userElement = document.getElementById(
+      `${displayPrefix}displayEmployeeUser`
+    );
+    const noteElement = document.getElementById(
+      `${displayPrefix}displayEmployeeNote`
+    );
+
+    if (fullNameElement) fullNameElement.textContent = defaultName;
+    if (emailElement) emailElement.textContent = defaultEmail;
+    if (userElement) userElement.textContent = defaultUser;
+    if (noteElement) noteElement.textContent = defaultNote;
   }
 
   /**
@@ -132,6 +159,7 @@
    */
   function fillUserInfo(prefix, user) {
     const currentPrefix = prefix === "update" ? "update_" : "";
+    const displayPrefix = prefix === "update" ? "update_" : "";
 
     const idInput = document.getElementById(`${currentPrefix}txtEmployeeUserappId`);
     const peopleInput = document.getElementById(`${currentPrefix}txtEmployeePeopleId`);
@@ -139,6 +167,8 @@
     const lastnameInput = document.getElementById(`${currentPrefix}txtEmployeeLastname`);
     const emailInput = document.getElementById(`${currentPrefix}txtEmployeeEmail`);
     const searchInput = document.getElementById(`${currentPrefix}txtEmployeeUserSearch`);
+
+    const fullName = `${user.names || ""} ${user.lastname || ""}`.trim();
 
     if (idInput) idInput.value = user.idUserApp || "";
     if (peopleInput) peopleInput.value = user.people_id || "";
@@ -148,6 +178,24 @@
     if (searchInput && user.user) {
       searchInput.value = user.user;
     }
+
+    const fullNameElement = document.getElementById(
+      `${displayPrefix}displayEmployeeFullName`
+    );
+    const emailElement = document.getElementById(
+      `${displayPrefix}displayEmployeeEmail`
+    );
+    const userElement = document.getElementById(
+      `${displayPrefix}displayEmployeeUser`
+    );
+    const noteElement = document.getElementById(
+      `${displayPrefix}displayEmployeeNote`
+    );
+
+    if (fullNameElement) fullNameElement.textContent = fullName || "Sin nombre registrado";
+    if (emailElement) emailElement.textContent = user.email || "-";
+    if (userElement) userElement.textContent = user.user || "No asignado";
+    if (noteElement) noteElement.textContent = "Datos obtenidos del usuario seleccionado.";
   }
 
   /**
@@ -729,6 +777,7 @@
 
       const employee = data.data;
       form.reset();
+      resetUserInfo("update");
 
       await loadSelectors();
 
