@@ -73,6 +73,20 @@
   }
 
   /**
+   * Genera una función que limita la frecuencia de ejecución.
+   * @param {Function} fn Función a ejecutar.
+   * @param {number} delay Milisegundos de espera.
+   * @returns {Function}
+   */
+  function debounce(fn, delay = 300) {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn(...args), delay);
+    };
+  }
+
+  /**
    * Rellena un elemento select con opciones.
    * @param {HTMLElement} select Elemento select.
    * @param {Array} items Lista de elementos.
@@ -137,6 +151,70 @@
   }
 
   /**
+   * Pinta las sugerencias en el datalist correspondiente.
+   * @param {"create"|"update"} prefix
+   * @param {Array<{user:string,email:string,full_name:string}>} suggestions
+   */
+  function renderSuggestions(prefix, suggestions) {
+    const datalistId = prefix === "update"
+      ? "employeeUserSuggestionsUpdate"
+      : "employeeUserSuggestions";
+    const datalist = document.getElementById(datalistId);
+
+    if (!datalist) return;
+
+    datalist.innerHTML = "";
+
+    suggestions.forEach((item) => {
+      const option = document.createElement("option");
+      option.value = item.user || item.email || "";
+      option.label = [item.user || item.email || "", item.full_name]
+        .filter(Boolean)
+        .join(" – ");
+      datalist.appendChild(option);
+    });
+  }
+
+  /**
+   * Obtiene sugerencias predictivas de usuarios según el texto ingresado.
+   * @param {"create"|"update"} prefix
+   * @param {number|null} excludeEmployeeId
+   */
+  const fetchUserSuggestions = debounce(async (prefix, excludeEmployeeId = null) => {
+    const currentPrefix = prefix === "update" ? "update_" : "";
+    const input = document.getElementById(`${currentPrefix}txtEmployeeUserSearch`);
+    if (!input) return;
+
+    const query = input.value.trim();
+    if (query.length < 2) {
+      renderSuggestions(prefix, []);
+      return;
+    }
+
+    try {
+      const params = new URLSearchParams({ q: query });
+      if (excludeEmployeeId) {
+        params.append("exclude_employee_id", String(excludeEmployeeId));
+      }
+
+      const response = await fetch(
+        `${base_url}/pos/Employee/suggestUserApps?${params.toString()}`
+      );
+
+      const data = await response.json();
+
+      if (data.status) {
+        renderSuggestions(prefix, data.data || []);
+      } else {
+        renderSuggestions(prefix, []);
+      }
+    } catch (error) {
+      console.error("Error obteniendo sugerencias", error);
+      renderSuggestions(prefix, []);
+    }
+  }, 350);
+
+  /**
    * Consulta al backend un usuario por identificador y lo muestra en el formulario.
    * @param {"create"|"update"} prefix
    * @param {number|null} excludeEmployeeId
@@ -199,6 +277,41 @@
           "No fue posible buscar el usuario. Verifica el dato ingresado e inténtalo nuevamente.",
       });
     }
+  }
+
+  /**
+   * Configura la búsqueda predictiva en el campo indicado.
+   * @param {"create"|"update"} prefix
+   */
+  function setupPredictiveSearch(prefix) {
+    const currentPrefix = prefix === "update" ? "update_" : "";
+    const input = document.getElementById(`${currentPrefix}txtEmployeeUserSearch`);
+
+    if (!input) return;
+
+    const handleSuggestions = () => {
+      const employeeIdField = document.getElementById("update_txtEmployeeId");
+      const excludeEmployeeId = prefix === "update" && employeeIdField
+        ? Number(employeeIdField.value || 0)
+        : null;
+
+      fetchUserSuggestions(prefix, excludeEmployeeId || null);
+    };
+
+    input.addEventListener("input", handleSuggestions);
+
+    input.addEventListener("change", () => {
+      const employeeIdField = document.getElementById("update_txtEmployeeId");
+      const excludeEmployeeId = prefix === "update" && employeeIdField
+        ? Number(employeeIdField.value || 0)
+        : null;
+
+      if (input.value.trim()) {
+        searchUser(prefix, excludeEmployeeId || null);
+      } else {
+        resetUserInfo(prefix);
+      }
+    });
   }
 
   /**
@@ -774,6 +887,8 @@
     registerTableActions();
     handleCreate();
     handleUpdate();
+    setupPredictiveSearch("create");
+    setupPredictiveSearch("update");
 
     const btnOpenEmployeeModal = document.getElementById("btnOpenEmployeeModal");
     if (btnOpenEmployeeModal) {

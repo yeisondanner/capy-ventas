@@ -411,6 +411,53 @@ class Employee extends Controllers
     }
 
     /**
+     * Devuelve sugerencias predictivas de usuarios activos disponibles según el dato ingresado.
+     *
+     * @return void
+     */
+    public function suggestUserApps(): void
+    {
+        $query = strtolower(strClean($_GET['q'] ?? ''));
+        $excludeEmployeeId = isset($_GET['exclude_employee_id']) ? (int) $_GET['exclude_employee_id'] : null;
+
+        if (strlen($query) < 2) {
+            $this->responseError('Ingresa al menos 2 caracteres para obtener sugerencias.');
+        }
+
+        $businessId = $this->getBusinessId();
+        $candidates = $this->model->selectUserApps($businessId, $excludeEmployeeId);
+
+        $suggestions = [];
+
+        foreach ($candidates as $candidate) {
+            $user  = !empty($candidate['user']) ? decryption($candidate['user']) : '';
+            $email = !empty($candidate['email']) ? decryption($candidate['email']) : '';
+            $fullName = trim(($candidate['names'] ?? '') . ' ' . ($candidate['lastname'] ?? ''));
+
+            if (
+                stripos($user, $query) !== false
+                || stripos($email, $query) !== false
+            ) {
+                $suggestions[] = [
+                    'idUserApp' => (int) $candidate['idUserApp'],
+                    'user'      => $user,
+                    'email'     => $email,
+                    'full_name' => $fullName,
+                ];
+            }
+
+            if (count($suggestions) >= 10) {
+                break;
+            }
+        }
+
+        toJson([
+            'status' => true,
+            'data'   => $suggestions,
+        ]);
+    }
+
+    /**
      * Devuelve los roles de aplicación disponibles para el negocio activo.
      *
      * @return void

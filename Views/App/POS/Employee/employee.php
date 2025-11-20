@@ -59,10 +59,11 @@
                     <div class="col-md-8">
                         <label for="txtEmployeeUserSearch" class="form-label">Usuario o correo <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="txtEmployeeUserSearch" name="txtEmployeeUserSearch" maxlength="120" placeholder="Ingresa usuario o correo registrado" required>
+                            <input type="text" class="form-control" id="txtEmployeeUserSearch" name="txtEmployeeUserSearch" maxlength="120" placeholder="Ingresa usuario o correo registrado" list="employeeUserSuggestions" required>
                             <button class="btn btn-outline-secondary" type="button" id="btnSearchEmployeeUser"><i class="bi bi-search"></i> Buscar</button>
                         </div>
                         <small class="text-muted">Carga un usuario existente para vincularlo como empleado.</small>
+                        <datalist id="employeeUserSuggestions"></datalist>
                         <input type="hidden" id="txtEmployeeUserappId" name="txtEmployeeUserappId">
                         <input type="hidden" id="txtEmployeePeopleId" name="txtEmployeePeopleId">
                     </div>
@@ -144,10 +145,11 @@
                     <div class="col-md-8">
                         <label for="update_txtEmployeeUserSearch" class="form-label">Usuario o correo <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="update_txtEmployeeUserSearch" name="update_txtEmployeeUserSearch" maxlength="120" placeholder="Ingresa usuario o correo registrado" required>
+                            <input type="text" class="form-control" id="update_txtEmployeeUserSearch" name="update_txtEmployeeUserSearch" maxlength="120" placeholder="Ingresa usuario o correo registrado" list="employeeUserSuggestionsUpdate" required>
                             <button class="btn btn-outline-secondary" type="button" id="btnSearchEmployeeUserUpdate"><i class="bi bi-search"></i> Buscar</button>
                         </div>
                         <small class="text-muted">Solo puedes vincular usuarios activos y disponibles.</small>
+                        <datalist id="employeeUserSuggestionsUpdate"></datalist>
                     </div>
                     <div class="col-md-4">
                         <label for="update_txtEmployeeRolapp" class="form-label">Rol de Aplicación <span class="text-danger">*</span></label>
