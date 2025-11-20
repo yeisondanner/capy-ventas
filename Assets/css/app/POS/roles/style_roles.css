@@ -1,0 +1,10 @@
+/* Estilos específicos para el módulo de roles POS */
+
+#rolesTable td,
+#rolesTable th {
+  vertical-align: middle;
+}
+
+#roleReportModal dd {
+  word-break: break-word;
+}
