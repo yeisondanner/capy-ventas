@@ -23,6 +23,12 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
  |->root
 
 ## Registro de cambios recientes
+- CHATGPT - 2025-11-20 03:44 UTC - Ajuste del módulo de empleados POS al esquema actual de employee sin columna people_id.
+- CHATGPT - 2025-11-20 04:10 UTC - Vista previa estilizada de los datos del usuario seleccionado al vincular empleados POS.
+- CHATGPT - 2025-11-20 03:40 UTC - Búsqueda predictiva por usuario o correo en empleados POS para vincular rápidamente cuentas activas.
+- CHATGPT - 2025-11-20 03:15 UTC - Empleados POS vinculados a usuarios existentes por correo o usuario, validando disponibilidad antes de asociar rol y negocio.
+- CHATGPT - 2025-11-20 03:10 UTC - Registro automático de roles como activos, edición con estado visible y baja que desactiva los roles asociados antes de eliminarlos.
+- CHATGPT - 2025-11-20 02:40 UTC - Módulo POS para gestionar roles de aplicación, con CRUD, listados y controles de asociaciones.
 - CHATGPT - 2025-11-19 22:52 UTC - Perfil POS con datos personales, suscripción activa y negocios vinculados en /pos/Profile.
 - CHATGPT - 2025-11-19 21:50 UTC - Cambio de negocio en POS sin recargar la página y actualización inmediata tras registrar nuevos negocios.
 - CHATGPT - 2025-11-17 04:30 UTC - Modal POS para registrar nuevos negocios, listarlos en el selector y activar el negocio elegido desde el panel lateral.
@@ -56,3 +62,4 @@ Esta aplicacion es para gestionar los roles de los usuarios, los permisos, falta
 - Equipo Capy Ventas - 2025-11-13 17:20 UTC - Se actualizó el home con mensajes de inicio gratis en CTA de WhatsApp y se incorporó la sección de clientes destacados.
 - Equipo Capy Ventas - 2025-11-13 17:35 UTC - Se realzó el home para resaltar la creación y la administración de diferentes negocios en toda la plataforma.
 
+- CHATGPT - 2025-11-20 03:01 UTC - Registro de empleados POS con captura de datos personales, reutilización por correo, opción de usuario y rol obligatorio.

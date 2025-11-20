@@ -51,27 +51,19 @@ class Employee extends Controllers
         $counter    = 1;
 
         foreach ($employees as $key => $employee) {
-            // Verificar si tiene usuario asociado
             $hasUserApp = !empty($employee['userapp_id']) && !empty($employee['user_app_user']);
-            
-            // Desencriptar datos del usuario si existe
-            $userAppUser = "";
-            $personEmail = "";
-            $fullName = "";
-            
-            if ($hasUserApp) {
-                $userAppUser = !empty($employee['user_app_user']) ? decryption($employee['user_app_user']) : "";
-                $personEmail = !empty($employee['person_email']) ? decryption($employee['person_email']) : "";
-                $fullName = trim(($employee['person_names'] ?? "") . " " . ($employee['person_lastname'] ?? ""));
-            }
-            
-            $fullNameEscaped = htmlspecialchars($fullName ?: "Sin usuario asignado", ENT_QUOTES, 'UTF-8');
+
+            $userAppUser = !empty($employee['user_app_user']) ? decryption($employee['user_app_user']) : "";
+            $personEmail = !empty($employee['person_email']) ? decryption($employee['person_email']) : "";
+            $fullName = trim(($employee['person_names'] ?? "") . " " . ($employee['person_lastname'] ?? ""));
+
+            $fullNameEscaped = htmlspecialchars($fullName ?: "Sin nombre registrado", ENT_QUOTES, 'UTF-8');
             $userAppUserEscaped = htmlspecialchars($userAppUser ?: "-", ENT_QUOTES, 'UTF-8');
             $roleNameEscaped = htmlspecialchars($employee['role_app_name'] ?? "", ENT_QUOTES, 'UTF-8');
-
+            
             $employees[$key]['cont']           = $counter;
             $employees[$key]['full_name']       = $fullNameEscaped;
-            $employees[$key]['user_app_display'] = $hasUserApp 
+            $employees[$key]['user_app_display'] = $hasUserApp
                 ? ($userAppUserEscaped . " (" . $fullNameEscaped . ")")
                 : '<span class="text-muted">Sin usuario asignado</span>';
             $employees[$key]['role_app_name']   = $roleNameEscaped;
@@ -95,7 +87,7 @@ class Employee extends Controllers
     }
 
     /**
-     * Registra un nuevo empleado asociado al negocio activo.
+     * Registra un nuevo empleado asociado al negocio activo, creando o reutilizando sus datos personales.
      *
      * @return void
      */
@@ -108,27 +100,35 @@ class Employee extends Controllers
         $userId = $this->getUserId();
         $this->validateCsrfToken($_POST['token'] ?? '', $userId);
 
-        if (!isset($_POST['txtEmployeeRolapp'])) {
-            $this->responseError('El campo Rol de Aplicación es obligatorio.');
+        $requiredFields = ['txtEmployeeUserappId', 'txtEmployeeRolapp'];
+        foreach ($requiredFields as $field) {
+            if (!isset($_POST[$field]) || trim((string) $_POST[$field]) === '') {
+                $this->responseError('Todos los campos obligatorios deben estar completos.');
+            }
         }
 
         $businessId = $this->getBusinessId();
-        $userappId  = !empty($_POST['txtEmployeeUserapp']) ? (int) $_POST['txtEmployeeUserapp'] : null;
         $rolappId   = (int) ($_POST['txtEmployeeRolapp'] ?? 0);
-        $status     = $_POST['txtEmployeeStatus'] === 'Inactivo' ? 'Inactivo' : 'Activo';
+        $userappId  = (int) ($_POST['txtEmployeeUserappId'] ?? 0);
+        $status     = 'Activo';
 
         if ($rolappId <= 0) {
             $this->responseError('Debes seleccionar un rol de aplicación válido.');
         }
 
+        if ($userappId <= 0) {
+            $this->responseError('Debes buscar y seleccionar un usuario válido.');
+        }
+
         // Validar que el rol pertenezca al negocio
         $this->ensureRolappBelongsToBusiness($rolappId, $businessId);
 
-        // Si se proporcionó un usuario, validar que esté disponible
-        if ($userappId !== null && $userappId > 0) {
-            // Validar que el usuario pertenezca al negocio
-            $this->ensureUserappBelongsToBusiness($userappId, $businessId);
+        $userAppData = $this->model->selectUserAppWithPerson($userappId);
+        if (empty($userAppData) || ($userAppData['status'] ?? '') !== 'Activo') {
+            $this->responseError('El usuario indicado no existe o se encuentra inactivo.');
         }
+
+        $this->ensureUserappAvailability($userappId, $businessId);
 
         $payload = [
             'bussines_id' => $businessId,
@@ -172,16 +172,9 @@ class Employee extends Controllers
             $this->responseError('No se encontró el empleado solicitado.');
         }
 
-        // Desencriptar datos si tiene usuario asociado
-        $userAppUser = "";
-        $personEmail = "";
-        $fullName = "";
-        
-        if (!empty($employee['userapp_id']) && !empty($employee['user_app_user'])) {
-            $userAppUser = !empty($employee['user_app_user']) ? decryption($employee['user_app_user']) : "";
-            $personEmail = !empty($employee['person_email']) ? decryption($employee['person_email']) : "";
-            $fullName = trim(($employee['person_names'] ?? "") . " " . ($employee['person_lastname'] ?? ""));
-        }
+        $userAppUser = !empty($employee['user_app_user']) ? decryption($employee['user_app_user']) : "";
+        $personEmail = !empty($employee['person_email']) ? decryption($employee['person_email']) : "";
+        $fullName = trim(($employee['person_names'] ?? "") . " " . ($employee['person_lastname'] ?? ""));
 
         $data = [
             'status' => true,
@@ -190,7 +183,9 @@ class Employee extends Controllers
                 'userapp_id'      => !empty($employee['userapp_id']) ? (int) $employee['userapp_id'] : null,
                 'rolapp_id'       => (int) $employee['rolapp_id'],
                 'status'          => $employee['status'],
-                'full_name'       => $fullName ?: "Sin usuario asignado",
+                'names'           => $employee['person_names'] ?? '',
+                'lastname'        => $employee['person_lastname'] ?? '',
+                'full_name'       => $fullName ?: "Sin datos personales",
                 'user_app_user'   => $userAppUser,
                 'person_email'    => $personEmail,
                 'role_app_name'   => $employee['role_app_name'] ?? '',
@@ -215,13 +210,22 @@ class Employee extends Controllers
         $userId = $this->getUserId();
         $this->validateCsrfToken($_POST['token'] ?? '', $userId);
 
-        if (!isset($_POST['update_txtEmployeeId']) || !isset($_POST['update_txtEmployeeRolapp']) || !isset($_POST['update_txtEmployeeStatus'])) {
-            $this->responseError('Los campos ID, Rol de Aplicación y Estado son obligatorios.');
+        $requiredFields = [
+            'update_txtEmployeeId',
+            'update_txtEmployeeUserappId',
+            'update_txtEmployeeRolapp',
+            'update_txtEmployeeStatus',
+        ];
+
+        foreach ($requiredFields as $field) {
+            if (!isset($_POST[$field]) || trim((string) $_POST[$field]) === '') {
+                $this->responseError('Todos los campos obligatorios deben estar completos.');
+            }
         }
 
         $businessId = $this->getBusinessId();
         $employeeId = (int) ($_POST['update_txtEmployeeId'] ?? 0);
-        $userappId  = !empty($_POST['update_txtEmployeeUserapp']) ? (int) $_POST['update_txtEmployeeUserapp'] : null;
+        $userappId  = (int) ($_POST['update_txtEmployeeUserappId'] ?? 0);
         $rolappId   = (int) ($_POST['update_txtEmployeeRolapp'] ?? 0);
         $status     = $_POST['update_txtEmployeeStatus'] === 'Inactivo' ? 'Inactivo' : 'Activo';
 
@@ -233,20 +237,23 @@ class Employee extends Controllers
             $this->responseError('Debes seleccionar un rol de aplicación válido.');
         }
 
+        if ($userappId <= 0) {
+            $this->responseError('Debes buscar y seleccionar un usuario válido.');
+        }
+
         $currentEmployee = $this->model->selectEmployee($employeeId, $businessId);
         if (empty($currentEmployee)) {
             $this->responseError('El empleado seleccionado no existe o no pertenece a tu negocio.');
         }
 
-        // Validar que el rol pertenezca al negocio
         $this->ensureRolappBelongsToBusiness($rolappId, $businessId);
 
-        // Si se proporcionó un usuario, validar que esté disponible
-        // Excluir el empleado actual para permitir mantener el mismo usuario
-        if ($userappId !== null && $userappId > 0) {
-            // Validar que el usuario pertenezca al negocio (excluyendo el empleado actual)
-            $this->ensureUserappBelongsToBusiness($userappId, $businessId, $employeeId);
+        $userAppData = $this->model->selectUserAppWithPerson($userappId);
+        if (empty($userAppData) || ($userAppData['status'] ?? '') !== 'Activo') {
+            $this->responseError('El usuario indicado no existe o se encuentra inactivo.');
         }
+
+        $this->ensureUserappAvailability($userappId, $businessId, $employeeId);
 
         $payload = [
             'idEmployee'  => $employeeId,
@@ -346,6 +353,98 @@ class Employee extends Controllers
     }
 
     /**
+     * Busca un usuario de aplicación por correo o nombre de usuario y valida su disponibilidad.
+     *
+     * @return void
+     */
+    public function findUserApp(): void
+    {
+        $identifier = strClean($_GET['identifier'] ?? '');
+        $excludeEmployeeId = isset($_GET['exclude_employee_id']) ? (int) $_GET['exclude_employee_id'] : null;
+
+        if (empty($identifier)) {
+            $this->responseError('Debes ingresar un usuario o correo para buscar.');
+        }
+
+        $normalizedIdentifier = filter_var($identifier, FILTER_VALIDATE_EMAIL)
+            ? strtolower($identifier)
+            : $identifier;
+
+        $encryptedIdentifier = encryption($normalizedIdentifier);
+        $userAppData = $this->model->selectUserAppByIdentifier($encryptedIdentifier);
+
+        if (empty($userAppData)) {
+            $this->responseError('No se encontró un usuario activo con el dato proporcionado.');
+        }
+
+        $userappId = (int) $userAppData['idUserApp'];
+        $businessId = $this->getBusinessId();
+
+        $this->ensureUserappAvailability($userappId, $businessId, $excludeEmployeeId);
+
+        $data = [
+            'status' => true,
+            'data'   => [
+                'idUserApp' => $userappId,
+                'user'      => !empty($userAppData['user']) ? decryption($userAppData['user']) : '',
+                'people_id' => (int) ($userAppData['idPeople'] ?? 0),
+                'names'     => $userAppData['names'] ?? '',
+                'lastname'  => $userAppData['lastname'] ?? '',
+                'email'     => !empty($userAppData['email']) ? decryption($userAppData['email']) : '',
+            ],
+        ];
+
+        toJson($data);
+    }
+
+    /**
+     * Devuelve sugerencias predictivas de usuarios activos disponibles según el dato ingresado.
+     *
+     * @return void
+     */
+    public function suggestUserApps(): void
+    {
+        $query = strtolower(strClean($_GET['q'] ?? ''));
+        $excludeEmployeeId = isset($_GET['exclude_employee_id']) ? (int) $_GET['exclude_employee_id'] : null;
+
+        if (strlen($query) < 2) {
+            $this->responseError('Ingresa al menos 2 caracteres para obtener sugerencias.');
+        }
+
+        $businessId = $this->getBusinessId();
+        $candidates = $this->model->selectUserApps($businessId, $excludeEmployeeId);
+
+        $suggestions = [];
+
+        foreach ($candidates as $candidate) {
+            $user  = !empty($candidate['user']) ? decryption($candidate['user']) : '';
+            $email = !empty($candidate['email']) ? decryption($candidate['email']) : '';
+            $fullName = trim(($candidate['names'] ?? '') . ' ' . ($candidate['lastname'] ?? ''));
+
+            if (
+                stripos($user, $query) !== false
+                || stripos($email, $query) !== false
+            ) {
+                $suggestions[] = [
+                    'idUserApp' => (int) $candidate['idUserApp'],
+                    'user'      => $user,
+                    'email'     => $email,
+                    'full_name' => $fullName,
+                ];
+            }
+
+            if (count($suggestions) >= 10) {
+                break;
+            }
+        }
+
+        toJson([
+            'status' => true,
+            'data'   => $suggestions,
+        ]);
+    }
+
+    /**
      * Devuelve los roles de aplicación disponibles para el negocio activo.
      *
      * @return void
@@ -434,6 +533,24 @@ class Employee extends Controllers
         
         if (!$found) {
             $this->responseError('El usuario de aplicación seleccionado no está disponible para tu negocio o ya está asignado como empleado.');
+        }
+    }
+
+    /**
+     * Verifica que el usuario no esté ya asignado como empleado en el negocio.
+     *
+     * @param int      $userappId          Identificador del usuario de aplicación.
+     * @param int      $businessId         Identificador del negocio activo.
+     * @param int|null $excludeEmployeeId  ID del empleado a excluir (para ediciones).
+     *
+     * @return void
+     */
+    private function ensureUserappAvailability(int $userappId, int $businessId, ?int $excludeEmployeeId = null): void
+    {
+        $existingEmployee = $this->model->selectEmployeeByUserapp($userappId, $businessId, $excludeEmployeeId);
+
+        if (!empty($existingEmployee)) {
+            $this->responseError('El usuario ya está asignado como empleado en este negocio.');
         }
     }
 

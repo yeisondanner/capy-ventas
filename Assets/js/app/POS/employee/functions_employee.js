@@ -4,7 +4,6 @@
   let modalCreate;
   let modalUpdate;
   let modalReport;
-  let cachedUserApps = [];
   let cachedRoleApps = [];
 
   const rootUrl = base_url;
@@ -52,25 +51,18 @@
       instance.modal("hide");
     }
   }
-
   /**
-   * Muestra una alerta usando SweetAlert2.
-   * @param {Object} options Opciones de la alerta.
+   * Genera una función que limita la frecuencia de ejecución.
+   * @param {Function} fn Función a ejecutar.
+   * @param {number} delay Milisegundos de espera.
+   * @returns {Function}
    */
-  function showAlert(options) {
-    if (typeof Swal !== "undefined") {
-      Swal.fire({
-        icon: options.icon || "info",
-        title: options.title || "",
-        text: options.message || "",
-        confirmButtonText: "Aceptar",
-      });
-    } else if (typeof toastr !== "undefined") {
-      toastr[options.icon === "error" ? "error" : options.icon === "success" ? "success" : "info"](
-        options.message || "",
-        options.title || ""
-      );
-    }
+  function debounce(fn, delay = 300) {
+    let timeout;
+    return (...args) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => fn(...args), delay);
+    };
   }
 
   /**
@@ -91,6 +83,268 @@
   }
 
   /**
+   * Limpia los campos de información de usuario según el prefijo indicado.
+   * @param {"create"|"update"} prefix
+   */
+  function resetUserInfo(prefix) {
+    const currentPrefix = prefix === "update" ? "update_" : "";
+    const displayPrefix = prefix === "update" ? "update_" : "";
+    const userInput = document.getElementById(
+      `${currentPrefix}txtEmployeeUserappId`
+    );
+    if (userInput) {
+      userInput.value = "";
+    }
+
+    const defaultName = "Sin usuario seleccionado";
+    const defaultEmail = "-";
+    const defaultUser = "No asignado";
+    const defaultNote =
+      prefix === "update"
+        ? "Busca un usuario activo para actualizar la asignación."
+        : "Busca un usuario para mostrar sus datos antes de guardar.";
+
+    const fullNameElement = document.getElementById(
+      `${displayPrefix}displayEmployeeFullName`
+    );
+    const emailElement = document.getElementById(
+      `${displayPrefix}displayEmployeeEmail`
+    );
+    const userElement = document.getElementById(
+      `${displayPrefix}displayEmployeeUser`
+    );
+    const noteElement = document.getElementById(
+      `${displayPrefix}displayEmployeeNote`
+    );
+
+    if (fullNameElement) fullNameElement.textContent = defaultName;
+    if (emailElement) emailElement.textContent = defaultEmail;
+    if (userElement) userElement.textContent = defaultUser;
+    if (noteElement) noteElement.textContent = defaultNote;
+  }
+
+  /**
+   * Establece los datos del usuario encontrado en el formulario indicado.
+   * @param {"create"|"update"} prefix
+   * @param {{idUserApp:number,names:string,lastname:string,email:string,user:string}} user
+   */
+  function fillUserInfo(prefix, user) {
+    const currentPrefix = prefix === "update" ? "update_" : "";
+    const displayPrefix = prefix === "update" ? "update_" : "";
+
+    const idInput = document.getElementById(
+      `${currentPrefix}txtEmployeeUserappId`
+    );
+    const searchInput = document.getElementById(
+      `${currentPrefix}txtEmployeeUserSearch`
+    );
+
+    const fullName = `${user.names || ""} ${user.lastname || ""}`.trim();
+
+    if (idInput) idInput.value = user.idUserApp || "";
+    if (searchInput && user.user) {
+      searchInput.value = user.user;
+    }
+
+    const fullNameElement = document.getElementById(
+      `${displayPrefix}displayEmployeeFullName`
+    );
+    const emailElement = document.getElementById(
+      `${displayPrefix}displayEmployeeEmail`
+    );
+    const userElement = document.getElementById(
+      `${displayPrefix}displayEmployeeUser`
+    );
+    const noteElement = document.getElementById(
+      `${displayPrefix}displayEmployeeNote`
+    );
+
+    if (fullNameElement)
+      fullNameElement.textContent = fullName || "Sin nombre registrado";
+    if (emailElement) emailElement.textContent = user.email || "-";
+    if (userElement) userElement.textContent = user.user || "No asignado";
+    if (noteElement)
+      noteElement.textContent = "Datos obtenidos del usuario seleccionado.";
+  }
+
+  /**
+   * Pinta las sugerencias en el datalist correspondiente.
+   * @param {"create"|"update"} prefix
+   * @param {Array<{user:string,email:string,full_name:string}>} suggestions
+   */
+  function renderSuggestions(prefix, suggestions) {
+    const datalistId =
+      prefix === "update"
+        ? "employeeUserSuggestionsUpdate"
+        : "employeeUserSuggestions";
+    const datalist = document.getElementById(datalistId);
+
+    if (!datalist) return;
+
+    datalist.innerHTML = "";
+
+    suggestions.forEach((item) => {
+      const option = document.createElement("option");
+      option.value = item.user || item.email || "";
+      option.label = [item.user || item.email || "", item.full_name]
+        .filter(Boolean)
+        .join(" – ");
+      datalist.appendChild(option);
+    });
+  }
+
+  /**
+   * Obtiene sugerencias predictivas de usuarios según el texto ingresado.
+   * @param {"create"|"update"} prefix
+   * @param {number|null} excludeEmployeeId
+   */
+  const fetchUserSuggestions = debounce(
+    async (prefix, excludeEmployeeId = null) => {
+      const currentPrefix = prefix === "update" ? "update_" : "";
+      const input = document.getElementById(
+        `${currentPrefix}txtEmployeeUserSearch`
+      );
+      if (!input) return;
+
+      const query = input.value.trim();
+      if (query.length < 2) {
+        renderSuggestions(prefix, []);
+        return;
+      }
+
+      try {
+        const params = new URLSearchParams({ q: query });
+        if (excludeEmployeeId) {
+          params.append("exclude_employee_id", String(excludeEmployeeId));
+        }
+
+        const response = await fetch(
+          `${base_url}/pos/Employee/suggestUserApps?${params.toString()}`
+        );
+
+        const data = await response.json();
+
+        if (data.status) {
+          renderSuggestions(prefix, data.data || []);
+        } else {
+          renderSuggestions(prefix, []);
+        }
+      } catch (error) {
+        console.error("Error obteniendo sugerencias", error);
+        renderSuggestions(prefix, []);
+      }
+    },
+    350
+  );
+
+  /**
+   * Consulta al backend un usuario por identificador y lo muestra en el formulario.
+   * @param {"create"|"update"} prefix
+   * @param {number|null} excludeEmployeeId
+   */
+  async function searchUser(prefix, excludeEmployeeId = null) {
+    const currentPrefix = prefix === "update" ? "update_" : "";
+    const input = document.getElementById(
+      `${currentPrefix}txtEmployeeUserSearch`
+    );
+
+    if (!input) return;
+
+    const identifier = input.value.trim();
+    if (!identifier) {
+      showAlert({
+        icon: "warning",
+        title: "Dato requerido",
+        message: "Ingresa un usuario o correo para realizar la búsqueda.",
+      });
+      return;
+    }
+
+    try {
+      const params = new URLSearchParams({ identifier });
+      if (excludeEmployeeId) {
+        params.append("exclude_employee_id", String(excludeEmployeeId));
+      }
+
+      const response = await fetch(
+        `${base_url}/pos/Employee/findUserApp?${params.toString()}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}`);
+      }
+
+      const data = await response.json();
+
+      if (!data.status) {
+        resetUserInfo(prefix);
+        showAlert({
+          icon: data.icon || "error",
+          title: data.title || "Ocurrió un error",
+          message:
+            data.message || "No fue posible encontrar el usuario indicado.",
+        });
+        return;
+      }
+
+      fillUserInfo(prefix, data.data);
+      showAlert({
+        icon: "success",
+        title: "Usuario encontrado",
+        message: "El usuario está disponible para asignarlo como empleado.",
+      });
+    } catch (error) {
+      console.error("Error buscando usuario", error);
+      resetUserInfo(prefix);
+      showAlert({
+        icon: "error",
+        title: "Ocurrió un error",
+        message:
+          "No fue posible buscar el usuario. Verifica el dato ingresado e inténtalo nuevamente.",
+      });
+    }
+  }
+
+  /**
+   * Configura la búsqueda predictiva en el campo indicado.
+   * @param {"create"|"update"} prefix
+   */
+  function setupPredictiveSearch(prefix) {
+    const currentPrefix = prefix === "update" ? "update_" : "";
+    const input = document.getElementById(
+      `${currentPrefix}txtEmployeeUserSearch`
+    );
+
+    if (!input) return;
+
+    const handleSuggestions = () => {
+      const employeeIdField = document.getElementById("update_txtEmployeeId");
+      const excludeEmployeeId =
+        prefix === "update" && employeeIdField
+          ? Number(employeeIdField.value || 0)
+          : null;
+
+      fetchUserSuggestions(prefix, excludeEmployeeId || null);
+    };
+
+    input.addEventListener("input", handleSuggestions);
+
+    input.addEventListener("change", () => {
+      const employeeIdField = document.getElementById("update_txtEmployeeId");
+      const excludeEmployeeId =
+        prefix === "update" && employeeIdField
+          ? Number(employeeIdField.value || 0)
+          : null;
+
+      if (input.value.trim()) {
+        searchUser(prefix, excludeEmployeeId || null);
+      } else {
+        resetUserInfo(prefix);
+      }
+    });
+  }
+
+  /**
    * Inicializa las referencias de los modales.
    */
   function initModals() {
@@ -100,71 +354,31 @@
   }
 
   /**
-   * Carga los usuarios de aplicación y roles desde el servidor.
-   * @param {number|null} excludeEmployeeId ID del empleado a excluir (para actualizaciones).
+   * Carga los roles desde el servidor.
    */
-  async function loadSelectors(excludeEmployeeId = null) {
+  async function loadSelectors() {
     try {
-      let userAppsUrl = `${base_url}/pos/Employee/getUserApps`;
-      if (excludeEmployeeId) {
-        userAppsUrl += `?exclude_employee_id=${excludeEmployeeId}`;
-      }
-      
-      const [userAppsResponse, roleAppsResponse] = await Promise.all([
-        fetch(userAppsUrl),
-        fetch(`${base_url}/pos/Employee/getRoleApps`),
-      ]);
+      const roleAppsResponse = await fetch(
+        `${base_url}/pos/Employee/getRoleApps`
+      );
 
-      if (!userAppsResponse.ok) {
-        throw new Error(`Usuarios: ${userAppsResponse.status}`);
-      }
       if (!roleAppsResponse.ok) {
         throw new Error(`Roles: ${roleAppsResponse.status}`);
       }
 
-      const userAppsJson = await userAppsResponse.json();
       const roleAppsJson = await roleAppsResponse.json();
 
-      if (!userAppsJson.status) {
-        throw new Error(
-          userAppsJson.message || "No fue posible cargar los usuarios de aplicación"
-        );
-      }
       if (!roleAppsJson.status) {
         throw new Error(
-          roleAppsJson.message || "No fue posible cargar los roles de aplicación"
+          roleAppsJson.message ||
+            "No fue posible cargar los roles de aplicación"
         );
       }
 
-      cachedUserApps = userAppsJson.data.map((item) => ({
-        id: item.idUserApp,
-        idUserApp: item.idUserApp,
-        name: `${item.full_name} - ${item.user} (${item.email})`,
-        full_name: item.full_name,
-        user: item.user,
-        email: item.email,
-      }));
       cachedRoleApps = roleAppsJson.data.map((item) => ({
         id: item.idRoleApp,
         name: item.name,
       }));
-
-      // Agregar opción "Sin usuario asignado" al inicio
-      const userAppsWithNone = [
-        { id: "", idUserApp: null, name: "Sin usuario asignado" },
-        ...cachedUserApps
-      ];
-      
-      populateSelect(
-        document.getElementById("txtEmployeeUserapp"),
-        userAppsWithNone,
-        "Sin usuario asignado"
-      );
-      populateSelect(
-        document.getElementById("update_txtEmployeeUserapp"),
-        userAppsWithNone,
-        "Sin usuario asignado"
-      );
 
       populateSelect(
         document.getElementById("txtEmployeeRolapp"),
@@ -283,22 +497,12 @@
     }
 
     form.reset();
-    // Agregar opción "Sin usuario asignado" al inicio
-    const userAppsWithNone = [
-      { id: "", idUserApp: null, name: "Sin usuario asignado" },
-      ...cachedUserApps
-    ];
-    
-    populateSelect(
-      document.getElementById("txtEmployeeUserapp"),
-      userAppsWithNone,
-      "Sin usuario asignado"
-    );
     populateSelect(
       document.getElementById("txtEmployeeRolapp"),
       cachedRoleApps,
       "Selecciona un rol"
     );
+    resetUserInfo("create");
 
     showModal(modalCreate);
   }
@@ -314,6 +518,17 @@
       event.preventDefault();
 
       const formData = new FormData(form);
+      const userId = formData.get("txtEmployeeUserappId");
+
+      if (!userId) {
+        showAlert({
+          icon: "warning",
+          title: "Usuario requerido",
+          message:
+            "Busca y selecciona un usuario antes de registrar al empleado.",
+        });
+        return;
+      }
       try {
         const response = await fetch(`${base_url}/pos/Employee/setEmployee`, {
           method: "POST",
@@ -335,22 +550,12 @@
 
         if (data.status) {
           form.reset();
-          // Agregar opción "Sin usuario asignado" al inicio
-          const userAppsWithNone = [
-            { id: "", idUserApp: null, name: "Sin usuario asignado" },
-            ...cachedUserApps
-          ];
-          
-          populateSelect(
-            document.getElementById("txtEmployeeUserapp"),
-            userAppsWithNone,
-            "Sin usuario asignado"
-          );
           populateSelect(
             document.getElementById("txtEmployeeRolapp"),
             cachedRoleApps,
             "Selecciona un rol"
           );
+          resetUserInfo("create");
           hideModal(modalCreate);
           employeesTable.ajax.reload(null, false);
         }
@@ -377,6 +582,17 @@
       event.preventDefault();
 
       const formData = new FormData(form);
+      const userId = formData.get("update_txtEmployeeUserappId");
+
+      if (!userId) {
+        showAlert({
+          icon: "warning",
+          title: "Usuario requerido",
+          message:
+            "Busca y selecciona un usuario disponible antes de actualizar.",
+        });
+        return;
+      }
       try {
         const response = await fetch(
           `${base_url}/pos/Employee/updateEmployee`,
@@ -548,49 +764,33 @@
 
       const employee = data.data;
       form.reset();
+      resetUserInfo("update");
 
-      // Recargar selectores excluyendo el empleado actual para que su usuario esté disponible
-      await loadSelectors(employee.idEmployee);
+      await loadSelectors();
 
-      // Preparar lista de usuarios con opción "Sin usuario asignado"
-      let userAppsForUpdate = [
-        { id: "", idUserApp: null, name: "Sin usuario asignado" }
-      ];
-
-      // Si el empleado tiene usuario, asegurar que esté en la lista
-      if (employee.userapp_id) {
-        const currentUserAppExists = cachedUserApps.some(
-          (item) => item.idUserApp === employee.userapp_id
-        );
-        if (!currentUserAppExists && employee.user_app_user) {
-          cachedUserApps.push({
-            id: employee.userapp_id,
-            idUserApp: employee.userapp_id,
-            name: `${employee.full_name} - ${employee.user_app_user} (${employee.person_email})`,
-            full_name: employee.full_name,
-            user: employee.user_app_user,
-            email: employee.person_email,
-          });
-        }
-      }
-
-      userAppsForUpdate = [...userAppsForUpdate, ...cachedUserApps];
-
-      populateSelect(
-        document.getElementById("update_txtEmployeeUserapp"),
-        userAppsForUpdate,
-        "Sin usuario asignado"
-      );
       populateSelect(
         document.getElementById("update_txtEmployeeRolapp"),
         cachedRoleApps,
         "Selecciona un rol"
       );
 
-      document.getElementById("update_txtEmployeeId").value = employee.idEmployee;
-      document.getElementById("update_txtEmployeeUserapp").value = employee.userapp_id || "";
-      document.getElementById("update_txtEmployeeRolapp").value = employee.rolapp_id;
-      document.getElementById("update_txtEmployeeStatus").value = employee.status;
+      document.getElementById("update_txtEmployeeId").value =
+        employee.idEmployee;
+      document.getElementById("update_txtEmployeeUserappId").value =
+        employee.userapp_id || "";
+      document.getElementById("update_txtEmployeeUserSearch").value =
+        employee.user_app_user || employee.person_email || "";
+      document.getElementById("update_txtEmployeeRolapp").value =
+        employee.rolapp_id;
+      document.getElementById("update_txtEmployeeStatus").value =
+        employee.status;
+      fillUserInfo("update", {
+        idUserApp: employee.userapp_id,
+        names: employee.names,
+        lastname: employee.lastname,
+        email: employee.person_email,
+        user: employee.user_app_user,
+      });
 
       showModal(modalUpdate);
     } catch (error) {
@@ -631,15 +831,22 @@
 
       const employee = data.data;
 
-      document.getElementById("reportEmployeeName").textContent = employee.full_name || "Sin usuario asignado";
-      document.getElementById("reportEmployeeUserApp").textContent = employee.user_app_user || "-";
-      document.getElementById("reportEmployeeEmail").textContent = employee.person_email || "-";
-      document.getElementById("reportEmployeeRole").textContent = employee.role_app_name || "-";
-      document.getElementById("reportEmployeeRoleDescription").textContent = employee.role_app_description || "Sin descripción registrada.";
+      document.getElementById("reportEmployeeName").textContent =
+        employee.full_name || "Sin usuario asignado";
+      document.getElementById("reportEmployeeUserApp").textContent =
+        employee.user_app_user || "-";
+      document.getElementById("reportEmployeeEmail").textContent =
+        employee.person_email || "-";
+      document.getElementById("reportEmployeeRole").textContent =
+        employee.role_app_name || "-";
+      document.getElementById("reportEmployeeRoleDescription").textContent =
+        employee.role_app_description || "Sin descripción registrada.";
 
-      const statusBadgeElement = document.getElementById("reportEmployeeStatusBadge");
+      const statusBadgeElement = document.getElementById(
+        "reportEmployeeStatusBadge"
+      );
       const statusElement = document.getElementById("reportEmployeeStatus");
-      
+
       if (statusBadgeElement) {
         if (employee.status === "Activo") {
           statusBadgeElement.textContent = "Activo";
@@ -651,7 +858,7 @@
           statusBadgeElement.classList.add("text-danger");
         }
       }
-      
+
       if (statusElement) {
         statusElement.textContent = employee.status || "-";
       }
@@ -722,11 +929,33 @@
     registerTableActions();
     handleCreate();
     handleUpdate();
+    setupPredictiveSearch("create");
+    setupPredictiveSearch("update");
 
-    const btnOpenEmployeeModal = document.getElementById("btnOpenEmployeeModal");
+    const btnOpenEmployeeModal = document.getElementById(
+      "btnOpenEmployeeModal"
+    );
     if (btnOpenEmployeeModal) {
       btnOpenEmployeeModal.addEventListener("click", () => {
         openCreateModal();
+      });
+    }
+
+    const btnSearchCreate = document.getElementById("btnSearchEmployeeUser");
+    if (btnSearchCreate) {
+      btnSearchCreate.addEventListener("click", () => searchUser("create"));
+    }
+
+    const btnSearchUpdate = document.getElementById(
+      "btnSearchEmployeeUserUpdate"
+    );
+    if (btnSearchUpdate) {
+      btnSearchUpdate.addEventListener("click", () => {
+        const employeeIdField = document.getElementById("update_txtEmployeeId");
+        const employeeId = employeeIdField
+          ? Number(employeeIdField.value || 0)
+          : null;
+        searchUser("update", employeeId);
       });
     }
   });

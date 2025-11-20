@@ -32,6 +32,8 @@ class EmployeeModel extends Mysql
                 e.registration_date,
                 e.update_date,
                 ua.user AS user_app_user,
+                ua.idUserApp AS user_app_id,
+                p.idPeople AS person_id,
                 p.names AS person_names,
                 p.lastname AS person_lastname,
                 p.email AS person_email,
@@ -62,6 +64,7 @@ class EmployeeModel extends Mysql
             SELECT
                 e.*,
                 ua.user AS user_app_user,
+                ua.idUserApp AS user_app_id,
                 p.names AS person_names,
                 p.lastname AS person_lastname,
                 p.email AS person_email,
@@ -249,5 +252,202 @@ class EmployeeModel extends Mysql
         $result = $this->select($sql, $params);
 
         return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Busca una persona por su correo electrónico encriptado.
+     *
+     * @param string $email Correo electrónico encriptado.
+     *
+     * @return array
+     */
+    public function selectPersonByEmail(string $email): array
+    {
+        $sql = 'SELECT * FROM people WHERE email = ? LIMIT 1;';
+        $result = $this->select($sql, [$email]);
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Registra una nueva persona.
+     *
+     * @param array $data Datos de la persona.
+     *
+     * @return int
+     */
+    public function insertPerson(array $data): int
+    {
+        $sql = <<<SQL
+            INSERT INTO people
+                (names, lastname, email, date_of_birth, country, telephone_prefix, phone_number)
+            VALUES
+                (?, ?, ?, NULL, NULL, NULL, NULL);
+        SQL;
+
+        $params = [
+            $data['names'],
+            $data['lastname'],
+            $data['email'],
+        ];
+
+        return (int) $this->insert($sql, $params);
+    }
+
+    /**
+     * Actualiza la información básica de una persona.
+     *
+     * @param array $data Datos a actualizar.
+     *
+     * @return bool
+     */
+    public function updatePerson(array $data): bool
+    {
+        $sql = <<<SQL
+            UPDATE people
+            SET
+                names = ?,
+                lastname = ?,
+                email = ?
+            WHERE idPeople = ?
+            LIMIT 1;
+        SQL;
+
+        $params = [
+            $data['names'],
+            $data['lastname'],
+            $data['email'],
+            $data['idPeople'],
+        ];
+
+        return (bool) $this->update($sql, $params);
+    }
+
+    /**
+     * Obtiene el usuario de aplicación asociado a una persona.
+     *
+     * @param int $peopleId Identificador de la persona.
+     *
+     * @return array
+     */
+    public function selectUserAppByPeopleId(int $peopleId): array
+    {
+        $sql = 'SELECT * FROM user_app WHERE people_id = ? LIMIT 1;';
+        $result = $this->select($sql, [$peopleId]);
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Busca un usuario de aplicación por su nombre de usuario encriptado.
+     *
+     * @param string $user Nombre de usuario encriptado.
+     *
+     * @return array
+     */
+    public function selectUserAppByUser(string $user): array
+    {
+        $sql = 'SELECT * FROM user_app WHERE user = ? LIMIT 1;';
+        $result = $this->select($sql, [$user]);
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Busca un usuario de aplicación por su usuario o por el correo de la persona asociada.
+     *
+     * @param string $identifier Valor encriptado que representa el usuario o el correo.
+     *
+     * @return array
+     */
+    public function selectUserAppByIdentifier(string $identifier): array
+    {
+        $sql = <<<SQL
+            SELECT
+                ua.idUserApp,
+                ua.user,
+                ua.status,
+                p.idPeople,
+                p.names,
+                p.lastname,
+                p.email
+            FROM user_app AS ua
+            INNER JOIN people AS p ON p.idPeople = ua.people_id
+            WHERE ua.status = 'Activo'
+              AND (ua.user = ? OR p.email = ?)
+            LIMIT 1;
+        SQL;
+
+        $result = $this->select($sql, [$identifier, $identifier]);
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Obtiene un usuario de aplicación y su persona asociada por identificador.
+     *
+     * @param int $userappId Identificador del usuario de aplicación.
+     *
+     * @return array
+     */
+    public function selectUserAppWithPerson(int $userappId): array
+    {
+        $sql = <<<SQL
+            SELECT
+                ua.idUserApp,
+                ua.user,
+                ua.status,
+                p.idPeople,
+                p.names,
+                p.lastname,
+                p.email
+            FROM user_app AS ua
+            INNER JOIN people AS p ON p.idPeople = ua.people_id
+            WHERE ua.idUserApp = ?
+            LIMIT 1;
+        SQL;
+
+        $result = $this->select($sql, [$userappId]);
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Inserta un usuario de aplicación asociado a una persona.
+     *
+     * @param array $data Datos del usuario.
+     *
+     * @return int
+     */
+    public function insertUserApp(array $data): int
+    {
+        $sql = 'INSERT INTO user_app (user, password, people_id) VALUES (?, ?, ?);';
+        $params = [
+            $data['user'],
+            $data['password'],
+            $data['people_id'],
+        ];
+
+        return (int) $this->insert($sql, $params);
+    }
+
+    /**
+     * Actualiza un usuario de aplicación existente.
+     *
+     * @param array $data Datos a actualizar.
+     *
+     * @return bool
+     */
+    public function updateUserApp(array $data): bool
+    {
+        $sql = 'UPDATE user_app SET user = ?, password = ?, status = ? WHERE idUserApp = ? LIMIT 1;';
+        $params = [
+            $data['user'],
+            $data['password'],
+            $data['status'],
+            $data['idUserApp'],
+        ];
+
+        return (bool) $this->update($sql, $params);
     }
 }
