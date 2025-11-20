@@ -28,18 +28,20 @@ class EmployeeModel extends Mysql
                 e.bussines_id,
                 e.userapp_id,
                 e.rolapp_id,
+                e.people_id,
                 e.status,
                 e.registration_date,
                 e.update_date,
                 ua.user AS user_app_user,
-                p.names AS person_names,
-                p.lastname AS person_lastname,
-                p.email AS person_email,
+                COALESCE(p.names, p2.names) AS person_names,
+                COALESCE(p.lastname, p2.lastname) AS person_lastname,
+                COALESCE(p.email, p2.email) AS person_email,
                 ra.name AS role_app_name,
                 ra.description AS role_app_description
             FROM employee AS e
             LEFT JOIN user_app AS ua ON ua.idUserApp = e.userapp_id
             LEFT JOIN people AS p ON p.idPeople = ua.people_id
+            LEFT JOIN people AS p2 ON p2.idPeople = e.people_id
             INNER JOIN role_app AS ra ON ra.idRoleApp = e.rolapp_id
             WHERE e.bussines_id = ?
             ORDER BY e.registration_date DESC;
@@ -62,14 +64,15 @@ class EmployeeModel extends Mysql
             SELECT
                 e.*,
                 ua.user AS user_app_user,
-                p.names AS person_names,
-                p.lastname AS person_lastname,
-                p.email AS person_email,
+                COALESCE(p.names, p2.names) AS person_names,
+                COALESCE(p.lastname, p2.lastname) AS person_lastname,
+                COALESCE(p.email, p2.email) AS person_email,
                 ra.name AS role_app_name,
                 ra.description AS role_app_description
             FROM employee AS e
             LEFT JOIN user_app AS ua ON ua.idUserApp = e.userapp_id
             LEFT JOIN people AS p ON p.idPeople = ua.people_id
+            LEFT JOIN people AS p2 ON p2.idPeople = e.people_id
             INNER JOIN role_app AS ra ON ra.idRoleApp = e.rolapp_id
             WHERE e.idEmployee = ?
               AND e.bussines_id = ?
@@ -92,15 +95,16 @@ class EmployeeModel extends Mysql
     {
         $sql = <<<SQL
             INSERT INTO employee
-                (bussines_id, userapp_id, rolapp_id, status)
+                (bussines_id, userapp_id, rolapp_id, people_id, status)
             VALUES
-                (?, ?, ?, ?);
+                (?, ?, ?, ?, ?);
         SQL;
 
         $params = [
             $data['bussines_id'],
             $data['userapp_id'] ?? null,
             $data['rolapp_id'],
+            $data['people_id'],
             $data['status'],
         ];
 
@@ -121,6 +125,7 @@ class EmployeeModel extends Mysql
             SET
                 userapp_id = ?,
                 rolapp_id = ?,
+                people_id = ?,
                 status = ?
             WHERE idEmployee = ?
               AND bussines_id = ?
@@ -130,6 +135,7 @@ class EmployeeModel extends Mysql
         $params = [
             $data['userapp_id'] ?? null,
             $data['rolapp_id'],
+            $data['people_id'],
             $data['status'],
             $data['idEmployee'],
             $data['bussines_id'],
@@ -249,5 +255,143 @@ class EmployeeModel extends Mysql
         $result = $this->select($sql, $params);
 
         return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Busca una persona por su correo electrónico encriptado.
+     *
+     * @param string $email Correo electrónico encriptado.
+     *
+     * @return array
+     */
+    public function selectPersonByEmail(string $email): array
+    {
+        $sql = 'SELECT * FROM people WHERE email = ? LIMIT 1;';
+        $result = $this->select($sql, [$email]);
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Registra una nueva persona.
+     *
+     * @param array $data Datos de la persona.
+     *
+     * @return int
+     */
+    public function insertPerson(array $data): int
+    {
+        $sql = <<<SQL
+            INSERT INTO people
+                (names, lastname, email, date_of_birth, country, telephone_prefix, phone_number)
+            VALUES
+                (?, ?, ?, NULL, NULL, NULL, NULL);
+        SQL;
+
+        $params = [
+            $data['names'],
+            $data['lastname'],
+            $data['email'],
+        ];
+
+        return (int) $this->insert($sql, $params);
+    }
+
+    /**
+     * Actualiza la información básica de una persona.
+     *
+     * @param array $data Datos a actualizar.
+     *
+     * @return bool
+     */
+    public function updatePerson(array $data): bool
+    {
+        $sql = <<<SQL
+            UPDATE people
+            SET
+                names = ?,
+                lastname = ?,
+                email = ?
+            WHERE idPeople = ?
+            LIMIT 1;
+        SQL;
+
+        $params = [
+            $data['names'],
+            $data['lastname'],
+            $data['email'],
+            $data['idPeople'],
+        ];
+
+        return (bool) $this->update($sql, $params);
+    }
+
+    /**
+     * Obtiene el usuario de aplicación asociado a una persona.
+     *
+     * @param int $peopleId Identificador de la persona.
+     *
+     * @return array
+     */
+    public function selectUserAppByPeopleId(int $peopleId): array
+    {
+        $sql = 'SELECT * FROM user_app WHERE people_id = ? LIMIT 1;';
+        $result = $this->select($sql, [$peopleId]);
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Busca un usuario de aplicación por su nombre de usuario encriptado.
+     *
+     * @param string $user Nombre de usuario encriptado.
+     *
+     * @return array
+     */
+    public function selectUserAppByUser(string $user): array
+    {
+        $sql = 'SELECT * FROM user_app WHERE user = ? LIMIT 1;';
+        $result = $this->select($sql, [$user]);
+
+        return is_array($result) ? $result : [];
+    }
+
+    /**
+     * Inserta un usuario de aplicación asociado a una persona.
+     *
+     * @param array $data Datos del usuario.
+     *
+     * @return int
+     */
+    public function insertUserApp(array $data): int
+    {
+        $sql = 'INSERT INTO user_app (user, password, people_id) VALUES (?, ?, ?);';
+        $params = [
+            $data['user'],
+            $data['password'],
+            $data['people_id'],
+        ];
+
+        return (int) $this->insert($sql, $params);
+    }
+
+    /**
+     * Actualiza un usuario de aplicación existente.
+     *
+     * @param array $data Datos a actualizar.
+     *
+     * @return bool
+     */
+    public function updateUserApp(array $data): bool
+    {
+        $sql = 'UPDATE user_app SET user = ?, password = ?, status = ? WHERE idUserApp = ? LIMIT 1;';
+        $params = [
+            $data['user'],
+            $data['password'],
+            $data['status'],
+            $data['idUserApp'],
+        ];
+
+        return (bool) $this->update($sql, $params);
     }
 }

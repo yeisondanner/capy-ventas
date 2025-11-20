@@ -4,7 +4,6 @@
   let modalCreate;
   let modalUpdate;
   let modalReport;
-  let cachedUserApps = [];
   let cachedRoleApps = [];
 
   const rootUrl = base_url;
@@ -91,6 +90,28 @@
   }
 
   /**
+   * Muestra u oculta los campos de usuario según el checkbox.
+   * @param {boolean} show
+   * @param {"create"|"update"} prefix
+   */
+  function toggleUserFields(show, prefix) {
+    const container = document.getElementById(
+      `${prefix === "update" ? "update_" : ""}employeeUserFields`
+    );
+    if (!container) return;
+
+    if (show) {
+      container.classList.remove("d-none");
+    } else {
+      container.classList.add("d-none");
+      const userInput = container.querySelector("input[name$='EmployeeUser']");
+      const passInput = container.querySelector("input[name$='EmployeePassword']");
+      if (userInput) userInput.value = "";
+      if (passInput) passInput.value = "";
+    }
+  }
+
+  /**
    * Inicializa las referencias de los modales.
    */
   function initModals() {
@@ -100,71 +121,28 @@
   }
 
   /**
-   * Carga los usuarios de aplicación y roles desde el servidor.
-   * @param {number|null} excludeEmployeeId ID del empleado a excluir (para actualizaciones).
+   * Carga los roles desde el servidor.
    */
-  async function loadSelectors(excludeEmployeeId = null) {
+  async function loadSelectors() {
     try {
-      let userAppsUrl = `${base_url}/pos/Employee/getUserApps`;
-      if (excludeEmployeeId) {
-        userAppsUrl += `?exclude_employee_id=${excludeEmployeeId}`;
-      }
-      
-      const [userAppsResponse, roleAppsResponse] = await Promise.all([
-        fetch(userAppsUrl),
-        fetch(`${base_url}/pos/Employee/getRoleApps`),
-      ]);
+      const roleAppsResponse = await fetch(`${base_url}/pos/Employee/getRoleApps`);
 
-      if (!userAppsResponse.ok) {
-        throw new Error(`Usuarios: ${userAppsResponse.status}`);
-      }
       if (!roleAppsResponse.ok) {
         throw new Error(`Roles: ${roleAppsResponse.status}`);
       }
 
-      const userAppsJson = await userAppsResponse.json();
       const roleAppsJson = await roleAppsResponse.json();
 
-      if (!userAppsJson.status) {
-        throw new Error(
-          userAppsJson.message || "No fue posible cargar los usuarios de aplicación"
-        );
-      }
       if (!roleAppsJson.status) {
         throw new Error(
           roleAppsJson.message || "No fue posible cargar los roles de aplicación"
         );
       }
 
-      cachedUserApps = userAppsJson.data.map((item) => ({
-        id: item.idUserApp,
-        idUserApp: item.idUserApp,
-        name: `${item.full_name} - ${item.user} (${item.email})`,
-        full_name: item.full_name,
-        user: item.user,
-        email: item.email,
-      }));
       cachedRoleApps = roleAppsJson.data.map((item) => ({
         id: item.idRoleApp,
         name: item.name,
       }));
-
-      // Agregar opción "Sin usuario asignado" al inicio
-      const userAppsWithNone = [
-        { id: "", idUserApp: null, name: "Sin usuario asignado" },
-        ...cachedUserApps
-      ];
-      
-      populateSelect(
-        document.getElementById("txtEmployeeUserapp"),
-        userAppsWithNone,
-        "Sin usuario asignado"
-      );
-      populateSelect(
-        document.getElementById("update_txtEmployeeUserapp"),
-        userAppsWithNone,
-        "Sin usuario asignado"
-      );
 
       populateSelect(
         document.getElementById("txtEmployeeRolapp"),
@@ -283,22 +261,13 @@
     }
 
     form.reset();
-    // Agregar opción "Sin usuario asignado" al inicio
-    const userAppsWithNone = [
-      { id: "", idUserApp: null, name: "Sin usuario asignado" },
-      ...cachedUserApps
-    ];
-    
-    populateSelect(
-      document.getElementById("txtEmployeeUserapp"),
-      userAppsWithNone,
-      "Sin usuario asignado"
-    );
     populateSelect(
       document.getElementById("txtEmployeeRolapp"),
       cachedRoleApps,
       "Selecciona un rol"
     );
+
+    toggleUserFields(false, "create");
 
     showModal(modalCreate);
   }
@@ -335,22 +304,12 @@
 
         if (data.status) {
           form.reset();
-          // Agregar opción "Sin usuario asignado" al inicio
-          const userAppsWithNone = [
-            { id: "", idUserApp: null, name: "Sin usuario asignado" },
-            ...cachedUserApps
-          ];
-          
-          populateSelect(
-            document.getElementById("txtEmployeeUserapp"),
-            userAppsWithNone,
-            "Sin usuario asignado"
-          );
           populateSelect(
             document.getElementById("txtEmployeeRolapp"),
             cachedRoleApps,
             "Selecciona un rol"
           );
+          toggleUserFields(false, "create");
           hideModal(modalCreate);
           employeesTable.ajax.reload(null, false);
         }
@@ -549,48 +508,27 @@
       const employee = data.data;
       form.reset();
 
-      // Recargar selectores excluyendo el empleado actual para que su usuario esté disponible
-      await loadSelectors(employee.idEmployee);
+      await loadSelectors();
 
-      // Preparar lista de usuarios con opción "Sin usuario asignado"
-      let userAppsForUpdate = [
-        { id: "", idUserApp: null, name: "Sin usuario asignado" }
-      ];
-
-      // Si el empleado tiene usuario, asegurar que esté en la lista
-      if (employee.userapp_id) {
-        const currentUserAppExists = cachedUserApps.some(
-          (item) => item.idUserApp === employee.userapp_id
-        );
-        if (!currentUserAppExists && employee.user_app_user) {
-          cachedUserApps.push({
-            id: employee.userapp_id,
-            idUserApp: employee.userapp_id,
-            name: `${employee.full_name} - ${employee.user_app_user} (${employee.person_email})`,
-            full_name: employee.full_name,
-            user: employee.user_app_user,
-            email: employee.person_email,
-          });
-        }
-      }
-
-      userAppsForUpdate = [...userAppsForUpdate, ...cachedUserApps];
-
-      populateSelect(
-        document.getElementById("update_txtEmployeeUserapp"),
-        userAppsForUpdate,
-        "Sin usuario asignado"
-      );
       populateSelect(
         document.getElementById("update_txtEmployeeRolapp"),
         cachedRoleApps,
         "Selecciona un rol"
       );
 
+      document.getElementById("update_txtEmployeeNames").value = employee.names || "";
+      document.getElementById("update_txtEmployeeLastname").value = employee.lastname || "";
+      document.getElementById("update_txtEmployeeEmail").value = employee.person_email || "";
       document.getElementById("update_txtEmployeeId").value = employee.idEmployee;
-      document.getElementById("update_txtEmployeeUserapp").value = employee.userapp_id || "";
       document.getElementById("update_txtEmployeeRolapp").value = employee.rolapp_id;
       document.getElementById("update_txtEmployeeStatus").value = employee.status;
+
+      const updateCheckbox = document.getElementById("update_chkEmployeeCreateUser");
+      const hasUser = Boolean(employee.user_app_user);
+      updateCheckbox.checked = hasUser;
+      document.getElementById("update_txtEmployeeUser").value = employee.user_app_user || "";
+      document.getElementById("update_txtEmployeePassword").value = "";
+      toggleUserFields(hasUser, "update");
 
       showModal(modalUpdate);
     } catch (error) {
@@ -722,6 +660,22 @@
     registerTableActions();
     handleCreate();
     handleUpdate();
+
+    const chkCreateUser = document.getElementById("chkEmployeeCreateUser");
+    if (chkCreateUser) {
+      chkCreateUser.addEventListener("change", (event) => {
+        toggleUserFields(event.target.checked, "create");
+      });
+      toggleUserFields(chkCreateUser.checked, "create");
+    }
+
+    const chkUpdateUser = document.getElementById("update_chkEmployeeCreateUser");
+    if (chkUpdateUser) {
+      chkUpdateUser.addEventListener("change", (event) => {
+        toggleUserFields(event.target.checked, "update");
+      });
+      toggleUserFields(chkUpdateUser.checked, "update");
+    }
 
     const btnOpenEmployeeModal = document.getElementById("btnOpenEmployeeModal");
     if (btnOpenEmployeeModal) {

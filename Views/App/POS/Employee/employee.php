@@ -57,10 +57,16 @@
                 <?= csrf(); ?>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label for="txtEmployeeUserapp" class="form-label">Usuario de Aplicación (opcional)</label>
-                        <select class="form-select" id="txtEmployeeUserapp" name="txtEmployeeUserapp">
-                            <option value="" selected>Sin usuario asignado</option>
-                        </select>
+                        <label for="txtEmployeeNames" class="form-label">Nombres <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="txtEmployeeNames" name="txtEmployeeNames" maxlength="100" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="txtEmployeeLastname" class="form-label">Apellidos <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="txtEmployeeLastname" name="txtEmployeeLastname" maxlength="100" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="txtEmployeeEmail" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="txtEmployeeEmail" name="txtEmployeeEmail" maxlength="120" required>
                     </div>
                     <div class="col-md-6">
                         <label for="txtEmployeeRolapp" class="form-label">Rol de Aplicación <span class="text-danger">*</span></label>
@@ -68,12 +74,23 @@
                             <option value="" selected disabled>Selecciona un rol</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <label for="txtEmployeeStatus" class="form-label">Estado <span class="text-danger">*</span></label>
-                        <select class="form-select" id="txtEmployeeStatus" name="txtEmployeeStatus" required>
-                            <option value="Activo" selected>Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="chkEmployeeCreateUser" name="chkEmployeeCreateUser">
+                            <label class="form-check-label" for="chkEmployeeCreateUser">Crear usuario para ingresar al sistema</label>
+                        </div>
+                    </div>
+                    <div class="col-12 d-none" id="employeeUserFields">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="txtEmployeeUser" class="form-label">Usuario</label>
+                                <input type="text" class="form-control" id="txtEmployeeUser" name="txtEmployeeUser" maxlength="80">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="txtEmployeePassword" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="txtEmployeePassword" name="txtEmployeePassword" minlength="8">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -131,16 +148,40 @@
                 <input type="hidden" name="update_txtEmployeeId" id="update_txtEmployeeId">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label for="update_txtEmployeeUserapp" class="form-label">Usuario de Aplicación (opcional)</label>
-                        <select class="form-select" id="update_txtEmployeeUserapp" name="update_txtEmployeeUserapp">
-                            <option value="">Sin usuario asignado</option>
-                        </select>
+                        <label for="update_txtEmployeeNames" class="form-label">Nombres <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="update_txtEmployeeNames" name="update_txtEmployeeNames" maxlength="100" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="update_txtEmployeeLastname" class="form-label">Apellidos <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="update_txtEmployeeLastname" name="update_txtEmployeeLastname" maxlength="100" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="update_txtEmployeeEmail" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="update_txtEmployeeEmail" name="update_txtEmployeeEmail" maxlength="120" required>
                     </div>
                     <div class="col-md-6">
                         <label for="update_txtEmployeeRolapp" class="form-label">Rol de Aplicación <span class="text-danger">*</span></label>
                         <select class="form-select" id="update_txtEmployeeRolapp" name="update_txtEmployeeRolapp" required>
                             <option value="" selected disabled>Selecciona un rol</option>
                         </select>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="update_chkEmployeeCreateUser" name="update_chkEmployeeCreateUser">
+                            <label class="form-check-label" for="update_chkEmployeeCreateUser">Crear usuario para ingresar al sistema</label>
+                        </div>
+                    </div>
+                    <div class="col-12 d-none" id="update_employeeUserFields">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="update_txtEmployeeUser" class="form-label">Usuario</label>
+                                <input type="text" class="form-control" id="update_txtEmployeeUser" name="update_txtEmployeeUser" maxlength="80">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="update_txtEmployeePassword" class="form-label">Contraseña (dejar vacío para mantener)</label>
+                                <input type="password" class="form-control" id="update_txtEmployeePassword" name="update_txtEmployeePassword" minlength="8">
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="update_txtEmployeeStatus" class="form-label">Estado <span class="text-danger">*</span></label>

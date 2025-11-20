@@ -51,27 +51,19 @@ class Employee extends Controllers
         $counter    = 1;
 
         foreach ($employees as $key => $employee) {
-            // Verificar si tiene usuario asociado
             $hasUserApp = !empty($employee['userapp_id']) && !empty($employee['user_app_user']);
-            
-            // Desencriptar datos del usuario si existe
-            $userAppUser = "";
-            $personEmail = "";
-            $fullName = "";
-            
-            if ($hasUserApp) {
-                $userAppUser = !empty($employee['user_app_user']) ? decryption($employee['user_app_user']) : "";
-                $personEmail = !empty($employee['person_email']) ? decryption($employee['person_email']) : "";
-                $fullName = trim(($employee['person_names'] ?? "") . " " . ($employee['person_lastname'] ?? ""));
-            }
-            
-            $fullNameEscaped = htmlspecialchars($fullName ?: "Sin usuario asignado", ENT_QUOTES, 'UTF-8');
+
+            $userAppUser = !empty($employee['user_app_user']) ? decryption($employee['user_app_user']) : "";
+            $personEmail = !empty($employee['person_email']) ? decryption($employee['person_email']) : "";
+            $fullName = trim(($employee['person_names'] ?? "") . " " . ($employee['person_lastname'] ?? ""));
+
+            $fullNameEscaped = htmlspecialchars($fullName ?: "Sin nombre registrado", ENT_QUOTES, 'UTF-8');
             $userAppUserEscaped = htmlspecialchars($userAppUser ?: "-", ENT_QUOTES, 'UTF-8');
             $roleNameEscaped = htmlspecialchars($employee['role_app_name'] ?? "", ENT_QUOTES, 'UTF-8');
-
+            
             $employees[$key]['cont']           = $counter;
             $employees[$key]['full_name']       = $fullNameEscaped;
-            $employees[$key]['user_app_display'] = $hasUserApp 
+            $employees[$key]['user_app_display'] = $hasUserApp
                 ? ($userAppUserEscaped . " (" . $fullNameEscaped . ")")
                 : '<span class="text-muted">Sin usuario asignado</span>';
             $employees[$key]['role_app_name']   = $roleNameEscaped;
@@ -95,7 +87,7 @@ class Employee extends Controllers
     }
 
     /**
-     * Registra un nuevo empleado asociado al negocio activo.
+     * Registra un nuevo empleado asociado al negocio activo, creando o reutilizando sus datos personales.
      *
      * @return void
      */
@@ -108,25 +100,100 @@ class Employee extends Controllers
         $userId = $this->getUserId();
         $this->validateCsrfToken($_POST['token'] ?? '', $userId);
 
-        if (!isset($_POST['txtEmployeeRolapp'])) {
-            $this->responseError('El campo Rol de Aplicación es obligatorio.');
+        $requiredFields = ['txtEmployeeNames', 'txtEmployeeLastname', 'txtEmployeeEmail', 'txtEmployeeRolapp'];
+        foreach ($requiredFields as $field) {
+            if (!isset($_POST[$field]) || trim((string) $_POST[$field]) === '') {
+                $this->responseError('Todos los campos obligatorios deben estar completos.');
+            }
         }
 
         $businessId = $this->getBusinessId();
-        $userappId  = !empty($_POST['txtEmployeeUserapp']) ? (int) $_POST['txtEmployeeUserapp'] : null;
         $rolappId   = (int) ($_POST['txtEmployeeRolapp'] ?? 0);
-        $status     = $_POST['txtEmployeeStatus'] === 'Inactivo' ? 'Inactivo' : 'Activo';
+        $names      = strtoupper(strClean($_POST['txtEmployeeNames'] ?? ''));
+        $lastname   = strtoupper(strClean($_POST['txtEmployeeLastname'] ?? ''));
+        $email      = strtolower(strClean($_POST['txtEmployeeEmail'] ?? ''));
+        $status     = 'Activo';
+        $createUser = isset($_POST['chkEmployeeCreateUser']) && $_POST['chkEmployeeCreateUser'] === 'on';
+        $username   = strClean($_POST['txtEmployeeUser'] ?? '');
+        $password   = $_POST['txtEmployeePassword'] ?? '';
 
         if ($rolappId <= 0) {
             $this->responseError('Debes seleccionar un rol de aplicación válido.');
         }
 
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->responseError('Debes ingresar un correo electrónico válido.');
+        }
+
         // Validar que el rol pertenezca al negocio
         $this->ensureRolappBelongsToBusiness($rolappId, $businessId);
 
-        // Si se proporcionó un usuario, validar que esté disponible
-        if ($userappId !== null && $userappId > 0) {
-            // Validar que el usuario pertenezca al negocio
+        $encryptedEmail = encryption($email);
+        $person         = $this->model->selectPersonByEmail($encryptedEmail);
+        $personId       = $person['idPeople'] ?? 0;
+
+        if ($personId > 0) {
+            $this->model->updatePerson([
+                'idPeople' => $personId,
+                'names'    => $names,
+                'lastname' => $lastname,
+                'email'    => $encryptedEmail,
+            ]);
+        } else {
+            $personId = $this->model->insertPerson([
+                'names'    => $names,
+                'lastname' => $lastname,
+                'email'    => $encryptedEmail,
+            ]);
+        }
+
+        if ($personId <= 0) {
+            $this->responseError('No fue posible registrar los datos de la persona.');
+        }
+
+        $userappId = null;
+
+        if ($createUser) {
+            if (empty($username) || empty($password)) {
+                $this->responseError('Para crear el usuario debes ingresar un nombre de usuario y una contraseña.');
+            }
+
+            if (strlen($password) < 8) {
+                $this->responseError('La contraseña debe contener al menos 8 caracteres.');
+            }
+
+            $encryptedUsername = encryption($username);
+            $existingPersonUser = $this->model->selectUserAppByPeopleId($personId);
+            $existingUser      = $this->model->selectUserAppByUser($encryptedUsername);
+            if (!empty($existingPersonUser)) {
+                $userappId = (int) $existingPersonUser['idUserApp'];
+
+                if (!empty($existingUser) && (int) $existingUser['idUserApp'] !== $userappId) {
+                    $this->responseError('El nombre de usuario ya se encuentra en uso.');
+                }
+
+                $this->model->updateUserApp([
+                    'idUserApp' => $userappId,
+                    'user'      => $encryptedUsername,
+                    'password'  => encryption($password),
+                    'status'    => 'Activo',
+                ]);
+            } else {
+                if (!empty($existingUser)) {
+                    $this->responseError('El nombre de usuario ya se encuentra en uso.');
+                }
+
+                $userappId = $this->model->insertUserApp([
+                    'user'      => $encryptedUsername,
+                    'password'  => encryption($password),
+                    'people_id' => $personId,
+                ]);
+            }
+
+            if ($userappId <= 0) {
+                $this->responseError('No fue posible crear el usuario para el empleado.');
+            }
+
             $this->ensureUserappBelongsToBusiness($userappId, $businessId);
         }
 
@@ -134,6 +201,7 @@ class Employee extends Controllers
             'bussines_id' => $businessId,
             'userapp_id'  => $userappId,
             'rolapp_id'   => $rolappId,
+            'people_id'   => $personId,
             'status'      => $status,
         ];
 
@@ -172,16 +240,9 @@ class Employee extends Controllers
             $this->responseError('No se encontró el empleado solicitado.');
         }
 
-        // Desencriptar datos si tiene usuario asociado
-        $userAppUser = "";
-        $personEmail = "";
-        $fullName = "";
-        
-        if (!empty($employee['userapp_id']) && !empty($employee['user_app_user'])) {
-            $userAppUser = !empty($employee['user_app_user']) ? decryption($employee['user_app_user']) : "";
-            $personEmail = !empty($employee['person_email']) ? decryption($employee['person_email']) : "";
-            $fullName = trim(($employee['person_names'] ?? "") . " " . ($employee['person_lastname'] ?? ""));
-        }
+        $userAppUser = !empty($employee['user_app_user']) ? decryption($employee['user_app_user']) : "";
+        $personEmail = !empty($employee['person_email']) ? decryption($employee['person_email']) : "";
+        $fullName = trim(($employee['person_names'] ?? "") . " " . ($employee['person_lastname'] ?? ""));
 
         $data = [
             'status' => true,
@@ -189,8 +250,11 @@ class Employee extends Controllers
                 'idEmployee'      => (int) $employee['idEmployee'],
                 'userapp_id'      => !empty($employee['userapp_id']) ? (int) $employee['userapp_id'] : null,
                 'rolapp_id'       => (int) $employee['rolapp_id'],
+                'people_id'       => !empty($employee['people_id']) ? (int) $employee['people_id'] : null,
                 'status'          => $employee['status'],
-                'full_name'       => $fullName ?: "Sin usuario asignado",
+                'names'           => $employee['person_names'] ?? '',
+                'lastname'        => $employee['person_lastname'] ?? '',
+                'full_name'       => $fullName ?: "Sin datos personales",
                 'user_app_user'   => $userAppUser,
                 'person_email'    => $personEmail,
                 'role_app_name'   => $employee['role_app_name'] ?? '',
@@ -215,15 +279,31 @@ class Employee extends Controllers
         $userId = $this->getUserId();
         $this->validateCsrfToken($_POST['token'] ?? '', $userId);
 
-        if (!isset($_POST['update_txtEmployeeId']) || !isset($_POST['update_txtEmployeeRolapp']) || !isset($_POST['update_txtEmployeeStatus'])) {
-            $this->responseError('Los campos ID, Rol de Aplicación y Estado son obligatorios.');
+        $requiredFields = [
+            'update_txtEmployeeId',
+            'update_txtEmployeeNames',
+            'update_txtEmployeeLastname',
+            'update_txtEmployeeEmail',
+            'update_txtEmployeeRolapp',
+            'update_txtEmployeeStatus',
+        ];
+
+        foreach ($requiredFields as $field) {
+            if (!isset($_POST[$field]) || trim((string) $_POST[$field]) === '') {
+                $this->responseError('Todos los campos obligatorios deben estar completos.');
+            }
         }
 
         $businessId = $this->getBusinessId();
         $employeeId = (int) ($_POST['update_txtEmployeeId'] ?? 0);
-        $userappId  = !empty($_POST['update_txtEmployeeUserapp']) ? (int) $_POST['update_txtEmployeeUserapp'] : null;
         $rolappId   = (int) ($_POST['update_txtEmployeeRolapp'] ?? 0);
         $status     = $_POST['update_txtEmployeeStatus'] === 'Inactivo' ? 'Inactivo' : 'Activo';
+        $names      = strtoupper(strClean($_POST['update_txtEmployeeNames'] ?? ''));
+        $lastname   = strtoupper(strClean($_POST['update_txtEmployeeLastname'] ?? ''));
+        $email      = strtolower(strClean($_POST['update_txtEmployeeEmail'] ?? ''));
+        $createUser = isset($_POST['update_chkEmployeeCreateUser']) && $_POST['update_chkEmployeeCreateUser'] === 'on';
+        $username   = strClean($_POST['update_txtEmployeeUser'] ?? '');
+        $password   = $_POST['update_txtEmployeePassword'] ?? '';
 
         if ($employeeId <= 0) {
             $this->responseError('Identificador de empleado inválido.');
@@ -233,18 +313,86 @@ class Employee extends Controllers
             $this->responseError('Debes seleccionar un rol de aplicación válido.');
         }
 
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->responseError('Debes ingresar un correo electrónico válido.');
+        }
+
         $currentEmployee = $this->model->selectEmployee($employeeId, $businessId);
         if (empty($currentEmployee)) {
             $this->responseError('El empleado seleccionado no existe o no pertenece a tu negocio.');
         }
 
-        // Validar que el rol pertenezca al negocio
         $this->ensureRolappBelongsToBusiness($rolappId, $businessId);
 
-        // Si se proporcionó un usuario, validar que esté disponible
-        // Excluir el empleado actual para permitir mantener el mismo usuario
-        if ($userappId !== null && $userappId > 0) {
-            // Validar que el usuario pertenezca al negocio (excluyendo el empleado actual)
+        $encryptedEmail = encryption($email);
+        $person         = $this->model->selectPersonByEmail($encryptedEmail);
+        $personId       = $person['idPeople'] ?? ($currentEmployee['people_id'] ?? 0);
+
+        if ($personId > 0) {
+            $this->model->updatePerson([
+                'idPeople' => $personId,
+                'names'    => $names,
+                'lastname' => $lastname,
+                'email'    => $encryptedEmail,
+            ]);
+        } else {
+            $personId = $this->model->insertPerson([
+                'names'    => $names,
+                'lastname' => $lastname,
+                'email'    => $encryptedEmail,
+            ]);
+        }
+
+        if ($personId <= 0) {
+            $this->responseError('No fue posible actualizar los datos de la persona.');
+        }
+
+        $userappId = null;
+        if ($createUser) {
+            if (empty($username)) {
+                $this->responseError('El nombre de usuario es obligatorio para crear el acceso.');
+            }
+
+            $encryptedUsername = encryption($username);
+            $existingUser      = $this->model->selectUserAppByUser($encryptedUsername);
+            $currentUserId     = $currentEmployee['userapp_id'] ?? null;
+
+            if (!empty($existingUser) && (int) $existingUser['idUserApp'] !== (int) $currentUserId) {
+                $this->responseError('El nombre de usuario ya está en uso por otro registro.');
+            }
+
+            $personUser = $this->model->selectUserAppByPeopleId($personId);
+
+            if (!empty($personUser)) {
+                $userappId = (int) $personUser['idUserApp'];
+                $passwordToUse = !empty($password) ? encryption($password) : $personUser['password'];
+
+                $this->model->updateUserApp([
+                    'idUserApp' => $userappId,
+                    'user'      => $encryptedUsername,
+                    'password'  => $passwordToUse,
+                    'status'    => 'Activo',
+                ]);
+            } else {
+                if (empty($password)) {
+                    $this->responseError('Debes ingresar una contraseña para crear el usuario.');
+                }
+
+                if (strlen($password) < 8) {
+                    $this->responseError('La contraseña debe contener al menos 8 caracteres.');
+                }
+
+                $userappId = $this->model->insertUserApp([
+                    'user'      => $encryptedUsername,
+                    'password'  => encryption($password),
+                    'people_id' => $personId,
+                ]);
+            }
+
+            if ($userappId <= 0) {
+                $this->responseError('No fue posible actualizar o crear el usuario de acceso.');
+            }
+
             $this->ensureUserappBelongsToBusiness($userappId, $businessId, $employeeId);
         }
 
@@ -253,6 +401,7 @@ class Employee extends Controllers
             'bussines_id' => $businessId,
             'userapp_id'  => $userappId,
             'rolapp_id'   => $rolappId,
+            'people_id'   => $personId,
             'status'      => $status,
         ];
 
