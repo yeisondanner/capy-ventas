@@ -1,9 +1,9 @@
 let table;
 
 window.addEventListener("DOMContentLoaded", (e) => {
-  loadTotals(); 
+  loadTotals();
   loadTable();
-  loadReport(); 
+  loadReport();
 });
 
 // Función que carga los totales dinámicos
@@ -16,16 +16,17 @@ function loadTotals() {
       if (res.status) {
         const totals = res.totals;
 
-        $("#balance").text("S/ " + formatCurrency(totals.balance));
-        $("#totalSales").text("S/ " + formatCurrency(totals.total_sales));
-        $("#totalExpenses").text("S/ " + formatCurrency(totals.total_expenses));
+        $("#balance").text(totals.balance);
+        $("#totalSales").text(totals.total_sales);
+        $("#totalExpenses").text(totals.total_expenses);
       }
     },
     error: function () {
       console.error("Error al cargar los totales");
-    }
+    },
   });
 }
+
 
 // Función que carga la tabla con los datos
 function loadTable() {
@@ -43,7 +44,6 @@ function loadTable() {
       { data: "amount" },
       { data: "name" },
       { data: "date_time" },
-      
     ],
     dom: "lBfrtip",
     buttons: [
@@ -116,17 +116,14 @@ function loadTable() {
       url: base_url + "/Assets/js/libraries/POS/Spanish-datatables.json",
     },
     // Callback que se ejecuta después de que se carguen los datos
-    drawCallback: function() {
+    drawCallback: function () {
       // Actualizar los totales después de cargar la tabla
       loadTotals();
-    }
+    },
   });
 }
 
-// Función para formatear moneda
-function formatCurrency(amount) {
-  return parseFloat(amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-}
+
 
 //FUNCION PARA CARGAR EL REPORTE DEL COMPROBANTE
 function loadReport() {
@@ -134,7 +131,7 @@ function loadReport() {
     const idVoucher = $(this).data("idvoucher");
 
     $.ajax({
-      url: base_url + "/pos/Movements/getVoucher", 
+      url: base_url + "/pos/Movements/getVoucher",
       type: "POST",
       dataType: "json",
       data: { idVoucherHeader: idVoucher },
@@ -165,8 +162,7 @@ function loadReport() {
           subtotal += Number(item.sales_price_product);
         });
 
-        const descuento =
-          (subtotal * Number(h.percentage_discount || 0)) / 100;
+        const descuento = (subtotal * Number(h.percentage_discount || 0)) / 100;
 
         $("#subtotal_amount").text("S/ " + subtotal.toFixed(2));
         $("#discount_amount").text("S/ " + descuento.toFixed(2));

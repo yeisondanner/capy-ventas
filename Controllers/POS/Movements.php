@@ -172,17 +172,33 @@ class Movements extends Controllers
      * @return void
      */
     public function getTotals(): void
-    {
-        $businessId = $this->getBusinessId();
-        $totals = $this->model->getTotals($businessId);
+{
+    $businessId = $this->getBusinessId();
+    $totals     = $this->model->getTotals($businessId);
 
-        $arrResponse = [
-            'status' => true,
-            'totals' => $totals,
-        ];
+    // Valores crudos (por si los quieres seguir usando)
+    $balanceRaw        = (float)($totals['balance']        ?? 0);
+    $totalSalesRaw     = (float)($totals['total_sales']    ?? 0);
+    $totalExpensesRaw  = (float)($totals['total_expenses'] ?? 0);
 
-        toJson($arrResponse);
-    }
+    // Símbolo de moneda desde el helper
+    $currency = getCurrency(); // ej. "S/"
+
+    // Formateados
+    $formattedTotals = [
+        'balance'         => $currency . ' ' . number_format($balanceRaw, 2, '.', ','),
+        'total_sales'     => $currency . ' ' . number_format($totalSalesRaw, 2, '.', ','),
+        'total_expenses'  => $currency . ' ' . number_format($totalExpensesRaw, 2, '.', ','),
+    ];
+
+    $arrResponse = [
+        'status' => true,
+        'totals' => $formattedTotals,
+    ];
+
+    toJson($arrResponse);
+}
+
 
     /**
      * Envía una respuesta de error estándar en formato JSON y finaliza la ejecución.
