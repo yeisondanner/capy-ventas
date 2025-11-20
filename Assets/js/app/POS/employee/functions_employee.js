@@ -51,27 +51,6 @@
       instance.modal("hide");
     }
   }
-
-  /**
-   * Muestra una alerta usando SweetAlert2.
-   * @param {Object} options Opciones de la alerta.
-   */
-  function showAlert(options) {
-    if (typeof Swal !== "undefined") {
-      Swal.fire({
-        icon: options.icon || "info",
-        title: options.title || "",
-        text: options.message || "",
-        confirmButtonText: "Aceptar",
-      });
-    } else if (typeof toastr !== "undefined") {
-      toastr[options.icon === "error" ? "error" : options.icon === "success" ? "success" : "info"](
-        options.message || "",
-        options.title || ""
-      );
-    }
-  }
-
   /**
    * Genera una función que limita la frecuencia de ejecución.
    * @param {Function} fn Función a ejecutar.
@@ -153,8 +132,12 @@
     const currentPrefix = prefix === "update" ? "update_" : "";
     const displayPrefix = prefix === "update" ? "update_" : "";
 
-    const idInput = document.getElementById(`${currentPrefix}txtEmployeeUserappId`);
-    const searchInput = document.getElementById(`${currentPrefix}txtEmployeeUserSearch`);
+    const idInput = document.getElementById(
+      `${currentPrefix}txtEmployeeUserappId`
+    );
+    const searchInput = document.getElementById(
+      `${currentPrefix}txtEmployeeUserSearch`
+    );
 
     const fullName = `${user.names || ""} ${user.lastname || ""}`.trim();
 
@@ -176,10 +159,12 @@
       `${displayPrefix}displayEmployeeNote`
     );
 
-    if (fullNameElement) fullNameElement.textContent = fullName || "Sin nombre registrado";
+    if (fullNameElement)
+      fullNameElement.textContent = fullName || "Sin nombre registrado";
     if (emailElement) emailElement.textContent = user.email || "-";
     if (userElement) userElement.textContent = user.user || "No asignado";
-    if (noteElement) noteElement.textContent = "Datos obtenidos del usuario seleccionado.";
+    if (noteElement)
+      noteElement.textContent = "Datos obtenidos del usuario seleccionado.";
   }
 
   /**
@@ -188,9 +173,10 @@
    * @param {Array<{user:string,email:string,full_name:string}>} suggestions
    */
   function renderSuggestions(prefix, suggestions) {
-    const datalistId = prefix === "update"
-      ? "employeeUserSuggestionsUpdate"
-      : "employeeUserSuggestions";
+    const datalistId =
+      prefix === "update"
+        ? "employeeUserSuggestionsUpdate"
+        : "employeeUserSuggestions";
     const datalist = document.getElementById(datalistId);
 
     if (!datalist) return;
@@ -212,39 +198,44 @@
    * @param {"create"|"update"} prefix
    * @param {number|null} excludeEmployeeId
    */
-  const fetchUserSuggestions = debounce(async (prefix, excludeEmployeeId = null) => {
-    const currentPrefix = prefix === "update" ? "update_" : "";
-    const input = document.getElementById(`${currentPrefix}txtEmployeeUserSearch`);
-    if (!input) return;
+  const fetchUserSuggestions = debounce(
+    async (prefix, excludeEmployeeId = null) => {
+      const currentPrefix = prefix === "update" ? "update_" : "";
+      const input = document.getElementById(
+        `${currentPrefix}txtEmployeeUserSearch`
+      );
+      if (!input) return;
 
-    const query = input.value.trim();
-    if (query.length < 2) {
-      renderSuggestions(prefix, []);
-      return;
-    }
-
-    try {
-      const params = new URLSearchParams({ q: query });
-      if (excludeEmployeeId) {
-        params.append("exclude_employee_id", String(excludeEmployeeId));
+      const query = input.value.trim();
+      if (query.length < 2) {
+        renderSuggestions(prefix, []);
+        return;
       }
 
-      const response = await fetch(
-        `${base_url}/pos/Employee/suggestUserApps?${params.toString()}`
-      );
+      try {
+        const params = new URLSearchParams({ q: query });
+        if (excludeEmployeeId) {
+          params.append("exclude_employee_id", String(excludeEmployeeId));
+        }
 
-      const data = await response.json();
+        const response = await fetch(
+          `${base_url}/pos/Employee/suggestUserApps?${params.toString()}`
+        );
 
-      if (data.status) {
-        renderSuggestions(prefix, data.data || []);
-      } else {
+        const data = await response.json();
+
+        if (data.status) {
+          renderSuggestions(prefix, data.data || []);
+        } else {
+          renderSuggestions(prefix, []);
+        }
+      } catch (error) {
+        console.error("Error obteniendo sugerencias", error);
         renderSuggestions(prefix, []);
       }
-    } catch (error) {
-      console.error("Error obteniendo sugerencias", error);
-      renderSuggestions(prefix, []);
-    }
-  }, 350);
+    },
+    350
+  );
 
   /**
    * Consulta al backend un usuario por identificador y lo muestra en el formulario.
@@ -253,7 +244,9 @@
    */
   async function searchUser(prefix, excludeEmployeeId = null) {
     const currentPrefix = prefix === "update" ? "update_" : "";
-    const input = document.getElementById(`${currentPrefix}txtEmployeeUserSearch`);
+    const input = document.getElementById(
+      `${currentPrefix}txtEmployeeUserSearch`
+    );
 
     if (!input) return;
 
@@ -288,7 +281,8 @@
         showAlert({
           icon: data.icon || "error",
           title: data.title || "Ocurrió un error",
-          message: data.message || "No fue posible encontrar el usuario indicado.",
+          message:
+            data.message || "No fue posible encontrar el usuario indicado.",
         });
         return;
       }
@@ -317,15 +311,18 @@
    */
   function setupPredictiveSearch(prefix) {
     const currentPrefix = prefix === "update" ? "update_" : "";
-    const input = document.getElementById(`${currentPrefix}txtEmployeeUserSearch`);
+    const input = document.getElementById(
+      `${currentPrefix}txtEmployeeUserSearch`
+    );
 
     if (!input) return;
 
     const handleSuggestions = () => {
       const employeeIdField = document.getElementById("update_txtEmployeeId");
-      const excludeEmployeeId = prefix === "update" && employeeIdField
-        ? Number(employeeIdField.value || 0)
-        : null;
+      const excludeEmployeeId =
+        prefix === "update" && employeeIdField
+          ? Number(employeeIdField.value || 0)
+          : null;
 
       fetchUserSuggestions(prefix, excludeEmployeeId || null);
     };
@@ -334,9 +331,10 @@
 
     input.addEventListener("change", () => {
       const employeeIdField = document.getElementById("update_txtEmployeeId");
-      const excludeEmployeeId = prefix === "update" && employeeIdField
-        ? Number(employeeIdField.value || 0)
-        : null;
+      const excludeEmployeeId =
+        prefix === "update" && employeeIdField
+          ? Number(employeeIdField.value || 0)
+          : null;
 
       if (input.value.trim()) {
         searchUser(prefix, excludeEmployeeId || null);
@@ -360,7 +358,9 @@
    */
   async function loadSelectors() {
     try {
-      const roleAppsResponse = await fetch(`${base_url}/pos/Employee/getRoleApps`);
+      const roleAppsResponse = await fetch(
+        `${base_url}/pos/Employee/getRoleApps`
+      );
 
       if (!roleAppsResponse.ok) {
         throw new Error(`Roles: ${roleAppsResponse.status}`);
@@ -370,7 +370,8 @@
 
       if (!roleAppsJson.status) {
         throw new Error(
-          roleAppsJson.message || "No fue posible cargar los roles de aplicación"
+          roleAppsJson.message ||
+            "No fue posible cargar los roles de aplicación"
         );
       }
 
@@ -523,7 +524,8 @@
         showAlert({
           icon: "warning",
           title: "Usuario requerido",
-          message: "Busca y selecciona un usuario antes de registrar al empleado.",
+          message:
+            "Busca y selecciona un usuario antes de registrar al empleado.",
         });
         return;
       }
@@ -586,7 +588,8 @@
         showAlert({
           icon: "warning",
           title: "Usuario requerido",
-          message: "Busca y selecciona un usuario disponible antes de actualizar.",
+          message:
+            "Busca y selecciona un usuario disponible antes de actualizar.",
         });
         return;
       }
@@ -771,12 +774,16 @@
         "Selecciona un rol"
       );
 
-      document.getElementById("update_txtEmployeeId").value = employee.idEmployee;
-      document.getElementById("update_txtEmployeeUserappId").value = employee.userapp_id || "";
+      document.getElementById("update_txtEmployeeId").value =
+        employee.idEmployee;
+      document.getElementById("update_txtEmployeeUserappId").value =
+        employee.userapp_id || "";
       document.getElementById("update_txtEmployeeUserSearch").value =
         employee.user_app_user || employee.person_email || "";
-      document.getElementById("update_txtEmployeeRolapp").value = employee.rolapp_id;
-      document.getElementById("update_txtEmployeeStatus").value = employee.status;
+      document.getElementById("update_txtEmployeeRolapp").value =
+        employee.rolapp_id;
+      document.getElementById("update_txtEmployeeStatus").value =
+        employee.status;
       fillUserInfo("update", {
         idUserApp: employee.userapp_id,
         names: employee.names,
@@ -824,15 +831,22 @@
 
       const employee = data.data;
 
-      document.getElementById("reportEmployeeName").textContent = employee.full_name || "Sin usuario asignado";
-      document.getElementById("reportEmployeeUserApp").textContent = employee.user_app_user || "-";
-      document.getElementById("reportEmployeeEmail").textContent = employee.person_email || "-";
-      document.getElementById("reportEmployeeRole").textContent = employee.role_app_name || "-";
-      document.getElementById("reportEmployeeRoleDescription").textContent = employee.role_app_description || "Sin descripción registrada.";
+      document.getElementById("reportEmployeeName").textContent =
+        employee.full_name || "Sin usuario asignado";
+      document.getElementById("reportEmployeeUserApp").textContent =
+        employee.user_app_user || "-";
+      document.getElementById("reportEmployeeEmail").textContent =
+        employee.person_email || "-";
+      document.getElementById("reportEmployeeRole").textContent =
+        employee.role_app_name || "-";
+      document.getElementById("reportEmployeeRoleDescription").textContent =
+        employee.role_app_description || "Sin descripción registrada.";
 
-      const statusBadgeElement = document.getElementById("reportEmployeeStatusBadge");
+      const statusBadgeElement = document.getElementById(
+        "reportEmployeeStatusBadge"
+      );
       const statusElement = document.getElementById("reportEmployeeStatus");
-      
+
       if (statusBadgeElement) {
         if (employee.status === "Activo") {
           statusBadgeElement.textContent = "Activo";
@@ -844,7 +858,7 @@
           statusBadgeElement.classList.add("text-danger");
         }
       }
-      
+
       if (statusElement) {
         statusElement.textContent = employee.status || "-";
       }
@@ -918,7 +932,9 @@
     setupPredictiveSearch("create");
     setupPredictiveSearch("update");
 
-    const btnOpenEmployeeModal = document.getElementById("btnOpenEmployeeModal");
+    const btnOpenEmployeeModal = document.getElementById(
+      "btnOpenEmployeeModal"
+    );
     if (btnOpenEmployeeModal) {
       btnOpenEmployeeModal.addEventListener("click", () => {
         openCreateModal();
@@ -930,11 +946,15 @@
       btnSearchCreate.addEventListener("click", () => searchUser("create"));
     }
 
-    const btnSearchUpdate = document.getElementById("btnSearchEmployeeUserUpdate");
+    const btnSearchUpdate = document.getElementById(
+      "btnSearchEmployeeUserUpdate"
+    );
     if (btnSearchUpdate) {
       btnSearchUpdate.addEventListener("click", () => {
         const employeeIdField = document.getElementById("update_txtEmployeeId");
-        const employeeId = employeeIdField ? Number(employeeIdField.value || 0) : null;
+        const employeeId = employeeIdField
+          ? Number(employeeIdField.value || 0)
+          : null;
         searchUser("update", employeeId);
       });
     }
