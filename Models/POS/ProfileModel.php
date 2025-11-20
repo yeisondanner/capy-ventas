@@ -108,4 +108,34 @@ class ProfileModel extends Mysql
         $request = $this->select_all($sql, [$userAppId]);
         return $request ?? [];
     }
+
+    /**
+     * Obtiene el historial de facturación (invoices) del usuario.
+     *
+     * @param int $userAppId Identificador del usuario.
+     * @return array Lista de facturas ordenadas por fecha de inicio descendente.
+     */
+    public function selectSubscriptionHistory(int $userAppId): array
+    {
+        $sql = <<<SQL
+            SELECT
+                i.idInvoice,
+                i.period_start,
+                i.period_end,
+                i.subtotal,
+                i.total,
+                i.status,
+                i.discount_amount,
+                p.name AS plan_name,
+                p.billing_period
+            FROM invoices AS i
+            INNER JOIN subscriptions AS s ON i.subscription_id = s.idSubscription
+            INNER JOIN plans AS p ON s.plan_id = p.idPlan
+            WHERE s.user_app_id = ?
+            ORDER BY i.period_start DESC;
+        SQL;
+
+        $request = $this->select_all($sql, [$userAppId]);
+        return $request ?? [];
+    }
 }

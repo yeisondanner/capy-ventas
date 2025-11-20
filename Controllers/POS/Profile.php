@@ -38,6 +38,7 @@ class Profile extends Controllers
 
         $profileData      = $this->model->selectUserProfile($userAppId) ?? [];
         $subscriptionData = $this->model->selectLatestSubscription($userAppId) ?? [];
+        $historyData      = $this->model->selectSubscriptionHistory($userAppId) ?? [];
         $businesses       = $this->model->selectBusinesses($userAppId);
 
         $data = [
@@ -49,6 +50,7 @@ class Profile extends Controllers
             'page_js_css'      => 'profile',
             'user'             => $this->formatUserProfile($profileData, $userInfo),
             'subscription'     => $this->formatSubscription($subscriptionData),
+            'invoices'         => $this->formatSubscriptionHistory($historyData),
             'businesses'       => $this->formatBusinesses($businesses),
         ];
 
@@ -122,34 +124,60 @@ class Profile extends Controllers
         $discount = null;
         if (!empty($subscriptionData['discount_code'])) {
             $discountValue = (float) ($subscriptionData['discount_value'] ?? 0);
-            $discountType  = $subscriptionData['discount_type'] === 'percentage' ? '%' : getCurrency();
-            $discount = sprintf(
-                '%s (%s%s)%s',
-                $subscriptionData['discount_code'],
-                $discountValue,
-                $discountType,
-                !empty($subscriptionData['discount_recurring']) ? ' - recurrente' : ''
-            );
+            $discountType  = $subscriptionData['discount_type'] ?? 'fixed';
+            $discount = $discountType === 'percentage'
+                ? "{$discountValue}% ({$subscriptionData['discount_code']})"
+                : getCurrency() . " " . number_format($discountValue, 2) . " ({$subscriptionData['discount_code']})";
         }
 
         return [
-            'plan'          => $subscriptionData['plan_name'] ?? 'Plan desconocido',
-            'price'         => $subscriptionData['price_per_cycle'] ?? $subscriptionData['base_price'] ?? null,
+            'plan'          => $subscriptionData['plan_name'] ?? 'Sin plan asignado',
+            'price'         => $subscriptionData['price_per_cycle'] ?? null,
             'billingPeriod' => $subscriptionData['billing_period'] ?? null,
             'status'        => $subscriptionData['status'] ?? 'sin datos',
             'startDate'     => $subscriptionData['start_date'] ?? null,
             'endDate'       => $subscriptionData['end_date'] ?? null,
             'nextBilling'   => $subscriptionData['next_billing_date'] ?? null,
-            'autoRenew'     => $subscriptionData['auto_renew'] ?? null,
+            'autoRenew'     => !empty($subscriptionData['auto_renew']),
             'discount'      => $discount,
         ];
     }
 
     /**
-     * Formatea los negocios del usuario.
+     * Formatea el historial de facturación para mostrarlo en la vista.
      *
-     * @param array $businesses Lista de negocios asociados.
-     * @return array Lista preparada para la vista.
+     * @param array $historyData Lista de facturas.
+     * @return array Lista formateada.
+     */
+    private function formatSubscriptionHistory(array $historyData): array
+    {
+        if (empty($historyData)) {
+            return [];
+        }
+
+        $formatted = [];
+        foreach ($historyData as $invoice) {
+            $formatted[] = [
+                'id'            => $invoice['idInvoice'],
+                'plan'          => $invoice['plan_name'] ?? 'Plan desconocido',
+                'subtotal'      => $invoice['subtotal'] ?? 0,
+                'total'         => $invoice['total'] ?? 0,
+                'status'        => $invoice['status'] ?? 'unknown',
+                'startDate'     => $invoice['period_start'] ?? null,
+                'endDate'       => $invoice['period_end'] ?? null,
+                'billingPeriod' => $invoice['billing_period'] ?? null,
+                'discount'      => $invoice['discount_amount'] ?? null,
+            ];
+        }
+
+        return $formatted;
+    }
+
+    /**
+     * Formatea la lista de negocios asociados.
+     *
+     * @param array $businesses Lista de negocios cruda.
+     * @return array Lista formateada.
      */
     private function formatBusinesses(array $businesses): array
     {
@@ -157,22 +185,22 @@ class Profile extends Controllers
             return [];
         }
 
-        return array_map(static function ($business) {
-            $phone = trim(($business['telephone_prefix'] ?? '') . ' ' . ($business['phone_number'] ?? ''));
-
-            return [
-                'id'          => $business['idBusiness'] ?? null,
-                'name'        => $business['business'] ?? '',
-                'category'    => $business['category'] ?? '',
-                'document'    => $business['document_number'] ?? '',
-                'email'       => $business['email'] ?? '',
-                'phone'       => $phone,
-                'address'     => $business['direction'] ?? '',
-                'city'        => $business['city'] ?? '',
-                'country'     => $business['country'] ?? '',
-                'status'      => $business['status'] ?? '',
-                'registered'  => $business['registration_date'] ?? null,
+        $formatted = [];
+        foreach ($businesses as $business) {
+            $formatted[] = [
+                'id'         => $business['idBusiness'],
+                'name'       => $business['business'] ?? 'Sin nombre',
+                'document'   => $business['document_number'] ?? 'Sin documento',
+                'email'      => $business['email'] ?? 'Sin correo',
+                'phone'      => trim(($business['telephone_prefix'] ?? '') . ' ' . ($business['phone_number'] ?? '')),
+                'city'       => $business['city'] ?? '',
+                'country'    => $business['country'] ?? '',
+                'status'     => $business['status'] ?? 'Desconocido',
+                'registered' => $business['registration_date'] ?? null,
+                'category'   => $business['category'] ?? 'Sin categoría',
             ];
-        }, $businesses);
+        }
+
+        return $formatted;
     }
 }
