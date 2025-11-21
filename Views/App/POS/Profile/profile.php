@@ -151,13 +151,11 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
             </div>
             <span class="badge bg-secondary"><?= count($invoices); ?> registros</span>
         </div>
-        <?php
-        dep($invoices);
-        ?>
         <div class="table-responsive mt-3">
             <table class="table table-striped align-middle mb-0">
                 <thead>
                     <tr>
+                        <th>Boleta</th>
                         <th>Plan</th>
                         <th>Periodo</th>
                         <th>Inicio</th>
@@ -176,6 +174,7 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                     <?php else: ?>
                         <?php foreach ($invoices as $invoice): ?>
                             <tr>
+                                <td>#<?= htmlspecialchars($invoice['id'], ENT_QUOTES, 'UTF-8'); ?></td>
                                 <td><?= htmlspecialchars($invoice['plan'], ENT_QUOTES, 'UTF-8'); ?></td>
                                 <td><?= htmlspecialchars($invoice['billingPeriod'] ?? '-', ENT_QUOTES, 'UTF-8'); ?></td>
                                 <td><?= formatDateProfile($invoice['startDate'] ?? null); ?></td>
@@ -188,8 +187,9 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                                     <?= getCurrency(); ?> <?= number_format((float) $invoice['total'], 2); ?>
                                 </td>
                                 <td>
-                                    <span class="badge bg-<?= ($invoice['status'] ?? '') === 'active' ? 'success' : (($invoice['status'] ?? '') === 'expired' ? 'secondary' : 'warning'); ?>">
-                                        <?= htmlspecialchars($invoice['status'], ENT_QUOTES, 'UTF-8'); ?>
+                                    <span class="badge <?= $invoice['status'][1] ?>">
+                                        <i class="bi <?= $invoice['status'][2] ?>"></i>
+                                        <?= htmlspecialchars($invoice['status'][0], ENT_QUOTES, 'UTF-8'); ?>
                                     </span>
                                 </td>
                             </tr>
@@ -204,7 +204,7 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
     <div class="tile mt-4">
         <div class="tile-title-w-btn d-flex align-items-center">
             <div>
-                <h3 class="tile-title mb-0">Negocios vinculados</h3>
+                <h3 class="tile-title mb-0"> <i class="bi bi-building"></i> Dueño de negocios</h3>
                 <small class="text-muted">Contexto comercial de tu cuenta</small>
             </div>
             <span class="badge bg-secondary"><?= count($businesses); ?> en total</span>

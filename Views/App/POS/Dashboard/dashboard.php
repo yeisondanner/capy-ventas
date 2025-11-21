@@ -15,5 +15,10 @@
             <strong>¡Atención!</strong> Esta es una alerta en HTML.
         </div>
     </div>
+    <div class="tile">
+        <?php
+        dep($_SESSION);
+        ?>
+    </div>
 </main>
 <?= footerPos($data) ?>

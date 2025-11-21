@@ -154,9 +154,15 @@ class Profile extends Controllers
         if (empty($historyData)) {
             return [];
         }
+        $status = [
+            'pending' => ['Pendiente', 'bg-warning', 'bi-pause-fill'],
+            'paid'    => ['Pagado', 'bg-success', 'bi-check-circle-fill'],
+            'failed'  => ['Fallido', 'bg-danger', 'bi-x-circle-fill'],
+        ];
 
         $formatted = [];
         foreach ($historyData as $invoice) {
+            $invoice['status'] = $status[$invoice['status']] ?? 'unknown';
             $formatted[] = [
                 'id'            => $invoice['idInvoice'],
                 'plan'          => $invoice['plan_name'] ?? 'Plan desconocido',

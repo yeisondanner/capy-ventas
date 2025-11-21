@@ -1,6 +1,7 @@
 <!-- Sidebar menu-->
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
-<aside class="app-sidebar">    <div class="app-sidebar__user">
+<aside class="app-sidebar">
+    <div class="app-sidebar__user">
         <img class="app-sidebar__user-avatar" src="<?= GENERAR_PERFIL ?><?= $_SESSION[$nameVarLoginInfo]['name'] ?>" alt="User Image">
         <div>
             <p class="app-sidebar__user-name"><?= $_SESSION[$nameVarLoginInfo]['name'] ?></p>
@@ -72,7 +73,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="businessToken" name="token" value="<?= csrf(false); ?>">
+                <?= csrf(); ?>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="businessType" class="form-label">Tipo de negocio <span class="text-danger">*</span></label>
