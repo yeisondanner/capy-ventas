@@ -314,32 +314,43 @@ function registerLog($title, $description, $typeLog, $idUser = 0)
     $obj = new LogsModel();
     $obj->insert_log($title, $description, $typeLog, $idUser);
 }
-//Funcion que validad ataque CSRF
-function isCsrf($token = "")
+/**
+ * Funcion que validad ataque CSRF
+ */
+function isCsrf($token = "", int $session = 0)
 {
+    if ($session === 0) {
+        $name_sesion = config_sesion($session)['name'] ?? '';
+        $nameVarToken = 'data_token';
+        $nameVarLoginInfo =  'login_info';
+    } else if ($session === 1) {
+        $name_sesion = config_sesion($session)['name'] ?? '';
+        $nameVarToken = $name_sesion . 'data_token';
+        $nameVarLoginInfo = $name_sesion . 'login_info';
+    }
     if ($token != "") {
         $_POST['token'] = $token;
     }
     if (isset($_POST['token'])) {
-        if (isset($_SESSION['data_token'])) {
+        if (isset($_SESSION[$nameVarToken])) {
             //validamos si el tiempo de expiracion del token es menor a 10 minutos
-            $datetime = $_SESSION['data_token']["datatime"]; // get datetime from session
+            $datetime = $_SESSION[$nameVarToken]["datatime"]; // get datetime from session
             $timeTranscurridos = dateDifference($datetime, date("Y-m-d H:i:s"))["total_minutos"];
             if ($timeTranscurridos > 10) {
-                registerLog("Ocurrio un error inesperado", "El token de seguridad ha expirado. Por favor, actualice la página para generar uno nuevo. Tenga en cuenta que el token tiene una vigencia máxima de 10 minutos.", 1, $_SESSION['login_info']['idUser']);
+                registerLog("Ocurrio un error inesperado", "El token de seguridad ha expirado. Por favor, actualice la página para generar uno nuevo. Tenga en cuenta que el token tiene una vigencia máxima de 10 minutos.", 1, $_SESSION[$nameVarLoginInfo]['idUser']);
                 $data = array(
                     "title" => "Ocurrio un error inesperado",
                     "message" => "Error: El token de seguridad ha expirado. Por favor, actualice la página para generar uno nuevo. Tenga en cuenta que el token tiene una vigencia máxima de 10 minutos.",
                     "type" => "error",
                     "status" => false
                 );
-                unset($_SESSION['data_token']);
+                unset($_SESSION[$nameVarToken]);
                 toJson($data);
             }
 
-            if (!empty($_SESSION['data_token']["token"])) {
-                if (!hash_equals($_SESSION['data_token']["token"], $_POST['token'])) {
-                    registerLog("Ocurrio un error inesperado", "El token proporcionado en el formulario no coincide con el token generado por la página, lo que indica un posible intento de vulneración del sistema de registro.", 1, $_SESSION['login_info']['idUser']);
+            if (!empty($_SESSION[$nameVarToken]["token"])) {
+                if (!hash_equals($_SESSION[$nameVarToken]["token"], $_POST['token'])) {
+                    registerLog("Ocurrio un error inesperado", "El token proporcionado en el formulario no coincide con el token generado por la página, lo que indica un posible intento de vulneración del sistema de registro.", 1, $_SESSION[$nameVarLoginInfo]['idUser']);
                     $data = array(
                         "title" => "Ocurrio un error inesperado",
                         "message" => "Error: La sesión ha expirado o el token de seguridad es inválido. Por favor, actualiza la página e intenta nuevamente",
@@ -349,7 +360,7 @@ function isCsrf($token = "")
                     toJson($data);
                 }
             } else {
-                registerLog("Ocurrio un error inesperado", "Token de seguridad no encontrado en la sesión.", 1, $_SESSION['login_info']['idUser']);
+                registerLog("Ocurrio un error inesperado", "Token de seguridad no encontrado en la sesión.", 1, $_SESSION[$nameVarLoginInfo]['idUser']);
                 $data = array(
                     "title" => "Ocurrio un error inesperado",
                     "message" => "Error: La sesión ha expirado o el token de seguridad es inválido. Por favor, actualiza la página e intenta nuevamente",
@@ -360,7 +371,7 @@ function isCsrf($token = "")
             }
             //unset($_SESSION['token']);
         } else {
-            registerLog("Ocurrio un error inesperado", "No se encontró el token de seguridad en la sesión.", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrio un error inesperado", "No se encontró el token de seguridad en la sesión.", 1, $_SESSION[$nameVarLoginInfo]['idUser']);
             $data = array(
                 "title" => "Ocurrio un error inesperado",
                 "message" => "Error: La sesión ha expirado o el token de seguridad es inválido. Por favor, actualiza la página e intenta nuevamente",
@@ -370,7 +381,7 @@ function isCsrf($token = "")
             toJson($data);
         }
     } else {
-        registerLog("Ocurrio un error inesperado", "Campo token no encontrado en el formulario.", 1, $_SESSION['login_info']['idUser']);
+        registerLog("Ocurrio un error inesperado", "Campo token no encontrado en el formulario.", 1, $_SESSION[$nameVarLoginInfo]['idUser']);
         $data = array(
             "title" => "Ocurrio un error inesperado",
             "message" => "Error: La sesión ha expirado, el token de seguridad es inválido o el campo no encontrado en el formulario. Por favor, actualiza la página e intenta nuevamente",
@@ -381,17 +392,26 @@ function isCsrf($token = "")
     }
 }
 
-/**Funcion que previene ataque CSRF */
-function csrf(bool $input = true)
+/**
+ * Funcion que previene ataque CSRF 
+ */
+function csrf(bool $input = true, int $session = 0)
 {
     //unset($_SESSION['token']);
-    if (empty($_SESSION['data_token'])) {
-        $_SESSION['data_token'] = array(
+    if ($session == 0) {
+        $sessionName = config_sesion($session)['name'] ?? '';
+        $nameVarToken = 'data_token';
+    } else if ($session == 1) {
+        $sessionName = config_sesion($session)['name'] ?? '';
+        $nameVarToken = $sessionName . 'data_token';
+    }
+    if (empty($_SESSION[$nameVarToken])) {
+        $_SESSION[$nameVarToken] = array(
             "token" => token(),
             "datatime" => date("Y-m-d H:i:s")
         );
     }
-    $token = $_SESSION['data_token']["token"];
+    $token = $_SESSION[$nameVarToken]["token"];
     if (!$input) {
         return $token;
     } else {

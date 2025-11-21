@@ -73,7 +73,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <?= csrf(); ?>
+                <?= csrf(false, 1); ?>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="businessType" class="form-label">Tipo de negocio <span class="text-danger">*</span></label>
