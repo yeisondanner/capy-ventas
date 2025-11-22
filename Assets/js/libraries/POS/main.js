@@ -58,7 +58,6 @@
     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addBusinessModal">Agregar negocio</a></li>
   `;
   }
-
   /**
    * Dibuja la lista de negocios en el dropdown.
    * @param {HTMLElement} dropdownList
@@ -105,7 +104,6 @@
       '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addBusinessModal"><i class="bi bi-plus-circle me-2"></i>Agregar nuevo negocio</a>';
     dropdownList.appendChild(createItem);
   }
-
   /**
    * Registra un nuevo negocio mediante petición asíncrona.
    *
@@ -152,7 +150,6 @@
       }
     });
   }
-
   /**
    * Establece un negocio como activo para la sesión.
    * @param {string|number} businessId
@@ -195,7 +192,6 @@
       });
     }
   }
-
   /**
    * Restablece el formulario del modal de negocios.
    * @param {HTMLFormElement} form
