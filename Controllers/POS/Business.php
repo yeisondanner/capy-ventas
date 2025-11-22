@@ -20,7 +20,6 @@ class Business extends Controllers
     {
         isSession(1);
         parent::__construct('POS');
-
         $sessionName = config_sesion(1)['name'] ?? '';
         $this->nameVarBusiness  = $sessionName . 'business_active';
         $this->nameVarLoginInfo = $sessionName . 'login_info';
@@ -84,7 +83,6 @@ class Business extends Controllers
         isCsrf("", 1);
         validateFields(['businessType', 'businessName', 'businessDocument', 'businessPhone', 'businessTelephonePrefix', 'businessEmail']);
         $userId = $this->getUserId();
-
         $typebusinessId  = (int) $_POST['businessType'];
         $name            = strClean($_POST['businessName']);
         $documentNumber  = strClean($_POST['businessDocument']);
@@ -150,24 +148,16 @@ class Business extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
         $userId     = $this->getUserId();
-        $businessId = isset($_POST['businessId']) ? (int) $_POST['businessId'] : 0;
-        $token      = isset($_POST['token']) ? (string) $_POST['token'] : '';
-
-        $this->validateCsrfToken($token, $userId);
-
+        $businessId = $_POST['businessId'];
         if ($businessId <= 0) {
             $this->responseError('Identificador de negocio inválido.');
         }
-
         $business = $this->model->selectBusinessByIdForUser($businessId, $userId);
         if (!$business) {
             $this->responseError('El negocio seleccionado no pertenece a tu cuenta.');
         }
-
         $_SESSION[$this->nameVarBusiness] = $business;
-
         toJson([
             'status'  => true,
             'title'   => 'Negocio seleccionado',
@@ -198,26 +188,6 @@ class Business extends Controllers
 
         return (int) $_SESSION[$this->nameVarLoginInfo]['idUser'];
     }
-
-    /**
-     * Valida el token CSRF recibido.
-     *
-     * @param string $token  Token recibido en la solicitud.
-     * @param int    $userId Identificador del usuario autenticado.
-     * @return void
-     */
-    private function validateCsrfToken(string $token, int $userId): void
-    {
-        if (empty($token) || empty($_SESSION['data_token']['token'])) {
-            $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
-        }
-
-        $sessionToken = (string) $_SESSION['data_token']['token'];
-        if (!hash_equals($sessionToken, $token)) {
-            $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
-        }
-    }
-
     /**
      * Envía una respuesta de error estándar en formato JSON y finaliza la ejecución.
      *

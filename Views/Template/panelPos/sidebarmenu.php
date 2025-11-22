@@ -13,16 +13,12 @@
             <div class="card-body">
                 <div class="d-flex align-items-center gap-1">
                     <!-- Avatar -->
-
                     <img class="app-sidebar__user-avatar p-0 m-0" id="currentBusinessAvatar" src="<?= GENERAR_PERFIL ?><?= htmlspecialchars($_SESSION[$nameVarBusiness]['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8'); ?>" alt="User Image">
-
-
                     <!-- Nombre y rol -->
                     <div class="flex-grow-1">
                         <div class="fw-semibold" id="currentBusinessName"><?= htmlspecialchars($_SESSION[$nameVarBusiness]['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8'); ?></div>
                         <div class="text-muted small" id="currentBusinessCategory"><?= htmlspecialchars($_SESSION[$nameVarBusiness]['category'] ?? 'Propietario', ENT_QUOTES, 'UTF-8'); ?></div>
                     </div>
-
                     <!-- Caret / Dropdown selector -->
                     <div class="dropdown ms-auto">
                         <button class="btn btn-link p-0 text-secondary" id="businessDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Seleccionar negocio">
