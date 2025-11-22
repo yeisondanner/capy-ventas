@@ -21,6 +21,8 @@
     $(this).parent().toggleClass("is-expanded");
   });
 })();
+const formAddBusiness = document.getElementById("formAddBusiness");
+const btnAddBusiness = document.getElementById("btnAddBusiness");
 /**
  * Creamos una funcion de tipos de alertas con sweetalert2
  */
@@ -60,12 +62,12 @@ function initBusinessManagement() {
   loadBusinessTypes();
   loadUserBusinesses();
 
-  if (form) {
+  /*if (form) {
     form.addEventListener("submit", function (event) {
       event.preventDefault();
       createBusiness(form, token);
     });
-  }
+  }*/
 
   if (dropdownList) {
     dropdownList.addEventListener("click", function (event) {
@@ -158,48 +160,49 @@ function renderBusinessList(dropdownList, businesses) {
 
 /**
  * Registra un nuevo negocio mediante petición asíncrona.
- * @param {HTMLFormElement} form
- * @param {string} token
+ *
  */
-function createBusiness(form, token) {
-  if (!form) return;
-
-  const formData = new FormData(form);
-  formData.set("token", token || formData.get("token") || "");
-
-  fetch(`${base_url}/pos/Business/create`, {
-    method: "POST",
-    body: formData,
-  })
-    .then((response) => response.json())
-    .then((result) => {
-      if (!result?.status) {
-        Swal.fire({
-          icon: "error",
-          title: "No se pudo registrar",
-          text: result?.message || "Intenta nuevamente.",
-        });
-        return;
+function createBusiness() {
+  if (!formAddBusiness) return;
+  formAddBusiness.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const htmlAddBusiness = btnAddBusiness.innerHTML;
+    btnAddBusiness.innerHTML =
+      '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>';
+    btnAddBusiness.disabled = true;
+    btnAddBusiness.classList.add("disabled");
+    const formdata = new FormData(formAddBusiness);
+    const config = {
+      method: "POST",
+      body: formdata,
+    };
+    const url = base_url + "/pos/Business/create";
+    try {
+      const response = await fetch(url, config);
+      if (!response.ok) {
+        throw new Error("No se pudo registrar el negocio");
       }
-
+      const data = await response.json();
+      if (data.status) {
+        resetBusinessForm(formAddBusiness);
+        closeModal("addBusinessModal");
+        updateActiveBusinessUI(data?.data);
+        loadUserBusinesses();
+      }
+      showAlert(data);
+    } catch (error) {
       showAlert({
-        icon: "success",
-        title: result.title || "Negocio creado",
-        message: result.message || "Negocio registrado correctamente.",
-      });
-
-      resetBusinessForm(form);
-      closeModal("addBusinessModal");
-      updateActiveBusinessUI(result?.data);
-      loadUserBusinesses();
-    })
-    .catch(() => {
-      Swal.fire({
         icon: "error",
         title: "Error",
-        text: "No fue posible registrar el negocio. Inténtalo más tarde.",
+        message: "No fue posible registrar el negocio. Inténtalo más tarde.",
+        html: `<pre>${error}</pre>`,
       });
-    });
+    } finally {
+      btnAddBusiness.innerHTML = htmlAddBusiness;
+      btnAddBusiness.disabled = false;
+      btnAddBusiness.classList.remove("disabled");
+    }
+  });
 }
 
 /**
@@ -342,4 +345,7 @@ function loadBusinessTypes() {
     .catch(() => {});
 }
 
-document.addEventListener("DOMContentLoaded", initBusinessManagement);
+document.addEventListener("DOMContentLoaded", () => {
+  createBusiness();
+  initBusinessManagement();
+});

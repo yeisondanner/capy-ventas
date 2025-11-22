@@ -73,7 +73,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <?= csrf(false, 1); ?>
+                <?= csrf(true, 1); ?>
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="businessType" class="form-label">Tipo de negocio <span class="text-danger">*</span></label>
@@ -118,7 +118,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar negocio</button>
+                <button type="submit" class="btn btn-primary" id="btnAddBusiness"><i class="bi bi-save"></i> Guardar negocio</button>
             </div>
         </form>
     </div>

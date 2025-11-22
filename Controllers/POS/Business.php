@@ -81,30 +81,32 @@ class Business extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
+        isCsrf("", 1);
+        validateFields(['businessType', 'businessName', 'businessDocument', 'businessPhone', 'businessTelephonePrefix', 'businessEmail']);
         $userId = $this->getUserId();
 
-        $typebusinessId  = isset($_POST['businessType']) ? (int) $_POST['businessType'] : 0;
-        $name            = isset($_POST['businessName']) ? strClean($_POST['businessName']) : '';
-        $documentNumber  = isset($_POST['businessDocument']) ? strClean($_POST['businessDocument']) : '';
-        $phoneNumber     = isset($_POST['businessPhone']) ? strClean($_POST['businessPhone']) : '';
-        $telephonePrefix = isset($_POST['businessTelephonePrefix']) ? strClean($_POST['businessTelephonePrefix']) : '';
-        $email           = isset($_POST['businessEmail']) ? strClean($_POST['businessEmail']) : '';
-        $direction       = isset($_POST['businessDirection']) ? strClean($_POST['businessDirection']) : null;
-        $city            = isset($_POST['businessCity']) ? strClean($_POST['businessCity']) : null;
-        $country         = isset($_POST['businessCountry']) ? strClean($_POST['businessCountry']) : null;
-        $token           = isset($_POST['token']) ? (string) $_POST['token'] : '';
-
-        $this->validateCsrfToken($token, $userId);
-
-        if (empty($typebusinessId) || empty($name) || empty($documentNumber) || empty($phoneNumber) || empty($telephonePrefix) || empty($email)) {
-            $this->responseError('Completa los campos obligatorios del negocio.');
-        }
+        $typebusinessId  = (int) $_POST['businessType'];
+        $name            = strClean($_POST['businessName']);
+        $documentNumber  = strClean($_POST['businessDocument']);
+        $phoneNumber     = strClean($_POST['businessPhone']);
+        $telephonePrefix = strClean($_POST['businessTelephonePrefix']);
+        $email           = strClean($_POST['businessEmail']);
+        $direction       = strClean($_POST['businessDirection']);
+        $city            = strClean($_POST['businessCity']);
+        $country         = strClean($_POST['businessCountry']);
+        validateFieldsEmpty([
+            'TIPO DE NEGOCIO' => $typebusinessId,
+            'NOMBRE' => $name,
+            'DOCUMENTO' => $documentNumber,
+            'TELEFONO' => $phoneNumber,
+            'PREFIX' => $telephonePrefix,
+            'CORREO' => $email,
+        ]);
 
         if ($this->model->findBusinessByDocument($documentNumber, $userId)) {
             $this->responseError('Ya registraste un negocio con el mismo número de documento.');
         }
-
+        //preparamos los datos para insertarlos en la base de datos
         $data = [
             'typebusiness_id'  => $typebusinessId,
             'name'             => $name,
@@ -122,16 +124,16 @@ class Business extends Controllers
         if (empty($businessId)) {
             $this->responseError('No se pudo registrar el negocio, intenta nuevamente.');
         }
-
+        //insertamos los datos por defecto
         $this->model->insertDefaultData((int) $businessId);
 
         $newBusiness = $this->model->selectBusinessByIdForUser((int) $businessId, $userId);
         if ($newBusiness) {
             $_SESSION[$this->nameVarBusiness] = $newBusiness;
         }
-
         toJson([
             'status'  => true,
+            'icon'    => 'success',
             'title'   => 'Negocio creado',
             'message' => 'El negocio se registró correctamente.',
             'data'    => $newBusiness,

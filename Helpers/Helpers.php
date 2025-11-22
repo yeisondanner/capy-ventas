@@ -308,26 +308,31 @@ function decryption($string): string
     return $output;
 }
 //function que registra logs en la base de datos del sistema
-function registerLog($title, $description, $typeLog, $idUser = 0)
+function registerLog($title, $description, $typeLog, $idUser = 0, string $table = "tb_user")
 {
     require_once "./Models/Admin/LogsModel.php";
     $obj = new LogsModel();
-    $obj->insert_log($title, $description, $typeLog, $idUser);
+    $obj->insert_log($title, $description, $typeLog, $idUser, $table);
 }
 /**
  * Funcion que validad ataque CSRF
  */
 function isCsrf($token = "", int $session = 0)
 {
+    $table = "";
+    //Validamos la sesion para obtener el nombre de la sesion
     if ($session === 0) {
         $name_sesion = config_sesion($session)['name'] ?? '';
         $nameVarToken = 'data_token';
         $nameVarLoginInfo =  'login_info';
+        $table = "tb_user";
     } else if ($session === 1) {
         $name_sesion = config_sesion($session)['name'] ?? '';
         $nameVarToken = $name_sesion . 'data_token';
         $nameVarLoginInfo = $name_sesion . 'login_info';
+        $table = "user_app";
     }
+    //Validamos el token
     if ($token != "") {
         $_POST['token'] = $token;
     }
@@ -337,11 +342,18 @@ function isCsrf($token = "", int $session = 0)
             $datetime = $_SESSION[$nameVarToken]["datatime"]; // get datetime from session
             $timeTranscurridos = dateDifference($datetime, date("Y-m-d H:i:s"))["total_minutos"];
             if ($timeTranscurridos > 10) {
-                registerLog("Ocurrio un error inesperado", "El token de seguridad ha expirado. Por favor, actualice la página para generar uno nuevo. Tenga en cuenta que el token tiene una vigencia máxima de 10 minutos.", 1, $_SESSION[$nameVarLoginInfo]['idUser']);
+                registerLog(
+                    "Ocurrio un error inesperado",
+                    "El token de seguridad ha expirado. Por favor, actualice la página para generar uno nuevo. Tenga en cuenta que el token tiene una vigencia máxima de 10 minutos.",
+                    1,
+                    $_SESSION[$nameVarLoginInfo]['idUser'],
+                    $table
+                );
                 $data = array(
                     "title" => "Ocurrio un error inesperado",
                     "message" => "Error: El token de seguridad ha expirado. Por favor, actualice la página para generar uno nuevo. Tenga en cuenta que el token tiene una vigencia máxima de 10 minutos.",
                     "type" => "error",
+                    "icon" => "error",
                     "status" => false
                 );
                 unset($_SESSION[$nameVarToken]);
@@ -350,11 +362,18 @@ function isCsrf($token = "", int $session = 0)
 
             if (!empty($_SESSION[$nameVarToken]["token"])) {
                 if (!hash_equals($_SESSION[$nameVarToken]["token"], $_POST['token'])) {
-                    registerLog("Ocurrio un error inesperado", "El token proporcionado en el formulario no coincide con el token generado por la página, lo que indica un posible intento de vulneración del sistema de registro.", 1, $_SESSION[$nameVarLoginInfo]['idUser']);
+                    registerLog(
+                        "Ocurrio un error inesperado",
+                        "El token proporcionado en el formulario no coincide con el token generado por la página, lo que indica un posible intento de vulneración del sistema de registro.",
+                        1,
+                        $_SESSION[$nameVarLoginInfo]['idUser'],
+                        $table
+                    );
                     $data = array(
                         "title" => "Ocurrio un error inesperado",
                         "message" => "Error: La sesión ha expirado o el token de seguridad es inválido. Por favor, actualiza la página e intenta nuevamente",
                         "type" => "error",
+                        "icon" => "error",
                         "status" => false
                     );
                     toJson($data);
@@ -365,6 +384,7 @@ function isCsrf($token = "", int $session = 0)
                     "title" => "Ocurrio un error inesperado",
                     "message" => "Error: La sesión ha expirado o el token de seguridad es inválido. Por favor, actualiza la página e intenta nuevamente",
                     "type" => "error",
+                    "icon" => "error",
                     "status" => false
                 );
                 toJson($data);
@@ -376,6 +396,7 @@ function isCsrf($token = "", int $session = 0)
                 "title" => "Ocurrio un error inesperado",
                 "message" => "Error: La sesión ha expirado o el token de seguridad es inválido. Por favor, actualiza la página e intenta nuevamente",
                 "type" => "error",
+                "icon" => "error",
                 "status" => false
             );
             toJson($data);
@@ -1153,22 +1174,24 @@ function validateFields(array $fields, string $method = "POST")
     foreach ($fields as $field) {
         if ($method === "POST") {
             if (!isset($_POST[$field])) {
-                registerLog("Ocurrio un error inesperado", "No se encontro el campo $field, por favor verifique o refresque la pagina e intente nuevamente", 1, $_SESSION['login_info']['idUser']);
+                //registerLog("Ocurrio un error inesperado", "No se encontro el campo $field, por favor verifique o refresque la pagina e intente nuevamente", 1, $_SESSION['login_info']['idUser']);
                 $data = array(
                     "title" => "Ocurrio un error inesperado",
                     "message" => "Error: El campo $field no se encuentra en el formulario enviado. Por favor, verifique o refresque la página e intente nuevamente.",
                     "type" => "error",
+                    "icon" => "error",
                     "status" => false
                 );
                 toJson($data);
             }
         } elseif ($method === "GET") {
             if (!isset($_GET[$field])) {
-                registerLog("Ocurrio un error inesperado", "No se encontro el campo $field, por favor verifique o refresque la pagina e intente nuevamente", 1, $_SESSION['login_info']['idUser']);
+                //registerLog("Ocurrio un error inesperado", "No se encontro el campo $field, por favor verifique o refresque la pagina e intente nuevamente", 1, $_SESSION['login_info']['idUser']);
                 $data = array(
                     "title" => "Ocurrio un error inesperado",
                     "message" => "Error: El campo $field no se encuentra en el formulario enviado. Por favor, verifique o refresque la página e intente nuevamente.",
                     "type" => "error",
+                    "icon" => "error",
                     "status" => false
                 );
                 toJson($data);
@@ -1192,11 +1215,12 @@ function validateFieldsEmpty(array $fields)
 {
     foreach ($fields as $field => $value) {
         if (empty($value)) {
-            registerLog("Ocurrio un error inesperado", "El campo $field esta vacio, por favor verifique e intente nuevamente", 1, $_SESSION['login_info']['idUser']);
+            //registerLog("Ocurrio un error inesperado", "El campo $field esta vacio, por favor verifique e intente nuevamente", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrio un error inesperado",
                 "message" => "Error: El campo $field no puede estar vacio. Por favor, verifique e intente nuevamente.",
                 "type" => "error",
+                "icon" => "error",
                 "status" => false
             );
             toJson($data);
