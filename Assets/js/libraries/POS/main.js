@@ -13,6 +13,7 @@
   $('[data-toggle="sidebar"]').click(function (event) {
     event.preventDefault();
     $(".app").toggleClass("sidenav-toggled");
+    document.getElementById("cardBusiness").classList.toggle("d-none");
   });
 
   // Activate sidebar treeview toggle

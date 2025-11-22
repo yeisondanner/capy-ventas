@@ -8,7 +8,7 @@
             <p class="app-sidebar__user-designation"><?= $_SESSION[$nameVarLoginInfo]['lastname'] ?></p>
         </div>
     </div>
-    <div class="px-1">
+    <div class="px-1" id="cardBusiness">
         <div class="card shadow-sm" style="max-width: 280px;">
             <div class="card-body">
                 <div class="d-flex align-items-center gap-1">
@@ -45,8 +45,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
     <ul class="app-menu">
         <li><a class="app-menu__item active" href="<?= base_url() ?>/pos/dashboard"><i class="app-menu__icon bi bi-house-door"></i><span class="app-menu__label">Inicio</span></a></li>
