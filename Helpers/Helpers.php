@@ -1483,6 +1483,14 @@ function get_option_and_permission_app()
                 $objPermission->insert_plan_subscription_free($idUser);
             }
         } else {
+            /**
+             * validamos si el usuario es dueño o 
+             * no del negocio activo, si fuere dueño, 
+             * tiene acceso a todos los permisos que el plan permite, 
+             * caso contrario responde a un rol de usuario
+             */
+            $idBusiness = $_SESSION[$nameVarBusiness]['idBusiness'];
+
             //Ahora consultamos los permisos del plan, que vistas y funciones tiene permitida
             $arrPermissionsFunctions = $objPermission->get_permissions_functions((int)$arrDataPlans['idPlan']);
             dep($arrPermissionsFunctions);
