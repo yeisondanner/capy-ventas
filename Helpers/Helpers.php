@@ -1487,10 +1487,20 @@ function get_option_and_permission_app()
              * validamos si el usuario es dueño o 
              * no del negocio activo, si fuere dueño, 
              * tiene acceso a todos los permisos que el plan permite, 
-             * caso contrario responde a un rol de usuario
+             * caso contrario responde a un rol de usuario el cual esta limitado a permisos
              */
             $idBusiness = $_SESSION[$nameVarBusiness]['idBusiness'];
+            $dataOwnerBusiness = $objPermission->get_bussiness_owner($idUser, $idBusiness);
+            if (empty($dataOwnerBusiness)) {
+                /**
+                 *si el usuario no es dueño del negocio obtenemos los permisos que tiene el usuario en este negocio
+                 *Primero consultamos la informacion del negocio
+                 *Luego consultamos los permisos del usuario en este negocio y del plan asociado                   
+                 */
 
+                echo "No es dueño del negocio";
+                exit;
+            }
             //Ahora consultamos los permisos del plan, que vistas y funciones tiene permitida
             $arrPermissionsFunctions = $objPermission->get_permissions_functions((int)$arrDataPlans['idPlan']);
             dep($arrPermissionsFunctions);

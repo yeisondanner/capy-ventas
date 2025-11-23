@@ -51,11 +51,11 @@ class LoginModel extends Mysql
          * @param int $id 
          * @return array
          */
-        public function select_business(int $id)
+        public function select_business_owner(int $id)
         {
                 $this->iduser = $id;
                 $sql = <<<SQL
-                                                                                SELECT
+                                                                SELECT
                                                                         b.idBusiness,
                                                                         b.`name` AS 'business',
                                                                         bt.`name` AS 'category',

@@ -3,6 +3,7 @@ class PermissionModel extends Mysql
 {
     protected int $idUserApp;
     protected int $idPlan;
+    protected int $idBusiness;
     protected string $datetimeStart;
     protected string $datetimeEnd;
     protected string $datetimeNextBilling;
@@ -125,5 +126,26 @@ class PermissionModel extends Mysql
         SQL;
         $request = $this->select_all($sql, [$this->idPlan]);
         return $request ?? [];
+    }
+    /**
+     * Obtiene el negocio dueño de un usuario
+     * @param int $idUser
+     * @return array
+     */
+    public function get_bussiness_owner(int $idUserApp, int $idBusiness)
+    {
+        $this->idUserApp = $idUserApp;
+        $this->idBusiness = $idBusiness;
+        $sql = <<<SQL
+                SELECT
+                    *
+                FROM
+                    business AS b
+                WHERE
+                    b.idBusiness = ?
+                    AND b.userapp_id = ?;
+        SQL;
+        $request = $this->select($sql, [$this->idBusiness, $this->idUserApp]) ?? [];
+        return $request;
     }
 }

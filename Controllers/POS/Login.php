@@ -54,7 +54,9 @@ class Login extends Controllers
 			toJson($data);
 		}
 		//obtenemos los negocios asociasdos al usuario
-		$bussiness = $this->model->select_business($request["idUserApp"]);
+		$bussiness = $this->model->select_business_owner($request["idUserApp"]);
+		//obtenemos los negocios del cual el usuario es empleado
+		$employeeBusiness = $this->model->select_business_employee($request["idUserApp"]);
 		//creamos las variables de session para el usuario
 		$data_session = array(
 			"idUser" => $request["idUserApp"],
