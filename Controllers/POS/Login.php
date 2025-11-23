@@ -67,7 +67,8 @@ class Login extends Controllers
 			"gender" => '',
 			"status" => $request["u_status"],
 			"p_status" => $request["p_status"],
-			"plan_expiration_date" => $request["plan_expiration_date"]
+			"plan_expiration_date" => $request["plan_expiration_date"],
+			"plan" => $request["Plan"]
 		);
 		//preparacion de nombres de variables de acuerdo a la sesion creada
 		$name_sesion = config_sesion(1)['name'];

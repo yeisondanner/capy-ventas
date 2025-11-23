@@ -31,11 +31,13 @@ class LoginModel extends Mysql
                                 up.`status` AS 'u_status',
                                 up.plan_expiration_date,
                                 p.*,
-                                p.`status` AS 'p_status'
-                                
+                                p.`status` AS 'p_status',
+                                pl.`name` AS 'Plan'
                         FROM
                                 user_app up
                                 INNER JOIN people p ON p.idPeople = up.people_id
+                                LEFT JOIN subscriptions AS s ON s.user_app_id=up.idUserApp
+                                LEFT JOIN plans AS pl ON pl.idPlan=s.plan_id
                         WHERE
                                 up.user = ?
                                 OR p.email = ?

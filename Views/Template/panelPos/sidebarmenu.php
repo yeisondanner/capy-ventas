@@ -6,6 +6,7 @@
         <div>
             <p class="app-sidebar__user-name"><?= $_SESSION[$nameVarLoginInfo]['name'] ?></p>
             <p class="app-sidebar__user-designation"><?= $_SESSION[$nameVarLoginInfo]['lastname'] ?></p>
+            <?= get_widget_plan($_SESSION[$nameVarLoginInfo]['plan'] ?? 'Gratis')['sm'] ?>
         </div>
     </div>
     <div class="px-1" id="cardBusiness">
