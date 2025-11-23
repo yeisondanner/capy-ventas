@@ -76,4 +76,36 @@ class LoginModel extends Mysql
                 $request = $this->select($sql, [$this->iduser]);
                 return $request ?? [];
         }
+        /**
+         * Obtenemos el negocio donde el usuario es empleado
+         * obtenemos uno nada mas
+         * @param int $id
+         * @return array
+         */
+        public function select_business_employee(int $id)
+        {
+                $this->iduser = $id;
+                $sql = <<<SQL
+                        SELECT
+                                b.idBusiness,
+                                b.`name` AS 'business',
+                                bt.`name` AS 'category',
+                                b.direction,
+                                b.city,
+                                b.country,
+                                b.email,
+                                b.document_number
+                        FROM
+                                user_app AS ua
+                                INNER JOIN employee AS e ON e.userapp_id = ua.idUserApp
+                                INNER JOIN business AS b ON b.idBusiness = e.bussines_id
+                                INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
+                        WHERE
+                                ua.idUserApp = ?
+                        LIMIT
+                                1;
+                SQL;
+                $request = $this->select($sql, [$this->iduser]);
+                return $request ?? [];
+        }
 }
