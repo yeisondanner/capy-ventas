@@ -39,7 +39,7 @@ class Movements extends Controllers
         $totals = $this->model->getTotals($businessId);
 
         $data = [
-            'page_id'          => 0,
+            'page_id'          => 2,
             'page_title'       => 'Inventario de productos',
             'page_description' => 'Gestiona los productos disponibles en tu negocio.',
             'page_container'   => 'Movements',

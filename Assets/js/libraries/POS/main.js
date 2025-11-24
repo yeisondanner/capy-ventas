@@ -80,14 +80,17 @@
       const category = business.category
         ? `<small class="text-muted d-block">${business.category}</small>`
         : "";
-
+      const owner = business.is_owner
+        ? `<small class="text-white d-block badge bg-success"><i class="bi bi-person-fill me-1"></i> Dueño</small>`
+        : `<small class="text-white d-block badge bg-info"><i class="bi bi-people-fill"></i> Empleado</small>`;
       const item = document.createElement("li");
       item.innerHTML = `
-      <a class="dropdown-item d-flex align-items-start ${activeClass}" href="#" data-business-id="${business.idBusiness}">
+      <a class="dropdown-item d-flex align-items-start ${activeClass}" href="#" data-business-id="${business.idBusiness}" data-owner="${business.is_owner}">
         <i class="${iconClass}"></i>
         <div>
           <div class="fw-semibold">${business.business}</div>
           ${category}
+          ${owner}
         </div>
       </a>
     `;
@@ -154,10 +157,12 @@
    * Establece un negocio como activo para la sesión.
    * @param {string|number} businessId
    */
-  async function setActiveBusiness(businessId) {
+  async function setActiveBusiness(businessId, owner) {
     if (!businessId) return;
+    if (!owner) return;
     const formData = new FormData();
     formData.append("businessId", businessId);
+    formData.append("owner", owner);
     const url = base_url + "/pos/Business/setActiveBusiness";
     const config = {
       method: "POST",
@@ -278,10 +283,11 @@
     if (dropdownList) {
       dropdownList.addEventListener("click", function (event) {
         const item = event.target.closest("[data-business-id]");
+        const owner = item.getAttribute("data-owner");
         if (!item) return;
         event.preventDefault();
         const businessId = item.getAttribute("data-business-id");
-        setActiveBusiness(businessId);
+        setActiveBusiness(businessId, owner);
       });
     }
   }

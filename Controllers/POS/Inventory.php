@@ -36,7 +36,7 @@ class Inventory extends Controllers
     public function inventory()
     {
         $data = [
-            'page_id'          => 0,
+            'page_id'          => 3,
             'page_title'       => 'Inventario de productos',
             'page_description' => 'Gestiona los productos disponibles en tu negocio.',
             'page_container'   => 'Inventory',

@@ -36,9 +36,17 @@ class Business extends Controllers
         $activeBusiness = isset($_SESSION[$this->nameVarBusiness]['idBusiness'])
             ? (int) $_SESSION[$this->nameVarBusiness]['idBusiness']
             : null;
-
-        $businesses = $this->model->selectBusinessesByUser($userId);
-
+        $businessOwner = $this->model->selectBusinessesByUserOwner($userId);
+        //adicionamos un atributo que indique es el dueño de este negocio
+        foreach ($businessOwner as $index => $business) {
+            $businessOwner[$index]['is_owner'] = true;
+        }
+        $businessEmploye = $this->model->selectBusinessesByUserEmployee($userId);
+        //adicionamos un atributo que indique es el dueño de este negocio
+        foreach ($businessEmploye as $index => $business) {
+            $businessEmploye[$index]['is_owner'] = false;
+        }
+        $businesses = array_merge($businessOwner, $businessEmploye);
         foreach ($businesses as $index => $business) {
             $businesses[$index]['business'] = htmlspecialchars($business['business'] ?? '', ENT_QUOTES, 'UTF-8');
             $businesses[$index]['category'] = htmlspecialchars($business['category'] ?? '', ENT_QUOTES, 'UTF-8');
@@ -148,12 +156,21 @@ class Business extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-        $userId     = $this->getUserId();
+        validateFields(['businessId', 'owner']);
+        $userId = $this->getUserId();
         $businessId = $_POST['businessId'];
+        $owner = (bool) ($_POST['owner'] === 'true' ? true : false);
         if ($businessId <= 0) {
             $this->responseError('Identificador de negocio inválido.');
         }
-        $business = $this->model->selectBusinessByIdForUser($businessId, $userId);
+        //validamos que si usuario es Zdueño o empleado
+        if ($owner) {
+            $business = $this->model->selectBusinessByIdForUser($businessId, $userId);
+            $ownerText = 'Dueño';
+        } else if (!$owner) {
+            $business = $this->model->selectBusinessByIdUserEmploye($businessId, $userId);
+            $ownerText = 'Empleado';
+        }
         if (!$business) {
             $this->responseError('El negocio seleccionado no pertenece a tu cuenta.');
         }
@@ -166,7 +183,7 @@ class Business extends Controllers
                 <div class="alert alert-success d-flex align-items-center" role="alert">
                     <i class="bi bi-check-circle-fill me-2"></i>
                     <div>
-                        ¡Negocio cambiado con éxito! Ahora estás gestionando <strong>{$business['business']}</strong>.
+                        ¡Negocio cambiado con éxito! Ahora estás gestionando como <strong class="text-danger">$ownerText</strong> el negocio <strong>{$business['business']}</strong>.
                     </div>
                 </div>
             HTML,

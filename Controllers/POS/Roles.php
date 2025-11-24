@@ -34,7 +34,7 @@ class Roles extends Controllers
     public function roles(): void
     {
         $data = [
-            'page_id'          => 0,
+            'page_id'          => 6,
             'page_title'       => 'Roles de aplicación',
             'page_description' => 'Administra los roles disponibles para asignar a tus empleados.',
             'page_container'   => 'Roles',

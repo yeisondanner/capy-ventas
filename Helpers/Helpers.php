@@ -1461,10 +1461,15 @@ function normalizarTexto(string $texto, string $regex, int $maxLength = 255, boo
  */
 function get_option_and_permission_app()
 {
+    //nombres iniciales de las variables de sesion
     $sessionName = config_sesion(1)['name'] ?? '';
     $nameVarBusiness = $sessionName . 'business_active';
     $nameVarLoginInfo = $sessionName . 'login_info';
+    $nameVarPermission = $sessionName . 'menu_permission';
+    //variables de negocio activo
     $idUser = $_SESSION[$nameVarLoginInfo]['idUser'];
+    $idBusiness = $_SESSION[$nameVarBusiness]['idBusiness'];
+    //requerimos el modelo de permisos
     require_once "./Models/POS/PermissionModel.php";
     $objPermission = new PermissionModel();
     $arrDataPlans = $objPermission->get_plans_subscription($idUser);
@@ -1477,7 +1482,7 @@ function get_option_and_permission_app()
         $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
         $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento); #calcular la diferencia entre las dos fechas
         if ((int)$data_vencimiento['total_dias'] < 0) {
-            //validamos que el plan este vencido 2 dias para poder cambiar al plan free
+            //validamos que el plan este vencido 2 dias para poder cambiar al plan free o si el plan es el free registramos el plan free
             if ((int)$data_vencimiento['total_dias'] <= -2 || (int)$arrDataPlans['idPlan'] === 1) {
                 //cambiamos al plan free
                 $objPermission->insert_plan_subscription_free($idUser);
@@ -1489,9 +1494,17 @@ function get_option_and_permission_app()
              * tiene acceso a todos los permisos que el plan permite, 
              * caso contrario responde a un rol de usuario el cual esta limitado a permisos
              */
-            $idBusiness = $_SESSION[$nameVarBusiness]['idBusiness'];
             $dataOwnerBusiness = $objPermission->get_bussiness_owner($idUser, $idBusiness);
-            if (empty($dataOwnerBusiness)) {
+            if (!empty($dataOwnerBusiness)) {
+                //Ahora consultamos los permisos del plan, que vistas y funciones tiene permitida
+                $arrPermissionsFunctions = $objPermission->get_permissions_functions((int)$arrDataPlans['idPlan']);
+                if (isset($_SESSION[$nameVarPermission])) {
+                    unset($_SESSION[$nameVarPermission]);
+                }
+                //preparamos un array con el menu permitido                
+                $_SESSION[$nameVarPermission] = $arrPermissionsFunctions;
+            } else {
+
                 /**
                  *si el usuario no es dueño del negocio obtenemos los permisos que tiene el usuario en este negocio
                  *Primero consultamos la informacion del negocio
@@ -1499,11 +1512,7 @@ function get_option_and_permission_app()
                  */
 
                 echo "No es dueño del negocio";
-                exit;
             }
-            //Ahora consultamos los permisos del plan, que vistas y funciones tiene permitida
-            $arrPermissionsFunctions = $objPermission->get_permissions_functions((int)$arrDataPlans['idPlan']);
-            dep($arrPermissionsFunctions);
         }
     }
     unset($objPermission);

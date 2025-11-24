@@ -20,7 +20,7 @@ class BusinessModel extends Mysql
      * @param int $userId Identificador del usuario propietario.
      * @return array Lista de negocios.
      */
-    public function selectBusinessesByUser(int $userId): array
+    public function selectBusinessesByUserOwner(int $userId): array
     {
         $this->userId = $userId;
         $sql = <<<SQL
@@ -34,6 +34,28 @@ class BusinessModel extends Mysql
             INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
             WHERE b.userapp_id = ?
             ORDER BY b.registration_date DESC;
+        SQL;
+
+        $request = $this->select_all($sql, [$this->userId]);
+        return $request ?? [];
+    }
+    public function selectBusinessesByUserEmployee(int $userId): array
+    {
+        $this->userId = $userId;
+        $sql = <<<SQL
+                    SELECT
+                        b.idBusiness,
+                        b.`name` AS business,
+                        b.document_number,
+                        b.status,
+                        bt.`name` AS category
+                    FROM
+                        user_app AS ua
+                        INNER JOIN employee AS e ON e.userapp_id = ua.idUserApp
+                        INNER JOIN business AS b ON b.idBusiness = e.bussines_id
+                        INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
+                    WHERE
+                        ua.idUserApp = ?;
         SQL;
 
         $request = $this->select_all($sql, [$this->userId]);
@@ -68,7 +90,37 @@ class BusinessModel extends Mysql
         $request = $this->select($sql, [$this->businessId, $this->userId]);
         return $request ?: null;
     }
-
+    /**
+     * Busca un negocio por su identificador y usuario empleado.
+     *
+     * @param int $businessId Identificador del negocio.
+     * @param int $userId     Identificador del empleado.
+     * @return array|null Datos del negocio o null si no pertenece al usuario.
+     */
+    public function selectBusinessByIdUserEmploye(int $businessId, int $userId)
+    {
+        $this->businessId = $businessId;
+        $this->userId     = $userId;
+        $sql = <<<SQL
+                SELECT
+                    b.idBusiness,
+                    b.`name` AS business,
+                    b.document_number,
+                    b.status,
+                    bt.`name` AS category
+                FROM
+                    user_app AS ua
+                    INNER JOIN employee AS e ON e.userapp_id = ua.idUserApp
+                    INNER JOIN business AS b ON b.idBusiness = e.bussines_id
+                    INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
+                WHERE
+                        b.idBusiness = ?
+                    AND ua.idUserApp = ?
+                    LIMIT 1;
+        SQL;
+        $request = $this->select($sql, [$this->businessId, $this->userId]);
+        return $request ?: null;
+    }
     /**
      * Valida si existe un negocio con el mismo documento para el usuario.
      *

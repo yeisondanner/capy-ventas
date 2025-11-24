@@ -41,7 +41,7 @@ class Customers extends Controllers
     public function customers(): void
     {
         $data = [
-            'page_id'          => 0,
+            'page_id'          => 4,
             'page_title'       => 'Gestión de clientes',
             'page_description' => 'Administra los clientes registrados en tu negocio.',
             'page_container'   => 'Customers',

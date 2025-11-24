@@ -1,3 +1,14 @@
+<?php
+
+$data_menu = function (int $interface): array {
+    $sessionName = config_sesion(1)['name'] ?? '';
+    $nameVarPermission = $sessionName . 'menu_permission';
+    $_SESSION[$nameVarPermission];
+    return array_merge(...array_values(array_filter($_SESSION[$nameVarPermission], function ($item) use ($interface) {
+        return $item['idInterface'] == $interface;
+    })));
+};
+?>
 <!-- Sidebar menu-->
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
 <aside class="app-sidebar">
@@ -48,14 +59,13 @@
         </div>
     </div>
     <ul class="app-menu">
-        <li><a class="app-menu__item active" href="<?= base_url() ?>/pos/dashboard"><i class="app-menu__icon bi bi-house-door"></i><span class="app-menu__label">Inicio</span></a></li>
-        <li><a class="app-menu__item " href="<?= base_url() ?>/pos/sales"><i class="app-menu__icon bi bi-cart"></i><span class="app-menu__label">Vender</span></a></li>
-        <li><a class="app-menu__item " href="<?= base_url() ?>/pos/movements"><i class="app-menu__icon bi bi-pc-display-horizontal"></i><span class="app-menu__label">Movimientos</span></a></li>
-        <li><a class="app-menu__item " href="<?= base_url() ?>/pos/inventory"><i class="app-menu__icon bi bi-box-seam"></i><span class="app-menu__label">Inventario</span></a></li>
-        <li><a class="app-menu__item " href="<?= base_url() ?>/pos/customers"><i class="app-menu__icon bi bi-person-lines-fill"></i><span class="app-menu__label">Clientes</span></a></li>
-        <li><a class="app-menu__item " href="<?= base_url() ?>/pos/suppliers"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label">Proveedores</span></a></li>
-        <li><a class="app-menu__item " href="<?= base_url() ?>/pos/employee"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label">Empleados</span></a></li>
-        <li><a class="app-menu__item " href="<?= base_url() ?>/pos/roles"><i class="app-menu__icon bi bi-shield-check"></i><span class="app-menu__label">Roles</span></a></li>
+        <li><a class="app-menu__item <?= $data['page_id'] === 0 ? 'active' : '' ?>" href="<?= base_url() ?>/pos/dashboard"><i class="app-menu__icon bi bi-house-door"></i><span class="app-menu__label">Inicio</span></a></li>
+        <li><a class="app-menu__item <?= $data['page_id'] === 1 ? 'active' : '' ?>" href=" <?= $data_menu(1) ? base_url() . '/pos/sales' : '' ?>"><i class="app-menu__icon bi bi-cart"></i><span class="app-menu__label"><?= $data_menu(1) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(1) ? $data_menu(1)['Interface'] : 'Vender' ?></span></a></li>
+        <li><a class="app-menu__item <?= $data['page_id'] === 3 ? 'active' : '' ?>" href="<?= $data_menu(3) ? base_url() . '/pos/inventory' : '' ?>"><i class="app-menu__icon bi bi-box-seam"></i><span class="app-menu__label"><?= $data_menu(3) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(3) ? $data_menu(3)['Interface'] : 'Inventario' ?></span></a></li>
+        <li><a class="app-menu__item <?= $data['page_id'] === 4 ? 'active' : '' ?>" href="<?= $data_menu(4) ? base_url() . '/pos/customers' : '' ?>"><i class="app-menu__icon bi bi-person-lines-fill"></i><span class="app-menu__label"><?= $data_menu(4) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(4) ? $data_menu(4)['Interface'] : 'Clientes' ?></span></a></li>
+        <li><a class="app-menu__item <?= $data['page_id'] === 7 ? 'active' : '' ?>" href="<?= $data_menu(7) ? base_url() . '/pos/suppliers' : '' ?>"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label"><?= $data_menu(7) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(7) ? $data_menu(7)['Interface'] : 'Proveedores' ?></span></a></li>
+        <li><a class="app-menu__item <?= $data['page_id'] === 5 ? 'active' : '' ?>" href="<?= $data_menu(5) ? base_url() . '/pos/employee' : '' ?>"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label"><?= $data_menu(5) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(5) ? $data_menu(5)['Interface'] : 'Empleados' ?></span></a></li>
+        <li><a class="app-menu__item <?= $data['page_id'] === 6 ? 'active' : '' ?>" href="<?= $data_menu(6) ? base_url() . '/pos/roles' : '' ?>"><i class="app-menu__icon bi bi-shield-check"></i><span class="app-menu__label"><?= $data_menu(6) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(6) ? $data_menu(6)['Interface'] : 'Roles' ?></span></a></li>
     </ul>
 </aside>
 
