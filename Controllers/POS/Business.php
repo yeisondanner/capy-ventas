@@ -20,7 +20,6 @@ class Business extends Controllers
     {
         isSession(1);
         parent::__construct('POS');
-
         $sessionName = config_sesion(1)['name'] ?? '';
         $this->nameVarBusiness  = $sessionName . 'business_active';
         $this->nameVarLoginInfo = $sessionName . 'login_info';
@@ -37,9 +36,17 @@ class Business extends Controllers
         $activeBusiness = isset($_SESSION[$this->nameVarBusiness]['idBusiness'])
             ? (int) $_SESSION[$this->nameVarBusiness]['idBusiness']
             : null;
-
-        $businesses = $this->model->selectBusinessesByUser($userId);
-
+        $businessOwner = $this->model->selectBusinessesByUserOwner($userId);
+        //adicionamos un atributo que indique es el dueño de este negocio
+        foreach ($businessOwner as $index => $business) {
+            $businessOwner[$index]['is_owner'] = true;
+        }
+        $businessEmploye = $this->model->selectBusinessesByUserEmployee($userId);
+        //adicionamos un atributo que indique es el dueño de este negocio
+        foreach ($businessEmploye as $index => $business) {
+            $businessEmploye[$index]['is_owner'] = false;
+        }
+        $businesses = array_merge($businessOwner, $businessEmploye);
         foreach ($businesses as $index => $business) {
             $businesses[$index]['business'] = htmlspecialchars($business['business'] ?? '', ENT_QUOTES, 'UTF-8');
             $businesses[$index]['category'] = htmlspecialchars($business['category'] ?? '', ENT_QUOTES, 'UTF-8');
@@ -81,30 +88,31 @@ class Business extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
+        isCsrf("", 1);
+        validateFields(['businessType', 'businessName', 'businessDocument', 'businessPhone', 'businessTelephonePrefix', 'businessEmail']);
         $userId = $this->getUserId();
-
-        $typebusinessId  = isset($_POST['businessType']) ? (int) $_POST['businessType'] : 0;
-        $name            = isset($_POST['businessName']) ? strClean($_POST['businessName']) : '';
-        $documentNumber  = isset($_POST['businessDocument']) ? strClean($_POST['businessDocument']) : '';
-        $phoneNumber     = isset($_POST['businessPhone']) ? strClean($_POST['businessPhone']) : '';
-        $telephonePrefix = isset($_POST['businessTelephonePrefix']) ? strClean($_POST['businessTelephonePrefix']) : '';
-        $email           = isset($_POST['businessEmail']) ? strClean($_POST['businessEmail']) : '';
-        $direction       = isset($_POST['businessDirection']) ? strClean($_POST['businessDirection']) : null;
-        $city            = isset($_POST['businessCity']) ? strClean($_POST['businessCity']) : null;
-        $country         = isset($_POST['businessCountry']) ? strClean($_POST['businessCountry']) : null;
-        $token           = isset($_POST['token']) ? (string) $_POST['token'] : '';
-
-        $this->validateCsrfToken($token, $userId);
-
-        if (empty($typebusinessId) || empty($name) || empty($documentNumber) || empty($phoneNumber) || empty($telephonePrefix) || empty($email)) {
-            $this->responseError('Completa los campos obligatorios del negocio.');
-        }
+        $typebusinessId  = (int) $_POST['businessType'];
+        $name            = strClean($_POST['businessName']);
+        $documentNumber  = strClean($_POST['businessDocument']);
+        $phoneNumber     = strClean($_POST['businessPhone']);
+        $telephonePrefix = strClean($_POST['businessTelephonePrefix']);
+        $email           = strClean($_POST['businessEmail']);
+        $direction       = strClean($_POST['businessDirection']);
+        $city            = strClean($_POST['businessCity']);
+        $country         = strClean($_POST['businessCountry']);
+        validateFieldsEmpty([
+            'TIPO DE NEGOCIO' => $typebusinessId,
+            'NOMBRE' => $name,
+            'DOCUMENTO' => $documentNumber,
+            'TELEFONO' => $phoneNumber,
+            'PREFIX' => $telephonePrefix,
+            'CORREO' => $email,
+        ]);
 
         if ($this->model->findBusinessByDocument($documentNumber, $userId)) {
             $this->responseError('Ya registraste un negocio con el mismo número de documento.');
         }
-
+        //preparamos los datos para insertarlos en la base de datos
         $data = [
             'typebusiness_id'  => $typebusinessId,
             'name'             => $name,
@@ -122,16 +130,16 @@ class Business extends Controllers
         if (empty($businessId)) {
             $this->responseError('No se pudo registrar el negocio, intenta nuevamente.');
         }
-
+        //insertamos los datos por defecto
         $this->model->insertDefaultData((int) $businessId);
 
         $newBusiness = $this->model->selectBusinessByIdForUser((int) $businessId, $userId);
         if ($newBusiness) {
             $_SESSION[$this->nameVarBusiness] = $newBusiness;
         }
-
         toJson([
             'status'  => true,
+            'icon'    => 'success',
             'title'   => 'Negocio creado',
             'message' => 'El negocio se registró correctamente.',
             'data'    => $newBusiness,
@@ -148,24 +156,25 @@ class Business extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
-        $userId     = $this->getUserId();
-        $businessId = isset($_POST['businessId']) ? (int) $_POST['businessId'] : 0;
-        $token      = isset($_POST['token']) ? (string) $_POST['token'] : '';
-
-        $this->validateCsrfToken($token, $userId);
-
+        validateFields(['businessId', 'owner']);
+        $userId = $this->getUserId();
+        $businessId = $_POST['businessId'];
+        $owner = (bool) ($_POST['owner'] === 'true' ? true : false);
         if ($businessId <= 0) {
             $this->responseError('Identificador de negocio inválido.');
         }
-
-        $business = $this->model->selectBusinessByIdForUser($businessId, $userId);
+        //validamos que si usuario es Zdueño o empleado
+        if ($owner) {
+            $business = $this->model->selectBusinessByIdForUser($businessId, $userId);
+            $ownerText = 'Dueño';
+        } else if (!$owner) {
+            $business = $this->model->selectBusinessByIdUserEmploye($businessId, $userId);
+            $ownerText = 'Empleado';
+        }
         if (!$business) {
             $this->responseError('El negocio seleccionado no pertenece a tu cuenta.');
         }
-
         $_SESSION[$this->nameVarBusiness] = $business;
-
         toJson([
             'status'  => true,
             'title'   => 'Negocio seleccionado',
@@ -174,7 +183,7 @@ class Business extends Controllers
                 <div class="alert alert-success d-flex align-items-center" role="alert">
                     <i class="bi bi-check-circle-fill me-2"></i>
                     <div>
-                        ¡Negocio cambiado con éxito! Ahora estás gestionando <strong>{$business['business']}</strong>.
+                        ¡Negocio cambiado con éxito! Ahora estás gestionando como <strong class="text-danger">$ownerText</strong> el negocio <strong>{$business['business']}</strong>.
                     </div>
                 </div>
             HTML,
@@ -196,26 +205,6 @@ class Business extends Controllers
 
         return (int) $_SESSION[$this->nameVarLoginInfo]['idUser'];
     }
-
-    /**
-     * Valida el token CSRF recibido.
-     *
-     * @param string $token  Token recibido en la solicitud.
-     * @param int    $userId Identificador del usuario autenticado.
-     * @return void
-     */
-    private function validateCsrfToken(string $token, int $userId): void
-    {
-        if (empty($token) || empty($_SESSION['data_token']['token'])) {
-            $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
-        }
-
-        $sessionToken = (string) $_SESSION['data_token']['token'];
-        if (!hash_equals($sessionToken, $token)) {
-            $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
-        }
-    }
-
     /**
      * Envía una respuesta de error estándar en formato JSON y finaliza la ejecución.
      *

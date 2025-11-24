@@ -29,12 +29,15 @@ class LoginModel extends Mysql
                                 up.user,
                                 up.password,
                                 up.`status` AS 'u_status',
+                                up.plan_expiration_date,
                                 p.*,
-                                p.`status` AS 'p_status'
-                                
+                                p.`status` AS 'p_status',
+                                pl.`name` AS 'Plan'
                         FROM
                                 user_app up
                                 INNER JOIN people p ON p.idPeople = up.people_id
+                                LEFT JOIN subscriptions AS s ON s.user_app_id=up.idUserApp
+                                LEFT JOIN plans AS pl ON pl.idPlan=s.plan_id
                         WHERE
                                 up.user = ?
                                 OR p.email = ?
@@ -48,11 +51,11 @@ class LoginModel extends Mysql
          * @param int $id 
          * @return array
          */
-        public function select_business(int $id)
+        public function select_business_owner(int $id)
         {
                 $this->iduser = $id;
                 $sql = <<<SQL
-                                                                                SELECT
+                                                                SELECT
                                                                         b.idBusiness,
                                                                         b.`name` AS 'business',
                                                                         bt.`name` AS 'category',
@@ -69,6 +72,38 @@ class LoginModel extends Mysql
                                                                 ORDER BY
                                                                         b.idBusiness ASC
                                                                 LIMIT 1;
+                SQL;
+                $request = $this->select($sql, [$this->iduser]);
+                return $request ?? [];
+        }
+        /**
+         * Obtenemos el negocio donde el usuario es empleado
+         * obtenemos uno nada mas
+         * @param int $id
+         * @return array
+         */
+        public function select_business_employee(int $id)
+        {
+                $this->iduser = $id;
+                $sql = <<<SQL
+                        SELECT
+                                b.idBusiness,
+                                b.`name` AS 'business',
+                                bt.`name` AS 'category',
+                                b.direction,
+                                b.city,
+                                b.country,
+                                b.email,
+                                b.document_number
+                        FROM
+                                user_app AS ua
+                                INNER JOIN employee AS e ON e.userapp_id = ua.idUserApp
+                                INNER JOIN business AS b ON b.idBusiness = e.bussines_id
+                                INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
+                        WHERE
+                                ua.idUserApp = ?
+                        LIMIT
+                                1;
                 SQL;
                 $request = $this->select($sql, [$this->iduser]);
                 return $request ?? [];

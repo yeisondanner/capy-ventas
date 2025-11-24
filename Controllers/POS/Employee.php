@@ -29,7 +29,7 @@ class Employee extends Controllers
     public function employee()
     {
         $data = [
-            'page_id'          => 0,
+            'page_id'          => 5,
             'page_title'       => 'Empleados',
             'page_description' => 'Gestiona los empleados de tu negocio.',
             'page_container'   => 'Employee',
@@ -60,7 +60,7 @@ class Employee extends Controllers
             $fullNameEscaped = htmlspecialchars($fullName ?: "Sin nombre registrado", ENT_QUOTES, 'UTF-8');
             $userAppUserEscaped = htmlspecialchars($userAppUser ?: "-", ENT_QUOTES, 'UTF-8');
             $roleNameEscaped = htmlspecialchars($employee['role_app_name'] ?? "", ENT_QUOTES, 'UTF-8');
-            
+
             $employees[$key]['cont']           = $counter;
             $employees[$key]['full_name']       = $fullNameEscaped;
             $employees[$key]['user_app_display'] = $hasUserApp
@@ -523,14 +523,14 @@ class Employee extends Controllers
         // Obtener la lista de usuarios disponibles para el negocio activo
         $availableUsers = $this->model->selectUserApps($businessId, $excludeEmployeeId);
         $found = false;
-        
+
         foreach ($availableUsers as $user) {
             if ((int) $user['idUserApp'] === $userappId) {
                 $found = true;
                 break;
             }
         }
-        
+
         if (!$found) {
             $this->responseError('El usuario de aplicación seleccionado no está disponible para tu negocio o ya está asignado como empleado.');
         }

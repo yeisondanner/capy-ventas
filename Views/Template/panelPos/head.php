@@ -12,7 +12,7 @@ $pageCssFolder = strtolower($data["page_container"]);
 $pageCssFile = "style_" . strtolower($data["page_js_css"]) . ".css?" . versionSystem();
 //variables del contendor
 $pageContainer = ucfirst($data["page_container"]);
-
+get_option_and_permission_app();
 ?>
 <!DOCTYPE html>
 <html lang="es">
