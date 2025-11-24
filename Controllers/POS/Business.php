@@ -183,12 +183,19 @@ class Business extends Controllers
                 <div class="alert alert-success d-flex align-items-center" role="alert">
                     <i class="bi bi-check-circle-fill me-2"></i>
                     <div>
-                        ¡Negocio cambiado con éxito! Ahora estás gestionando como <strong class="text-danger">$ownerText</strong> el negocio <strong>{$business['business']}</strong>.
+                        ¡Negocio cambiado con éxito! Ahora estás gestionando como <strong class="text-danger">$ownerText</strong> el negocio <strong>{$business['business']}</strong>.                   
+                        <span class="badge bg-danger text-white badge-pill badge-sm">                      
+                            Cambiando, espere un momento...
+                        </span>
+                        <span class="spinner-grow spinner-grow-sm bg-danger"></span><span class="spinner-grow spinner-grow-sm bg-danger"></span><span class="spinner-grow spinner-grow-sm bg-danger"></span>
+                        <span class="spinner-grow spinner-grow-sm bg-danger"></span><span class="spinner-grow spinner-grow-sm bg-danger"></span><span class="spinner-grow spinner-grow-sm bg-danger"></span>
+                        <span class="spinner-grow spinner-grow-sm bg-danger"></span><span class="spinner-grow spinner-grow-sm bg-danger"></span><span class="spinner-grow spinner-grow-sm bg-danger"></span>
                     </div>
                 </div>
             HTML,
-            'timer' => 6000,
+            'timer' => 2000,
             'data'    => $business,
+            'reload' => true
         ]);
     }
 
