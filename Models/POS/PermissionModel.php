@@ -124,7 +124,7 @@ class PermissionModel extends Mysql
                     module_app AS ma
                     INNER JOIN interface_app AS ia ON ia.module_id = ma.idModule
                     INNER JOIN plans_interface_app AS pia ON pia.interface_id=ia.idInterface
-                    WHERE pia.plan_id=?;
+                    WHERE pia.plan_id=? AND pia.status='Activo';
         SQL;
         $request = $this->select_all($sql, [$this->idPlan]);
         return $request ?? [];
@@ -231,7 +231,8 @@ class PermissionModel extends Mysql
                 WHERE
                     e.userapp_id = ?
                     AND e.bussines_id = ?
-                    AND ra.idRoleApp=?;
+                    AND ra.idRoleApp=?
+                    AND pia.status='Activo';
         SQL;
         $request = $this->select_all($sql, [$this->idUserApp, $this->idBusiness, $this->idRoleApp]) ?? [];
         return $request;

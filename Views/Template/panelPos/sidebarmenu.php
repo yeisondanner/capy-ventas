@@ -68,6 +68,9 @@ $data_menu = function (int $interface): array {
         <li><a class="app-menu__item <?= $data['page_id'] === 5 ? 'active' : '' ?>" href="<?= $data_menu(5) ? base_url() . '/pos/employee' : '' ?>"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label"><?= $data_menu(5) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(5) ? $data_menu(5)['Interface'] : 'Empleados' ?></span></a></li>
         <li><a class="app-menu__item <?= $data['page_id'] === 6 ? 'active' : '' ?>" href="<?= $data_menu(6) ? base_url() . '/pos/roles' : '' ?>"><i class="app-menu__icon bi bi-shield-check"></i><span class="app-menu__label"><?= $data_menu(6) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(6) ? $data_menu(6)['Interface'] : 'Roles' ?></span></a></li>
     </ul>
+    <div class="w-100 text-center">
+        <span class="version text-center text-white mt-3 badge bg-primary">Version: <?= VERSION_SISTEMA ?> (Beta)</span>
+    </div>
 </aside>
 
 <!-- Modal: Registrar nuevo negocio -->
