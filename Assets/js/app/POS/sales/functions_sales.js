@@ -526,6 +526,10 @@
 
           if (data.status) {
             lastVoucherName = voucherName;
+            //limpiamos el input
+            inputNombreVenta.value = "";
+            //ocultamos el modal
+            $("#modalPostVenta").modal("hide");
           }
         } catch (error) {
           showAlert({

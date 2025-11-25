@@ -301,6 +301,8 @@
     loadUserBusinesses();
     createBusiness();
     activeBusiness();
+    closeAllModals();
+    // Esto es ideal para botones tipo "Cerrar sesión" o al cambiar de ruta en una SPA.
   });
 })();
 
@@ -390,20 +392,75 @@ function showAlert(data = {}, type = "float") {
   }
 }
 /**
- * Cierra un modal de Bootstrap 4/5 de forma segura.
- * @param {string} modalId
+ * Busca todos los modales visibles (clase .show) y los cierra.
  */
-function closeModal(modalId) {
-  if (!modalId) return;
-  const modalElement = document.getElementById(modalId);
-  if (!modalElement) return;
+function closeAllModals() {
+  // Selecciona todos los div con clase 'modal' y 'show' (abiertos)
+  const openModals = document.querySelectorAll(".modal.show");
 
-  if (window.bootstrap && bootstrap.Modal) {
-    const instance =
-      bootstrap.Modal.getInstance(modalElement) ||
-      new bootstrap.Modal(modalElement);
-    if (instance?.hide) instance.hide();
-  } else if (window.$) {
-    $(modalElement).modal("hide");
+  openModals.forEach((modalElement) => {
+    closeModal(modalElement);
+  });
+
+  // Limpieza de seguridad extra por si quedan fondos grises
+  setTimeout(removeBackdrop, 500);
+}
+
+/**
+ * Cierra un modal específico.
+ * @param {string|HTMLElement} target - Puede ser el ID del modal o el elemento DOM.
+ */
+function closeModal(target) {
+  let modalElement;
+
+  // 1. Determinar si recibimos un ID o el elemento directo
+  if (typeof target === "string") {
+    modalElement = document.getElementById(target);
+  } else if (target instanceof HTMLElement) {
+    modalElement = target;
   }
+
+  if (!modalElement) return;
+  // Si el elemento que tiene el foco (el botón presionado) está dentro del modal,
+  // le quitamos el foco inmediatamente.
+  if (modalElement.contains(document.activeElement)) {
+    document.activeElement.blur();
+  }
+  // 2. Lógica para Bootstrap 5 (Vanilla JS)
+  if (window.bootstrap && bootstrap.Modal) {
+    // Solo obtenemos la instancia existente. No creamos una nueva para cerrar.
+    const instance = bootstrap.Modal.getInstance(modalElement);
+    if (instance) {
+      instance.hide();
+    } else {
+      // Fallback: Si no hay instancia, forzamos cierre visual
+      forceClose(modalElement);
+    }
+  }
+  // 3. Lógica para jQuery (Bootstrap 4)
+  else if (window.$) {
+    $(modalElement).modal("hide");
+  } else {
+    // 4. Fallback final si no hay librerías cargadas
+    forceClose(modalElement);
+  }
+}
+
+/**
+ * Helper para forzar el cierre visual manipulando clases CSS
+ */
+function forceClose(element) {
+  element.classList.remove("show");
+  element.style.display = "none";
+  element.setAttribute("aria-hidden", "true");
+}
+
+/**
+ * Elimina el fondo gris oscuro (backdrop) si se queda pegado.
+ */
+function removeBackdrop() {
+  const backdrops = document.querySelectorAll(".modal-backdrop");
+  backdrops.forEach((backdrop) => backdrop.remove());
+  document.body.classList.remove("modal-open");
+  document.body.style.overflow = "";
 }

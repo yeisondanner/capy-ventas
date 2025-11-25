@@ -211,6 +211,38 @@
     modalUpdate = document.getElementById("modalUpdateProduct");
     modalCategory = document.getElementById("modalCategory");
     modalReport = document.getElementById("modalProductReport");
+    // 1. Para el modal de CREAR producto
+    if (modalCreate) {
+      modalCreate.addEventListener("shown.bs.modal", function () {
+        const input = document.getElementById("txtProductName");
+        if (input) input.focus();
+      });
+    }
+
+    // 2. Para el modal de ACTUALIZAR producto
+    if (modalUpdate) {
+      modalUpdate.addEventListener("shown.bs.modal", function () {
+        // Nota: Asegúrate de que este input no tenga atributo 'readonly' si quieres el foco ahí
+        const input = document.getElementById("update_txtProductName");
+        if (input) input.focus();
+      });
+    }
+
+    // 3. Para el modal de CATEGORÍAS
+    if (modalCategory) {
+      modalCategory.addEventListener("shown.bs.modal", function () {
+        const input = document.getElementById("txtCategoryName");
+        if (input) input.focus();
+      });
+    }
+
+    // 4. Para el modal de REPORTE (opcional, foco en el botón cerrar)
+    if (modalReport) {
+      modalReport.addEventListener("shown.bs.modal", function () {
+        const closeBtn = modalReport.querySelector(".btn-secondary");
+        if (closeBtn) closeBtn.focus();
+      });
+    }
   }
 
   /**
@@ -551,6 +583,7 @@
     }
 
     Swal.fire({
+      target: document.getElementById("modalCategory"), //renderizar dentro del modal
       title: "Actualizar categoría",
       input: "text",
       inputLabel: "Nombre",
@@ -563,6 +596,12 @@
       confirmButtonText: "Guardar",
       cancelButtonText: "Cancelar",
       focusCancel: true,
+      didOpen: () => {
+        const input = Swal.getInput();
+        if (input) {
+          input.focus();
+        }
+      },
       preConfirm: async (value) => {
         const newName = (value || "").trim();
         if (!newName) {
