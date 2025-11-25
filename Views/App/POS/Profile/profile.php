@@ -17,6 +17,7 @@ function formatDateProfile(?string $value, bool $withTime = true): string
 
 $user         = $data['user'] ?? [];
 $subscription = $data['subscription'] ?? [];
+$invoices     = $data['invoices'] ?? [];
 $businesses   = $data['businesses'] ?? [];
 $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
 ?>
@@ -84,7 +85,6 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                 </div>
             </div>
         </div>
-
         <div class="col-lg-8">
             <div class="tile h-100">
                 <div class="tile-title-w-btn d-flex align-items-center">
@@ -96,14 +96,14 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                 </div>
                 <div class="row g-3 mt-3">
                     <div class="col-md-4">
-                        <div class="info-box">
+                        <div class="info-box border border-primary">
                             <p class="text-muted mb-1">Plan</p>
                             <h5 class="mb-0"><?= htmlspecialchars($subscription['plan'] ?? 'Sin plan', ENT_QUOTES, 'UTF-8'); ?></h5>
                             <small class="text-muted text-uppercase"><?= htmlspecialchars($subscription['billingPeriod'] ?? 'sin periodo', ENT_QUOTES, 'UTF-8'); ?></small>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-box">
+                        <div class="info-box border border-warning">
                             <p class="text-muted mb-1">Monto por ciclo</p>
                             <h5 class="mb-0">
                                 <?php if (!empty($subscription['price'])): ?>
@@ -116,7 +116,7 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="info-box">
+                        <div class="info-box border border-success">
                             <p class="text-muted mb-1">Descuento</p>
                             <h5 class="mb-0"><?= htmlspecialchars($subscription['discount'] ?? 'Sin descuento', ENT_QUOTES, 'UTF-8'); ?></h5>
                             <small class="text-muted">Aplicado al ciclo</small>
@@ -127,25 +127,84 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                 <div class="row g-3">
                     <div class="col-md-4">
                         <p class="text-muted mb-1">Inicio</p>
-                        <p class="fw-semibold mb-0"><?= formatDateProfile($subscription['startDate'] ?? null); ?></p>
+                        <p class="fw-semibold mb-0 text-primary"><i class="bi bi-calendar4-event"></i> <?= formatDateProfile($subscription['startDate'] ?? null); ?></p>
                     </div>
                     <div class="col-md-4">
                         <p class="text-muted mb-1">Próxima facturación</p>
-                        <p class="fw-semibold mb-0"><?= formatDateProfile($subscription['nextBilling'] ?? null); ?></p>
+                        <p class="fw-semibold mb-0 text-info"><i class="bi bi-credit-card-2-back"></i> <?= formatDateProfile($subscription['nextBilling'] ?? null); ?></p>
                     </div>
                     <div class="col-md-4">
                         <p class="text-muted mb-1">Fin de ciclo</p>
-                        <p class="fw-semibold mb-0"><?= formatDateProfile($subscription['endDate'] ?? null); ?></p>
+                        <p class="fw-semibold mb-0 text-danger"><i class="bi bi-calendar4-event"></i> <?= formatDateProfile($subscription['endDate'] ?? null); ?></p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- Fin de la sección de suscripción -->
+    <!-- Inicio de la sección de historial de facturación -->
+    <div class="tile mt-4">
+        <div class="tile-title-w-btn d-flex align-items-center">
+            <div>
+                <h3 class="tile-title mb-0"><i class="bi bi-file-text"></i> Historial de Facturación</h3>
+                <small class="text-muted">Registro de tus suscripciones y renovaciones</small>
+            </div>
+            <span class="badge bg-secondary"><?= count($invoices); ?> registros</span>
+        </div>
+        <div class="table-responsive mt-3">
+            <table class="table table-striped align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Boleta</th>
+                        <th>Plan</th>
+                        <th>Periodo</th>
+                        <th>Inicio</th>
+                        <th>Fin</th>
+                        <th>Subtotal</th>
+                        <th>Descuento</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($invoices)): ?>
+                        <tr>
+                            <td colspan="7" class="text-center text-muted py-4">No hay historial de facturación disponible.</td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($invoices as $invoice): ?>
+                            <tr>
+                                <td>#<?= htmlspecialchars($invoice['id'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?= htmlspecialchars($invoice['plan'], ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?= htmlspecialchars($invoice['billingPeriod'] ?? '-', ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td><?= formatDateProfile($invoice['startDate'] ?? null); ?></td>
+                                <td><?= formatDateProfile($invoice['endDate'] ?? null); ?></td>
+                                <td>
+                                    <?= getCurrency(); ?> <?= number_format((float) $invoice['subtotal'], 2); ?>
+                                </td>
+                                <td> <?= getCurrency(); ?> <?= htmlspecialchars($invoice['discount'] ?? '-', ENT_QUOTES, 'UTF-8'); ?></td>
+                                <td>
+                                    <?= getCurrency(); ?> <?= number_format((float) $invoice['total'], 2); ?>
+                                </td>
+                                <td>
+                                    <span class="badge <?= $invoice['status'][1] ?>">
+                                        <i class="bi <?= $invoice['status'][2] ?>"></i>
+                                        <?= htmlspecialchars($invoice['status'][0], ENT_QUOTES, 'UTF-8'); ?>
+                                    </span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- Fin de la sección de historial de facturación -->
 
     <div class="tile mt-4">
         <div class="tile-title-w-btn d-flex align-items-center">
             <div>
-                <h3 class="tile-title mb-0">Negocios vinculados</h3>
+                <h3 class="tile-title mb-0"> <i class="bi bi-building"></i> Dueño de negocios</h3>
                 <small class="text-muted">Contexto comercial de tu cuenta</small>
             </div>
             <span class="badge bg-secondary"><?= count($businesses); ?> en total</span>

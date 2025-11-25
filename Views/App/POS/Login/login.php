@@ -25,9 +25,9 @@
     </section>
 
     <section class="login-content">
-<!--        <div class="logo">-->
-<!--            <h1>CapyVentas</h1>-->
-<!--        </div>-->
+        <!--        <div class="logo">-->
+        <!--            <h1>CapyVentas</h1>-->
+        <!--        </div>-->
 
         <div class="login-box">
             <form class="login-form" id="formLogin" autocomplete="off">
@@ -36,7 +36,8 @@
                     <h3>
                         <!--                    <i class="bi bi-person me-2"></i>-->
 
-                        Capy Ventas</h3>
+                        Capy Ventas
+                    </h3>
                 </div>
                 <div class="login-message">
                     <span>
@@ -63,29 +64,29 @@
                 </div>
 
                 <div class="mb-3 contacto">
-                        <p class="mb-0">
-                            Si no tienes cuenta, contactate con el <strong>capy administrador</strong>.
-                            <a class="semibold-text" href="tel:+51999999999">Aquí</a>
-                        </p>
+                    <p class="mb-0">
+                        Si no tienes cuenta, contactate con el <strong>capy administrador</strong>.
+                        <a class="semibold-text" href="tel:+51999999999">Aquí</a>
+                    </p>
                 </div>
 
-<!--                <div class="mb-3">-->
-<!--                    <div class="utility">-->
-<!--                        <div class="form-check">-->
-<!--                            <label class="form-check-label">-->
-<!--                                <input class="form-check-input" type="checkbox" id="chbxRemember" name="chbxRemember">-->
-<!--                                <label class="form-check-label" for="chbxRemember">Recuérdame</label>-->
-<!--                            </label>-->
-<!--                        </div>-->
-<!--                        <p class="semibold-text mb-0">-->
-<!--                            <a href="#" data-toggle="flip">¿Olvidaste tu contraseña?</a>-->
-<!--                        </p>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="mb-3">-->
+                <!--                    <div class="utility">-->
+                <!--                        <div class="form-check">-->
+                <!--                            <label class="form-check-label">-->
+                <!--                                <input class="form-check-input" type="checkbox" id="chbxRemember" name="chbxRemember">-->
+                <!--                                <label class="form-check-label" for="chbxRemember">Recuérdame</label>-->
+                <!--                            </label>-->
+                <!--                        </div>-->
+                <!--                        <p class="semibold-text mb-0">-->
+                <!--                            <a href="#" data-toggle="flip">¿Olvidaste tu contraseña?</a>-->
+                <!--                        </p>-->
+                <!--                    </div>-->
+                <!--                </div>-->
 
 
                 <div class="mb-3 btn-container d-grid">
-                    <button class="btn btn-primary btn-block"><i class="bi bi-box-arrow-in-right me-2 fs-5"></i>Ingresar</button>
+                    <button class="btn btn-primary btn-block d-flex align-items-center justify-content-center" id="btnLogin"><i class="bi bi-box-arrow-in-right me-2 fs-5"></i>Ingresar</button>
                 </div>
             </form>
 
@@ -119,7 +120,7 @@
     <script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/SweerAlert2.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
-    <script src="<?= media() ?>/js/app/POS/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
+    <script type="module" src="<?= media() ?>/js/app/POS/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
 </body>
 
 </html>

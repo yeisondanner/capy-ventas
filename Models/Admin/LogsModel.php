@@ -1,27 +1,46 @@
 <?php
 class LogsModel extends Mysql
 {
-    private $title;
-    private $description;
-    private $typeLog;
-    private $idUser;
+    /**
+     * Encapsula los datos del log.
+     */
+    private string $title;
+    private string  $description;
+    private int $typeLog;
+    private int $idUser;
+    private string $table;
+    /**
+     * Constructor de la clase LogsModel.
+     */
     public function __construct()
     {
         parent::__construct();
     }
-    public function insert_log($title, $description, $typeLog, $idUser)
+    /**
+     * Inserta un nuevo registro de log en la base de datos.
+     *
+     * @param string $title
+     * @param string $description
+     * @param int $typeLog
+     * @param int $idUser
+     * @param string $table
+     * @return int
+     */
+    public function insert_log(string $title, string $description, int $typeLog, int $idUser, string $table)
     {
         $this->title = $title;
         $this->description = $description;
         $this->typeLog = $typeLog;
         $this->idUser = $idUser;
+        $this->table = $table;
         $arrValues = array(
             $this->title,
             $this->description,
             $this->typeLog,
-            $this->idUser
+            $this->idUser,
+            $this->table
         );
-        $sql = "INSERT INTO `tb_log` (`l_title`, `l_description`, `typelog_id`, `user_id`) VALUES (?,?,?,?);";
+        $sql = "INSERT INTO `tb_log` (`l_title`, `l_description`, `typelog_id`, `user_id`, `l_table`) VALUES (?,?,?,?,?);";
         $request = $this->insert($sql, $arrValues);
         return $request;
     }

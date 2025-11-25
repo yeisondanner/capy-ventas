@@ -10,14 +10,20 @@
             <li class="breadcrumb-item"><a href="<?= base_url() ?>/pos/dashboard">Inicio</a></li>
         </ul>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="tile">
-
-
-
-            </div>
+    <div class="tile">
+        <div class="alert alert-info" role="alert">
+            <strong>¡Atención!</strong> Esta es una alerta en HTML.
         </div>
+    </div>
+    <div class="tile">
+        <h1>Permisos</h1>
+        <?php
+        get_option_and_permission_app();
+        ?>
+        <h1>Session</h1>
+        <?php
+        dep($_SESSION);
+        ?>
     </div>
 </main>
 <?= footerPos($data) ?>

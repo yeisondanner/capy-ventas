@@ -56,24 +56,42 @@
             <div class="modal-body">
                 <?= csrf(); ?>
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="txtEmployeeUserapp" class="form-label">Usuario de Aplicación (opcional)</label>
-                        <select class="form-select" id="txtEmployeeUserapp" name="txtEmployeeUserapp">
-                            <option value="" selected>Sin usuario asignado</option>
-                        </select>
+                    <div class="col-md-8">
+                        <label for="txtEmployeeUserSearch" class="form-label">Usuario o correo <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="txtEmployeeUserSearch" name="txtEmployeeUserSearch" maxlength="120" placeholder="Ingresa usuario o correo registrado" list="employeeUserSuggestions" required>
+                            <button class="btn btn-outline-secondary" type="button" id="btnSearchEmployeeUser"><i class="bi bi-search"></i> Buscar</button>
+                        </div>
+                        <small class="text-muted">Carga un usuario existente para vincularlo como empleado.</small>
+                        <datalist id="employeeUserSuggestions"></datalist>
+                        <input type="hidden" id="txtEmployeeUserappId" name="txtEmployeeUserappId">
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="txtEmployeeRolapp" class="form-label">Rol de Aplicación <span class="text-danger">*</span></label>
                         <select class="form-select" id="txtEmployeeRolapp" name="txtEmployeeRolapp" required>
                             <option value="" selected disabled>Selecciona un rol</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <label for="txtEmployeeStatus" class="form-label">Estado <span class="text-danger">*</span></label>
-                        <select class="form-select" id="txtEmployeeStatus" name="txtEmployeeStatus" required>
-                            <option value="Activo" selected>Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
+                    <div class="col-12">
+                        <div class="employee-user-preview shadow-sm">
+                            <div class="employee-user-preview__icon text-primary">
+                                <i class="bi bi-person-badge"></i>
+                            </div>
+                            <div class="employee-user-preview__content">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                    <div>
+                                        <p class="text-muted small mb-1">Nombre completo</p>
+                                        <h5 class="mb-1" id="displayEmployeeFullName">Sin usuario seleccionado</h5>
+                                        <p class="mb-0 text-muted" id="displayEmployeeEmail">-</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="text-muted small mb-1">Usuario</p>
+                                        <span class="badge bg-info text-dark" id="displayEmployeeUser">No asignado</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2 text-muted small" id="displayEmployeeNote">Busca un usuario para mostrar sus datos antes de guardar.</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -129,18 +147,43 @@
             <div class="modal-body">
                 <?= csrf(); ?>
                 <input type="hidden" name="update_txtEmployeeId" id="update_txtEmployeeId">
+                <input type="hidden" name="update_txtEmployeeUserappId" id="update_txtEmployeeUserappId">
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="update_txtEmployeeUserapp" class="form-label">Usuario de Aplicación (opcional)</label>
-                        <select class="form-select" id="update_txtEmployeeUserapp" name="update_txtEmployeeUserapp">
-                            <option value="">Sin usuario asignado</option>
-                        </select>
+                    <div class="col-md-8">
+                        <label for="update_txtEmployeeUserSearch" class="form-label">Usuario o correo <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="update_txtEmployeeUserSearch" name="update_txtEmployeeUserSearch" maxlength="120" placeholder="Ingresa usuario o correo registrado" list="employeeUserSuggestionsUpdate" required>
+                            <button class="btn btn-outline-secondary" type="button" id="btnSearchEmployeeUserUpdate"><i class="bi bi-search"></i> Buscar</button>
+                        </div>
+                        <small class="text-muted">Solo puedes vincular usuarios activos y disponibles.</small>
+                        <datalist id="employeeUserSuggestionsUpdate"></datalist>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="update_txtEmployeeRolapp" class="form-label">Rol de Aplicación <span class="text-danger">*</span></label>
                         <select class="form-select" id="update_txtEmployeeRolapp" name="update_txtEmployeeRolapp" required>
                             <option value="" selected disabled>Selecciona un rol</option>
                         </select>
+                    </div>
+                    <div class="col-12">
+                        <div class="employee-user-preview shadow-sm">
+                            <div class="employee-user-preview__icon text-success">
+                                <i class="bi bi-person-check"></i>
+                            </div>
+                            <div class="employee-user-preview__content">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                                    <div>
+                                        <p class="text-muted small mb-1">Nombre completo</p>
+                                        <h5 class="mb-1" id="update_displayEmployeeFullName">Sin usuario seleccionado</h5>
+                                        <p class="mb-0 text-muted" id="update_displayEmployeeEmail">-</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="text-muted small mb-1">Usuario</p>
+                                        <span class="badge bg-success bg-opacity-75 text-dark" id="update_displayEmployeeUser">No asignado</span>
+                                    </div>
+                                </div>
+                                <div class="mt-2 text-muted small" id="update_displayEmployeeNote">Busca un usuario activo para actualizar la asignación.</div>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="update_txtEmployeeStatus" class="form-label">Estado <span class="text-danger">*</span></label>
