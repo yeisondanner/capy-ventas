@@ -1477,45 +1477,47 @@ function get_option_and_permission_app()
     if (empty($arrDataPlans)) {
         //si el usuario no tiene ningun plan activo, lo registramos el plan free   
         $objPermission->insert_plan_subscription_free($idUser);
+        //Como acabamos de registrar el plan free, lo obtenemos
+        $arrDataPlans = $objPermission->get_plans_subscription($idUser);
+    }
+    $fecha_vencimiento = $arrDataPlans['fecha_vencimiento']; #obtener la fecha de vencimiento del plan
+    $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
+    $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento); #calcular la diferencia entre las dos fechas
+    if ((int)$data_vencimiento['total_dias'] < 0) {
+        //validamos que el plan este vencido 2 dias para poder cambiar al plan free o si el plan es el free registramos el plan free
+        if ((int)$data_vencimiento['total_dias'] <= -2 || (int)$arrDataPlans['idPlan'] === 1) {
+            //cambiamos al plan free
+            $objPermission->insert_plan_subscription_free($idUser);
+        }
     } else {
-        $fecha_vencimiento = $arrDataPlans['fecha_vencimiento']; #obtener la fecha de vencimiento del plan
-        $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
-        $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento); #calcular la diferencia entre las dos fechas
-        if ((int)$data_vencimiento['total_dias'] < 0) {
-            //validamos que el plan este vencido 2 dias para poder cambiar al plan free o si el plan es el free registramos el plan free
-            if ((int)$data_vencimiento['total_dias'] <= -2 || (int)$arrDataPlans['idPlan'] === 1) {
-                //cambiamos al plan free
-                $objPermission->insert_plan_subscription_free($idUser);
-            }
-        } else {
-            /**
-             * validamos si el usuario es dueño o 
-             * no del negocio activo, si fuere dueño, 
-             * tiene acceso a todos los permisos que el plan permite, 
-             * caso contrario responde a un rol de usuario el cual esta limitado a permisos
-             */
-            $dataOwnerBusiness = $objPermission->get_bussiness_owner($idUser, $idBusiness);
-            if (!empty($dataOwnerBusiness)) {
-                //Ahora consultamos los permisos del plan, que vistas y funciones tiene permitida
-                $arrPermissionsFunctions = $objPermission->get_permissions_functions((int)$arrDataPlans['idPlan']);
-                if (isset($_SESSION[$nameVarPermission])) {
-                    unset($_SESSION[$nameVarPermission]);
-                }
-                //preparamos un array con el menu permitido                
-                $_SESSION[$nameVarPermission] = $arrPermissionsFunctions;
-            } else {
+        /**
+         * validamos si el usuario es dueño o 
+         * no del negocio activo, si fuere dueño, 
+         * tiene acceso a todos los permisos que el plan permite, 
+         * caso contrario responde a un rol de usuario el cual esta limitado a permisos
+         */
+        $dataOwnerBusiness = $objPermission->get_bussiness_owner($idUser, $idBusiness);
+        if (!empty($dataOwnerBusiness)) {
+            //Ahora consultamos los permisos del plan, que vistas y funciones tiene permitida
+            $arrPermissionsFunctions = $objPermission->get_permissions_functions((int)$arrDataPlans['idPlan']);
+            if (isset($_SESSION[$nameVarPermission])) {
                 unset($_SESSION[$nameVarPermission]);
-                $_SESSION[$nameVarPermission] = array();
-                /**
-                 *si el usuario no es dueño del negocio obtenemos los permisos que tiene el usuario en este negocio
-                 *Primero consultamos la informacion del negocio
-                 *Luego consultamos los permisos del usuario en este negocio y del plan asociado                   
-                 */
-
-                echo "No es dueño del negocio";
             }
+            //preparamos un array con el menu permitido                
+            $_SESSION[$nameVarPermission] = $arrPermissionsFunctions;
+        } else {
+            unset($_SESSION[$nameVarPermission]);
+            $_SESSION[$nameVarPermission] = array();
+            /**
+             *si el usuario no es dueño del negocio obtenemos los permisos que tiene el usuario en este negocio
+             *Primero consultamos la informacion del negocio
+             *Luego consultamos los permisos del usuario en este negocio y del plan asociado                   
+             */
+
+            echo "No es dueño del negocio";
         }
     }
+
     unset($objPermission);
 }
 /**
