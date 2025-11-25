@@ -288,8 +288,8 @@
     if (dropdownList) {
       dropdownList.addEventListener("click", function (event) {
         const item = event.target.closest("[data-business-id]");
-        const owner = item.getAttribute("data-owner");
         if (!item) return;
+        const owner = item.getAttribute("data-owner");
         event.preventDefault();
         const businessId = item.getAttribute("data-business-id");
         setActiveBusiness(businessId, owner);

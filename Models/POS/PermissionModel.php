@@ -10,6 +10,7 @@ class PermissionModel extends Mysql
     protected float $pricePerCycle;
     protected string $dateStart;
     protected string $dateEnd;
+    protected int $idRoleApp;
 
     /**
      * Inicializa el modelo base y establece la conexión con la base de datos.
@@ -115,8 +116,9 @@ class PermissionModel extends Mysql
                     ma.`name` AS 'Module',
                     ia.`name` AS 'Interface',
                     pia.`create`,
-                    pia.`delete`,
+                    pia.`read`,
                     pia.`update`,
+                    pia.`delete`,
                     pia.`status`
                 FROM
                     module_app AS ma
@@ -146,6 +148,92 @@ class PermissionModel extends Mysql
                     AND b.userapp_id = ?;
         SQL;
         $request = $this->select($sql, [$this->idBusiness, $this->idUserApp]) ?? [];
+        return $request;
+    }
+    /**
+     * Consultamos la informacion del negocio que usuario 
+     * esta como empleado
+     * @param int $idbusiness
+     * @return array
+     */
+    public function get_business_employee(int $idBusiness)
+    {
+        $this->idBusiness = $idBusiness;
+        $sql = <<<SQL
+                SELECT
+                    *
+                FROM
+                    business AS b
+                    INNER JOIN user_app AS ua ON ua.idUserApp = b.userapp_id
+                    INNER JOIN subscriptions AS s ON (s.user_app_id=ua.idUserApp AND s.end_date=ua.plan_expiration_date AND s.plan_id!=1)
+                WHERE
+                    b.idBusiness = ?;
+        SQL;
+        $request = $this->select($sql, [$this->idBusiness]) ?? [];
+        return $request;
+    }
+    /**
+     * Obtiene la informacion del usuario
+     * @param int $idUserApp
+     * @return array
+     */
+    public function get_information_user(int $idUserApp)
+    {
+        $this->idUserApp = $idUserApp;
+        $sql = <<<SQL
+                SELECT
+                    *
+                FROM
+                    employee AS e
+                    INNER JOIN user_app AS ua ON ua.idUserApp = e.userapp_id
+                    INNER JOIN role_app AS ra ON ra.idRoleApp=e.rolapp_id
+                WHERE
+                    e.userapp_id = ?;
+        SQL;
+        $request = $this->select($sql, [$this->idUserApp]) ?? [];
+        return $request;
+    }
+    /**
+     * Obtiene los permisos de las interfaces asignados a un plan de acuerdo al rol del usuario
+     * @param int $idUserApp
+     * @param int $idBusiness
+     * @param int $idRoleApp
+     * @return array
+     */
+    public function get_permssion_user_employes(int $idUserApp, int $idBusiness, int $idRoleApp)
+    {
+        $this->idUserApp = $idUserApp;
+        $this->idBusiness = $idBusiness;
+        $this->idRoleApp = $idRoleApp;
+        $sql = <<<SQL
+                SELECT
+                    pia.plan_id,
+                    pia.idPlansInterfaceApp,
+                    ma.idModule,
+                    ia.idInterface,
+                    ma.`name` AS 'Module',
+                    ia.`name` AS 'Interface',
+                    CONCAT(pia.`create`,'-',pms.`create`) AS 'create',
+                    CONCAT(pia.`read`,'-',pms.`read`) AS 'read',
+                    CONCAT(pia.`update`,'-',pms.`update`) AS 'update',
+                    CONCAT(pia.`delete`,'-',pms.`delete`) AS 'delete',
+                    CONCAT(pia.`status`,'-',pms.`status`) AS 'status',
+                    ua.plan_expiration_date
+                FROM
+                    user_app AS ua
+                    INNER JOIN employee AS e ON e.userapp_id = ua.idUserApp
+                    INNER JOIN role_app AS ra ON ra.idRoleApp = e.rolapp_id
+                    INNER JOIN permission AS pms ON pms.rol_id = ra.idRoleApp
+                    INNER JOIN plans_interface_app AS pia ON pia.idPlansInterfaceApp = pms.plans_interface_app_id
+                    INNER JOIN interface_app AS ia ON ia.idInterface = pia.interface_id
+                    INNER JOIN module_app AS ma ON ma.idModule = ia.module_id
+                    INNER JOIN plans AS pl ON pl.idPlan = pia.plan_id
+                WHERE
+                    e.userapp_id = ?
+                    AND e.bussines_id = ?
+                    AND ra.idRoleApp=?;
+        SQL;
+        $request = $this->select_all($sql, [$this->idUserApp, $this->idBusiness, $this->idRoleApp]) ?? [];
         return $request;
     }
 }

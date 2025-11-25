@@ -1483,11 +1483,14 @@ function get_option_and_permission_app()
     $fecha_vencimiento = $arrDataPlans['fecha_vencimiento']; #obtener la fecha de vencimiento del plan
     $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
     $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento); #calcular la diferencia entre las dos fechas
-    if ((int)$data_vencimiento['total_dias'] < 0) {
+    if ((int)$data_vencimiento['total_dias'] <= 0) {
         //validamos que el plan este vencido 2 dias para poder cambiar al plan free o si el plan es el free registramos el plan free
         if ((int)$data_vencimiento['total_dias'] <= -2 || (int)$arrDataPlans['idPlan'] === 1) {
             //cambiamos al plan free
             $objPermission->insert_plan_subscription_free($idUser);
+            //redirigimos al usuario a la pantalla de inicio
+            header("Location: " . base_url() . "/pos/dashboard");
+            die();
         }
     } else {
         /**
@@ -1506,15 +1509,46 @@ function get_option_and_permission_app()
             //preparamos un array con el menu permitido                
             $_SESSION[$nameVarPermission] = $arrPermissionsFunctions;
         } else {
-            unset($_SESSION[$nameVarPermission]);
-            $_SESSION[$nameVarPermission] = array();
+            //primero validamos que el plan del negocio no este vencido y no sea el plan free
+            $dataBusinessEmployee = $objPermission->get_business_employee($idBusiness);
+            if (empty($dataBusinessEmployee)) {
+                echo "El negocio no tiene un plan activo o esta 
+                en plan free, por favor contacte el dueño 
+                del negocio para que pueda renovar el plan";
+                die();
+            }
+            //validamos que el plan del negocio no este vencido
+            $fecha_vencimiento = $dataBusinessEmployee['plan_expiration_date']; #obtener la fecha de vencimiento del plan
+            $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
+            $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento);
+            if ((int)$data_vencimiento['total_dias'] <= 0) {
+                echo "El plan del negocio ha expirado, por favor contacte al dueño 
+                del negocio para que pueda renovar el plan";
+                die();
+            }
+            //obtenemos el rol que tiene el usuario en el negocio
+            $dataInformationUser = $objPermission->get_information_user($idUser);
+            //validamos que el usuario tenga un rol
+            if (empty($dataInformationUser)) {
+                echo "El usuario no tiene un rol asignado, por favor contacte al dueño 
+                del negocio para que pueda asignarle un rol";
+                die();
+            }
+            $roleUser = $dataInformationUser['rolapp_id'];
             /**
              *si el usuario no es dueño del negocio obtenemos los permisos que tiene el usuario en este negocio
              *Primero consultamos la informacion del negocio
              *Luego consultamos los permisos del usuario en este negocio y del plan asociado                   
              */
-
-            echo "No es dueño del negocio";
+            $permissionUser = $objPermission->get_permssion_user_employes($idUser, $idBusiness, $roleUser);
+            //validamos que el usuario tenga permisos
+            if (empty($permissionUser)) {
+                echo "El usuario no tiene permisos asignados, por favor contacte al dueño 
+                del negocio para que pueda asignarle permisos";
+                die();
+            }
+            unset($_SESSION[$nameVarPermission]);
+            $_SESSION[$nameVarPermission] = $permissionUser;
         }
     }
 
