@@ -59,15 +59,16 @@ CREATE TABLE IF NOT EXISTS `business` (
   KEY `typebusiness_id` (`typebusiness_id`),
   CONSTRAINT `business_ibfk_1` FOREIGN KEY (`userapp_id`) REFERENCES `user_app` (`idUserApp`),
   CONSTRAINT `business_ibfk_2` FOREIGN KEY (`typebusiness_id`) REFERENCES `business_type` (`idBusinessType`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.business: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.business: ~5 rows (aproximadamente)
 DELETE FROM `business`;
 INSERT INTO `business` (`idBusiness`, `typebusiness_id`, `name`, `direction`, `city`, `document_number`, `phone_number`, `country`, `telephone_prefix`, `email`, `status`, `registration_date`, `update_date`, `userapp_id`) VALUES
 	(3, 6, 'QUCHA', 'Jr. Dos de Mayo', 'RIOJA', '20613844369', '969480973', 'PERU', '+51', 'grupomaslucanrojas@gmail.com', 'Activo', '2025-11-12 06:43:09', '2025-11-12 06:43:09', 2),
 	(4, 6, 'RABI SHADAY', 'Av. Corazón de Jesús 901 CETPRO SHADAY', 'SEGUNDA JERUSALÉN', '20576121235', '942872648', 'PERÚ', '+51', 'emersondavidgrandezmelendez@gmail.com', 'Activo', '2025-11-12 18:58:18', '2025-11-12 18:58:18', 3),
 	(5, 6, 'CYD TECH', 'Jron. Amazonas N° 208', 'ELIAS SOPLIN VARGAS,', '10734486529', '910367611', 'PERU', '+51', 'yeisoncarhuapoma@gmail.com', 'Activo', '2025-11-17 03:03:22', '2025-11-17 03:03:22', 4),
-	(6, 6, 'LEJIAS SUPER VALENTINA', 'SEGUNDA JERUSALEN', NULL, '10734880009', '910761764', NULL, '+51', 'rojasmedinacristian17@gmail.com', 'Activo', '2025-11-25 00:39:23', '2025-11-25 00:39:23', 5);
+	(6, 6, 'LEJIAS SUPER VALENTINA', 'SEGUNDA JERUSALEN', NULL, '10734880009', '910761764', NULL, '+51', 'rojasmedinacristian17@gmail.com', 'Activo', '2025-11-25 00:39:23', '2025-11-25 00:39:23', 5),
+	(7, 6, 'LM.SA MODA', NULL, 'NUEVA CAJAMARCA', '10758397529', '926064027', 'PERU', '+51', 'luzmariasandovalalejandria@gmail.com', 'Activo', '2025-11-25 22:09:11', '2025-11-25 22:09:11', 6);
 
 -- Volcando estructura para tabla bd_capyventas.business_type
 DROP TABLE IF EXISTS `business_type`;
@@ -100,17 +101,19 @@ CREATE TABLE IF NOT EXISTS `category` (
   UNIQUE KEY `business_id_name` (`business_id`,`name`),
   KEY `business_id` (`business_id`),
   CONSTRAINT `category_ibfk_1` FOREIGN KEY (`business_id`) REFERENCES `business` (`idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.category: ~6 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.category: ~8 rows (aproximadamente)
 DELETE FROM `category`;
 INSERT INTO `category` (`idCategory`, `business_id`, `name`, `description`, `status`, `registration_date`, `update_date`) VALUES
 	(1, 3, 'Sin categoría', NULL, 'Activo', '2025-11-12 13:33:32', '2025-11-12 13:33:32'),
 	(2, 4, 'Sin categoría', NULL, 'Activo', '2025-11-12 20:08:56', '2025-11-12 20:08:56'),
 	(3, 4, 'Preservativos', NULL, 'Inactivo', '2025-11-13 02:45:21', '2025-11-13 02:47:59'),
 	(5, 5, 'Sin categoría', NULL, 'Activo', '2025-11-17 03:03:22', '2025-11-17 03:03:22'),
-	(6, 5, 'Netflix', NULL, 'Activo', '2025-11-17 03:04:14', '2025-11-17 03:04:14'),
-	(7, 6, 'Sin categoría', NULL, 'Activo', '2025-11-25 00:39:23', '2025-11-25 00:39:23');
+	(6, 5, 'Netflix Básico', NULL, 'Activo', '2025-11-17 03:04:14', '2025-11-25 16:31:53'),
+	(7, 6, 'Sin categoría', NULL, 'Activo', '2025-11-25 00:39:23', '2025-11-25 00:39:23'),
+	(8, 5, 'Netflix Premium', NULL, 'Activo', '2025-11-25 15:38:15', '2025-11-25 15:38:15'),
+	(9, 7, 'Sin categoría', NULL, 'Activo', '2025-11-25 22:09:11', '2025-11-25 22:09:11');
 
 -- Volcando estructura para tabla bd_capyventas.customer
 DROP TABLE IF EXISTS `customer`;
@@ -132,15 +135,16 @@ CREATE TABLE IF NOT EXISTS `customer` (
   KEY `business_id` (`business_id`),
   CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`documenttype_id`) REFERENCES `document_type` (`idDocumentType`),
   CONSTRAINT `customer_ibfk_2` FOREIGN KEY (`business_id`) REFERENCES `business` (`idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.customer: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.customer: ~5 rows (aproximadamente)
 DELETE FROM `customer`;
 INSERT INTO `customer` (`idCustomer`, `fullname`, `documenttype_id`, `document_number`, `phone_number`, `email`, `direction`, `status`, `registration_date`, `update_date`, `business_id`) VALUES
 	(2, 'Sin cliente', 1, 'Sin cliente', '999999999', 'sincliente@capyventas.com', 'Sin cliente', 'Activo', '2025-11-13 01:41:03', '2025-11-13 01:41:03', 3),
 	(3, 'Sin cliente', 1, 'Sin cliente', '999999999', 'sincliente@capyventas.com', 'Sin cliente', 'Activo', '2025-11-13 01:41:08', '2025-11-13 01:41:08', 4),
 	(5, 'Sin cliente', 1, 'Sin cliente', '999999999', 'sincliente@capyventas.com', 'Sin cliente', 'Activo', '2025-11-17 03:03:22', '2025-11-17 03:03:22', 5),
-	(6, 'Sin cliente', 1, 'Sin cliente', '999999999', 'sincliente@capyventas.com', 'Sin cliente', 'Activo', '2025-11-25 00:39:23', '2025-11-25 00:39:23', 6);
+	(6, 'Sin cliente', 1, 'Sin cliente', '999999999', 'sincliente@capyventas.com', 'Sin cliente', 'Activo', '2025-11-25 00:39:23', '2025-11-25 00:39:23', 6),
+	(7, 'Sin cliente', 1, 'Sin cliente', '999999999', 'sincliente@capyventas.com', 'Sin cliente', 'Activo', '2025-11-25 22:09:11', '2025-11-25 22:09:11', 7);
 
 -- Volcando estructura para tabla bd_capyventas.discounts
 DROP TABLE IF EXISTS `discounts`;
@@ -223,8 +227,8 @@ INSERT INTO `interface_app` (`idInterface`, `name`, `description`, `status`, `re
 	(2, 'Movimientos', NULL, 'Activo', '2025-11-20 22:07:12', '2025-11-20 22:07:12', 1),
 	(3, 'Inventarios', NULL, 'Activo', '2025-11-20 22:08:18', '2025-11-20 22:08:18', 2),
 	(4, 'Clientes', NULL, 'Activo', '2025-11-20 22:08:49', '2025-11-20 22:08:49', 3),
-	(5, 'Empleados', NULL, 'Activo', '2025-11-20 22:09:38', '2025-11-20 22:09:38', 4),
-	(6, 'Roles', NULL, 'Activo', '2025-11-20 22:09:59', '2025-11-20 22:09:59', 5),
+	(5, 'Empleados', NULL, 'Activo', '2025-11-20 22:09:38', '2025-11-25 22:24:41', 4),
+	(6, 'Roles', NULL, 'Activo', '2025-11-20 22:09:59', '2025-11-25 22:24:38', 5),
 	(7, 'Proveedores', NULL, 'Activo', '2025-11-20 22:10:38', '2025-11-20 22:10:38', 6);
 
 -- Volcando estructura para tabla bd_capyventas.invoices
@@ -243,12 +247,16 @@ CREATE TABLE IF NOT EXISTS `invoices` (
   PRIMARY KEY (`idInvoice`),
   KEY `fk_invoice_subscription` (`subscription_id`),
   CONSTRAINT `fk_invoice_subscription` FOREIGN KEY (`subscription_id`) REFERENCES `subscriptions` (`idSubscription`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Histórico de facturas y cobros de cada suscripción, con montos, descuentos aplicados, periodo de servicio y estado del pago.';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Histórico de facturas y cobros de cada suscripción, con montos, descuentos aplicados, periodo de servicio y estado del pago.';
 
--- Volcando datos para la tabla bd_capyventas.invoices: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.invoices: ~5 rows (aproximadamente)
 DELETE FROM `invoices`;
 INSERT INTO `invoices` (`idInvoice`, `subscription_id`, `period_start`, `period_end`, `subtotal`, `discount_amount`, `total`, `status`, `created_at`, `paid_at`) VALUES
-	(1, 1, '2025-11-12', '2025-12-12', 50.00, 50.00, 0.00, 'paid', '2025-11-13 02:38:56', '2025-11-12 21:38:57');
+	(1, 1, '2025-11-12', '2025-12-12', 50.00, 50.00, 0.00, 'paid', '2025-11-13 02:38:56', '2025-11-12 21:38:57'),
+	(2, 2, '2025-11-24', '2026-02-24', 150.00, 150.00, 0.00, 'paid', '2025-11-25 14:50:37', '2025-11-25 09:50:35'),
+	(3, 3, '2025-11-25', '2025-11-25', 0.00, 0.00, 0.00, 'paid', '2025-11-25 15:31:17', '2025-11-25 10:31:17'),
+	(4, 4, '2025-11-25', '2025-11-25', 0.00, 0.00, 0.00, 'paid', '2025-11-25 16:33:58', '2025-11-25 11:33:58'),
+	(5, 5, '2025-11-25', '2026-02-25', 150.00, 150.00, 0.00, 'paid', '2025-11-25 22:10:28', '2025-11-25 17:10:28');
 
 -- Volcando estructura para tabla bd_capyventas.measurement
 DROP TABLE IF EXISTS `measurement`;
@@ -331,15 +339,16 @@ CREATE TABLE IF NOT EXISTS `people` (
   `registration_date` timestamp NOT NULL DEFAULT current_timestamp(),
   `update_date` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`idPeople`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.people: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.people: ~5 rows (aproximadamente)
 DELETE FROM `people`;
 INSERT INTO `people` (`idPeople`, `names`, `lastname`, `email`, `date_of_birth`, `country`, `telephone_prefix`, `phone_number`, `status`, `registration_date`, `update_date`) VALUES
 	(2, 'LOLITA MERCEDES', 'MASLUCAN ROJAS', 'KzUwZU9WSCs1ZWVTZXZMT24zdCtVcC9PWm82UU02Q0R1a3dHZ1NkZE04az0=', '1984-01-23', 'PERU', '+51', '969480973', 'Activo', '2025-11-12 06:40:33', '2025-11-13 13:08:22'),
 	(3, 'EMERSON', 'GRANDEZ MELENDEZ', 'eVpXVHR4ZEhmK2NjM1NuaHI5WXNPNDJZcTVNYkFBWm5qcXdabXVTblBmay9wRDlXdkIyR0FDT3dWSDhsc3YyMg==', '2005-03-22', 'PERÚ', '+51', '942872648', 'Activo', '2025-11-12 18:56:48', '2025-11-12 18:56:48'),
 	(4, 'YEISON DANNER', 'CARHUAPOMA DETT', 'cnBNTHNoSGFNRlVuN2d0eXpTS1FSQ1JmaEFyeWRCL3FXWWpoQXFMVXE0VT0=', '2000-01-01', 'PERU', '+51', '910367611', 'Activo', '2025-11-17 03:01:57', '2025-11-17 03:01:57'),
-	(5, 'CRISTIAN', 'ROJAS MEDINA', 'YUV6cktkajI5aVg5cDBZbGxJMjVYYmRDNUs0ZGF0ank2NGRLQ01ndDFTaz0=', '2000-09-23', 'PERÚ', '+51', '910761764', 'Activo', '2025-11-25 00:37:46', '2025-11-25 00:37:46');
+	(5, 'CRISTIAN', 'ROJAS MEDINA', 'YUV6cktkajI5aVg5cDBZbGxJMjVYYmRDNUs0ZGF0ank2NGRLQ01ndDFTaz0=', '2000-09-23', 'PERÚ', '+51', '910761764', 'Activo', '2025-11-25 00:37:46', '2025-11-25 00:37:46'),
+	(6, 'LUZ MARIA', 'SANDOVAL ALEJANDRIA', 'V2NHaUI0cXQwSDkzM29YQldiQTBOOTJyeWVHd1NDS3JEbUZBays2WWs1Vjg0ZzA4dmZhcU5zS0JrMXRwNWlwaQ==', '2001-09-11', 'PERU', '+51', '926064027', 'Activo', '2025-11-25 22:00:41', '2025-11-25 22:00:41');
 
 -- Volcando estructura para tabla bd_capyventas.permission
 DROP TABLE IF EXISTS `permission`;
@@ -410,20 +419,21 @@ CREATE TABLE IF NOT EXISTS `plans_interface_app` (
   KEY `plan_id` (`plan_id`) USING BTREE,
   CONSTRAINT `FK_plans_interface_app_interface_app` FOREIGN KEY (`interface_id`) REFERENCES `interface_app` (`idInterface`),
   CONSTRAINT `FK_plans_interface_app_plans` FOREIGN KEY (`plan_id`) REFERENCES `plans` (`idPlan`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
--- Volcando datos para la tabla bd_capyventas.plans_interface_app: ~9 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.plans_interface_app: ~10 rows (aproximadamente)
 DELETE FROM `plans_interface_app`;
 INSERT INTO `plans_interface_app` (`idPlansInterfaceApp`, `interface_id`, `plan_id`, `create`, `delete`, `update`, `read`, `status`, `status_text`, `registration_date`, `update_date`) VALUES
 	(1, 1, 1, '1', '1', '1', '1', 'Activo', NULL, '2025-11-23 03:08:20', '2025-11-23 03:08:20'),
 	(2, 3, 1, '1', '1', '1', '1', 'Activo', NULL, '2025-11-23 03:10:56', '2025-11-23 03:10:56'),
 	(3, 4, 3, '1', '1', '1', '1', 'Activo', NULL, '2025-11-23 03:11:45', '2025-11-23 03:11:45'),
-	(4, 5, 3, '1', '1', '1', '1', 'Activo', NULL, '2025-11-23 03:11:57', '2025-11-23 03:11:57'),
+	(4, 5, 3, '1', '1', '1', '1', 'Inactivo', NULL, '2025-11-23 03:11:57', '2025-11-25 22:28:41'),
 	(5, 3, 3, '1', '1', '1', '1', 'Activo', NULL, '2025-11-23 03:12:08', '2025-11-23 03:12:08'),
 	(6, 2, 3, '1', '1', '1', '1', 'Activo', NULL, '2025-11-23 03:12:17', '2025-11-23 03:12:17'),
-	(7, 6, 3, '1', '1', '1', '1', 'Activo', NULL, '2025-11-23 03:12:27', '2025-11-23 03:12:27'),
+	(7, 6, 3, '1', '1', '1', '1', 'Inactivo', NULL, '2025-11-23 03:12:27', '2025-11-25 22:28:25'),
 	(8, 1, 3, '1', '1', '1', '1', 'Activo', NULL, '2025-11-23 03:12:38', '2025-11-23 03:12:38'),
-	(9, 2, 1, '1', '1', '1', '1', 'Activo', NULL, '2025-11-25 14:30:11', '2025-11-25 14:30:11');
+	(9, 2, 1, '1', '1', '1', '1', 'Activo', NULL, '2025-11-25 14:30:11', '2025-11-25 14:30:11'),
+	(10, 7, 3, '1', '1', '1', '1', 'Activo', NULL, '2025-11-25 14:56:07', '2025-11-25 14:56:07');
 
 -- Volcando estructura para tabla bd_capyventas.product
 DROP TABLE IF EXISTS `product`;
@@ -447,12 +457,13 @@ CREATE TABLE IF NOT EXISTS `product` (
   CONSTRAINT `FK_product_supplier` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`idSupplier`),
   CONSTRAINT `product_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`idCategory`),
   CONSTRAINT `product_ibfk_2` FOREIGN KEY (`measurement_id`) REFERENCES `measurement` (`idMeasurement`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.product: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.product: ~2 rows (aproximadamente)
 DELETE FROM `product`;
 INSERT INTO `product` (`idProduct`, `category_id`, `name`, `stock`, `purchase_price`, `sales_price`, `measurement_id`, `description`, `status`, `registration_date`, `update_date`, `supplier_id`) VALUES
-	(6, 6, 'Cuenta De Netflix', -25.00, 70.00, 13.40, 4, NULL, 'Activo', '2025-11-17 04:10:58', '2025-11-20 05:28:05', 4);
+	(6, 8, 'Cuenta De Netflix Premium', 999999.00, 11.70, 13.40, 4, NULL, 'Activo', '2025-11-17 04:10:58', '2025-11-25 15:53:47', 6),
+	(7, 6, 'Netflix Basico', 999999.00, 11.70, 12.00, 4, NULL, 'Activo', '2025-11-25 15:48:10', '2025-11-25 15:53:59', 6);
 
 -- Volcando estructura para tabla bd_capyventas.role_app
 DROP TABLE IF EXISTS `role_app`;
@@ -492,12 +503,16 @@ CREATE TABLE IF NOT EXISTS `subscriptions` (
   CONSTRAINT `fk_subscription_discount` FOREIGN KEY (`discount_id`) REFERENCES `discounts` (`idDiscount`),
   CONSTRAINT `fk_subscription_plan` FOREIGN KEY (`plan_id`) REFERENCES `plans` (`idPlan`),
   CONSTRAINT `fk_subscription_user` FOREIGN KEY (`user_app_id`) REFERENCES `user_app` (`idUserApp`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Suscripciones de los usuarios a los diferentes planes, incluyendo fechas, estado, precio por ciclo y relación con descuentos aplicados.';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Suscripciones de los usuarios a los diferentes planes, incluyendo fechas, estado, precio por ciclo y relación con descuentos aplicados.';
 
--- Volcando datos para la tabla bd_capyventas.subscriptions: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.subscriptions: ~5 rows (aproximadamente)
 DELETE FROM `subscriptions`;
 INSERT INTO `subscriptions` (`idSubscription`, `user_app_id`, `plan_id`, `discount_id`, `start_date`, `end_date`, `next_billing_date`, `price_per_cycle`, `status`, `auto_renew`) VALUES
-	(1, 2, 3, NULL, '2025-11-12 00:00:00', '2025-12-12 23:59:59', '2025-11-13 00:00:00', 50.00, 'active', 1);
+	(1, 2, 3, NULL, '2025-11-12 00:00:00', '2025-12-12 23:59:59', '2025-11-13 00:00:00', 50.00, 'active', 0),
+	(2, 5, 3, NULL, '2025-11-24 00:00:00', '2026-02-24 00:00:00', '2026-02-24 00:00:00', 150.00, 'active', 0),
+	(3, 4, 1, NULL, '2025-11-25 10:31:17', '2025-12-25 10:31:17', '2025-12-25 10:31:17', 0.00, 'active', 1),
+	(4, 3, 1, NULL, '2025-11-25 11:33:58', '2025-12-25 11:33:58', '2025-12-25 11:33:58', 0.00, 'active', 1),
+	(5, 6, 3, NULL, '2025-11-25 17:10:28', '2026-02-25 17:10:28', '2026-02-25 17:10:28', 150.00, 'active', 0);
 
 -- Volcando estructura para tabla bd_capyventas.supplier
 DROP TABLE IF EXISTS `supplier`;
@@ -516,16 +531,18 @@ CREATE TABLE IF NOT EXISTS `supplier` (
   UNIQUE KEY `document_number_business_id` (`document_number`,`business_id`,`registration_date`) USING BTREE,
   KEY `business_id` (`business_id`),
   CONSTRAINT `supplier_ibfk_1` FOREIGN KEY (`business_id`) REFERENCES `business` (`idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.supplier: ~5 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.supplier: ~7 rows (aproximadamente)
 DELETE FROM `supplier`;
 INSERT INTO `supplier` (`idSupplier`, `document_number`, `company_name`, `phone_number`, `direction`, `email`, `business_id`, `status`, `registration_date`, `update_date`) VALUES
 	(1, '00000000000', 'Sin proveedor', '999999999', 'Sin proveedor', 'Sin proveedor', 3, 'Activo', '2025-11-12 13:34:34', '2025-11-12 20:26:26'),
 	(2, '00000000000', 'Sin proveedor', '999999999', 'Sin proveedor', 'Sin proveedor', 4, 'Activo', '2025-11-12 20:09:30', '2025-11-12 20:09:30'),
 	(3, NULL, 'Smith El Cheroca', '', NULL, '', 4, 'Inactivo', '2025-11-13 02:45:55', '2025-11-13 02:48:23'),
 	(4, '00000000000', 'Sin proveedor', '999999999', 'Sin proveedor', 'Sin proveedor', 5, 'Activo', '2025-11-17 03:03:22', '2025-11-17 03:03:22'),
-	(5, '00000000000', 'Sin proveedor', '999999999', 'Sin proveedor', 'Sin proveedor', 6, 'Activo', '2025-11-25 00:39:23', '2025-11-25 00:39:23');
+	(5, '00000000000', 'Sin proveedor', '999999999', 'Sin proveedor', 'Sin proveedor', 6, 'Activo', '2025-11-25 00:39:23', '2025-11-25 00:39:23'),
+	(6, NULL, 'Netflix', NULL, NULL, NULL, 5, 'Activo', '2025-11-25 15:42:56', '2025-11-25 15:42:56'),
+	(7, '00000000000', 'Sin proveedor', '999999999', 'Sin proveedor', 'Sin proveedor', 7, 'Activo', '2025-11-25 22:09:11', '2025-11-25 22:09:11');
 
 -- Volcando estructura para tabla bd_capyventas.tb_configuration
 DROP TABLE IF EXISTS `tb_configuration`;
@@ -675,9 +692,9 @@ CREATE TABLE IF NOT EXISTS `tb_log` (
   KEY `user_id` (`user_id`),
   KEY `tb_log_ibfk_1` (`typelog_id`),
   CONSTRAINT `tb_log_ibfk_1` FOREIGN KEY (`typelog_id`) REFERENCES `tb_typelog` (`idTypeLog`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=19220 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19228 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.tb_log: ~18,503 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.tb_log: ~20,351 rows (aproximadamente)
 DELETE FROM `tb_log`;
 INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`, `l_updateDate`, `typelog_id`, `user_id`, `l_table`) VALUES
 	(1, 'Información de navegación', 'El usuario entro a: Gestión de Usuarios', '2025-07-15 15:05:36', '2025-07-15 15:05:36', 3, 1, 'tb_user'),
@@ -19902,7 +19919,15 @@ INSERT INTO `tb_log` (`idLog`, `l_title`, `l_description`, `l_registrationDate`,
 	(19216, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-25 00:39:47', '2025-11-25 00:39:47', 3, NULL, 'tb_user'),
 	(19217, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - 190.119.91.42', '2025-11-25 00:39:55', '2025-11-25 00:39:55', 1, 0, 'tb_user'),
 	(19218, 'Cierre de sesion forzado', 'La cuenta no tiene permiso a ingresar en esta vista, por lo que se esta forzando a cerrar sesion', '2025-11-25 00:39:55', '2025-11-25 00:39:55', 3, NULL, 'tb_user'),
-	(19219, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-25 00:39:55', '2025-11-25 00:39:55', 3, NULL, 'tb_user');
+	(19219, 'Información de navegación', 'El usuario entro a: Error 404', '2025-11-25 00:39:55', '2025-11-25 00:39:55', 3, NULL, 'tb_user'),
+	(19220, 'Intento de inicio de interfaz', 'No se logro intentar iniciar la interfaz desde la parte externa del sistema, IP de intento de logeo - 181.64.11.231', '2025-11-25 15:39:53', '2025-11-25 15:39:53', 1, 0, 'tb_user'),
+	(19221, 'Inicio de sesión exitoso', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES, completo de manera satisfactoria el inicio de sesion', '2025-11-25 21:54:06', '2025-11-25 21:54:06', 2, 1, 'tb_user'),
+	(19222, 'Navegación', '{"event":"page_view","page":"Panel de control","page_id":2,"container":"Dashboard","user_id":1,"ip":"181.64.11.231","method":"GET","url":"/im/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36","timestamp":"2025-11-25T16:54:07-05:00"}', '2025-11-25 21:54:07', '2025-11-25 21:54:07', 3, 1, 'tb_user'),
+	(19223, 'Navegación', '{"event":"page_view","page":"Clientes App","page_id":15,"container":"Customersuserapp","user_id":1,"ip":"181.64.11.231","method":"GET","url":"/im/customersuserapp","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36","timestamp":"2025-11-25T16:54:30-05:00"}', '2025-11-25 21:54:30', '2025-11-25 21:54:30', 3, 1, 'tb_user'),
+	(19224, 'Registro exitoso', 'La persona ha sido registrada correctamente en el sistema.', '2025-11-25 22:00:41', '2025-11-25 22:00:41', 2, 1, 'tb_user'),
+	(19225, 'Navegación', '{"event":"page_view","page":"Negocios","page_id":17,"container":"Business","user_id":1,"ip":"181.64.11.231","method":"GET","url":"/im/business","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36","timestamp":"2025-11-25T17:00:56-05:00"}', '2025-11-25 22:00:56', '2025-11-25 22:00:56', 3, 1, 'tb_user'),
+	(19226, 'Registro exitoso', 'El negocio ha sido registrado correctamente en el sistema.', '2025-11-25 22:09:11', '2025-11-25 22:09:11', 2, 1, 'tb_user'),
+	(19227, 'Cierre de sesión', 'El usuario SUPER ADMINISTRADOR SISTEMA ROLES ha cerrado sesión en el sistema', '2025-11-25 22:09:49', '2025-11-25 22:09:49', 2, 1, 'tb_user');
 
 -- Volcando estructura para tabla bd_capyventas.tb_module
 DROP TABLE IF EXISTS `tb_module`;
@@ -20024,7 +20049,7 @@ CREATE TABLE IF NOT EXISTS `tb_user` (
 -- Volcando datos para la tabla bd_capyventas.tb_user: ~2 rows (aproximadamente)
 DELETE FROM `tb_user`;
 INSERT INTO `tb_user` (`idUser`, `u_user`, `u_password`, `u_email`, `u_profile`, `u_fullname`, `u_gender`, `u_dni`, `u_status`, `u_registrationDate`, `u_updateDate`, `u_online`, `role_id`, `u_login_attempts`, `u_reset_token_password`, `u_space_limit`, `u_personal_folder_name`) VALUES
-	(1, 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'ME9lN1h5LzYrVFNTeGZQdnVJVGNhV3lvaGNNV2lIbjMrcWg3Mzl6dFRSYz0=', '6866fefa42aef.jpg', 'SUPER ADMINISTRADOR SISTEMA ROLES', 'Otro', '12345678', 'Activo', '2025-01-28 18:49:20', '2025-11-25 00:39:27', 0, 1, 0, '', 0, 'root'),
+	(1, 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'OHl4NXRSbFRqbSs1UW9mbEpxNnNPQT09', 'ME9lN1h5LzYrVFNTeGZQdnVJVGNhV3lvaGNNV2lIbjMrcWg3Mzl6dFRSYz0=', '6866fefa42aef.jpg', 'SUPER ADMINISTRADOR SISTEMA ROLES', 'Otro', '12345678', 'Activo', '2025-01-28 18:49:20', '2025-11-25 22:09:49', 0, 1, 0, '', 0, 'root'),
 	(51, 'cnNudTFpdDN0VExRdkNTRUZZbWw1Zz09', 'cnNudTFpdDN0VExRdkNTRUZZbWw1Zz09', 'QTZYMEwrNWIyN2trMWhENVYxeGlpSXhmNTVadFV3RlIrN2pWMlV2QnFqST0=', '', 'SAJAMI GUZMAN BILL JEREMI', 'Masculino', '71111360', 'Activo', '2025-11-09 04:42:33', '2025-11-09 04:42:33', 0, 18, 0, '', 2, '71111360');
 
 -- Volcando estructura para tabla bd_capyventas.tb_userroledetail
@@ -20095,15 +20120,16 @@ CREATE TABLE IF NOT EXISTS `user_app` (
   PRIMARY KEY (`idUserApp`),
   KEY `people_id` (`people_id`),
   CONSTRAINT `user_app_ibfk_1` FOREIGN KEY (`people_id`) REFERENCES `people` (`idPeople`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Usuarios que se autentican en CapyVentas, vinculados a la tabla people y con información básica del estado del plan.';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Usuarios que se autentican en CapyVentas, vinculados a la tabla people y con información básica del estado del plan.';
 
--- Volcando datos para la tabla bd_capyventas.user_app: ~4 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.user_app: ~5 rows (aproximadamente)
 DELETE FROM `user_app`;
 INSERT INTO `user_app` (`idUserApp`, `user`, `password`, `status`, `registration_date`, `update_date`, `people_id`, `plan_expiration_date`) VALUES
 	(2, 'WTkxR2dvdlc2RXpHQmdObVh4OE9WUT09', 'WTkxR2dvdlc2RXpHQmdObVh4OE9WUT09', 'Activo', '2025-11-12 06:40:33', '2025-11-13 01:57:41', 2, '2025-12-12 23:59:59'),
-	(3, 'Zm05Qm16b3VreDY1ck9BNjFGeWptdz09', 'Zm05Qm16b3VreDY1ck9BNjFGeWptdz09', 'Activo', '2025-11-12 18:56:48', '2025-11-12 18:56:48', 3, '2025-11-12 20:55:07'),
-	(4, 'dTdvdGNNb2ZGU1dzZzdOOUtUeVd0QT09', 'dTdvdGNNb2ZGU1dzZzdOOUtUeVd0QT09', 'Activo', '2025-11-17 03:01:57', '2025-11-17 03:01:57', 4, NULL),
-	(5, 'NUZoc0wrTmsvSzg3am4xYngwN1pCZz09', 'NUZoc0wrTmsvSzg3am4xYngwN1pCZz09', 'Activo', '2025-11-25 00:37:46', '2025-11-25 00:37:46', 5, NULL);
+	(3, 'Zm05Qm16b3VreDY1ck9BNjFGeWptdz09', 'Zm05Qm16b3VreDY1ck9BNjFGeWptdz09', 'Activo', '2025-11-12 18:56:48', '2025-11-25 16:33:58', 3, '2025-12-25 11:33:58'),
+	(4, 'dTdvdGNNb2ZGU1dzZzdOOUtUeVd0QT09', 'dTdvdGNNb2ZGU1dzZzdOOUtUeVd0QT09', 'Activo', '2025-11-17 03:01:57', '2025-11-25 15:31:17', 4, '2025-12-25 10:31:17'),
+	(5, 'NUZoc0wrTmsvSzg3am4xYngwN1pCZz09', 'NUZoc0wrTmsvSzg3am4xYngwN1pCZz09', 'Activo', '2025-11-25 00:37:46', '2025-11-25 15:05:53', 5, '2026-02-24 00:00:00'),
+	(6, 'aDRXZlZsVWlPdE9XNlg2eUVLMEc4dz09', 'aDRXZlZsVWlPdE9XNlg2eUVLMEc4dz09', 'Activo', '2025-11-25 22:00:41', '2025-11-25 22:16:34', 6, '2026-02-25 17:10:28');
 
 -- Volcando estructura para tabla bd_capyventas.voucher_detail
 DROP TABLE IF EXISTS `voucher_detail`;
@@ -20126,23 +20152,14 @@ CREATE TABLE IF NOT EXISTS `voucher_detail` (
   KEY `voucherheader_id` (`voucherheader_id`),
   CONSTRAINT `voucher_detail_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `product` (`idProduct`),
   CONSTRAINT `voucher_detail_ibfk_2` FOREIGN KEY (`voucherheader_id`) REFERENCES `voucher_header` (`idVoucherHeader`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.voucher_detail: ~12 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.voucher_detail: ~3 rows (aproximadamente)
 DELETE FROM `voucher_detail`;
 INSERT INTO `voucher_detail` (`idVoucherDetail`, `product_id`, `voucherheader_id`, `name_product`, `unit_of_measurement`, `name_category`, `sales_price_product`, `purchase_price_product`, `stock_product`, `subtotal`, `status`, `registration_date`, `update_date`) VALUES
-	(1, 6, 1, 'Cuenta De Netflix', 'Unid.', 'Netflix', 13.40, 70.00, 2.00, 26.80, 'Activo', '2025-11-17 14:17:42', '2025-11-17 14:17:42'),
-	(2, 6, 2, 'Cuenta De Netflix', 'Unid.', 'Netflix', 13.40, 70.00, 3.00, 40.20, 'Activo', '2025-11-17 18:49:11', '2025-11-17 18:49:11'),
-	(3, 6, 3, 'Cuenta De Netflix', 'Unid.', 'Netflix', 13.40, 70.00, 6.00, 80.40, 'Activo', '2025-11-19 01:51:31', '2025-11-19 01:51:31'),
-	(4, 6, 4, 'Cuenta De Netflix', 'Unid.', 'Netflix', 13.40, 70.00, 4.00, 53.60, 'Activo', '2025-11-19 01:54:43', '2025-11-19 01:54:43'),
-	(5, 6, 5, 'Cuenta De Netflix', 'Unid.', 'Netflix', 13.40, 70.00, 5.00, 67.00, 'Activo', '2025-11-19 03:13:51', '2025-11-19 03:13:51'),
-	(6, 6, 6, 'Cuenta De Netflix', 'Unid.', 'Netflix', 13.40, 70.00, 5.00, 67.00, 'Activo', '2025-11-19 03:14:00', '2025-11-19 03:14:00'),
-	(7, 6, 7, 'Cuenta De Netflix', 'Unid.', 'Netflix', 13.40, 70.00, 5.00, 67.00, 'Activo', '2025-11-19 03:14:15', '2025-11-19 03:14:15'),
-	(8, 6, 8, 'Cuenta De Netflix', 'Unid.', 'Netflix', 13.40, 70.00, 5.00, 67.00, 'Activo', '2025-11-19 03:20:42', '2025-11-19 03:20:42'),
-	(9, 6, 9, 'Cuenta De Netflix', 'Unid.', 'Netflix', 13.40, 70.00, 5.00, 67.00, 'Activo', '2025-11-19 03:22:13', '2025-11-19 03:22:13'),
-	(10, 6, 10, 'Cuenta De Netflix', 'Unid.', 'Netflix', 13.40, 70.00, 7.00, 93.80, 'Activo', '2025-11-19 21:23:23', '2025-11-19 21:23:23'),
-	(11, 6, 11, 'Cuenta De Netflix', 'Unid.', 'Netflix', 13.40, 70.00, 7.00, 93.80, 'Activo', '2025-11-19 21:24:05', '2025-11-19 21:24:05'),
-	(12, 6, 12, 'Cuenta De Netflix', 'Unid.', 'Netflix', 13.40, 70.00, 1.00, 13.40, 'Activo', '2025-11-20 05:28:05', '2025-11-20 05:28:05');
+	(1, 6, 1, 'Cuenta De Netflix Premium', 'Unid.', 'Netflix Premium', 13.40, 11.70, 1.00, 13.40, 'Activo', '2025-11-25 15:48:44', '2025-11-25 15:48:44'),
+	(2, 6, 2, 'Cuenta De Netflix Premium', 'Unid.', 'Netflix Premium', 13.40, 11.70, 1.00, 13.40, 'Activo', '2025-11-25 15:49:00', '2025-11-25 15:49:00'),
+	(3, 7, 3, 'Netflix Basico', 'Unid.', 'Netflix', 12.00, 11.70, 1.00, 12.00, 'Activo', '2025-11-25 15:49:17', '2025-11-25 15:49:17');
 
 -- Volcando estructura para tabla bd_capyventas.voucher_header
 DROP TABLE IF EXISTS `voucher_header`;
@@ -20169,23 +20186,14 @@ CREATE TABLE IF NOT EXISTS `voucher_header` (
   KEY `business_id` (`business_id`),
   CONSTRAINT `voucher_header_ibfk_1` FOREIGN KEY (`payment_method_id`) REFERENCES `payment_method` (`idPaymentMethod`),
   CONSTRAINT `voucher_header_ibfk_2` FOREIGN KEY (`business_id`) REFERENCES `business` (`idBusiness`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla bd_capyventas.voucher_header: ~12 rows (aproximadamente)
+-- Volcando datos para la tabla bd_capyventas.voucher_header: ~3 rows (aproximadamente)
 DELETE FROM `voucher_header`;
 INSERT INTO `voucher_header` (`idVoucherHeader`, `name_customer`, `direction_customer`, `name_bussines`, `document_bussines`, `direction_bussines`, `date_time`, `amount`, `percentage_discount`, `fixed_discount`, `how_much_do_i_pay`, `voucher_name`, `payment_method_id`, `business_id`, `status`, `registration_date`, `update_date`) VALUES
-	(1, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-17 09:17:42', 26.80, 0.00, 0.00, 0.00, NULL, 1, 5, 'Activo', '2025-11-17 14:17:42', '2025-11-17 14:17:42'),
-	(2, 'Sin cliente', 'Sin dirección', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-17 13:49:11', 20.00, 50.25, 20.20, 20.00, NULL, 1, 5, 'Activo', '2025-11-17 18:49:11', '2025-11-17 18:49:11'),
-	(3, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-18 20:51:31', 80.40, 0.00, 0.00, 0.00, NULL, 1, 5, 'Activo', '2025-11-19 01:51:31', '2025-11-19 01:51:31'),
-	(4, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-18 20:54:43', 53.60, 0.00, 0.00, 0.00, NULL, 1, 5, 'Activo', '2025-11-19 01:54:43', '2025-11-19 01:54:43'),
-	(5, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-18 22:13:51', 67.00, 0.00, 0.00, 0.00, NULL, 2, 5, 'Activo', '2025-11-19 03:13:51', '2025-11-19 03:13:51'),
-	(6, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-18 22:14:00', 67.00, 0.00, 0.00, 0.00, NULL, 2, 5, 'Activo', '2025-11-19 03:14:00', '2025-11-19 03:14:00'),
-	(7, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-18 22:14:15', 67.00, 0.00, 0.00, 0.00, NULL, 2, 5, 'Activo', '2025-11-19 03:14:15', '2025-11-19 03:14:15'),
-	(8, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-18 22:20:42', 67.00, 0.00, 0.00, 0.00, NULL, 2, 5, 'Activo', '2025-11-19 03:20:42', '2025-11-19 03:20:42'),
-	(9, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-18 22:22:13', 67.00, 0.00, 0.00, 0.00, NULL, 2, 5, 'Activo', '2025-11-19 03:22:13', '2025-11-19 03:22:13'),
-	(10, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-19 16:23:23', 93.80, 0.00, 0.00, 0.00, NULL, 1, 5, 'Activo', '2025-11-19 21:23:23', '2025-11-19 21:23:23'),
-	(11, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-19 16:24:05', 93.80, 0.00, 0.00, 0.00, NULL, 1, 5, 'Activo', '2025-11-19 21:24:05', '2025-11-19 21:24:05'),
-	(12, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-20 00:28:05', 13.40, 0.00, 0.00, 100.00, NULL, 1, 5, 'Activo', '2025-11-20 05:28:05', '2025-11-20 05:28:05');
+	(1, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-25 10:48:44', 13.40, 0.00, 0.00, 0.00, 'Pago del bill', 2, 5, 'Activo', '2025-11-25 15:48:44', '2025-11-25 15:48:52'),
+	(2, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-25 10:49:00', 13.40, 0.00, 0.00, 0.00, 'Pago del arquitecto gey', 2, 5, 'Activo', '2025-11-25 15:49:00', '2025-11-25 15:49:09'),
+	(3, 'Sin cliente', 'Sin cliente', 'CYD TECH', '10734486529', 'Jron. Amazonas N° 208', '2025-11-25 10:49:17', 12.00, 0.00, 0.00, 0.00, 'Pago del arquitecto anastacia', 2, 5, 'Activo', '2025-11-25 15:49:17', '2025-11-25 15:49:23');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
