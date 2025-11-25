@@ -6,10 +6,9 @@ class MovementsModel extends Mysql
         parent::__construct();
     }
 
-    public function select_movements(int $businessId): array
+    public function select_movements(int $businessId, $minDate = null, $maxDate = null): array
     {
-        $sql = <<<SQL
-        SELECT
+        $sql = "SELECT
             vh.idVoucherHeader,
             CASE
                 WHEN vh.voucher_name IS NULL
@@ -22,11 +21,18 @@ class MovementsModel extends Mysql
         FROM voucher_header vh
         INNER JOIN payment_method pm
             ON vh.payment_method_id = pm.idPaymentMethod
-        WHERE vh.business_id = ?
-        ORDER BY vh.date_time DESC;
-    SQL;
+        WHERE vh.business_id = ?";
 
-        return $this->select_all($sql, [$businessId]);
+        $arrValues = [$businessId];
+
+        if ($minDate != null && $maxDate != null) {
+            $sql .= " AND DATE(vh.date_time) BETWEEN ? AND ?";
+            array_push($arrValues, $minDate, $maxDate);
+        }
+
+        $sql .= " ORDER BY vh.date_time DESC";
+
+        return $this->select_all($sql, $arrValues);
     }
 
     public function select_voucher(int $voucherId, int $businessId): array

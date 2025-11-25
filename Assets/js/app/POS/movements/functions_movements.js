@@ -4,6 +4,18 @@
 
   window.addEventListener("DOMContentLoaded", (e) => {
     loadTable();
+    loadReport();
+
+    // Event listeners para filtros
+    document.getElementById("filter-btn").addEventListener("click", function () {
+      table.ajax.reload();
+    });
+
+    document.getElementById("reset-btn").addEventListener("click", function () {
+      document.getElementById("min-date").value = "";
+      document.getElementById("max-date").value = "";
+      table.ajax.reload();
+    });
   });
 
   // Función que carga los totales dinámicos
@@ -33,7 +45,11 @@
       aProcessing: true,
       aServerSide: true,
       ajax: {
-        url: "" + base_url + "/pos/Movements/getMovements",
+        url: base_url + "/pos/Movements/getMovements",
+        data: function (d) {
+          d.minDate = document.getElementById("min-date").value;
+          d.maxDate = document.getElementById("max-date").value;
+        },
         dataSrc: "",
       },
       columns: [
@@ -118,7 +134,6 @@
       drawCallback: function () {
         // Actualizar los totales después de cargar la tabla
         loadTotals();
-        loadReport();
       },
     });
   }
@@ -176,17 +191,18 @@
               <td>1.00</td>
               <td>${item.name_product} (${item.unit_of_measurement})</td>
               <td class="text-end">S/ ${Number(
-                item.sales_price_product
-              ).toFixed(2)}</td>
+              item.sales_price_product
+            ).toFixed(2)}</td>
               <td class="text-end">S/ ${Number(
-                item.sales_price_product
-              ).toFixed(2)}</td>
-            </tr>
+              item.sales_price_product
+            ).toFixed(2)}</td>
+|            </tr>
           `);
           });
 
           const modalEl = document.getElementById("voucherModal");
-          const modalVoucher = new bootstrap.Modal(modalEl);
+          // Usar getOrCreateInstance para evitar múltiples instancias
+          const modalVoucher = bootstrap.Modal.getOrCreateInstance(modalEl);
           modalVoucher.show();
         },
         error: function () {

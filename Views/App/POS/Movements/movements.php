@@ -71,6 +71,28 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body">
+                    <h6 class="text-center text-primary mb-3">Filtrar Movimientos</h6>
+                    <div class="row justify-content-center">
+                        <div class="col-md-3">
+                            <label for="min-date" class="small font-weight-bold">Desde:</label>
+                            <input type="date" id="min-date" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="max-date" class="small font-weight-bold">Hasta:</label>
+                            <input type="date" id="max-date" class="form-control form-control-sm">
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button id="filter-btn" class="btn btn-primary btn-sm me-2"><i class="bi bi-funnel"></i> Filtrar</button>
+                            <button id="reset-btn" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="tile">
+                <div class="tile-body">
                     <div class="table-responsive">
                         <table class="table table-sm table-hover table-bordered" id="table" data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">

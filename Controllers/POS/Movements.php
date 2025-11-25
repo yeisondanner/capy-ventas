@@ -60,8 +60,12 @@ class Movements extends Controllers
         // ID del negocio desde la sesión
         $businessId = $this->getBusinessId();
 
-        // Traemos solo los movimientos de ese negocio
-        $arrData = $this->model->select_movements($businessId);
+        // Filtros de fecha
+        $minDate = (isset($_GET["minDate"]) && !empty($_GET["minDate"])) ? strClean($_GET['minDate']) : null;
+        $maxDate = (isset($_GET["maxDate"]) && !empty($_GET["maxDate"])) ? strClean($_GET['maxDate']) : null;
+
+        // Traemos solo los movimientos de ese negocio con filtros
+        $arrData = $this->model->select_movements($businessId, $minDate, $maxDate);
 
         $cont = 1; // Contador para la tabla
 
