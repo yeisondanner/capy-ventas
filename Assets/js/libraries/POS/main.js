@@ -187,6 +187,11 @@
         loadUserBusinesses();
       }
       showAlert(result);
+      if (result.reload) {
+        setTimeout(() => {
+          window.location.reload();
+        }, result.timer);
+      }
     } catch (error) {
       showAlert({
         icon: "error",

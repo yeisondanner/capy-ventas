@@ -1,3 +1,1 @@
-<?php
-// Scripts específicos de la vista de perfil (POS)
-?>
+<script src="<?= media() ?>/js/libraries/POS/SweerAlert2.js?<?= versionSystem() ?>"></script>

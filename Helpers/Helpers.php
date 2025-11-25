@@ -1504,7 +1504,8 @@ function get_option_and_permission_app()
                 //preparamos un array con el menu permitido                
                 $_SESSION[$nameVarPermission] = $arrPermissionsFunctions;
             } else {
-
+                unset($_SESSION[$nameVarPermission]);
+                $_SESSION[$nameVarPermission] = array();
                 /**
                  *si el usuario no es dueño del negocio obtenemos los permisos que tiene el usuario en este negocio
                  *Primero consultamos la informacion del negocio
