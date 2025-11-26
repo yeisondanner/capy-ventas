@@ -33,7 +33,6 @@ class Errors extends Controllers
      */
     public function plan_vencido()
     {
-        isSession(1);
         $data = [
             'page_id'          => 0,
             'page_title'       => 'Plan vencido',
@@ -43,5 +42,17 @@ class Errors extends Controllers
             'page_js_css'      => 'plan_vencido',
         ];
         $this->views->getView($this, "plan_vencido", $data, "POS");
+    }
+    public function no_permisos()
+    {
+        $data = [
+            'page_id'          => 0,
+            'page_title'       => 'No tienes permisos',
+            'page_description' => 'No tienes permisos.',
+            'page_container'   => 'Errors',
+            'page_view'        => 'no_permisos',
+            'page_js_css'      => 'no_permisos',
+        ];
+        $this->views->getView($this, "no_permisos", $data, "POS");
     }
 }

@@ -1516,9 +1516,12 @@ function get_option_and_permission_app()
             //primero validamos que el plan del negocio no este vencido y no sea el plan free
             $dataBusinessEmployee = $objPermission->get_business_employee($idBusiness);
             if (empty($dataBusinessEmployee)) {
-                echo "El negocio no tiene un plan activo o esta 
-                en plan free, por favor contacte el dueño 
-                del negocio para que pueda renovar el plan";
+                $plan_vencido = base_url() . "/pos/errors/plan_vencido";
+                echo <<<HTML
+                    <script>
+                        window.location.href = "{$plan_vencido}";
+                    </script>
+                HTML;
                 die();
             }
             //validamos que el plan del negocio no este vencido
@@ -1534,8 +1537,12 @@ function get_option_and_permission_app()
             $dataInformationUser = $objPermission->get_information_user($idUser);
             //validamos que el usuario tenga un rol
             if (empty($dataInformationUser)) {
-                echo "El usuario no tiene un rol asignado, por favor contacte al dueño 
-                del negocio para que pueda asignarle un rol";
+                $no_permisos = base_url() . "/pos/errors/no_permisos";
+                echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
                 die();
             }
             $roleUser = $dataInformationUser['rolapp_id'];
@@ -1547,8 +1554,12 @@ function get_option_and_permission_app()
             $permissionUser = $objPermission->get_permssion_user_employes($idUser, $idBusiness, $roleUser);
             //validamos que el usuario tenga permisos
             if (empty($permissionUser)) {
-                echo "El usuario no tiene permisos asignados, por favor contacte al dueño 
-                del negocio para que pueda asignarle permisos";
+                $no_permisos = base_url() . "/pos/errors/no_permisos";
+                echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
                 die();
             }
             if (isset($_SESSION[$nameVarPermissionEmployee])) {
