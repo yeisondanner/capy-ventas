@@ -1,0 +1,25 @@
+.profile-card {
+    border-radius: 10px;
+}
+
+.profile-avatar {
+    width: 70px;
+    height: 70px;
+}
+
+.info-box {
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: #f7f9fc;
+    border: 1px solid #e9edf4;
+    height: 100%;
+}
+
+.info-box h5 {
+    font-weight: 700;
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}

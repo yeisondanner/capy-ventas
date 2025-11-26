@@ -41,7 +41,7 @@ class Suppliers extends Controllers
     public function suppliers(): void
     {
         $data = [
-            'page_id'          => 0,
+            'page_id'          => 7,
             'page_title'       => 'Gestión de proveedores',
             'page_description' => 'Administra los proveedores registrados en tu negocio.',
             'page_container'   => 'Suppliers',

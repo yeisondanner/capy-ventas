@@ -308,69 +308,101 @@ function decryption($string): string
     return $output;
 }
 //function que registra logs en la base de datos del sistema
-function registerLog($title, $description, $typeLog, $idUser = 0)
+function registerLog($title, $description, $typeLog, $idUser = 0, string $table = "tb_user")
 {
     require_once "./Models/Admin/LogsModel.php";
     $obj = new LogsModel();
-    $obj->insert_log($title, $description, $typeLog, $idUser);
+    $obj->insert_log($title, $description, $typeLog, $idUser, $table);
 }
-//Funcion que validad ataque CSRF
-function isCsrf($token = "")
+/**
+ * Funcion que validad ataque CSRF
+ */
+function isCsrf($token = "", int $session = 0)
 {
+    $table = "";
+    //Validamos la sesion para obtener el nombre de la sesion
+    if ($session === 0) {
+        $name_sesion = config_sesion($session)['name'] ?? '';
+        $nameVarToken = 'data_token';
+        $nameVarLoginInfo =  'login_info';
+        $table = "tb_user";
+    } else if ($session === 1) {
+        $name_sesion = config_sesion($session)['name'] ?? '';
+        $nameVarToken = $name_sesion . 'data_token';
+        $nameVarLoginInfo = $name_sesion . 'login_info';
+        $table = "user_app";
+    }
+    //Validamos el token
     if ($token != "") {
         $_POST['token'] = $token;
     }
     if (isset($_POST['token'])) {
-        if (isset($_SESSION['data_token'])) {
+        if (isset($_SESSION[$nameVarToken])) {
             //validamos si el tiempo de expiracion del token es menor a 10 minutos
-            $datetime = $_SESSION['data_token']["datatime"]; // get datetime from session
+            $datetime = $_SESSION[$nameVarToken]["datatime"]; // get datetime from session
             $timeTranscurridos = dateDifference($datetime, date("Y-m-d H:i:s"))["total_minutos"];
             if ($timeTranscurridos > 10) {
-                registerLog("Ocurrio un error inesperado", "El token de seguridad ha expirado. Por favor, actualice la página para generar uno nuevo. Tenga en cuenta que el token tiene una vigencia máxima de 10 minutos.", 1, $_SESSION['login_info']['idUser']);
+                registerLog(
+                    "Ocurrio un error inesperado",
+                    "El token de seguridad ha expirado. Por favor, actualice la página para generar uno nuevo. Tenga en cuenta que el token tiene una vigencia máxima de 10 minutos.",
+                    1,
+                    $_SESSION[$nameVarLoginInfo]['idUser'],
+                    $table
+                );
                 $data = array(
                     "title" => "Ocurrio un error inesperado",
                     "message" => "Error: El token de seguridad ha expirado. Por favor, actualice la página para generar uno nuevo. Tenga en cuenta que el token tiene una vigencia máxima de 10 minutos.",
                     "type" => "error",
+                    "icon" => "error",
                     "status" => false
                 );
-                unset($_SESSION['data_token']);
+                unset($_SESSION[$nameVarToken]);
                 toJson($data);
             }
 
-            if (!empty($_SESSION['data_token']["token"])) {
-                if (!hash_equals($_SESSION['data_token']["token"], $_POST['token'])) {
-                    registerLog("Ocurrio un error inesperado", "El token proporcionado en el formulario no coincide con el token generado por la página, lo que indica un posible intento de vulneración del sistema de registro.", 1, $_SESSION['login_info']['idUser']);
+            if (!empty($_SESSION[$nameVarToken]["token"])) {
+                if (!hash_equals($_SESSION[$nameVarToken]["token"], $_POST['token'])) {
+                    registerLog(
+                        "Ocurrio un error inesperado",
+                        "El token proporcionado en el formulario no coincide con el token generado por la página, lo que indica un posible intento de vulneración del sistema de registro.",
+                        1,
+                        $_SESSION[$nameVarLoginInfo]['idUser'],
+                        $table
+                    );
                     $data = array(
                         "title" => "Ocurrio un error inesperado",
                         "message" => "Error: La sesión ha expirado o el token de seguridad es inválido. Por favor, actualiza la página e intenta nuevamente",
                         "type" => "error",
+                        "icon" => "error",
                         "status" => false
                     );
                     toJson($data);
                 }
             } else {
-                registerLog("Ocurrio un error inesperado", "Token de seguridad no encontrado en la sesión.", 1, $_SESSION['login_info']['idUser']);
+                registerLog("Ocurrio un error inesperado", "Token de seguridad no encontrado en la sesión.", 1, $_SESSION[$nameVarLoginInfo]['idUser']);
                 $data = array(
                     "title" => "Ocurrio un error inesperado",
                     "message" => "Error: La sesión ha expirado o el token de seguridad es inválido. Por favor, actualiza la página e intenta nuevamente",
                     "type" => "error",
+                    "icon" => "error",
                     "status" => false
                 );
                 toJson($data);
             }
             //unset($_SESSION['token']);
         } else {
-            registerLog("Ocurrio un error inesperado", "No se encontró el token de seguridad en la sesión.", 1, $_SESSION['login_info']['idUser']);
+            registerLog("Ocurrio un error inesperado", "No se encontró el token de seguridad en la sesión.", 1, $_SESSION[$nameVarLoginInfo]['idUser']);
             $data = array(
                 "title" => "Ocurrio un error inesperado",
                 "message" => "Error: La sesión ha expirado o el token de seguridad es inválido. Por favor, actualiza la página e intenta nuevamente",
                 "type" => "error",
+                "icon" => "error",
                 "status" => false
             );
             toJson($data);
         }
     } else {
-        registerLog("Ocurrio un error inesperado", "Campo token no encontrado en el formulario.", 1, $_SESSION['login_info']['idUser']);
+        registerLog("Ocurrio un error inesperado", "Campo token no encontrado en el formulario.", 1, $_SESSION[$nameVarLoginInfo]['idUser']);
         $data = array(
             "title" => "Ocurrio un error inesperado",
             "message" => "Error: La sesión ha expirado, el token de seguridad es inválido o el campo no encontrado en el formulario. Por favor, actualiza la página e intenta nuevamente",
@@ -381,17 +413,26 @@ function isCsrf($token = "")
     }
 }
 
-/**Funcion que previene ataque CSRF */
-function csrf(bool $input = true)
+/**
+ * Funcion que previene ataque CSRF 
+ */
+function csrf(bool $input = true, int $session = 0)
 {
     //unset($_SESSION['token']);
-    if (empty($_SESSION['data_token'])) {
-        $_SESSION['data_token'] = array(
+    if ($session == 0) {
+        $sessionName = config_sesion($session)['name'] ?? '';
+        $nameVarToken = 'data_token';
+    } else if ($session == 1) {
+        $sessionName = config_sesion($session)['name'] ?? '';
+        $nameVarToken = $sessionName . 'data_token';
+    }
+    if (empty($_SESSION[$nameVarToken])) {
+        $_SESSION[$nameVarToken] = array(
             "token" => token(),
             "datatime" => date("Y-m-d H:i:s")
         );
     }
-    $token = $_SESSION['data_token']["token"];
+    $token = $_SESSION[$nameVarToken]["token"];
     if (!$input) {
         return $token;
     } else {
@@ -445,11 +486,11 @@ function isSession(int $sesion = 0)
             } else if (!isset($_SESSION[$nameVarLogin]) && isset($_COOKIE[$nameVarLogin])) {
                 $_SESSION[$nameVarLogin] = $_COOKIE[$nameVarLogin];
                 $_SESSION[$nameVarLoginInfo] = json_decode($_COOKIE[$nameVarLoginInfo], true);
-                header("Location: " . base_url() . "/pos/logout");
+                header("Location: " . base_url() . "/pos/LogOut");
             } else {
                 //obtener ip
                 $ip = obtenerIP();
-                header("Location: " . base_url() . "/pos/logout");
+                header("Location: " . base_url() . "/pos/LogOut");
             }
             break;
         default:
@@ -1133,22 +1174,24 @@ function validateFields(array $fields, string $method = "POST")
     foreach ($fields as $field) {
         if ($method === "POST") {
             if (!isset($_POST[$field])) {
-                registerLog("Ocurrio un error inesperado", "No se encontro el campo $field, por favor verifique o refresque la pagina e intente nuevamente", 1, $_SESSION['login_info']['idUser']);
+                //registerLog("Ocurrio un error inesperado", "No se encontro el campo $field, por favor verifique o refresque la pagina e intente nuevamente", 1, $_SESSION['login_info']['idUser']);
                 $data = array(
                     "title" => "Ocurrio un error inesperado",
                     "message" => "Error: El campo $field no se encuentra en el formulario enviado. Por favor, verifique o refresque la página e intente nuevamente.",
                     "type" => "error",
+                    "icon" => "error",
                     "status" => false
                 );
                 toJson($data);
             }
         } elseif ($method === "GET") {
             if (!isset($_GET[$field])) {
-                registerLog("Ocurrio un error inesperado", "No se encontro el campo $field, por favor verifique o refresque la pagina e intente nuevamente", 1, $_SESSION['login_info']['idUser']);
+                //registerLog("Ocurrio un error inesperado", "No se encontro el campo $field, por favor verifique o refresque la pagina e intente nuevamente", 1, $_SESSION['login_info']['idUser']);
                 $data = array(
                     "title" => "Ocurrio un error inesperado",
                     "message" => "Error: El campo $field no se encuentra en el formulario enviado. Por favor, verifique o refresque la página e intente nuevamente.",
                     "type" => "error",
+                    "icon" => "error",
                     "status" => false
                 );
                 toJson($data);
@@ -1172,11 +1215,12 @@ function validateFieldsEmpty(array $fields)
 {
     foreach ($fields as $field => $value) {
         if (empty($value)) {
-            registerLog("Ocurrio un error inesperado", "El campo $field esta vacio, por favor verifique e intente nuevamente", 1, $_SESSION['login_info']['idUser']);
+            //registerLog("Ocurrio un error inesperado", "El campo $field esta vacio, por favor verifique e intente nuevamente", 1, $_SESSION['login_info']['idUser']);
             $data = array(
                 "title" => "Ocurrio un error inesperado",
                 "message" => "Error: El campo $field no puede estar vacio. Por favor, verifique e intente nuevamente.",
                 "type" => "error",
+                "icon" => "error",
                 "status" => false
             );
             toJson($data);
@@ -1409,4 +1453,130 @@ function normalizarTexto(string $texto, string $regex, int $maxLength = 255, boo
         // Fallback: en caso de error, devolver el texto truncado.
         return mb_substr($texto, 0, $maxLength, 'UTF-8');
     }
+}
+/**
+ * Obtiene la informacion de la sesion del usuario y valida si el usuario tiene un plan activo
+ * 
+ * @return void
+ */
+function get_option_and_permission_app()
+{
+    //nombres iniciales de las variables de sesion
+    $sessionName = config_sesion(1)['name'] ?? '';
+    $nameVarBusiness = $sessionName . 'business_active';
+    $nameVarLoginInfo = $sessionName . 'login_info';
+    $nameVarPermission = $sessionName . 'menu_permission';
+    //variables de negocio activo
+    $idUser = $_SESSION[$nameVarLoginInfo]['idUser'];
+    $idBusiness = $_SESSION[$nameVarBusiness]['idBusiness'];
+    //requerimos el modelo de permisos
+    require_once "./Models/POS/PermissionModel.php";
+    $objPermission = new PermissionModel();
+    $arrDataPlans = $objPermission->get_plans_subscription($idUser);
+    //validamos que el usuario tenga asociado un plan activo
+    if (empty($arrDataPlans)) {
+        //si el usuario no tiene ningun plan activo, lo registramos el plan free   
+        $objPermission->insert_plan_subscription_free($idUser);
+        //Como acabamos de registrar el plan free, lo obtenemos
+        $arrDataPlans = $objPermission->get_plans_subscription($idUser);
+    }
+    $fecha_vencimiento = $arrDataPlans['fecha_vencimiento']; #obtener la fecha de vencimiento del plan
+    $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
+    $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento); #calcular la diferencia entre las dos fechas
+    if ((int)$data_vencimiento['total_dias'] <= 0) {
+        //validamos que el plan este vencido 2 dias para poder cambiar al plan free o si el plan es el free registramos el plan free
+        if ((int)$data_vencimiento['total_dias'] <= -2 || (int)$arrDataPlans['idPlan'] === 1) {
+            //cambiamos al plan free
+            $objPermission->insert_plan_subscription_free($idUser);
+            //redirigimos al usuario a la pantalla de inicio
+            header("Location: " . base_url() . "/pos/dashboard");
+            die();
+        }
+    } else {
+        /**
+         * validamos si el usuario es dueño o 
+         * no del negocio activo, si fuere dueño, 
+         * tiene acceso a todos los permisos que el plan permite, 
+         * caso contrario responde a un rol de usuario el cual esta limitado a permisos
+         */
+        $dataOwnerBusiness = $objPermission->get_bussiness_owner($idUser, $idBusiness);
+        if (!empty($dataOwnerBusiness)) {
+            //Ahora consultamos los permisos del plan, que vistas y funciones tiene permitida
+            $arrPermissionsFunctions = $objPermission->get_permissions_functions((int)$arrDataPlans['idPlan']);
+            if (isset($_SESSION[$nameVarPermission])) {
+                unset($_SESSION[$nameVarPermission]);
+            }
+            //preparamos un array con el menu permitido                
+            $_SESSION[$nameVarPermission] = $arrPermissionsFunctions;
+        } else {
+            //primero validamos que el plan del negocio no este vencido y no sea el plan free
+            $dataBusinessEmployee = $objPermission->get_business_employee($idBusiness);
+            if (empty($dataBusinessEmployee)) {
+                echo "El negocio no tiene un plan activo o esta 
+                en plan free, por favor contacte el dueño 
+                del negocio para que pueda renovar el plan";
+                die();
+            }
+            //validamos que el plan del negocio no este vencido
+            $fecha_vencimiento = $dataBusinessEmployee['plan_expiration_date']; #obtener la fecha de vencimiento del plan
+            $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
+            $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento);
+            if ((int)$data_vencimiento['total_dias'] <= 0) {
+                echo "El plan del negocio ha expirado, por favor contacte al dueño 
+                del negocio para que pueda renovar el plan";
+                die();
+            }
+            //obtenemos el rol que tiene el usuario en el negocio
+            $dataInformationUser = $objPermission->get_information_user($idUser);
+            //validamos que el usuario tenga un rol
+            if (empty($dataInformationUser)) {
+                echo "El usuario no tiene un rol asignado, por favor contacte al dueño 
+                del negocio para que pueda asignarle un rol";
+                die();
+            }
+            $roleUser = $dataInformationUser['rolapp_id'];
+            /**
+             *si el usuario no es dueño del negocio obtenemos los permisos que tiene el usuario en este negocio
+             *Primero consultamos la informacion del negocio
+             *Luego consultamos los permisos del usuario en este negocio y del plan asociado                   
+             */
+            $permissionUser = $objPermission->get_permssion_user_employes($idUser, $idBusiness, $roleUser);
+            //validamos que el usuario tenga permisos
+            if (empty($permissionUser)) {
+                echo "El usuario no tiene permisos asignados, por favor contacte al dueño 
+                del negocio para que pueda asignarle permisos";
+                die();
+            }
+            unset($_SESSION[$nameVarPermission]);
+            $_SESSION[$nameVarPermission] = $permissionUser;
+        }
+    }
+
+    unset($objPermission);
+}
+/**
+ * Funcion que devuelve el widget del indicador de plan en un array
+ * 
+ * @return array
+ */
+function get_widget_plan(string $plan)
+{
+    $arrWidgetPlan = array(
+        'Gratis' => [
+            'sm' => <<<HTML
+                <span class="badge bg-warning text-dark shadow"><i class="bi bi-star-fill"></i> Gratis</span>
+            HTML,
+        ],
+        'Pro' => [
+            'sm' => <<<HTML
+                <span class="badge bg-success text-white shadow"><i class="bi bi-award-fill"></i> Pro</span>
+            HTML,
+        ],
+        'Full Max' => [
+            'sm' => <<<HTML
+                <span class="badge bg-danger text-white shadow"><i class="bi bi-heart-fill"></i> Full Max</span>
+            HTML,
+        ]
+    );
+    return $arrWidgetPlan[$plan];
 }

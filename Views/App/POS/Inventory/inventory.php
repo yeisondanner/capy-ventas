@@ -153,7 +153,7 @@
 </div>
 
 <!-- Modal: Gestionar categorías -->
-<div class="modal fade" id="modalCategory" tabindex="-1" aria-labelledby="modalCategoryLabel" aria-hidden="true">
+<div class="modal fade" id="modalCategory" aria-labelledby="modalCategoryLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">

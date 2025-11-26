@@ -47,7 +47,7 @@ class Sales extends Controllers
     public function sales(): void
     {
         $data = [
-            'page_id'          => 0,
+            'page_id'          => 1,
             'page_title'       => 'Nueva venta',
             'page_description' => 'Realiza tus ventas en esta sección.',
             'page_container'   => 'Sales',
@@ -659,6 +659,6 @@ class Sales extends Controllers
     public function getPaymentMethods(): void
     {
         $paymentMethods = $this->model->selectPaymentMethods();
-        toJson(['status'=> true, 'payment_methods' => $paymentMethods]);
+        toJson(['status' => true, 'payment_methods' => $paymentMethods]);
     }
 }

@@ -12,7 +12,7 @@ $pageCssFolder = strtolower($data["page_container"]);
 $pageCssFile = "style_" . strtolower($data["page_js_css"]) . ".css?" . versionSystem();
 //variables del contendor
 $pageContainer = ucfirst($data["page_container"]);
-
+get_option_and_permission_app();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -42,6 +42,8 @@ $pageContainer = ucfirst($data["page_container"]);
         const base_url = "<?= base_url(); ?>";
         // TODO: Moneda
         const getcurrency = "<?= getCurrency(); ?>";
+        //TODO: Generar perfil
+        const generate_profile = "<?= GENERAR_PERFIL ?>";
     </script>
 </head>
 
