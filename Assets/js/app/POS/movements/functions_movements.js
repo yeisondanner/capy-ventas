@@ -452,7 +452,7 @@
           // Calculamos subtotal y descuento a partir del detalle
           let subtotal = 0;
           d.forEach((item) => {
-            subtotal += Number(item.sales_price_product);
+            subtotal += Number(item.sales_price_product) * item.stock_product;
           });
 
           const descuento =
@@ -468,14 +468,14 @@
           d.forEach((item) => {
             $tbody.append(`
             <tr>
-              <td>1.00</td>
+              <td>${item.stock_product}</td>
               <td>${item.name_product} (${item.unit_of_measurement})</td>
               <td class="text-end">S/ ${Number(
               item.sales_price_product
             ).toFixed(2)}</td>
               <td class="text-end">S/ ${Number(
               item.sales_price_product
-            ).toFixed(2)}</td>
+             * item.stock_product).toFixed(2)}</td>
 |            </tr>
           `);
           });

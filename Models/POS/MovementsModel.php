@@ -56,7 +56,8 @@ class MovementsModel extends Mysql
             vd.unit_of_measurement,
             vd.sales_price_product,
             vh.amount,
-            vh.percentage_discount
+            vh.percentage_discount,
+            vd.stock_product
         FROM voucher_detail vd
         INNER JOIN voucher_header vh
             ON vd.voucherheader_id = vh.idVoucherHeader

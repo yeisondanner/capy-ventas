@@ -179,6 +179,7 @@ class Movements extends Controllers
                 'name_product'        => $row['name_product'],
                 'unit_of_measurement' => $row['unit_of_measurement'],
                 'sales_price_product' => $row['sales_price_product'],
+                'stock_product'       => $row['stock_product'],
             ];
         }
 
