@@ -36,7 +36,13 @@ class Movements extends Controllers
     public function movements()
     {
         $businessId = $this->getBusinessId();
-        $totals = $this->model->getTotals($businessId);
+
+        // Por defecto, usar filtros para hoy al cargar la página
+        $minDate = date('Y-m-d');
+        $maxDate = date('Y-m-d');
+        $searchConcept = null; // Por defecto no hay búsqueda
+
+        $totals = $this->model->getTotals($businessId, $minDate, $maxDate, $searchConcept);
 
         $data = [
             'page_id'          => 2,
@@ -63,9 +69,38 @@ class Movements extends Controllers
         // Filtros de fecha
         $minDate = (isset($_GET["minDate"]) && !empty($_GET["minDate"])) ? strClean($_GET['minDate']) : null;
         $maxDate = (isset($_GET["maxDate"]) && !empty($_GET["maxDate"])) ? strClean($_GET['maxDate']) : null;
+        $filterType = (isset($_GET["filterType"]) && !empty($_GET["filterType"])) ? strClean($_GET['filterType']) : 'daily';
+        $searchConcept = (isset($_GET["searchConcept"]) && !empty($_GET["searchConcept"])) ? strClean($_GET['searchConcept']) : null;
+
+        // Calcular fechas según el tipo de filtro SI NO se han enviado fechas específicas
+        if ($filterType !== 'custom') {
+            // Si se ha seleccionado un tipo de filtro diferente a personalizado Y no se han enviado fechas específicas en minDate y maxDate
+            // entonces calcular las fechas predeterminadas
+            if ($minDate === null && $maxDate === null) {
+                switch ($filterType) {
+                    case 'daily':
+                        $minDate = date('Y-m-d');
+                        $maxDate = date('Y-m-d');
+                        break;
+                    case 'weekly':
+                        $minDate = date('Y-m-d', strtotime('monday this week'));
+                        $maxDate = date('Y-m-d', strtotime('sunday this week'));
+                        break;
+                    case 'monthly':
+                        $minDate = date('Y-m-01');
+                        $maxDate = date('Y-m-t');
+                        break;
+                    case 'yearly':
+                        $minDate = date('Y-01-01');
+                        $maxDate = date('Y-12-31');
+                        break;
+                }
+            }
+            // Si se han enviado fechas específicas, se usan esas fechas y no se sobrescriben
+        }
 
         // Traemos solo los movimientos de ese negocio con filtros
-        $arrData = $this->model->select_movements($businessId, $minDate, $maxDate);
+        $arrData = $this->model->select_movements($businessId, $minDate, $maxDate, $searchConcept);
 
         $cont = 1; // Contador para la tabla
 
@@ -76,8 +111,8 @@ class Movements extends Controllers
 
             $arrData[$key]['actions'] = '
                 <div class="btn-group">
-                    <button 
-                        class="btn btn-info report-item" 
+                    <button
+                        class="btn btn-info report-item"
                         title="Ver reporte"
                         type="button"
                         data-idvoucher="' . $idVoucher . '">
@@ -178,7 +213,41 @@ class Movements extends Controllers
     public function getTotals(): void
 {
     $businessId = $this->getBusinessId();
-    $totals     = $this->model->getTotals($businessId);
+
+    // Filtros de fecha
+    $minDate = (isset($_GET["minDate"]) && !empty($_GET["minDate"])) ? strClean($_GET['minDate']) : null;
+    $maxDate = (isset($_GET["maxDate"]) && !empty($_GET["maxDate"])) ? strClean($_GET['maxDate']) : null;
+    $filterType = (isset($_GET["filterType"]) && !empty($_GET["filterType"])) ? strClean($_GET['filterType']) : 'daily';
+    $searchConcept = (isset($_GET["searchConcept"]) && !empty($_GET["searchConcept"])) ? strClean($_GET['searchConcept']) : null;
+
+    // Calcular fechas según el tipo de filtro SI NO se han enviado fechas específicas
+    if ($filterType !== 'custom') {
+        // Si se ha seleccionado un tipo de filtro diferente a personalizado Y no se han enviado fechas específicas en minDate y maxDate
+        // entonces calcular las fechas predeterminadas
+        if ($minDate === null && $maxDate === null) {
+            switch ($filterType) {
+                case 'daily':
+                    $minDate = date('Y-m-d');
+                    $maxDate = date('Y-m-d');
+                    break;
+                case 'weekly':
+                    $minDate = date('Y-m-d', strtotime('monday this week'));
+                    $maxDate = date('Y-m-d', strtotime('sunday this week'));
+                    break;
+                case 'monthly':
+                    $minDate = date('Y-m-01');
+                    $maxDate = date('Y-m-t');
+                    break;
+                case 'yearly':
+                    $minDate = date('Y-01-01');
+                    $maxDate = date('Y-12-31');
+                    break;
+            }
+        }
+        // Si se han enviado fechas específicas, se usan esas fechas y no se sobrescriben
+    }
+
+    $totals = $this->model->getTotals($businessId, $minDate, $maxDate, $searchConcept);
 
     // Valores crudos (por si los quieres seguir usando)
     $balanceRaw        = (float)($totals['balance']        ?? 0);

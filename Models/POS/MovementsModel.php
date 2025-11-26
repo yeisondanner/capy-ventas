@@ -6,7 +6,7 @@ class MovementsModel extends Mysql
         parent::__construct();
     }
 
-    public function select_movements(int $businessId, $minDate = null, $maxDate = null): array
+    public function select_movements(int $businessId, $minDate = null, $maxDate = null, $searchConcept = null): array
     {
         $sql = "SELECT
             vh.idVoucherHeader,
@@ -28,6 +28,13 @@ class MovementsModel extends Mysql
         if ($minDate != null && $maxDate != null) {
             $sql .= " AND DATE(vh.date_time) BETWEEN ? AND ?";
             array_push($arrValues, $minDate, $maxDate);
+        }
+
+        // Agregar filtro por concepto si se proporciona
+        if ($searchConcept != null && !empty($searchConcept)) {
+            $sql .= " AND (vh.voucher_name LIKE ? OR vh.name_customer LIKE ?)";
+            $searchParam = '%' . $searchConcept . '%';
+            array_push($arrValues, $searchParam, $searchParam);
         }
 
         $sql .= " ORDER BY vh.date_time DESC";
@@ -61,21 +68,35 @@ class MovementsModel extends Mysql
         return $this->select_all($sql, [$voucherId, $businessId]);
     }
 
-    public function getTotals(int $businessId): array
+    public function getTotals(int $businessId, $minDate = null, $maxDate = null, $searchConcept = null): array
     {
-        $sql = <<<SQL
-                SELECT
+        $sql = "SELECT
                     COALESCE(SUM(vh.amount), 0) AS total_sales
                 FROM voucher_header vh
-                WHERE vh.business_id = ?
-                AND vh.amount > 0;
-                SQL;
+                WHERE vh.business_id = ?";
 
-        $result = $this->select($sql, [$businessId]);
+        $arrValues = [$businessId];
+
+        // Si se proporcionan fechas, añadir la condición de rango
+        if ($minDate != null && $maxDate != null) {
+            $sql .= " AND DATE(vh.date_time) BETWEEN ? AND ?";
+            array_push($arrValues, $minDate, $maxDate);
+        }
+
+        // Agregar filtro por concepto si se proporciona
+        if ($searchConcept != null && !empty($searchConcept)) {
+            $sql .= " AND (vh.voucher_name LIKE ? OR vh.name_customer LIKE ?)";
+            $searchParam = '%' . $searchConcept . '%';
+            array_push($arrValues, $searchParam, $searchParam);
+        }
+
+        $sql .= " AND vh.amount > 0";
+
+        $result = $this->select($sql, $arrValues);
 
         $totals = [
             'total_sales' => (float)($result['total_sales'] ?? 0),
-            'total_expenses' => 0,
+            'total_expenses' => 0, // Asumiendo que no hay gastos por ahora
         ];
 
         $totals['balance'] = $totals['total_sales'] - $totals['total_expenses'];
