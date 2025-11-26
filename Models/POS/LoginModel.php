@@ -36,10 +36,9 @@ class LoginModel extends Mysql
                         FROM
                                 user_app up
                                 INNER JOIN people p ON p.idPeople = up.people_id
-                                LEFT JOIN subscriptions AS s ON s.user_app_id=up.idUserApp
-                                LEFT JOIN plans AS pl ON pl.idPlan=s.plan_id
-                        WHERE
-                                up.user = ?
+                                LEFT JOIN subscriptions AS s ON (s.user_app_id = up.idUserApp AND s.end_date=up.plan_expiration_date)
+                                LEFT JOIN plans AS pl ON pl.idPlan = s.plan_id
+                        WHERE   up.user = ?
                                 OR p.email = ?
                         LIMIT
                                 1;
