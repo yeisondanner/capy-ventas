@@ -1466,6 +1466,7 @@ function get_option_and_permission_app()
     $nameVarBusiness = $sessionName . 'business_active';
     $nameVarLoginInfo = $sessionName . 'login_info';
     $nameVarPermission = $sessionName . 'menu_permission';
+    $nameVarPermissionEmployee = $sessionName . 'menu_employee_permission';
     //variables de negocio activo
     $idUser = $_SESSION[$nameVarLoginInfo]['idUser'];
     $idBusiness = $_SESSION[$nameVarBusiness]['idBusiness'];
@@ -1505,6 +1506,9 @@ function get_option_and_permission_app()
             $arrPermissionsFunctions = $objPermission->get_permissions_functions((int)$arrDataPlans['idPlan']);
             if (isset($_SESSION[$nameVarPermission])) {
                 unset($_SESSION[$nameVarPermission]);
+            }
+            if (isset($_SESSION[$nameVarPermissionEmployee])) {
+                unset($_SESSION[$nameVarPermissionEmployee]);
             }
             //preparamos un array con el menu permitido                
             $_SESSION[$nameVarPermission] = $arrPermissionsFunctions;
@@ -1547,8 +1551,13 @@ function get_option_and_permission_app()
                 del negocio para que pueda asignarle permisos";
                 die();
             }
-            unset($_SESSION[$nameVarPermission]);
-            $_SESSION[$nameVarPermission] = $permissionUser;
+            if (isset($_SESSION[$nameVarPermissionEmployee])) {
+                unset($_SESSION[$nameVarPermissionEmployee]);
+            }
+            if (isset($_SESSION[$nameVarPermission])) {
+                unset($_SESSION[$nameVarPermission]);
+            }
+            $_SESSION[$nameVarPermissionEmployee] = $permissionUser;
         }
     }
 
