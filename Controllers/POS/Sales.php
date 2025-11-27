@@ -46,6 +46,7 @@ class Sales extends Controllers
      */
     public function sales(): void
     {
+        validate_permission_app(1, "r");
         $data = [
             'page_id'          => 1,
             'page_title'       => 'Nueva venta',

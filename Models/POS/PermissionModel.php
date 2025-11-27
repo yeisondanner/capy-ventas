@@ -240,6 +240,13 @@ class PermissionModel extends Mysql
         $request = $this->select_all($sql, [$this->idUserApp, $this->idBusiness, $this->idRoleApp]) ?? [];
         return $request;
     }
+    /**
+     * Obtiene los permisos de la interface
+     * @param int $iduser
+     * @param int $idbusiness
+     * @param int $idinterface
+     * @return array
+     */
     public function get_permission_interface(int $iduser, int $idbusiness, int $idinterface)
     {
         $this->idUserApp = $iduser;
@@ -290,6 +297,45 @@ class PermissionModel extends Mysql
                 );
         SQL;
         $request = $this->select($sql, [$this->idUserApp, $this->idBusiness, $this->idInterface, $this->idUserApp, $this->idBusiness]) ?? [];
+        return $request;
+    }
+    /**
+     * Obtiene los permisos de la interface como propietario por el plan
+     * @param int $idUserApp
+     * @param int $idInterface
+     * @return array
+     */
+    public function get_permission_interface_owner(int $idUserApp, int $idInterface)
+    {
+        $this->idUserApp = $idUserApp;
+        $this->idInterface = $idInterface;
+        $sql = <<<SQL
+            SELECT
+                ua.idUserApp,
+                s.idSubscription,
+                p.idPlan,
+                pia.idPlansInterfaceApp,
+                ia.idInterface,
+                p.`name` AS 'plan',
+                ia.`name` AS 'interface',
+                pia.`create`,
+                pia.`read`,
+                pia.`update`,
+                pia.`delete`,
+                pia.`status` AS 'pia_status',
+                ia.`status` AS 'ia_status'
+            FROM
+                user_app AS ua
+                INNER JOIN subscriptions AS s ON (
+                    s.user_app_id = ua.idUserApp
+                    AND s.end_date = ua.plan_expiration_date
+                )
+                INNER JOIN plans AS p ON p.idPlan=s.plan_id
+                INNER JOIN plans_interface_app AS pia ON pia.plan_id=p.idPlan
+                INNER JOIN interface_app AS ia ON ia.idInterface=pia.interface_id
+                WHERE ua.idUserApp=? AND ia.idInterface=?;
+        SQL;
+        $request = $this->select($sql, [$this->idUserApp, $this->idInterface]) ?? [];
         return $request;
     }
 }

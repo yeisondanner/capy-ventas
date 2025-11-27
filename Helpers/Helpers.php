@@ -1630,6 +1630,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
     $sessionName = config_sesion(1)['name'] ?? '';
     $nameVarBusiness = $sessionName . 'business_active';
     $nameVarLoginInfo = $sessionName . 'login_info';
+    $nameVarMessagePermission = $sessionName . 'message_permission';
     //variables de negocio activo
     $iduser = (int)$_SESSION[$nameVarLoginInfo]['idUser'];
     $idbusiness = (int)$_SESSION[$nameVarBusiness]['idBusiness'];
@@ -1688,7 +1689,11 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         /**
          * Validamos los permisos del crud general
          */
-        if ($result[$crudpermissionpia[$permission]] === 0) {
+        if ((int)$result[$crudpermissionpia[$permission]] === 0) {
+            if (isset($_SESSION[$nameVarMessagePermission])) {
+                unset($_SESSION[$nameVarMessagePermission]);
+            }
+            $_SESSION[$nameVarMessagePermission] = $crudpermission[$permission];
             $no_permisos = base_url() . "/pos/errors/no_permisos_pia";
             echo <<<HTML
                     <script>
@@ -1701,7 +1706,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
          * Validacion a nivel de permisos del rol
          */
         if ($redirect) {
-            if ($result[$crudpermission[$permission]] === 0) {
+            if ((int)$result[$crudpermission[$permission]] === 0) {
                 $no_permisos = base_url() . "/pos/errors/no_permisos";
                 echo <<<HTML
                     <script>
@@ -1713,4 +1718,55 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         }
         return $result;
     }
+    /**
+     * validamos que el usuario tengo permisos de acceso 
+     * a la seccion segun el plan
+     */
+    $result = $objPermission->get_permission_interface_owner($iduser, $idinterface);
+    if (!$result) {
+        $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
+        echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+        die();
+    }
+    if ($result['ia_status'] !== 'Activo') {
+        $no_permisos = base_url() . "/pos/errors/estado_interfaz";
+        echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+        die();
+    }
+    if ($result['pia_status'] !== 'Activo') {
+        $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
+        echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+        die();
+    }
+    /**
+     * Validamos los permisos del crud general
+     */
+    if ($redirect) {
+        if ((int)$result[$crudpermission[$permission]] === 0) {
+            if (isset($_SESSION[$nameVarMessagePermission])) {
+                unset($_SESSION[$nameVarMessagePermission]);
+            }
+            $_SESSION[$nameVarMessagePermission] = $crudpermission[$permission];
+            $no_permisos = base_url() . "/pos/errors/no_permisos_pia";
+            echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+            die();
+        }
+    }
+    return $result;
 }

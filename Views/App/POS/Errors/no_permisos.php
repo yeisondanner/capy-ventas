@@ -39,13 +39,19 @@
 
                 <p class="text-muted mb-4">
                     Tu usuario no tiene los permisos necesarios para acceder a esta sección.
-                    Por favor, contacta al <strong class="text-danger">dueño del negocio</strong> para que te asigne un <strong class="text-danger">rol</strong>.
+                    Por favor, contacta al <strong class="text-danger">dueño del negocio</strong> para que te asigne un
+                    <strong class="text-danger">rol</strong> con los permisos necesarios.
                 </p>
 
                 <div class="d-grid gap-2">
-                    <a href="<?= base_url() ?>/pos/LogOut" class="btn btn-danger btn-lg rounded-pill">
-                        Cerrar sesión
-                    </a>
+                    <div class="d-inline-flex justify-content-between gap-2">
+                        <a href="<?= base_url() ?>/pos/dashboard" class="btn btn-primary btn-lg rounded-pill">
+                            <i class="bi bi-box-arrow-left"></i> Volver al inicio
+                        </a>
+                        <a href="<?= base_url() ?>/pos/LogOut" class="btn btn-danger btn-lg rounded-pill">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </a>
+                    </div>
                     <a href="#" class="btn btn-link text-decoration-none text-muted btn-sm mt-2">
                         Contactar soporte
                     </a>

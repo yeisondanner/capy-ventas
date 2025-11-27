@@ -93,6 +93,7 @@ class Errors extends Controllers
     }
     public function no_permisos_pia()
     {
+        isSession(1);
         $data = [
             'page_id'          => 0,
             'page_title'       => 'No tienes permisos',
