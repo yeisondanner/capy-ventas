@@ -55,4 +55,52 @@ class Errors extends Controllers
         ];
         $this->views->getView($this, "no_permisos", $data, "POS");
     }
+    public function estado_interfaz()
+    {
+        $data = [
+            'page_id'          => 0,
+            'page_title'       => 'No tienes permisos',
+            'page_description' => 'No tienes permisos.',
+            'page_container'   => 'Errors',
+            'page_view'        => 'estado_interfaz',
+            'page_js_css'      => 'estado_interfaz',
+        ];
+        $this->views->getView($this, "estado_interfaz", $data, "POS");
+    }
+    public function estado_permisos()
+    {
+        $data = [
+            'page_id'          => 0,
+            'page_title'       => 'No tienes permisos',
+            'page_description' => 'No tienes permisos.',
+            'page_container'   => 'Errors',
+            'page_view'        => 'estado_permisos',
+            'page_js_css'      => 'estado_permisos',
+        ];
+        $this->views->getView($this, "estado_permisos", $data, "POS");
+    }
+    public function estado_plan_interfaz()
+    {
+        $data = [
+            'page_id'          => 0,
+            'page_title'       => 'No tienes permisos',
+            'page_description' => 'No tienes permisos.',
+            'page_container'   => 'Errors',
+            'page_view'        => 'estado_plan_interfaz',
+            'page_js_css'      => 'estado_plan_interfaz',
+        ];
+        $this->views->getView($this, "estado_plan_interfaz", $data, "POS");
+    }
+    public function no_permisos_pia()
+    {
+        $data = [
+            'page_id'          => 0,
+            'page_title'       => 'No tienes permisos',
+            'page_description' => 'No tienes permisos.',
+            'page_container'   => 'Errors',
+            'page_view'        => 'no_permisos_pia',
+            'page_js_css'      => 'no_permisos_pia',
+        ];
+        $this->views->getView($this, "no_permisos_pia", $data, "POS");
+    }
 }
