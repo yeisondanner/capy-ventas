@@ -33,7 +33,7 @@ get_option_and_permission_app();
     <!-- Font-icon css-->
     <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css?<?= versionSystem() ?>">
     <!--TODO: Cargamos el icono de la pagina-->
-    <link rel="shortcut icon" href="<?= base_url() ?>/loadfile/icon?f=<?= (getSystemInfo()) ? getSystemInfo()["c_logo"] : null; ?>" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= media() ?>/head-capibara.png?<?= versionSystem() ?>" type="image/x-icon">
     <!-- CSS de la vista -->
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/app/POS/<?= $pageCssFolder ?>/<?= $pageCssFile ?>">
     <?php require_once "./Views/App/POS/" . $pageContainer . "/Libraries/head.php"; ?>

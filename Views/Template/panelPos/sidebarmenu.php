@@ -60,10 +60,16 @@ $data_menu_employee = function (int $interface): array {
                         <i class="bi bi-gear"></i>
                         <span>Configuraciones</span>
                     </a>-->
-                    <a href="#" class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0" data-bs-toggle="modal" data-bs-target="#addBusinessModal">
-                        <i class="bi bi-plus-circle"></i>
-                        <span>Agregar otro negocio</span>
-                    </a>
+                    <?php
+                    if ($data_menu(8)):
+                    ?>
+                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0" data-bs-toggle="modal" data-bs-target="#addBusinessModal">
+                            <i class="bi bi-plus-circle"></i>
+                            <span>Agregar otro negocio</span>
+                        </a>
+                    <?php
+                    endif;
+                    ?>
                 </div>
             </div>
         </div>

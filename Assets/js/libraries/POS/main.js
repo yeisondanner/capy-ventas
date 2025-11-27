@@ -97,15 +97,6 @@
 
       dropdownList.appendChild(item);
     });
-
-    const divider = document.createElement("li");
-    divider.innerHTML = '<hr class="dropdown-divider">';
-    dropdownList.appendChild(divider);
-
-    const createItem = document.createElement("li");
-    createItem.innerHTML =
-      '<a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addBusinessModal"><i class="bi bi-plus-circle me-2"></i>Agregar nuevo negocio</a>';
-    dropdownList.appendChild(createItem);
   }
   /**
    * Registra un nuevo negocio mediante petición asíncrona.

@@ -27,18 +27,19 @@
         <div class="card border-0 shadow-lg rounded-4 text-center" style="max-width: 450px; width: 100%;">
             <div class="card-body p-5">
 
-                <div class="mb-4 d-inline-flex p-3 rounded-circle bg-danger bg-opacity-10 text-danger">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-calendar-x-fill" viewBox="0 0 16 16">
-                        <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4V.5zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2zM6.854 8.146 8 9.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 10l1.147 1.146a.5.5 0 0 1-.708.708L8 10.707l-1.146 1.147a.5.5 0 0 1-.708-.708L7.293 10 6.146 8.854a.5.5 0 1 1 .708-.708z" />
+                <div class="mb-4 d-inline-flex p-3 rounded-circle bg-warning bg-opacity-10 text-warning">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-shield-lock-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.777 11.777 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7.159 7.159 0 0 0 1.048-.625 11.775 11.775 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.541 1.541 0 0 0-1.044-1.263 62.467 62.467 0 0 0-2.887-.87C9.843.266 8.69 0 8 0zm0 5a1.5 1.5 0 0 1 .5 2.915l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99A1.5 1.5 0 0 1 8 5z" />
                     </svg>
                 </div>
 
                 <h2 class="h3 fw-bold text-dark mb-3">
-                    Plan vencido
+                    Faltan Permisos
                 </h2>
 
                 <p class="text-muted mb-4">
-                    El negocio no tiene un <span class="text-danger">plan activo</span> o esta en plan <span class="text-danger">free</span>, por favor contacte el dueño del negocio para que pueda renovar el plan.
+                    Tu usuario no tiene los permisos necesarios para acceder a esta sección.
+                    Por favor, contacta al <strong class="text-danger">dueño del negocio</strong> para que te asigne un <strong class="text-danger">rol</strong>.
                 </p>
 
                 <div class="d-grid gap-2">
