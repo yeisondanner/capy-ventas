@@ -65,7 +65,7 @@ class Sales extends Controllers
      */
     public function getProducts(): void
     {
-        validate_permission_app(1, "r");
+        validate_permission_app(1, "r", false);
         $businessId = $this->getBusinessId();
         $products   = $this->model->selectProducts($businessId);
         if (!$products) {
@@ -149,7 +149,7 @@ class Sales extends Controllers
      */
     public function addCart(): void
     {
-        validate_permission_app(1, "c");
+        toJson(validate_permission_app(1, "c", false));
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }

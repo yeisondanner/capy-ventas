@@ -32,7 +32,7 @@ class Business extends Controllers
      */
     public function getBusinesses(): void
     {
-        $userId         = $this->getUserId();
+        $userId = $this->getUserId();
         $activeBusiness = isset($_SESSION[$this->nameVarBusiness]['idBusiness'])
             ? (int) $_SESSION[$this->nameVarBusiness]['idBusiness']
             : null;

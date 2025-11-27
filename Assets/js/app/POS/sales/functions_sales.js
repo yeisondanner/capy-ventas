@@ -1235,6 +1235,11 @@
             title: data.title,
             message: data.message,
           });
+          if (data.url) {
+            setTimeout(() => {
+              window.location.href = data.url;
+            }, 900);
+          }
         } catch (error) {
           showAlert({
             title: "Ocurrio un error inesperado",
