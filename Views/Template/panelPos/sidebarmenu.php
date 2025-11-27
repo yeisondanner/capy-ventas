@@ -3,8 +3,7 @@
 $data_menu = function (int $interface): array {
     $sessionName = config_sesion(1)['name'] ?? '';
     $nameVarPermission = $sessionName . 'menu_permission';
-    $_SESSION[$nameVarPermission];
-    return array_merge(...array_values(array_filter($_SESSION[$nameVarPermission], function ($item) use ($interface) {
+    return array_merge(...array_values(array_filter($_SESSION[$nameVarPermission] ?? [], function ($item) use ($interface) {
         return $item['idInterface'] == $interface;
     })));
 };
@@ -13,8 +12,7 @@ $nameVarPermissionEmployee = $sessionName . 'menu_employee_permission';
 $data_menu_employee = function (int $interface): array {
     $sessionName = config_sesion(1)['name'] ?? '';
     $nameVarPermission = $sessionName . 'menu_employee_permission';
-    $_SESSION[$nameVarPermission];
-    return array_merge(...array_values(array_filter($_SESSION[$nameVarPermission], function ($item) use ($interface) {
+    return array_merge(...array_values(array_filter($_SESSION[$nameVarPermission] ?? [], function ($item) use ($interface) {
         return $item['idInterface'] == $interface;
     })));
 };
