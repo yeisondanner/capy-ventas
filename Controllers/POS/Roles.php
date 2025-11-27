@@ -84,7 +84,9 @@ class Roles extends Controllers
             $counter++;
         }
 
-        toJson($roles);
+        toJson([
+            "data" => $roles
+        ]);
     }
 
     /**

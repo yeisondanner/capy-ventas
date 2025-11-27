@@ -1,19 +1,30 @@
 import { ApiRoles } from "./functions_roles_api.js";
 
 export class Roles {
-  constructor() {
+  #rolesTable = null;
+  #permissions = new Map();
+  // TODO: Seleccionamos los botones
+  #btnAddRole = $("#btnAddRole");
+  #btnCheckCard = $(".checkPermision");
+  // TODO: Seleccionamos los modals
+  #modalAddRole = $("#openModalRole");
+
+  constructor(base_url) {
     this.apiRoles = new ApiRoles(base_url);
-    this.initTable();
+    this.#initTable();
+    this.#openModal();
+    this.#selectedPermision();
   }
 
-  initTable = () => {
-    rolesTable = $("#rolesTable").DataTable({
+  // TODO: Funcion para mostrar los roles
+  #initTable = () => {
+    this.#rolesTable = $("#rolesTable").DataTable({
       ajax: (data, callback, settings) => {
-        apiRoles
+        this.apiRoles
           .get("getRoles")
           .then((response) => {
             callback({
-              data: response,
+              data: response.data || [],
             });
           })
           .catch((error) => {
@@ -82,4 +93,44 @@ export class Roles {
       },
     });
   };
+
+  // TODO: Funcion para abrir todos los modals
+  #openModal = () => {
+    $(this.#btnAddRole).click(() => {
+      $(this.#modalAddRole).modal("show");
+    });
+  };
+
+  // TODO: Funcion para seleccionar los check
+  #selectedPermision = () => {
+    $(this.#btnCheckCard).click((event) => {
+      let Interface = $(event.currentTarget).attr("data-interface");
+      let Permission = $(event.currentTarget).attr("data-permision");
+      let checkPermision = $("#" + Interface + "_" + Permission);
+
+      if (!this.#permissions.get(Interface)) {
+        this.#permissions.set(Interface, []);
+      }
+
+      if (checkPermision.prop("checked")) {
+        checkPermision.prop("checked", false);
+      } else {
+        checkPermision.prop("checked", true);
+      }
+
+      if (checkPermision.prop("checked")) {
+        if (this.#permissions.get(Interface).indexOf(Permission) === -1) {
+          this.#permissions.get(Interface).push(Permission);
+        }
+      } else {
+        let INDEX = this.#permissions.get(Interface).indexOf(Permission);
+        if(INDEX !== 0){
+          this.#permissions.get(Interface).splice(INDEX, 1);
+        }
+      }
+      console.log(this.#permissions);
+    });
+  };
 }
+
+const roles = new Roles(base_url);

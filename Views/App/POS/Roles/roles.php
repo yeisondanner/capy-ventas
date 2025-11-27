@@ -14,7 +14,7 @@
         <div class="col-12">
             <div class="tile">
                 <div class="tile-body d-flex flex-wrap gap-2">
-                    <button class="btn btn-primary" type="button" id="btnOpenRoleModal">
+                    <button class="btn btn-primary" type="button" id="btnAddRole">
                         <i class="bi bi-plus-lg"></i> Registrar rol
                     </button>
                 </div>
@@ -45,40 +45,67 @@
 </main>
 <?= footerPos($data) ?>
 
-<!-- Modal: Registrar/editar rol -->
-<div class="modal fade" id="roleModal" tabindex="-1" aria-labelledby="roleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <form class="modal-content" id="roleForm" autocomplete="off">
+<!-- Agregar Role and permissions -->
+<div class="modal fade" id="openModalRole" tabindex="-1" aria-labelledby="openModalRoleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="roleModalLabel">Registrar rol</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <h1 class="modal-title fs-5" id="openModalRoleLabel">Registrar Rol</h1>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <?= csrf(); ?>
-                <input type="hidden" name="roleId" id="roleId" value="0">
-                <div class="mb-3">
-                    <label for="txtRoleAppName" class="form-label">Nombre del rol <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="txtRoleAppName" name="txtRoleAppName" maxlength="255" required
-                        placeholder="Ej: Cajero, Supervisor">
-                </div>
-                <div class="mb-3">
-                    <label for="txtRoleAppDescription" class="form-label">Descripción</label>
-                    <textarea class="form-control" id="txtRoleAppDescription" name="txtRoleAppDescription" rows="3"
-                        placeholder="Describe las funciones o alcance del rol"></textarea>
-                </div>
-                <div class="mb-3 d-none" id="roleStatusGroup">
-                    <label for="txtRoleAppStatus" class="form-label">Estado</label>
-                    <select class="form-select" id="txtRoleAppStatus" name="txtRoleAppStatus" disabled>
-                        <option value="Activo" selected>Activo</option>
-                        <option value="Inactivo">Inactivo</option>
-                    </select>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtName" class="form-label fw-bold">Nombre (<span class="text-danger">*</span>)</label>
+                            <input type="text" class="form-control" id="txtName" placeholder="Ej. Administrador">
+                        </div>
+                        <div class="mb-3">
+                            <label for="txtDescription" class="form-label fw-bold">Descripción <span class="fw-medium text-muted"><i>(Opcional)</i></span></label>
+                            <textarea class="form-control" id="txtDescription" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="alert alert-warning alert-dismissible fade show p-2" role="alert">
+                            <strong>Interfaces:</strong> Lista de permisos
+                        </div>
+
+                        <div class="card border-info">
+                            <h6 class="card-header bg-info text-white">Modulo: Roles</h6>
+                            <div class="card-body d-flex gap-2">
+                                <div style="cursor: pointer;" data-interface="roles" data-permision="create_1" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm checkPermision">
+                                    <input id="roles_create_1" style="cursor: pointer;" type="checkbox" value="">
+                                    <label style="cursor: pointer;">
+                                        Crear
+                                    </label>
+                                </div>
+                                <div style="cursor: pointer;" data-interface="roles" data-permision="create_2" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm checkPermision">
+                                    <input id="roles_create_2" style="cursor: pointer;" type="checkbox" value="">
+                                    <label style="cursor: pointer;">
+                                        Leer
+                                    </label>
+                                </div>
+                                <div style="cursor: pointer;" data-interface="roles" data-permision="create_3" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm checkPermision">
+                                    <input id="roles_create_3" style="cursor: pointer;" type="checkbox" value="">
+                                    <label style="cursor: pointer;">
+                                        Actualizar
+                                    </label>
+                                </div>
+                                <div style="cursor: pointer;" data-interface="roles" data-permision="create_4" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm checkPermision">
+                                    <input id="roles_create_4" style="cursor: pointer;" type="checkbox" value="">
+                                    <label style="cursor: pointer;">
+                                        ELiminar
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
+                <button type="button" class="btn btn-primary">Guardar</button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
