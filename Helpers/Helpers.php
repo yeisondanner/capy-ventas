@@ -1538,7 +1538,7 @@ function get_option_and_permission_app()
                 die();
             }
             //obtenemos el rol que tiene el usuario en el negocio
-            $dataInformationUser = $objPermission->get_information_user($idUser);
+            $dataInformationUser = $objPermission->get_information_user($idUser, $idBusiness);
             //validamos que el usuario tenga un rol
             if (empty($dataInformationUser)) {
                 $no_permisos = base_url() . "/pos/errors/no_permisos";

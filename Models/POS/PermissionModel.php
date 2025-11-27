@@ -178,9 +178,10 @@ class PermissionModel extends Mysql
      * @param int $idUserApp
      * @return array
      */
-    public function get_information_user(int $idUserApp)
+    public function get_information_user(int $idUserApp, int $idBusiness)
     {
         $this->idUserApp = $idUserApp;
+        $this->idBusiness = $idBusiness;
         $sql = <<<SQL
                 SELECT
                     *
@@ -189,9 +190,9 @@ class PermissionModel extends Mysql
                     INNER JOIN user_app AS ua ON ua.idUserApp = e.userapp_id
                     INNER JOIN role_app AS ra ON ra.idRoleApp=e.rolapp_id
                 WHERE
-                    e.userapp_id = ?;
+                    e.userapp_id = ? AND e.bussines_id=?;
         SQL;
-        $request = $this->select($sql, [$this->idUserApp]) ?? [];
+        $request = $this->select($sql, [$this->idUserApp, $this->idBusiness]) ?? [];
         return $request;
     }
     /**

@@ -187,9 +187,6 @@ class Business extends Controllers
                         <span class="badge bg-danger text-white badge-pill badge-sm">                      
                             Cambiando, espere un momento...
                         </span>
-                        <span class="spinner-grow spinner-grow-sm bg-danger"></span><span class="spinner-grow spinner-grow-sm bg-danger"></span><span class="spinner-grow spinner-grow-sm bg-danger"></span>
-                        <span class="spinner-grow spinner-grow-sm bg-danger"></span><span class="spinner-grow spinner-grow-sm bg-danger"></span><span class="spinner-grow spinner-grow-sm bg-danger"></span>
-                        <span class="spinner-grow spinner-grow-sm bg-danger"></span><span class="spinner-grow spinner-grow-sm bg-danger"></span><span class="spinner-grow spinner-grow-sm bg-danger"></span>
                     </div>
                 </div>
             HTML,
