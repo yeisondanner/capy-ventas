@@ -39,7 +39,7 @@ class Roles extends Controllers
             'page_description' => 'Administra los roles disponibles para asignar a tus empleados.',
             'page_container'   => 'Roles',
             'page_view'        => 'roles',
-            'page_js_css'      => 'roles',
+            'page_js_css'      => ['roles', 'roles_api'],
         ];
 
         $this->views->getView($this, 'roles', $data, 'POS');

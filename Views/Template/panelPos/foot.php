@@ -25,11 +25,27 @@
 <?php
 //variables de las rutas del js
 $pageJsFolder = strtolower($data["page_container"]);
-$pageJsFile = "functions_" . strtolower($data["page_js_css"]) . ".js?" . versionSystem();
+
+if (is_array($data["page_js_css"])) {
+    $pageJsFile = [];
+    foreach ($data["page_js_css"] as $key => $value) {
+        array_push($pageJsFile, "functions_" . strtolower($value) . ".js?" . versionSystem());
+    }
+} else {
+    $pageJsFile = "functions_" . strtolower($data["page_js_css"]) . ".js?" . versionSystem();
+}
+
 require_once "./Views/App/POS/" . ucfirst($data["page_container"]) . "/Libraries/foot.php";
+
+if (is_array($pageJsFile)) {
+    foreach ($pageJsFile as $key => $value) {
+        echo "<script type='module' src='".media()."/js/app/POS/".$pageJsFolder."/" . $value . "'></script>";
+    }
+} else {
+    echo "<script type='module' src='".media()."/js/app/POS/".$pageJsFolder."/" . $pageJsFile . "'></script>";
+}
 ?>
 
-<script src="<?= media() ?>/js/app/POS/<?= $pageJsFolder ?>/<?= $pageJsFile ?>"></script>
 </body>
 
 </html>
