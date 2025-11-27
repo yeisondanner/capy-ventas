@@ -1529,8 +1529,12 @@ function get_option_and_permission_app()
             $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
             $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento);
             if ((int)$data_vencimiento['total_dias'] <= 0) {
-                echo "El plan del negocio ha expirado, por favor contacte al dueño 
-                del negocio para que pueda renovar el plan";
+                $plan_vencido = base_url() . "/pos/errors/plan_vencido";
+                echo <<<HTML
+                    <script>
+                        window.location.href = "{$plan_vencido}";
+                    </script>
+                HTML;
                 die();
             }
             //obtenemos el rol que tiene el usuario en el negocio
@@ -1599,4 +1603,114 @@ function get_widget_plan(string $plan)
         ]
     );
     return $arrWidgetPlan[$plan];
+}
+/**
+ * Funcion que valida el permiso del usuario en la visa
+ * de acuerdo al rol
+ * @param int $idinterface
+ * @return 
+ */
+function validate_permission_app(int $idinterface, string $permission, bool $redirect = true)
+{
+    /**
+     * Validamos que el usuario no sea dueño del negocio
+     * si fuere dueño del negocio tiene todos los permisos poer defecto
+     * lo unico que se deberia validar es los permisos del plan nada mas
+     */
+
+
+    /**
+     * Arraya de permisos
+     */
+    $crudpermission = ['r' => 'read', 'c' => 'create', 'u' => 'update', 'd' => 'delete'];
+    $crudpermissionpia = ['r' => 'pia_read', 'c' => 'pia_create', 'u' => 'pia_update', 'd' => 'pia_delete'];
+    //id de interface
+    $idinterface = (int)$idinterface;
+    //nombres iniciales de las variables de sesion
+    $sessionName = config_sesion(1)['name'] ?? '';
+    $nameVarBusiness = $sessionName . 'business_active';
+    $nameVarLoginInfo = $sessionName . 'login_info';
+    //variables de negocio activo
+    $iduser = (int)$_SESSION[$nameVarLoginInfo]['idUser'];
+    $idbusiness = (int)$_SESSION[$nameVarBusiness]['idBusiness'];
+    //requerimos el modelo de permisos
+    require_once "./Models/POS/PermissionModel.php";
+    $objPermission = new PermissionModel();
+    /**
+     * validamos si el usuario es dueño o 
+     * no del negocio activo, si fuere dueño, 
+     * tiene acceso a todos los permisos que el plan permite, 
+     * caso contrario responde a un rol de usuario el cual esta limitado a permisos
+     */
+    $dataOwnerBusiness = $objPermission->get_bussiness_owner($iduser, $idbusiness);
+    if (!$dataOwnerBusiness) {
+        $result = $objPermission->get_permission_interface($iduser, $idbusiness, $idinterface);
+
+        if (!$result) {
+            $no_permisos = base_url() . "/pos/errors/no_permisos";
+            echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+            die();
+        }
+        /**
+         * Validacion de estados de acuerdo a la tabla
+         */
+        if ($result['interface_status'] !== 'Activo') {
+            $no_permisos = base_url() . "/pos/errors/estado_interfaz";
+            echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+            die();
+        }
+        if ($result['plans_interface_status'] !== 'Activo') {
+            $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
+            echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+            die();
+        }
+        if ($result['permission_status'] !== 'Activo') {
+            $no_permisos = base_url() . "/pos/errors/estado_permisos";
+            echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+            die();
+        }
+        /**
+         * Validamos los permisos del crud general
+         */
+        if ($result[$crudpermissionpia[$permission]] === 0) {
+            $no_permisos = base_url() . "/pos/errors/no_permisos_pia";
+            echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+            die();
+        }
+        /**
+         * Validacion a nivel de permisos del rol
+         */
+        if ($redirect) {
+            if ($result[$crudpermission[$permission]] === 0) {
+                $no_permisos = base_url() . "/pos/errors/no_permisos";
+                echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+                die();
+            }
+        }
+        return $result;
+    }
 }

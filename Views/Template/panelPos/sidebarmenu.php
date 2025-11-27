@@ -1,20 +1,31 @@
 <?php
 
+/**
+ * Obtenemos los nombres de las variables de sesion
+ */
+$sessionName = config_sesion(1)['name'] ?? '';
+$nameVarPermissionEmployee = $sessionName . 'menu_employee_permission';
+/**
+ * Creamos la ejecucion de las funciones anonias para 
+ * darle el comportamiento a nuestro menu
+ */
+/**
+ * Menu cuando el usuario es dueño
+ */
 $data_menu = function (int $interface): array {
     $sessionName = config_sesion(1)['name'] ?? '';
     $nameVarPermission = $sessionName . 'menu_permission';
-    $_SESSION[$nameVarPermission];
-    return array_merge(...array_values(array_filter($_SESSION[$nameVarPermission], function ($item) use ($interface) {
+    return array_merge(...array_values(array_filter($_SESSION[$nameVarPermission] ?? [], function ($item) use ($interface) {
         return $item['idInterface'] == $interface;
     })));
 };
-$sessionName = config_sesion(1)['name'] ?? '';
-$nameVarPermissionEmployee = $sessionName . 'menu_employee_permission';
+/**
+ * Menu cuando el usuario tiene un rol asociado
+ */
 $data_menu_employee = function (int $interface): array {
     $sessionName = config_sesion(1)['name'] ?? '';
     $nameVarPermission = $sessionName . 'menu_employee_permission';
-    $_SESSION[$nameVarPermission];
-    return array_merge(...array_values(array_filter($_SESSION[$nameVarPermission], function ($item) use ($interface) {
+    return array_merge(...array_values(array_filter($_SESSION[$nameVarPermission] ?? [], function ($item) use ($interface) {
         return $item['idInterface'] == $interface;
     })));
 };

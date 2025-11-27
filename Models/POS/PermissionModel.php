@@ -11,6 +11,7 @@ class PermissionModel extends Mysql
     protected string $dateStart;
     protected string $dateEnd;
     protected int $idRoleApp;
+    protected int $idInterface;
 
     /**
      * Inicializa el modelo base y establece la conexión con la base de datos.
@@ -237,6 +238,58 @@ class PermissionModel extends Mysql
                     AND ia.`status`='Activo';
         SQL;
         $request = $this->select_all($sql, [$this->idUserApp, $this->idBusiness, $this->idRoleApp]) ?? [];
+        return $request;
+    }
+    public function get_permission_interface(int $iduser, int $idbusiness, int $idinterface)
+    {
+        $this->idUserApp = $iduser;
+        $this->idBusiness = $idbusiness;
+        $this->idInterface = $idinterface;
+        $sql = <<<SQL
+            SELECT
+                e.bussines_id,
+                e.idEmployee,
+                e.userapp_id,
+                ra.idRoleApp,
+                p.idPermission,
+                ia.idInterface,
+                ma.`name` AS 'modulo',
+                ia.`name` AS 'interface',
+                p.`create`,
+                p.`read`,
+                p.`update`,
+                p.`delete`,
+                p.`status` AS 'permission_status',
+                pia.`status` AS 'plans_interface_status',
+                ia.`status` AS 'interface_status',
+                pia.`create` AS 'pia_create',
+                pia.`read` AS 'pia_read',
+                pia.`update` AS 'pia_update',
+                pia.`delete` AS 'pia_delete'
+            FROM
+                employee AS e
+                INNER JOIN role_app AS ra ON ra.idRoleApp = e.rolapp_id
+                INNER JOIN permission AS p ON p.rol_id = ra.idRoleApp
+                INNER JOIN plans_interface_app AS pia ON pia.idPlansInterfaceApp = p.plans_interface_app_id
+                INNER JOIN interface_app AS ia ON ia.idInterface = pia.interface_id
+                INNER JOIN module_app AS ma ON ma.idModule = ia.module_id
+            WHERE
+                e.userapp_id = ?
+                AND e.bussines_id =? 
+                AND ia.idInterface = ?
+                AND e.rolapp_id =(
+                    SELECT
+                        e.rolapp_id
+                    FROM
+                        employee AS e
+                    WHERE
+                        e.userapp_id = ?
+                        AND e.bussines_id = ?
+                    LIMIT
+                        1
+                );
+        SQL;
+        $request = $this->select($sql, [$this->idUserApp, $this->idBusiness, $this->idInterface, $this->idUserApp, $this->idBusiness]) ?? [];
         return $request;
     }
 }
