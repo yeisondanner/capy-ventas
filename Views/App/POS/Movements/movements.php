@@ -11,13 +11,12 @@
         </ul>
     </div>
     <div class="row">
-        
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body">
                     <h6 class="text-center text-primary mb-3">Filtrar Movimientos</h6>
-                    <div class="row justify-content-center">
-                        <div class="col-md-3">
+                    <div class="d-flex flex-wrap gap-1 __filter-container">
+                        <div class="flex-fill __filter_col">
                             <label for="filter-type" class="small font-weight-bold">Tipo de Filtro:</label>
                             <select id="filter-type" class="form-select form-select-sm">
                                 <option value="daily">Diario</option>
@@ -27,31 +26,37 @@
                                 <option value="custom">Rango Personalizado</option>
                             </select>
                         </div>
-                        <div class="col-md-3" id="date-container">
+
+                        <div class="__fecha flex-fill" id="date-container">
                             <label for="filter-date" class="small font-weight-bold" id="date-label">Fecha:</label>
                             <input type="date" id="filter-date" class="form-control form-control-sm" value="<?= date('Y-m-d') ?>">
                         </div>
-                        <div class="col-md-3" id="date-range-container" style="display: none;">
+
+
+                        <div class="__fecha flex-fill" id="date-range-container" style="display: none;">
                             <label for="min-date" class="small font-weight-bold">Desde:</label>
                             <input type="date" id="min-date" class="form-control form-control-sm">
                         </div>
-                        <div class="col-md-3" id="date-to-container" style="display: none;">
+
+                        <div class="__fecha flex-fill" id="date-to-container" style="display: none;">
                             <label for="max-date" class="small font-weight-bold">Hasta:</label>
                             <input type="date" id="max-date" class="form-control form-control-sm">
                         </div>
-                        <div class="col-md-3">
+
+                        <div class="__search flex-fill">
                             <label for="search-concept" class="small font-weight-bold">Buscar por Concepto:</label>
                             <input type="text" id="search-concept" class="form-control form-control-sm" placeholder="Concepto de venta...">
                         </div>
-                        <div class="col-md-3 d-flex align-items-end">
-                            <button id="filter-btn" class="btn btn-primary btn-sm me-2"><i class="bi bi-funnel"></i> Filtrar</button>
-                            <button id="reset-btn" class="btn btn-secondary btn-sm"><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
+
+                        <div class="__buttons flex-fill d-flex align-items-end justify-content-center justify-content-sm-start">
+                            <button id="filter-btn" class="btn_filter flex-fill btn btn-primary btn- me-2"><i class="bi bi-funnel"></i> Filtrar</button>
+                            <button id="reset-btn" class="btn_clean flex-fill btn btn-secondary btn-sm"><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-12">
             <div class="tile">
                 <div class="row g-3">

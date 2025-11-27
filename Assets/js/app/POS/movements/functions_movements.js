@@ -341,25 +341,25 @@
       buttons: [
         {
           extend: "copyHtml5",
-          text: "<i class='fa fa-copy'></i> Copiar",
+          text: "<i class='bi bi-clipboard-check'></i> Copiar",
           titleAttr: "Copiar",
           className: "btn btn-secondary",
         },
         {
           extend: "excelHtml5",
-          text: "<i class='fa fa-table'></i> Excel",
+          text: "<i class='bi bi-file-earmark-excel'></i> Excel",
           title: "Reporte de categorias en Excel",
           className: "btn btn-success",
         },
         {
           extend: "csvHtml5",
-          text: "<i class='fa fa-file-text'></i> CSV",
+          text: "<i class='bi bi-filetype-csv'></i> CSV",
           title: "Reporte de categorias en CSV",
           className: "btn btn-info",
         },
         {
           extend: "pdfHtml5",
-          text: "<i class='fa fa-file-pdf'></i> PDF",
+          text: "<i class='bi bi-file-earmark-pdf'></i> PDF",
           title: "Reporte de categorias en PDF",
           className: "btn btn-danger",
           orientation: "landscape",
