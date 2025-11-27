@@ -124,7 +124,7 @@ export class Roles {
         }
       } else {
         let INDEX = this.#permissions.get(Interface).indexOf(Permission);
-        if(INDEX !== 0){
+        if(INDEX !== -1){
           this.#permissions.get(Interface).splice(INDEX, 1);
         }
       }
