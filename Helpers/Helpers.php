@@ -1604,3 +1604,34 @@ function get_widget_plan(string $plan)
     );
     return $arrWidgetPlan[$plan];
 }
+/**
+ * Funcion que valida el permiso del usuario en la visa
+ * de acuerdo al rol
+ * @param int $idinterface
+ * @return array
+ */
+function validate_permission_app(int $idinterface): mixed
+{
+    $idinterface = (int)$idinterface;
+    //nombres iniciales de las variables de sesion
+    $sessionName = config_sesion(1)['name'] ?? '';
+    $nameVarBusiness = $sessionName . 'business_active';
+    $nameVarLoginInfo = $sessionName . 'login_info';
+    //variables de negocio activo
+    $iduser = (int)$_SESSION[$nameVarLoginInfo]['idUser'];
+    $idbusiness = (int)$_SESSION[$nameVarBusiness]['idBusiness'];
+    //requerimos el modelo de permisos
+    require_once "./Models/POS/PermissionModel.php";
+    $objPermission = new PermissionModel();
+    $result = $objPermission->get_permission_interface($iduser, $idbusiness, $idinterface);
+    if (!$result) {
+        $no_permisos = base_url() . "/pos/errors/no_permisos";
+        echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+        die();
+    }
+    return $result;
+}
