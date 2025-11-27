@@ -1617,10 +1617,8 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
      * si fuere dueño del negocio tiene todos los permisos poer defecto
      * lo unico que se deberia validar es los permisos del plan nada mas
      */
-
-
     /**
-     * Arraya de permisos
+     * Array de permisos
      */
     $crudpermission = ['r' => 'read', 'c' => 'create', 'u' => 'update', 'd' => 'delete'];
     $crudpermissionpia = ['r' => 'pia_read', 'c' => 'pia_create', 'u' => 'pia_update', 'd' => 'pia_delete'];
@@ -1649,42 +1647,85 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
 
         if (!$result) {
             $no_permisos = base_url() . "/pos/errors/no_permisos";
-            echo <<<HTML
+            if ($redirect) {
+                echo <<<HTML
                     <script>
                         window.location.href = "{$no_permisos}";
                     </script>
                 HTML;
-            die();
+                die();
+            } else {
+                return [
+                    'status' => false,
+                    'title'  => 'Permisos insuficientes',
+                    'message' => 'No tienes permisos para realizar esta accion.',
+                    'icon'   => 'error',
+                    'url' => $no_permisos
+                ];
+            }
         }
         /**
          * Validacion de estados de acuerdo a la tabla
          */
         if ($result['interface_status'] !== 'Activo') {
             $no_permisos = base_url() . "/pos/errors/estado_interfaz";
-            echo <<<HTML
+            if ($redirect) {
+                echo <<<HTML
                     <script>
                         window.location.href = "{$no_permisos}";
                     </script>
                 HTML;
-            die();
+                die();
+            } else {
+                return [
+                    'status' => false,
+                    'title'  => 'Permisos insuficientes',
+                    'message' => 'No tienes permisos para realizar esta accion.',
+                    'icon'   => 'error',
+                    'url' => $no_permisos,
+                    'interface_status' => $result['interface_status']
+                ];
+            }
         }
         if ($result['plans_interface_status'] !== 'Activo') {
             $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
-            echo <<<HTML
+            if ($redirect) {
+                echo <<<HTML
                     <script>
                         window.location.href = "{$no_permisos}";
                     </script>
                 HTML;
-            die();
+                die();
+            } else {
+                return [
+                    'status' => false,
+                    'title'  => 'Permisos insuficientes',
+                    'message' => 'No tienes permisos para realizar esta accion.',
+                    'icon'   => 'error',
+                    'url' => $no_permisos,
+                    'plans_interface_status' => $result['plans_interface_status']
+                ];
+            }
         }
         if ($result['permission_status'] !== 'Activo') {
             $no_permisos = base_url() . "/pos/errors/estado_permisos";
-            echo <<<HTML
+            if ($redirect) {
+                echo <<<HTML
                     <script>
                         window.location.href = "{$no_permisos}";
                     </script>
                 HTML;
-            die();
+                die();
+            } else {
+                return [
+                    'status' => false,
+                    'title'  => 'Permisos insuficientes',
+                    'message' => 'No tienes permisos para realizar esta accion.',
+                    'icon'   => 'error',
+                    'url' => $no_permisos,
+                    'permission_status' => $result['permission_status']
+                ];
+            }
         }
         /**
          * Validamos los permisos del crud general
@@ -1695,28 +1736,54 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             }
             $_SESSION[$nameVarMessagePermission] = $crudpermission[$permission];
             $no_permisos = base_url() . "/pos/errors/no_permisos_pia";
-            echo <<<HTML
-                    <script>
-                        window.location.href = "{$no_permisos}";
-                    </script>
-                HTML;
-            die();
-        }
-        /**
-         * Validacion a nivel de permisos del rol
-         */
-        if ($redirect) {
-            if ((int)$result[$crudpermission[$permission]] === 0) {
-                $no_permisos = base_url() . "/pos/errors/no_permisos";
+            if ($redirect) {
                 echo <<<HTML
                     <script>
                         window.location.href = "{$no_permisos}";
                     </script>
                 HTML;
                 die();
+            } else {
+                return [
+                    'status' => false,
+                    'title'  => 'Permisos insuficientes',
+                    'message' => 'No tienes permisos para realizar esta accion.',
+                    'icon'   => 'error',
+                    'url' => $no_permisos,
+                    $crudpermissionpia[$permission] => $result[$crudpermissionpia[$permission]]
+                ];
             }
         }
-        return $result;
+        /**
+         * Validacion a nivel de permisos del rol
+         */
+        if ((int)$result[$crudpermission[$permission]] === 0) {
+            $no_permisos = base_url() . "/pos/errors/no_permisos";
+            if ($redirect) {
+                echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+                die();
+            } else {
+                return [
+                    'status' => false,
+                    'title'  => 'Permisos insuficientes',
+                    'message' => 'No tienes permisos para realizar esta accion.',
+                    'icon'   => 'error',
+                    'url' => $no_permisos,
+                    $crudpermission[$permission] => $result[$crudpermission[$permission]]
+                ];
+            }
+        }
+        return [
+            'status' => true,
+            'title'  => 'Permisos validados',
+            'message' => 'Tienes permisos para realizar esta accion.',
+            'icon'   => 'success',
+            $crudpermission[$permission] => $result[$crudpermission[$permission]]
+        ];
     }
     /**
      * validamos que el usuario tengo permisos de acceso 
@@ -1725,48 +1792,100 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
     $result = $objPermission->get_permission_interface_owner($iduser, $idinterface);
     if (!$result) {
         $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
-        echo <<<HTML
-                    <script>
-                        window.location.href = "{$no_permisos}";
-                    </script>
+
+        if ($redirect) {
+            echo <<<HTML
+                        <script>
+                            window.location.href = "{$no_permisos}";
+                        </script>
                 HTML;
-        die();
+            die();
+        } else {
+            return [
+                'status' => false,
+                'title'  => 'Interfaz inactiva',
+                'message' => 'La interfaz no se encuentra activa.',
+                'icon'   => 'error',
+                'url' => $no_permisos,
+                'ia_status' => $result['ia_status']
+            ];
+        }
     }
     if ($result['ia_status'] !== 'Activo') {
         $no_permisos = base_url() . "/pos/errors/estado_interfaz";
-        echo <<<HTML
-                    <script>
-                        window.location.href = "{$no_permisos}";
-                    </script>
+
+        if ($redirect) {
+            echo <<<HTML
+                        <script>
+                            window.location.href = "{$no_permisos}";
+                        </script>
                 HTML;
-        die();
+            die();
+        } else {
+            return [
+                'status' => false,
+                'title'  => 'Interfaz inactiva',
+                'message' => 'La interfaz no se encuentra activa.',
+                'icon'   => 'error',
+                'url' => $no_permisos,
+                'ia_status' => $result['ia_status']
+            ];
+        }
     }
     if ($result['pia_status'] !== 'Activo') {
         $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
-        echo <<<HTML
-                    <script>
-                        window.location.href = "{$no_permisos}";
-                    </script>
+
+        if ($redirect) {
+            echo <<<HTML
+                        <script>
+                            window.location.href = "{$no_permisos}";
+                        </script>
                 HTML;
-        die();
+            die();
+        } else {
+            return [
+                'status' => false,
+                'title'  => 'Interfaz inactiva',
+                'message' => 'La interfaz no se encuentra activa.',
+                'icon'   => 'error',
+                'url' => $no_permisos,
+                'ia_status' => $result['ia_status']
+            ];
+        }
     }
     /**
      * Validamos los permisos del crud general
      */
-    if ($redirect) {
-        if ((int)$result[$crudpermission[$permission]] === 0) {
-            if (isset($_SESSION[$nameVarMessagePermission])) {
-                unset($_SESSION[$nameVarMessagePermission]);
-            }
-            $_SESSION[$nameVarMessagePermission] = $crudpermission[$permission];
-            $no_permisos = base_url() . "/pos/errors/no_permisos_pia";
+
+    if ((int)$result[$crudpermission[$permission]] === 0) {
+        if (isset($_SESSION[$nameVarMessagePermission])) {
+            unset($_SESSION[$nameVarMessagePermission]);
+        }
+        $_SESSION[$nameVarMessagePermission] = $crudpermission[$permission];
+        $no_permisos = base_url() . "/pos/errors/no_permisos_pia";
+        if ($redirect) {
             echo <<<HTML
                     <script>
                         window.location.href = "{$no_permisos}";
                     </script>
                 HTML;
             die();
+        } else {
+            return [
+                'status' => false,
+                'title'  => 'Permisos insuficientes',
+                'message' => 'No tienes permisos para realizar esta accion.',
+                'icon'   => 'error',
+                'url' => $no_permisos,
+                $crudpermission[$permission] => $result[$crudpermission[$permission]]
+            ];
         }
     }
-    return $result;
+    return [
+        'status' => true,
+        'title'  => 'Permisos validados',
+        'message' => 'Tienes permisos para realizar esta accion.',
+        'icon'   => 'success',
+        $crudpermission[$permission] => $result[$crudpermission[$permission]]
+    ];
 }

@@ -65,6 +65,7 @@ class Sales extends Controllers
      */
     public function getProducts(): void
     {
+        validate_permission_app(1, "r");
         $businessId = $this->getBusinessId();
         $products   = $this->model->selectProducts($businessId);
         if (!$products) {
@@ -80,6 +81,7 @@ class Sales extends Controllers
      */
     public function getPopularCategories(): void
     {
+        validate_permission_app(1, "r");
         $businessId = $this->getBusinessId();
         $categories = $this->model->selectPopularCategories($businessId, 5);
 
@@ -113,6 +115,7 @@ class Sales extends Controllers
      */
     public function getCustomers(): void
     {
+        validate_permission_app(1, "r");
         $businessId = $this->getBusinessId();
         $customers  = $this->model->selectCustomers($businessId);
 
@@ -146,6 +149,7 @@ class Sales extends Controllers
      */
     public function addCart(): void
     {
+        validate_permission_app(1, "c");
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -236,6 +240,7 @@ class Sales extends Controllers
      */
     public function updateCartItem(): void
     {
+        validate_permission_app(1, "u");
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -309,6 +314,7 @@ class Sales extends Controllers
      */
     public function deleteCartItem(): void
     {
+        validate_permission_app(1, "d");
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -345,6 +351,7 @@ class Sales extends Controllers
      */
     public function clearCart(): void
     {
+        validate_permission_app(1, "d");
         if (isset($_SESSION[$this->nameVarCart])) {
             unset($_SESSION[$this->nameVarCart]);
         }
@@ -365,6 +372,7 @@ class Sales extends Controllers
      */
     private function getBusinessId(): int
     {
+        validate_permission_app(1, "r");
         if (!isset($_SESSION[$this->nameVarBusiness]['idBusiness'])) {
             $this->responseError('No se encontró el negocio activo en la sesión.');
         }
@@ -467,6 +475,7 @@ class Sales extends Controllers
      */
     public function finalizeSale(): void
     {
+        validate_permission_app(1, "c");
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -615,6 +624,7 @@ class Sales extends Controllers
      */
     public function updateVoucherName(): void
     {
+        validate_permission_app(1, "u");
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -659,6 +669,7 @@ class Sales extends Controllers
      */
     public function getPaymentMethods(): void
     {
+        validate_permission_app(1, "r");
         $paymentMethods = $this->model->selectPaymentMethods();
         toJson(['status' => true, 'payment_methods' => $paymentMethods]);
     }
