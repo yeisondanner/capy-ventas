@@ -258,7 +258,14 @@ class PermissionModel extends Mysql
                 p.`create`,
                 p.`read`,
                 p.`update`,
-                p.`delete`
+                p.`delete`,
+                p.`status` AS 'permission_status',
+                pia.`status` AS 'plans_interface_status',
+                ia.`status` AS 'interface_status',
+                pia.`create` AS 'pia_create',
+                pia.`read` AS 'pia_read',
+                pia.`update` AS 'pia_update',
+                pia.`delete` AS 'pia_delete'
             FROM
                 employee AS e
                 INNER JOIN role_app AS ra ON ra.idRoleApp = e.rolapp_id
@@ -268,7 +275,7 @@ class PermissionModel extends Mysql
                 INNER JOIN module_app AS ma ON ma.idModule = ia.module_id
             WHERE
                 e.userapp_id = ?
-                AND e.bussines_id = ?
+                AND e.bussines_id =? 
                 AND ia.idInterface = ?
                 AND e.rolapp_id =(
                     SELECT
@@ -282,8 +289,7 @@ class PermissionModel extends Mysql
                         1
                 );
         SQL;
-        $request = $this->select_all($sql, [$this->idUserApp, $this->idBusiness, $this->idInterface, $this->idUserApp, $this->idBusiness]) ?? [];
-
+        $request = $this->select($sql, [$this->idUserApp, $this->idBusiness, $this->idInterface, $this->idUserApp, $this->idBusiness]) ?? [];
         return $request;
     }
 }

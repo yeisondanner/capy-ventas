@@ -28,7 +28,7 @@ class Employee extends Controllers
 
     public function employee()
     {
-        validate_permission_app(5);
+        validate_permission_app(5, "r");
         $data = [
             'page_id'          => 5,
             'page_title'       => 'Empleados',

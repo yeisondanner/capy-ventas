@@ -1610,8 +1610,10 @@ function get_widget_plan(string $plan)
  * @param int $idinterface
  * @return array
  */
-function validate_permission_app(int $idinterface): mixed
+function validate_permission_app(int $idinterface, string $permission, bool $redirect = true): mixed
 {
+    $crudpermission = ['r' => 'read', 'c' => 'create', 'u' => 'update', 'd' => 'delete'];
+    $crudpermissionpia = ['r' => 'pia_read', 'c' => 'pia_create', 'u' => 'pia_update', 'd' => 'pia_delete'];
     $idinterface = (int)$idinterface;
     //nombres iniciales de las variables de sesion
     $sessionName = config_sesion(1)['name'] ?? '';
@@ -1632,6 +1634,62 @@ function validate_permission_app(int $idinterface): mixed
                     </script>
                 HTML;
         die();
+    }
+    /**
+     * Validacion de estados de acuerdo a la tabla
+     */
+    if ($result['interface_status'] !== 'Activo') {
+        $no_permisos = base_url() . "/pos/errors/estado_interfaz";
+        echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+        die();
+    }
+    if ($result['plans_interface_status'] !== 'Activo') {
+        $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
+        echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+        die();
+    }
+    if ($result['permission_status'] !== 'Activo') {
+        $no_permisos = base_url() . "/pos/errors/estado_permisos";
+        echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+        die();
+    }
+    /**
+     * Validamos los permisos del crud general
+     */
+    if ($result[$crudpermissionpia[$permission]] === 0) {
+        $no_permisos = base_url() . "/pos/errors/no_permisos_pia";
+        echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+        die();
+    }
+    /**
+     * Validacion a nivel de permisos del rol
+     */
+    if ($redirect) {
+        if ($result[$crudpermission[$permission]] === 0) {
+            $no_permisos = base_url() . "/pos/errors/no_permisos";
+            echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+            die();
+        }
     }
     return $result;
 }
