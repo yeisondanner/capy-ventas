@@ -90,47 +90,13 @@
     border-radius: 10px;
 }
 
-.__fecha label {
+.__fecha label, .__search label {
     font-size: 0.8rem;
     margin-bottom: 0.2rem;
     font-weight: bold;
 }
 
-.__fecha input{
-    font-size: 0.85rem;
-    padding: 0.5rem;
-    border-radius: 10px;
-}
-
-.__search label {
-    font-size: 0.8rem;
-    margin-bottom: 0.2rem;
-    font-weight: bold;
-}
-
-.__search input{
-    font-size: 0.85rem;
-    padding: 0.5rem;
-    border-radius: 10px;
-}
-.__fecha_inicio label {
-    font-size: 0.8rem;
-    margin-bottom: 0.2rem;
-    font-weight: bold;
-}
-
-.__fecha_inicio input{
-    font-size: 0.85rem;
-    padding: 0.5rem;
-    border-radius: 10px;
-}
-.__fecha_fin label {
-    font-size: 0.8rem;
-    margin-bottom: 0.2rem;
-    font-weight: bold;
-}
-
-.__fecha_fin input{
+.__fecha input, .__search input{
     font-size: 0.85rem;
     padding: 0.5rem;
     border-radius: 10px;
