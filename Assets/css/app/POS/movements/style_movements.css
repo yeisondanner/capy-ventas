@@ -1,111 +1,117 @@
 .table#table tbody td {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 .modal .form-label {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .modal .btn-close {
-    box-shadow: none;
+  box-shadow: none;
 }
 
 /* Estilos para mejorar el responsive de la tabla */
 @media (max-width: 576px) {
-    .table#table {
-        font-size: 0.85em;
-    }
+  .table#table {
+    font-size: 0.85em;
+  }
 
-    .table#table th,
-    .table#table td {
-        padding: 0.25rem;
-    }
+  .table#table th,
+  .table#table td {
+    padding: 0.25rem;
+  }
 }
 
 @media (max-width: 768px) {
-    .table-responsive {
-        font-size: 0.9em;
-    }
+  .table-responsive {
+    font-size: 0.9em;
+  }
 
-    .table#table th,
-    .table#table td {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+  .table#table th,
+  .table#table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 
 /* Mejorar la apariencia de la tabla en dispositivos móviles */
 .dtr-details {
-    text-align: left;
+  text-align: left;
 }
 
 .dtr-data {
-    word-break: break-word;
+  word-break: break-word;
 }
 
 /* Mejorar estéticamente las tarjetas */
 .card-enhanced {
-    transition: all 0.3s ease-in-out;
-    border: 1px solid rgba(0,0,0,.05);
-    overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
 }
 
 .card-enhanced:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
 }
 
 /* Estilo para el contenedor del icono */
 .icon-container {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 /* Asegurar consistencia en la altura de las tarjetas */
 .card-body {
-    min-height: 80px;
-    padding: 1.25rem;
+  min-height: 80px;
+  padding: 1.25rem;
 }
 
 /* Mejorar el texto en las tarjetas */
 .card-enhanced .small.text-muted {
-    font-size: 0.85rem;
+  font-size: 0.85rem;
 }
 
 .card-enhanced .fw-semibold.fs-5 {
-    font-size: 1.25rem;
+  font-size: 1.25rem;
 }
 
-.__filter_col label{
-    font-size: 0.8rem;
-    margin-bottom: 0.2rem;
-    font-weight: bold;
+.__filter_col label {
+  font-size: 0.8rem;
+  margin-bottom: 0.2rem;
+  font-weight: bold;
 }
-.__filter_col select{
-    font-size: 0.85rem;
-    padding: 0.5rem;
-    border-radius: 10px;
-}
-
-.__fecha label, .__search label {
-    font-size: 0.8rem;
-    margin-bottom: 0.2rem;
-    font-weight: bold;
+.__filter_col select {
+  font-size: 0.85rem;
+  padding: 0.5rem;
+  border-radius: 10px;
 }
 
-.__fecha input, .__search input{
-    font-size: 0.85rem;
-    padding: 0.5rem;
-    border-radius: 10px;
+.__fecha label,
+.__search label {
+  font-size: 0.8rem;
+  margin-bottom: 0.2rem;
+  font-weight: bold;
 }
 
-.__buttons .btn_filter, .btn_clean {
-    font-size: 0.75rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 10px;
+.__fecha input,
+.__search input {
+  font-size: 0.85rem;
+  padding: 0.5rem;
+  border-radius: 10px;
 }
 
+.__buttons .btn_filter,
+.btn_clean {
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 10px;
+}
 
+.__filter-container {
+  width: 100%; /* Esto asegura que el contenedor ocupe todo el ancho disponible */
+  max-width: 1200px;
+}

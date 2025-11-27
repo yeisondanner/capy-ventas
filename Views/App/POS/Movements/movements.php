@@ -11,12 +11,11 @@
         </ul>
     </div>
     <div class="row">
-
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body">
                     <h6 class="text-center text-primary mb-3">Filtrar Movimientos</h6>
-                    <div class="d-flex flex-wrap gap-1">
+                    <div class="d-flex flex-wrap gap-1 __filter-container">
                         <div class="flex-fill __filter_col">
                             <label for="filter-type" class="small font-weight-bold">Tipo de Filtro:</label>
                             <select id="filter-type" class="form-select form-select-sm">
