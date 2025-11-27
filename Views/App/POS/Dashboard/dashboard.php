@@ -16,14 +16,7 @@
         </div>
     </div>
     <div class="tile">
-        <h1>Permisos</h1>
-        <?php
-        get_option_and_permission_app();
-        ?>
-        <h1>Session</h1>
-        <?php
-        dep($_SESSION);
-        ?>
+
     </div>
 </main>
 <?= footerPos($data) ?>
