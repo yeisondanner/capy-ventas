@@ -1529,8 +1529,12 @@ function get_option_and_permission_app()
             $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
             $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento);
             if ((int)$data_vencimiento['total_dias'] <= 0) {
-                echo "El plan del negocio ha expirado, por favor contacte al dueño 
-                del negocio para que pueda renovar el plan";
+                $plan_vencido = base_url() . "/pos/errors/plan_vencido";
+                echo <<<HTML
+                    <script>
+                        window.location.href = "{$plan_vencido}";
+                    </script>
+                HTML;
                 die();
             }
             //obtenemos el rol que tiene el usuario en el negocio
