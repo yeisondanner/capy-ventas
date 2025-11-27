@@ -78,3 +78,66 @@
 .card-enhanced .fw-semibold.fs-5 {
     font-size: 1.25rem;
 }
+
+.__filter_col label{
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+    font-weight: bold;
+}
+.__filter_col select{
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+
+.__fecha label {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+    font-weight: bold;
+}
+
+.__fecha input{
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+
+.__search label {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+    font-weight: bold;
+}
+
+.__search input{
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+.__fecha_inicio label {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+    font-weight: bold;
+}
+
+.__fecha_inicio input{
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+.__fecha_fin label {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+    font-weight: bold;
+}
+
+.__fecha_fin input{
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    border-radius: 10px;
+}
+
+.__buttons .btn_filter, .btn_clean {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 10px;
+}
