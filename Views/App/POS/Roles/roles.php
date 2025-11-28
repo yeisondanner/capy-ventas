@@ -66,44 +66,16 @@
                         </div>
                     </div>
                     <div class="col-md-8">
-                        <div class="alert alert-warning alert-dismissible fade show p-2" role="alert">
-                            <strong>Interfaces:</strong> Lista de permisos
-                        </div>
-
-                        <div class="card border-info">
-                            <h6 class="card-header bg-info text-white">Modulo: Roles</h6>
-                            <div class="card-body d-flex gap-2">
-                                <div style="cursor: pointer;" data-interface="roles" data-permision="create_1" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm checkPermision">
-                                    <input id="roles_create_1" style="cursor: pointer;" type="checkbox" value="">
-                                    <label style="cursor: pointer;">
-                                        Crear
-                                    </label>
-                                </div>
-                                <div style="cursor: pointer;" data-interface="roles" data-permision="create_2" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm checkPermision">
-                                    <input id="roles_create_2" style="cursor: pointer;" type="checkbox" value="">
-                                    <label style="cursor: pointer;">
-                                        Leer
-                                    </label>
-                                </div>
-                                <div style="cursor: pointer;" data-interface="roles" data-permision="create_3" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm checkPermision">
-                                    <input id="roles_create_3" style="cursor: pointer;" type="checkbox" value="">
-                                    <label style="cursor: pointer;">
-                                        Actualizar
-                                    </label>
-                                </div>
-                                <div style="cursor: pointer;" data-interface="roles" data-permision="create_4" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm checkPermision">
-                                    <input id="roles_create_4" style="cursor: pointer;" type="checkbox" value="">
-                                    <label style="cursor: pointer;">
-                                        ELiminar
-                                    </label>
-                                </div>
+                        <div class="card shadow-sm">
+                            <h6 class="card-header bg-secondary text-white"><i class="bi bi-shield-check"></i> Permisos</h6>
+                            <div class="card-body pb-0" id="cardPermissions" style="max-height: 50vh; overflow-y: auto;">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Guardar</button>
+                <button type="button" class="btn btn-primary"><i class="bi bi-save2"></i> Guardar</button>
             </div>
         </div>
     </div>
