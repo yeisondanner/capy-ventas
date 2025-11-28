@@ -1,4 +1,4 @@
-import { Login } from "./login.js";
+import Login from "./login.js";
 (() => {
   "use strict";
   //obtenemos el objeto de la clase Login

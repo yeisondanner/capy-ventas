@@ -1,4 +1,4 @@
-export class Login {
+export default class Login {
   /**
    * Encapsula la funcionalidad del login como privadas
    */

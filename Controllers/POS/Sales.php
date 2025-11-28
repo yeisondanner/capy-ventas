@@ -241,7 +241,6 @@ class Sales extends Controllers
             );
         }
         toJson($this->getCartPayload('Producto agregado al carrito.', $product, $selected));
-
         return;
     }
     /**

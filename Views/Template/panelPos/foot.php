@@ -36,13 +36,15 @@ if (is_array($data["page_js_css"])) {
 }
 
 require_once "./Views/App/POS/" . ucfirst($data["page_container"]) . "/Libraries/foot.php";
-
+/**
+ * Validacion de los archivos js cuando el valor es un array
+ */
 if (is_array($pageJsFile)) {
     foreach ($pageJsFile as $key => $value) {
-        echo "<script type='module' src='".media()."/js/app/POS/".$pageJsFolder."/" . $value . "'></script>";
+        echo "<script type='module' src='" . media() . "/js/app/POS/" . $pageJsFolder . "/" . $value . "'></script>";
     }
 } else {
-    echo "<script type='module' src='".media()."/js/app/POS/".$pageJsFolder."/" . $pageJsFile . "'></script>";
+    echo "<script type='module' src='" . media() . "/js/app/POS/" . $pageJsFolder . "/" . $pageJsFile . "'></script>";
 }
 ?>
 

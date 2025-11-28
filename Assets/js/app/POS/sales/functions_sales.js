@@ -970,6 +970,7 @@
         const divProduct = renderProductCart(product);
         listCart.appendChild(divProduct);
       });
+
       lockPriceInputs();
       updateTotals(parseFloat(data.subtotal) || 0);
       syncProductCardSelection(cartProducts);
@@ -1108,7 +1109,7 @@
     inputQty.value = quantity;
     inputQty.min = "1";
     inputQty.readOnly = false;
-    spanPrefix.textContent = "S/";
+    spanPrefix.textContent = getcurrency;
     inputPrice.type = "text";
     inputPrice.value = amount;
     inputPrice.readOnly = true;
@@ -1198,6 +1199,7 @@
       updateCounter(Number.isNaN(initial) ? 0 : initial);
       card.addEventListener("click", async function (event) {
         event.preventDefault();
+        showAlert({ title: "Agregando al carrito..." }, "loading");
         const current = parseInt(card.dataset.selected || "0", 10) || 0;
         updateCounter(current + 1);
         //preparamos toda la data para enviar al back
@@ -1360,7 +1362,7 @@
       }
     });
 
-    listCart.addEventListener("change", function (event) {
+    listCart.addEventListener("input", function (event) {
       const quantityInput = event.target.closest(".cart-quantity-input");
       if (quantityInput) {
         handleQuantityInput(quantityInput);
@@ -1392,7 +1394,14 @@
    */
   function handleQuantityChange(element, action) {
     const context = getCartItemContext(element);
-    if (!context) return;
+    if (!context) {
+      showAlert({
+        icon: "warning",
+        title: "Error",
+        message: "No se encontro el producto en la canasta.",
+      });
+      return;
+    }
 
     if (
       action === "increment" &&
@@ -1429,8 +1438,16 @@
    */
   function handleQuantityInput(input) {
     const context = getCartItemContext(input);
-    if (!context) return;
+    if (!context) {
+      showAlert({
+        icon: "warning",
+        title: "Error",
+        message: "No se encontro el producto en la canasta.",
+      });
+      return;
+    }
 
+    console.table(context);
     const rawValue = parseInt(input.value, 10);
     if (Number.isNaN(rawValue)) {
       input.value = context.quantity;
@@ -1452,9 +1469,6 @@
         message: "Se ajustó la cantidad al máximo disponible en inventario.",
       });
     }
-
-    if (desired === context.quantity) return;
-
     updateCartItemQuantity(context.idproduct, "set", desired);
   }
 

@@ -20,6 +20,7 @@ if (is_array($data["page_js_css"])) {
 
 //variables del contendor
 $pageContainer = ucfirst($data["page_container"]);
+//obtiene las opciones y permisos de la app
 get_option_and_permission_app();
 ?>
 <!DOCTYPE html>
