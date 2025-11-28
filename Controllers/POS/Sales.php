@@ -149,10 +149,24 @@ class Sales extends Controllers
      */
     public function addCart(): void
     {
-        toJson(validate_permission_app(1, "c", false));
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(1, "c", false)['status']) ? toJson(validate_permission_app(1, "c", false)) : '';
+        //VALIDACION DE METODO POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
+        validateFields([
+            'idproduct',
+            'idsupplier',
+            'idmeasurement',
+            'idcategory',
+            'price',
+            'purchase_price',
+            'product',
+            'stock',
+            'supplier',
+            'category'
+        ]);
         $idproduct    = strClean($_POST['idproduct']);
         $idsupplier   = strClean($_POST['idsupplier']);
         $idmeasurement = strClean($_POST['idmeasurement']);
@@ -165,6 +179,19 @@ class Sales extends Controllers
         $category     = strClean($_POST['category']);
         $selected     = max(1, (int) strClean($_POST['selected']));
         $measurement  = strClean($_POST['measurement']);
+        validateFieldsEmpty([
+            'ID PRODUCTO' => $idproduct,
+            'ID PROVEEDOR' => $idsupplier,
+            'ID MEDIDIMIENTO' => $idmeasurement,
+            'ID CATEGORIA' => $idcategory,
+            'PRECIO' => $price,
+            'PRECIO COMPRA' => $purchasePrice,
+            'PRODUCTO' => $product,
+            'PROVEEDOR' => $supplier,
+            'CATEGORIA' => $category,
+            'SELECCIONADO' => $selected,
+            'UNIDAD MEDIDA' => $measurement
+        ]);
         if ($stock > 0) {
             $selected = min($selected, (int) $stock);
         }
