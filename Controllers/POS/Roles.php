@@ -96,13 +96,15 @@ class Roles extends Controllers
      */
     public function setRole(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->responseError('Método de solicitud no permitido.');
-        }
+        $raw = file_get_contents('php://input');
+        $data = json_decode($raw, true);
 
+        // * Aca me quede
+        
         $userId = $this->getUserId();
         $this->validateCsrfToken($_POST['token'] ?? '', $userId);
-
+        
+        toJson($data);
         $businessId  = $this->getBusinessId();
         $name        = ucwords(strClean($_POST['txtRoleAppName'] ?? ''));
         $description = strClean($_POST['txtRoleAppDescription'] ?? '');

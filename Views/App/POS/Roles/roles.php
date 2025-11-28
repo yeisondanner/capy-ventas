@@ -14,7 +14,7 @@
         <div class="col-12">
             <div class="tile">
                 <div class="tile-body d-flex flex-wrap gap-2">
-                    <button class="btn btn-primary" type="button" id="btnAddRole">
+                    <button class="btn btn-primary" type="button" id="btnOpenModalRole">
                         <i class="bi bi-plus-lg"></i> Registrar rol
                     </button>
                 </div>
@@ -75,7 +75,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary"><i class="bi bi-save2"></i> Guardar</button>
+                <button type="button" id="btnAddRole" class="btn btn-primary"><i class="bi bi-save2"></i> Guardar</button>
             </div>
         </div>
     </div>

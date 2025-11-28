@@ -4,8 +4,8 @@ export class Roles {
   #rolesTable = null;
   #permissions = new Map();
   // TODO: Seleccionamos los botones
+  #btnOpenModalRole = $("#btnOpenModalRole");
   #btnAddRole = $("#btnAddRole");
-  #btnCheckCard = $(".checkPermision");
   // TODO: Seleccionamos los modals
   #modalAddRole = $("#openModalRole");
   // TODO: Seleccionamos los html
@@ -17,6 +17,7 @@ export class Roles {
     this.#openModal();
     this.#selectedPermision();
     this.#getPermissions();
+    this.#setRole();
   }
 
   // TODO: Funcion para mostrar los roles
@@ -99,7 +100,7 @@ export class Roles {
 
   // TODO: Funcion para abrir todos los modals
   #openModal = () => {
-    $(this.#btnAddRole).click(() => {
+    $(this.#btnOpenModalRole).click(() => {
       $(this.#modalAddRole).modal("show");
     });
   };
@@ -150,29 +151,87 @@ export class Roles {
       let html = "";
       response.data.forEach((element) => {
         html += `<div class="d-flex gap-2 flex-column mb-3">
-                      <h6 class="fw-normal"><i class="bi bi-file-easel"></i> Interfaz: <strong>${element.interface_name}</strong></h6>
+                      <h6 class="fw-normal"><i class="bi bi-file-easel"></i> Interfaz: <strong>${
+                        element.interface_name
+                      }</strong></h6>
                       <div class="d-flex gap-2">
-                          <div style="cursor: pointer;" data-interface="${element.interface_name}" data-permision="create_${element.interface_id}" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${(element.create == 1) ? true : 'pe-none user-select-none'}">
-                              <input ${(element.create == 1) ? '' : 'disabled'} id="create_${element.interface_id}" type="checkbox" value="">
-                              <label class="${(element.create == 1) ? true : 'text-decoration-line-through text-danger'}" style="cursor: pointer;">
+                          <div style="cursor: pointer;" data-interface="${
+                            element.interface_name
+                          }" data-permision="create_${
+          element.interface_id
+        }" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+          element.create == 1 ? true : "pe-none user-select-none"
+        }">
+                              <input ${
+                                element.create == 1 ? "" : "disabled"
+                              } id="create_${
+          element.interface_id
+        }" type="checkbox" value="">
+                              <label class="${
+                                element.create == 1
+                                  ? true
+                                  : "text-decoration-line-through text-danger"
+                              }" style="cursor: pointer;">
                               Crear
                               </label>
                           </div>
-                          <div style="cursor: pointer;" data-interface="${element.interface_name}" data-permision="read_${element.interface_id}" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${(element.read == 1) ? true : 'pe-none user-select-none'}">
-                              <input ${(element.read == 1) ? '' : 'disabled'} id="read_${element.interface_id}" type="checkbox" value="">
-                              <label class="${(element.read == 1) ? true : 'text-decoration-line-through text-danger'}" style="cursor: pointer;">
+                          <div style="cursor: pointer;" data-interface="${
+                            element.interface_name
+                          }" data-permision="read_${
+          element.interface_id
+        }" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+          element.read == 1 ? true : "pe-none user-select-none"
+        }">
+                              <input ${
+                                element.read == 1 ? "" : "disabled"
+                              } id="read_${
+          element.interface_id
+        }" type="checkbox" value="">
+                              <label class="${
+                                element.read == 1
+                                  ? true
+                                  : "text-decoration-line-through text-danger"
+                              }" style="cursor: pointer;">
                               Leer
                               </label>
                           </div>
-                          <div style="cursor: pointer;" data-interface="${element.interface_name}" data-permision="update_${element.interface_id}" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${(element.update == 1) ? true : 'pe-none user-select-none'}">
-                              <input ${(element.update == 1) ? '' : 'disabled'} id="update_${element.interface_id}" type="checkbox" value="">
-                              <label class="${(element.update == 1) ? true : 'text-decoration-line-through text-danger'}" style="cursor: pointer;">
+                          <div style="cursor: pointer;" data-interface="${
+                            element.interface_name
+                          }" data-permision="update_${
+          element.interface_id
+        }" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+          element.update == 1 ? true : "pe-none user-select-none"
+        }">
+                              <input ${
+                                element.update == 1 ? "" : "disabled"
+                              } id="update_${
+          element.interface_id
+        }" type="checkbox" value="">
+                              <label class="${
+                                element.update == 1
+                                  ? true
+                                  : "text-decoration-line-through text-danger"
+                              }" style="cursor: pointer;">
                               Actualizar
                               </label>
                           </div>
-                          <div style="cursor: pointer;" data-interface="${element.interface_name}" data-permision="delete_${element.interface_id}" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${(element.delete == 1) ? true : 'pe-none user-select-none'}">
-                              <input ${(element.delete == 1) ? '' : 'disabled'} id="delete_${element.interface_id}" type="checkbox" value="">
-                              <label class="${(element.delete == 1) ? true : 'text-decoration-line-through text-danger'}" style="cursor: pointer;">
+                          <div style="cursor: pointer;" data-interface="${
+                            element.interface_name
+                          }" data-permision="delete_${
+          element.interface_id
+        }" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+          element.delete == 1 ? true : "pe-none user-select-none"
+        }">
+                              <input ${
+                                element.delete == 1 ? "" : "disabled"
+                              } id="delete_${
+          element.interface_id
+        }" type="checkbox" value="">
+                              <label class="${
+                                element.delete == 1
+                                  ? true
+                                  : "text-decoration-line-through text-danger"
+                              }" style="cursor: pointer;">
                               Eliminar
                               </label>
                           </div>
@@ -182,6 +241,20 @@ export class Roles {
       this.#permissionsHtml.append(html);
 
       console.log(response.data);
+    });
+  };
+
+  // TODO: Funcion para registrar un rol con su permiso
+
+  #setRole = () => {
+    this.#btnAddRole.click(() => {
+      console.log(this.#permissions);
+      
+      this.apiRoles
+        .post("setRole", Object.fromEntries(this.#permissions))
+        .then((response) => {
+          console.log(response);
+        });
     });
   };
 }
