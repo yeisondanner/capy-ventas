@@ -18,6 +18,13 @@ export default class Login {
     if (!this.#formLogin) return;
     this.#formLogin.addEventListener("submit", async (e) => {
       e.preventDefault();
+      showAlert(
+        {
+          title: "Validando credenciales",
+          message: "Por favor, espere...",
+        },
+        "loading"
+      );
       const formdata = new FormData(this.#formLogin);
       const config = {
         method: "POST",
