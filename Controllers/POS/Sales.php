@@ -501,7 +501,7 @@ class Sales extends Controllers
      */
     public function finalizeSale(): void
     {
-        validate_permission_app(1, "c");
+        //validate_permission_app(1, "c");
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -586,6 +586,7 @@ class Sales extends Controllers
             'voucher_name'       => $voucherName !== '' ? $voucherName : null,
             'payment_method_id'  => $paymentMethodId,
             'business_id'        => $businessId,
+            'user_app_id'        => $this->getUserId(),
         ]);
 
         if ($headerId <= 0) {

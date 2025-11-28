@@ -228,8 +228,9 @@ class SalesModel extends Mysql
                 how_much_do_i_pay,
                 voucher_name,
                 payment_method_id,
-                business_id
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                business_id,
+                user_app_id
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);
         SQL;
 
         $values = [
@@ -246,6 +247,7 @@ class SalesModel extends Mysql
             $data['voucher_name'] ?? null,
             $data['payment_method_id'] ?? 0,
             $data['business_id'] ?? 0,
+            $data['user_app_id'] ?? 0,
         ];
 
         return (int) $this->insert($sql, $values);
