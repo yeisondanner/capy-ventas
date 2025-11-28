@@ -2,21 +2,26 @@ import { ApiRoles } from "./functions_roles_api.js";
 
 export class Roles {
   #rolesTable = null;
+  // TODO: Datos que ingresan al formulario
   #permissions = new Map();
+
   // TODO: Seleccionamos los botones
-  #btnOpenModalRole = $("#btnOpenModalRole");
+  #btnOpenModalAddRole = $("#btnOpenModalAddRole");
   #btnAddRole = $("#btnAddRole");
+
   // TODO: Seleccionamos los modals
-  #modalAddRole = $("#openModalRole");
+  #modalAddRole = $("#modalAddRole");
+  #modalUpdateRole = $("#modalUpdateRole");
+
   // TODO: Seleccionamos los html
   #permissionsHtml = $("#cardPermissions");
+  #permissionsUpdateHtml = $("#cardPermissionsUpdate");
 
   constructor(base_url) {
     this.apiRoles = new ApiRoles(base_url);
     this.#initTable();
     this.#openModal();
     this.#selectedPermision();
-    this.#getPermissions();
     this.#setRole();
   }
 
@@ -100,8 +105,35 @@ export class Roles {
 
   // TODO: Funcion para abrir todos los modals
   #openModal = () => {
-    $(this.#btnOpenModalRole).click(() => {
-      $(this.#modalAddRole).modal("show");
+    // * Open moda add role
+    $(this.#btnOpenModalAddRole).click(() => {
+      this.#cleanForm();
+      this.#getPermissions();
+      this.#modalAddRole.modal("show");
+    });
+
+    // * Open modal update role
+    $(document).on("click", ".update_role", (event) => {
+      let role_id = $(event.currentTarget).attr("data-id");
+      this.apiRoles
+        .get("getRole", {
+          id: role_id,
+        })
+        .then((response) => {
+          if (response.status) {
+            // ? cargamos los datos
+            $("#modalUpdateRoleLabel").text(
+              `Actualizar Rol #${response.data.role.idRoleApp}`
+            );
+            $("#txtNameUpdate").val(response.data.role.name);
+            $("#txtDescriptionUpdate").val(response.data.role.description);
+            this.#loadPermissionsUpdate(
+              response.data.permissions_interface,
+              response.data.permissions_app
+            );
+            this.#modalUpdateRole.modal("show");
+          }
+        });
     });
   };
 
@@ -110,7 +142,7 @@ export class Roles {
     $(document).on("click", ".checkPermision", (event) => {
       let Interface = $(event.currentTarget).attr("data-interface");
       let Permission = $(event.currentTarget).attr("data-permision");
-      let checkPermision = $("#" + Permission);
+      let checkPermision = $("#" + Permission + "_" + Interface);
 
       if (!this.#permissions.get(Interface)) {
         this.#permissions.set(Interface, []);
@@ -118,22 +150,134 @@ export class Roles {
 
       if (checkPermision.prop("checked")) {
         checkPermision.prop("checked", false);
-      } else {
-        checkPermision.prop("checked", true);
-      }
-
-      if (checkPermision.prop("checked")) {
-        if (this.#permissions.get(Interface).indexOf(Permission) === -1) {
-          this.#permissions.get(Interface).push(Permission);
-        }
-      } else {
         let INDEX = this.#permissions.get(Interface).indexOf(Permission);
         if (INDEX !== -1) {
           this.#permissions.get(Interface).splice(INDEX, 1);
         }
+      } else {
+        checkPermision.prop("checked", true);
+        if (this.#permissions.get(Interface).indexOf(Permission) === -1) {
+          this.#permissions.get(Interface).push(Permission);
+        }
       }
+
       console.log(this.#permissions);
     });
+  };
+
+  // TODO: Cargamos los permisos para actualizar
+  #loadPermissionsUpdate = (permissionsInterface, permissionsApp) => {
+    this.#permissionsUpdateHtml.empty("");
+    this.#permissions.clear();
+    let html = "";
+    permissionsInterface.forEach((element) => {
+      // console.log(permissionsApp);
+      // console.log(element);
+      let perApp = permissionsApp.find(
+        (item) => item.plan_interface_id === element.plan_interface_id
+      );
+
+      if (perApp) {
+        if (!this.#permissions.get(perApp.plan_interface_id)) {
+          this.#permissions.set(perApp.plan_interface_id, []);
+        }
+        perApp.create == 1
+          ? this.#permissions.get(perApp.plan_interface_id).push("create")
+          : false;
+        perApp.read == 1
+          ? this.#permissions.get(perApp.plan_interface_id).push("read")
+          : false;
+        perApp.update == 1
+          ? this.#permissions.get(perApp.plan_interface_id).push("update")
+          : false;
+        perApp.delete == 1
+          ? this.#permissions.get(perApp.plan_interface_id).push("delete")
+          : false;
+      }
+      // console.log(perApp && perApp.read == 1 ? "checked" : "");
+
+      // return;
+      html += `<div class="d-flex gap-2 flex-column mb-3">
+                      <h6 class="fw-normal"><i class="bi bi-file-easel"></i> Interfaz: <strong>${
+                        element.interface_name
+                      }</strong></h6>
+                      <div class="d-flex gap-2">
+                          <div style="cursor: pointer;" data-interface="${
+                            element.plan_interface_id
+                          }" data-permision="create" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+        element.create == 1 ? true : "pe-none user-select-none"
+      }">
+                              <input ${
+                                perApp && perApp.create == 1 ? "checked" : ""
+                              } ${
+        element.create == 1 ? "" : "disabled"
+      } id="create_${element.plan_interface_id}" type="checkbox" value="">
+                              <label class="${
+                                element.create == 1
+                                  ? true
+                                  : "text-decoration-line-through text-danger"
+                              }" style="cursor: pointer;">
+                              Crear
+                              </label>
+                          </div>
+                          <div style="cursor: pointer;" data-interface="${
+                            element.plan_interface_id
+                          }" data-permision="read" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+        element.read == 1 ? true : "pe-none user-select-none"
+      }">
+                              <input ${
+                                perApp && perApp.read == 1 ? "checked" : ""
+                              } ${
+        element.read == 1 ? "" : "disabled"
+      } id="read_${element.plan_interface_id}" type="checkbox" value="">
+                              <label class="${
+                                element.read == 1
+                                  ? true
+                                  : "text-decoration-line-through text-danger"
+                              }" style="cursor: pointer;">
+                              Leer
+                              </label>
+                          </div>
+                          <div style="cursor: pointer;" data-interface="${
+                            element.plan_interface_id
+                          }" data-permision="update" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+        element.update == 1 ? true : "pe-none user-select-none"
+      }">
+                              <input ${
+                                perApp && perApp.update == 1 ? "checked" : ""
+                              } ${
+        element.update == 1 ? "" : "disabled"
+      } id="update_${element.plan_interface_id}" type="checkbox" value="">
+                              <label class="${
+                                element.update == 1
+                                  ? true
+                                  : "text-decoration-line-through text-danger"
+                              }" style="cursor: pointer;">
+                              Actualizar
+                              </label>
+                          </div>
+                          <div style="cursor: pointer;" data-interface="${
+                            element.plan_interface_id
+                          }" data-permision="delete" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+        element.delete == 1 ? true : "pe-none user-select-none"
+      }">
+                              <input ${
+                                perApp && perApp.delete == 1 ? "checked" : ""
+                              } ${
+        element.delete == 1 ? "" : "disabled"
+      } id="delete_${element.plan_interface_id}" type="checkbox" value="">
+                              <label class="${
+                                element.delete == 1
+                                  ? true
+                                  : "text-decoration-line-through text-danger"
+                              }" style="cursor: pointer;">
+                              Eliminar
+                              </label>
+                          </div>
+                      </div>
+                  </div>`;
+    });
+    return this.#permissionsUpdateHtml.append(html);
   };
 
   // TODO: Cargamos todos los permisos todos los permisos
@@ -156,16 +300,14 @@ export class Roles {
                       }</strong></h6>
                       <div class="d-flex gap-2">
                           <div style="cursor: pointer;" data-interface="${
-                            element.interface_name
-                          }" data-permision="create_${
-          element.interface_id
-        }" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+                            element.plan_interface_id
+                          }" data-permision="create" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
           element.create == 1 ? true : "pe-none user-select-none"
         }">
                               <input ${
                                 element.create == 1 ? "" : "disabled"
                               } id="create_${
-          element.interface_id
+          element.plan_interface_id
         }" type="checkbox" value="">
                               <label class="${
                                 element.create == 1
@@ -176,16 +318,14 @@ export class Roles {
                               </label>
                           </div>
                           <div style="cursor: pointer;" data-interface="${
-                            element.interface_name
-                          }" data-permision="read_${
-          element.interface_id
-        }" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+                            element.plan_interface_id
+                          }" data-permision="read" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
           element.read == 1 ? true : "pe-none user-select-none"
         }">
                               <input ${
                                 element.read == 1 ? "" : "disabled"
                               } id="read_${
-          element.interface_id
+          element.plan_interface_id
         }" type="checkbox" value="">
                               <label class="${
                                 element.read == 1
@@ -196,16 +336,14 @@ export class Roles {
                               </label>
                           </div>
                           <div style="cursor: pointer;" data-interface="${
-                            element.interface_name
-                          }" data-permision="update_${
-          element.interface_id
-        }" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+                            element.plan_interface_id
+                          }" data-permision="update" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
           element.update == 1 ? true : "pe-none user-select-none"
         }">
                               <input ${
                                 element.update == 1 ? "" : "disabled"
                               } id="update_${
-          element.interface_id
+          element.plan_interface_id
         }" type="checkbox" value="">
                               <label class="${
                                 element.update == 1
@@ -216,16 +354,14 @@ export class Roles {
                               </label>
                           </div>
                           <div style="cursor: pointer;" data-interface="${
-                            element.interface_name
-                          }" data-permision="delete_${
-          element.interface_id
-        }" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+                            element.plan_interface_id
+                          }" data-permision="delete" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
           element.delete == 1 ? true : "pe-none user-select-none"
         }">
                               <input ${
                                 element.delete == 1 ? "" : "disabled"
                               } id="delete_${
-          element.interface_id
+          element.plan_interface_id
         }" type="checkbox" value="">
                               <label class="${
                                 element.delete == 1
@@ -239,23 +375,56 @@ export class Roles {
                   </div>`;
       });
       this.#permissionsHtml.append(html);
-
-      console.log(response.data);
     });
   };
 
   // TODO: Funcion para registrar un rol con su permiso
-
   #setRole = () => {
     this.#btnAddRole.click(() => {
-      console.log(this.#permissions);
-      
+      // ? Validamos que se envie el nombre
+      let name = $("#txtName").val();
+      if (!name) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "El nombre es requerido",
+        });
+      }
+
+      // ? Validamos que existas al menos un permiso
+      // console.log(this.#permissions.size);
+      // falta implementar
+
+      // ? Datos opcionales
+      let description = $("#txtDescription").val();
+      !description ? null : description;
+
       this.apiRoles
-        .post("setRole", Object.fromEntries(this.#permissions))
+        .post("setRole", {
+          name: name,
+          description: description,
+          permissions: Object.fromEntries(this.#permissions),
+        })
         .then((response) => {
-          console.log(response);
+          if (response.status) {
+            this.#rolesTable.ajax.reload();
+            this.#cleanForm();
+            this.#modalAddRole.modal("hide");
+          }
+          showAlert({
+            icon: response.type,
+            title: response.title,
+            message: response.message,
+          });
         });
     });
+  };
+
+  // TODO: Funcion para limpiar los formularios de registro y actualizar
+  #cleanForm = () => {
+    $("#txtName").val(null);
+    $("#txtdDescription").val(null);
+    this.#permissions.clear();
   };
 }
 

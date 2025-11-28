@@ -124,6 +124,7 @@ class RolesModel extends Mysql
     {
         $sql = <<<SQL
             SELECT
+                idPlansInterfaceApp as plan_interface_id,
                 interface_id,
                 plan_id,
                 `create`,
@@ -137,6 +138,26 @@ class RolesModel extends Mysql
         SQL;
 
         $result = $this->select_all($sql, [$planId]);
+        return is_array($result) ? $result : [];
+    }
+
+    public function getPermissions(int $roleId)
+    {
+        $sql = <<<SQL
+            SELECT
+                plans_interface_app_id as plan_interface_id,
+                rol_id,
+                `create`,
+                `delete`,
+                `update`,
+                `read`,
+                status
+            FROM permission
+            WHERE rol_id = ?
+              AND status = 'Activo';
+        SQL;
+
+        $result = $this->select_all($sql, [$roleId]);
         return is_array($result) ? $result : [];
     }
     // TODO: Funciones set
@@ -182,6 +203,27 @@ class RolesModel extends Mysql
             $data['description'] !== '' ? $data['description'] : null,
             $data['status'],
             $businessId,
+        ];
+
+        return (int) $this->insert($sql, $params);
+    }
+
+    public function setPermission(int $planInterfaceId, int $roleId, int $create, int $read, int $update, int $delete)
+    {
+        $sql = <<<SQL
+            INSERT INTO permission
+                (plans_interface_app_id, rol_id, `create`, `read`, `update`, `delete`)
+            VALUES
+                (?, ?, ?, ?, ?, ?);
+        SQL;
+
+        $params = [
+            $planInterfaceId,
+            $roleId,
+            $create,
+            $read,
+            $update,
+            $delete
         ];
 
         return (int) $this->insert($sql, $params);

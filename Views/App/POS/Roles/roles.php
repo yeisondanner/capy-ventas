@@ -14,7 +14,7 @@
         <div class="col-12">
             <div class="tile">
                 <div class="tile-body d-flex flex-wrap gap-2">
-                    <button class="btn btn-primary" type="button" id="btnOpenModalRole">
+                    <button class="btn btn-primary" type="button" id="btnOpenModalAddRole">
                         <i class="bi bi-plus-lg"></i> Registrar rol
                     </button>
                 </div>
@@ -29,8 +29,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Acciones</th>
-                                    <th>Nombre</th>
-                                    <th>Descripción</th>
+                                    <th>Rol</th>
                                     <th>Estado</th>
                                     <th>Actualizado</th>
                                 </tr>
@@ -45,12 +44,12 @@
 </main>
 <?= footerPos($data) ?>
 
-<!-- Agregar Role and permissions -->
-<div class="modal fade" id="openModalRole" tabindex="-1" aria-labelledby="openModalRoleLabel" aria-hidden="true">
+<!-- Modal: Add Role and permissions -->
+<div class="modal fade" id="modalAddRole" tabindex="-1" aria-labelledby="modalAddRoleLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h1 class="modal-title fs-5" id="openModalRoleLabel">Registrar Rol</h1>
+                <h1 class="modal-title fs-5" id="modalAddRoleLabel">Registrar Rol</h1>
                 <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -76,6 +75,43 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="btnAddRole" class="btn btn-primary"><i class="bi bi-save2"></i> Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Update Role and permissions -->
+<div class="modal fade" id="modalUpdateRole" tabindex="-1" aria-labelledby="modalUpdateRoleLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h1 class="modal-title fs-5" id="modalUpdateRoleLabel">Actualizar Rol #Administrador</h1>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="txtNameUpdate" class="form-label fw-bold">Nombre (<span class="text-danger">*</span>)</label>
+                            <input type="text" class="form-control" id="txtNameUpdate" placeholder="Ej. Administrador">
+                        </div>
+                        <div class="mb-3">
+                            <label for="txtDescriptionUpdate" class="form-label fw-bold">Descripción <span class="fw-medium text-muted"><i>(Opcional)</i></span></label>
+                            <textarea class="form-control" id="txtDescriptionUpdate" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card shadow-sm">
+                            <h6 class="card-header bg-secondary text-white"><i class="bi bi-shield-check"></i> Permisos</h6>
+                            <div class="card-body pb-0" id="cardPermissionsUpdate" style="max-height: 50vh; overflow-y: auto;">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnUpdateRole" class="btn btn-primary"><i class="bi bi-save2"></i> Actualizar</button>
             </div>
         </div>
     </div>

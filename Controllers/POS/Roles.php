@@ -72,12 +72,12 @@ class Roles extends Controllers
             $roles[$key]['updated_at']  = $updatedAt;
 
             $roles[$key]['actions'] = '<div class="btn-group btn-group-sm" role="group">'
-                . '<button class="btn btn-outline-secondary text-secondary report-role" data-id="' . (int) $role['idRoleApp'] . '"'
+                . '<button class="btn btn-secondary report-role" data-id="' . (int) $role['idRoleApp'] . '"'
                 . ' data-name="' . $name . '" data-description="' . $description . '" data-status="' . $status . '"'
                 . ' data-updated="' . $updatedAt . '"><i class="bi bi-eye"></i></button>'
-                . '<button class="btn btn-outline-primary text-primary edit-role" data-id="' . (int) $role['idRoleApp'] . '">'
+                . '<button class="btn btn-warning update_role" data-id="' . (int) $role['idRoleApp'] . '">'
                 . '<i class="bi bi-pencil-square"></i></button>'
-                . '<button class="btn btn-outline-danger text-danger delete-role" data-id="' . (int) $role['idRoleApp'] . '"'
+                . '<button class="btn btn-danger delete-role" data-id="' . (int) $role['idRoleApp'] . '"'
                 . ' data-name="' . $name . '" data-token="' . csrf(false) . '"><i class="bi bi-trash"></i></button>'
                 . '</div>';
 
@@ -96,18 +96,21 @@ class Roles extends Controllers
      */
     public function setRole(): void
     {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
         $raw = file_get_contents('php://input');
         $data = json_decode($raw, true);
 
-        // * Aca me quede
-        
-        $userId = $this->getUserId();
-        $this->validateCsrfToken($_POST['token'] ?? '', $userId);
-        
-        toJson($data);
         $businessId  = $this->getBusinessId();
-        $name        = ucwords(strClean($_POST['txtRoleAppName'] ?? ''));
-        $description = strClean($_POST['txtRoleAppDescription'] ?? '');
+        $name    = strClean($data['name']);
+        $description = ucwords(strClean($data['description']));
+        $permissions = $data['permissions'];
+
+        // TODO: Funcion no se encuenta en uso
+        // $userId = $this->getUserId();
+        // $this->validateCsrfToken($_POST['token'] ?? '', $userId);
 
         if ($name === '') {
             $this->responseError('El nombre del rol es obligatorio.');
@@ -127,6 +130,17 @@ class Roles extends Controllers
         $inserted = $this->model->insertRole($businessId, $payload);
         if ($inserted <= 0) {
             $this->responseError('No fue posible registrar el rol, inténtalo nuevamente.');
+        }
+
+        // TODO: Insertamos los permisos de la interfaces
+        foreach ($permissions as $key => $value) {
+            if (!empty($value)) {
+                $create = in_array('create', $value) ? 1 : 0;
+                $update = in_array('update', $value) ? 1 : 0;
+                $read = in_array('read', $value) ? 1 : 0;
+                $delete = in_array('delete', $value) ? 1 : 0;
+                $this->model->setPermission($key, $inserted, $create, $read, $update, $delete);
+            }
         }
 
         toJson([
@@ -157,18 +171,47 @@ class Roles extends Controllers
             $this->responseError('No se encontró el rol solicitado.');
         }
 
+        $permissions = $this->model->getPermissions($role['idRoleApp']);
+        $interface_permissions = $this->selectPermissions();
+
+        $auxInterfacesPermissions = array();
+        foreach ($interface_permissions as $key => $value) {
+            $auxInterfacesPermissions[$value['plan_interface_id']] = [
+                "create" => $value["create"],
+                "read" => $value["read"],
+                "update" => $value["update"],
+                "delete" => $value["delete"],
+            ];
+        }
+
         toJson([
             'status' => true,
-            'data'   => [
-                'idRoleApp'   => (int) $role['idRoleApp'],
-                'name'        => $role['name'],
-                'description' => $role['description'] ?? '',
-                'status'      => $role['status'],
-            ],
+            'message' => 'Lista de interfaces con sus permisos',
+            'type' => 'success',
+            'data' => [
+                "role" => [
+                    "idRoleApp" => $role["idRoleApp"],
+                    "name" => $role["name"],
+                    "description" => $role["description"],
+                ],
+                "permissions_interface" => $interface_permissions,
+                "permissions_app" => $permissions,
+            ]
         ]);
     }
 
     public function getPermissions(): void
+    {
+        $interface_permissions = $this->selectPermissions();
+        toJson([
+            'status' => true,
+            'message' => 'Lista de interfaces con sus permisos',
+            'type' => 'success',
+            'data' => $interface_permissions
+        ]);
+    }
+
+    public function selectPermissions()
     {
         // TODO: Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
@@ -219,12 +262,8 @@ class Roles extends Controllers
         foreach ($interfaces_plan as $key => $value) {
             $interfaces_plan[$key]['interface_name'] = $auxInterfaces[$value['interface_id']];
         }
-        toJson([
-            'status' => true,
-            'message' => 'Lista de interfaces con sus permisos',
-            'type' => 'success',
-            'data' => $interfaces_plan
-        ]);
+
+        return $interfaces_plan;
     }
 
     /**
