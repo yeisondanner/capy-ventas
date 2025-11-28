@@ -371,6 +371,7 @@
 
     if (btnFinalizarVenta) {
       btnFinalizarVenta.addEventListener("click", async function () {
+        showAlert({ title: "Finalizando venta..." }, "loading");
         const subtotal = parseFloat(lblSubtotal?.dataset.valor || "0");
         if (!subtotal || subtotal <= 0) {
           showAlert({
@@ -459,6 +460,11 @@
             getCart();
             refreshVoucherNameButtonState();
           }
+          if (data.url) {
+            setTimeout(() => {
+              window.location.href = data.url;
+            }, 1000);
+          }
         } catch (error) {
           showAlert({
             icon: "error",
@@ -474,6 +480,7 @@
 
     if (btnGuardarNombreVenta) {
       btnGuardarNombreVenta.addEventListener("click", async function () {
+        showAlert({ title: "Guardando nombre de venta..." }, "loading");
         if (!lastSaleId) {
           showAlert({
             icon: "info",
@@ -530,6 +537,11 @@
             inputNombreVenta.value = "";
             //ocultamos el modal
             $("#modalPostVenta").modal("hide");
+          }
+          if (data.url) {
+            setTimeout(() => {
+              window.location.href = data.url;
+            }, 1000);
           }
         } catch (error) {
           showAlert({
@@ -951,11 +963,17 @@
         throw new Error(response.statusText + " - " + response.status);
       }
       const data = await response.json();
-      if (!data.status) {
+      if (!data.status && !data.url) {
         cachedCartItems = [];
         renderEmptyCart();
         updateTotals(0);
         syncProductCardSelection([]);
+        return;
+      } else if (data.url) {
+        showAlert(data);
+        setTimeout(() => {
+          window.location.href = data.url;
+        }, 1000);
         return;
       }
       const cartProducts = data.cart || [];
@@ -1490,6 +1508,7 @@
    * @param {"increment"|"decrement"} action Acción a ejecutar
    */
   async function updateCartItemQuantity(idproduct, action, quantity = null) {
+    showAlert({ title: "Actualizando cantidad..." }, "loading");
     const formdata = new FormData();
     formdata.append("idproduct", idproduct);
     formdata.append("action", action);
@@ -1530,6 +1549,7 @@
    * @param {string} idproduct Identificador del producto
    */
   async function removeCartItem(idproduct) {
+    showAlert({ title: "Eliminando producto..." }, "loading");
     const formdata = new FormData();
     formdata.append("idproduct", idproduct);
     const url = base_url + "/pos/Sales/deleteCartItem";
@@ -1547,6 +1567,11 @@
         title: data.title,
         message: data.message,
       });
+      if (data.url) {
+        setTimeout(() => {
+          window.location.href = data.url;
+        }, 1000);
+      }
       if (data.status) {
         getCart();
       }
@@ -1574,6 +1599,7 @@
    * Solicita el vaciado completo de la canasta.
    */
   async function clearCart() {
+    showAlert({ title: "Vaciando canasta..." }, "loading");
     const url = base_url + "/pos/Sales/clearCart";
     try {
       const response = await fetch(url, { method: "POST" });
@@ -1590,6 +1616,11 @@
         renderEmptyCart();
         updateTotals(0);
         syncProductCardSelection([]);
+      }
+      if (data.url) {
+        setTimeout(() => {
+          window.location.href = data.url;
+        }, 1000);
       }
     } catch (error) {
       showAlert({

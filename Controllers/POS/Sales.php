@@ -250,6 +250,8 @@ class Sales extends Controllers
      */
     public function getCart(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(1, "r", false)['status']) ? toJson(validate_permission_app(1, "r", false)) : '';
         $cart = $this->normalizeCart();
         $subtotal = $this->calculateSubtotal($cart);
         toJson([
@@ -340,20 +342,17 @@ class Sales extends Controllers
      */
     public function deleteCartItem(): void
     {
-        validate_permission_app(1, "d");
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(1, "d", false)['status']) ? toJson(validate_permission_app(1, "d", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
+        validateFields(['idproduct']);
         if (!isset($_SESSION[$this->nameVarCart])) {
             $this->responseError('El carrito está vacío.');
         }
-
         $idproduct = strClean($_POST['idproduct'] ?? '');
-        if ($idproduct === '') {
-            $this->responseError('El producto es obligatorio.');
-        }
-
+        validateFieldsEmpty(['ID PRODUCTO' => $idproduct]);
         foreach ($_SESSION[$this->nameVarCart] as $index => $item) {
             if ($item['idproduct'] !== $idproduct) {
                 continue;
@@ -377,7 +376,8 @@ class Sales extends Controllers
      */
     public function clearCart(): void
     {
-        validate_permission_app(1, "d");
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(1, "d", false)['status']) ? toJson(validate_permission_app(1, "d", false)) : '';
         if (isset($_SESSION[$this->nameVarCart])) {
             unset($_SESSION[$this->nameVarCart]);
         }
@@ -501,16 +501,15 @@ class Sales extends Controllers
      */
     public function finalizeSale(): void
     {
-        //validate_permission_app(1, "c");
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(1, "c", false)['status']) ? toJson(validate_permission_app(1, "c", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
         $cart = $this->normalizeCart();
         if (count($cart) === 0) {
             $this->responseError('No hay productos en el carrito para registrar la venta.');
         }
-
         $saleDate          = strClean($_POST['saleDate'] ?? '');
         $paymentMethodId   = (int) strClean($_POST['paymentMethodId'] ?? '0');
         $customerId        = (int) strClean($_POST['customerId'] ?? '0');
@@ -651,7 +650,8 @@ class Sales extends Controllers
      */
     public function updateVoucherName(): void
     {
-        validate_permission_app(1, "u");
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(1, "u", false)['status']) ? toJson(validate_permission_app(1, "u", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
