@@ -1,4 +1,9 @@
 /* Estilos específicos para el módulo de roles POS */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playwrite+HU:wght@100..400&display=swap');
+
+body {
+  font-family: 'Inter';
+}
 
 #rolesTable td,
 #rolesTable th {

@@ -39,7 +39,7 @@ class Roles extends Controllers
             'page_description' => 'Administra los roles disponibles para asignar a tus empleados.',
             'page_container'   => 'Roles',
             'page_view'        => 'roles',
-            'page_js_css'      => 'roles',
+            'page_js_css'      => ['roles', 'roles_api'],
         ];
 
         $this->views->getView($this, 'roles', $data, 'POS');
@@ -84,7 +84,9 @@ class Roles extends Controllers
             $counter++;
         }
 
-        toJson($roles);
+        toJson([
+            "data" => $roles
+        ]);
     }
 
     /**
@@ -94,13 +96,15 @@ class Roles extends Controllers
      */
     public function setRole(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $this->responseError('Método de solicitud no permitido.');
-        }
+        $raw = file_get_contents('php://input');
+        $data = json_decode($raw, true);
 
+        // * Aca me quede
+        
         $userId = $this->getUserId();
         $this->validateCsrfToken($_POST['token'] ?? '', $userId);
-
+        
+        toJson($data);
         $businessId  = $this->getBusinessId();
         $name        = ucwords(strClean($_POST['txtRoleAppName'] ?? ''));
         $description = strClean($_POST['txtRoleAppDescription'] ?? '');
@@ -161,6 +165,65 @@ class Roles extends Controllers
                 'description' => $role['description'] ?? '',
                 'status'      => $role['status'],
             ],
+        ]);
+    }
+
+    public function getPermissions(): void
+    {
+        // TODO: Consultamos el ID del negocio
+        $businessId = $this->getBusinessId();
+        // TODO: Concultamos la suscripcion inscrita
+        $business = $this->model->getBusiness($businessId);
+        if (!$business) {
+            toJson([
+                'status' => false,
+                'message' => 'No tiene ningun negocio activo.',
+                'type' => 'error',
+                'data' => [],
+            ]);
+        }
+        // TODO: Consultamos la suscripcion
+        $suscription = $this->model->getSuscription($business['userapp_id']);
+        if (!$suscription) {
+            toJson([
+                'status' => false,
+                'message' => 'Este usuario no tiene ninguna suscription activa.',
+                'type' => 'error',
+                'data' => [],
+            ]);
+        }
+        // TODO: Consultamos todas la interfaces
+        $interfaces = $this->model->getInterfaces();
+        if (!$interfaces) {
+            toJson([
+                'status' => false,
+                'message' => 'No hay ninguna interfaz activa.',
+                'type' => 'error',
+                'data' => [],
+            ]);
+        }
+        $auxInterfaces = [];
+        foreach ($interfaces as $value) {
+            $auxInterfaces[$value['idInterface']] = $value['name'];
+        }
+        // TODO: Consultamos las inferfaces segun el plan
+        $interfaces_plan = $this->model->getInterfacesByPlan($suscription['plan_id']);
+        if (!$interfaces_plan) {
+            toJson([
+                'status' => false,
+                'message' => 'Este plan no cuenta con ninguna interfaz vinculada.',
+                'type' => 'error',
+                'data' => [],
+            ]);
+        }
+        foreach ($interfaces_plan as $key => $value) {
+            $interfaces_plan[$key]['interface_name'] = $auxInterfaces[$value['interface_id']];
+        }
+        toJson([
+            'status' => true,
+            'message' => 'Lista de interfaces con sus permisos',
+            'type' => 'success',
+            'data' => $interfaces_plan
         ]);
     }
 

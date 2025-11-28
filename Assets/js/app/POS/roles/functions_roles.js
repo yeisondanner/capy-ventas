@@ -1,146 +1,40 @@
-(function () {
-  "use strict";
+import { ApiRoles } from "./functions_roles_api.js";
 
-  let rolesTable;
-  let roleModal;
-  let reportModal;
+export class Roles {
+  #rolesTable = null;
+  #permissions = new Map();
+  // TODO: Seleccionamos los botones
+  #btnOpenModalRole = $("#btnOpenModalRole");
+  #btnAddRole = $("#btnAddRole");
+  // TODO: Seleccionamos los modals
+  #modalAddRole = $("#openModalRole");
+  // TODO: Seleccionamos los html
+  #permissionsHtml = $("#cardPermissions");
 
-  /**
-   * Obtiene o crea una instancia de modal de Bootstrap.
-   * @param {HTMLElement|null} element
-   * @returns {any}
-   */
-  function getModalInstance(element) {
-    if (!element) return null;
-    if (window.bootstrap && bootstrap.Modal) {
-      return bootstrap.Modal.getOrCreateInstance(element);
-    }
-    if (window.$) {
-      return $(element);
-    }
-    return null;
+  constructor(base_url) {
+    this.apiRoles = new ApiRoles(base_url);
+    this.#initTable();
+    this.#openModal();
+    this.#selectedPermision();
+    this.#getPermissions();
+    this.#setRole();
   }
 
-  /**
-   * Muestra el modal indicado.
-   * @param {HTMLElement|null} element
-   */
-  function showModal(element) {
-    const instance = getModalInstance(element);
-    if (!instance) return;
-    if (typeof instance.show === "function") {
-      instance.show();
-    } else if (typeof instance.modal === "function") {
-      instance.modal("show");
-    }
-  }
-
-  /**
-   * Oculta el modal indicado.
-   * @param {HTMLElement|null} element
-   */
-  function hideModal(element) {
-    const instance = getModalInstance(element);
-    if (!instance) return;
-    if (typeof instance.hide === "function") {
-      instance.hide();
-    } else if (typeof instance.modal === "function") {
-      instance.modal("hide");
-    }
-  }
-
-  /**
-   * Devuelve el token CSRF almacenado en la tabla.
-   * @returns {string}
-   */
-  function getSecurityToken() {
-    const table = document.getElementById("rolesTable");
-    if (!table) return "";
-    return table.getAttribute("data-token") || "";
-  }
-
-  /**
-   * Reinicia el formulario y sus textos.
-   */
-  function resetForm() {
-    const form = document.getElementById("roleForm");
-    if (!form) return;
-
-    form.reset();
-    form.dataset.mode = "create";
-    const idField = document.getElementById("roleId");
-    if (idField) {
-      idField.value = "0";
-    }
-
-    toggleStatusField(false);
-    updateModalTexts(false);
-  }
-
-  /**
-   * Muestra u oculta el selector de estado según el modo.
-   * @param {boolean} isVisible
-   */
-  function toggleStatusField(isVisible) {
-    const statusGroup = document.getElementById("roleStatusGroup");
-    const statusField = document.getElementById("txtRoleAppStatus");
-
-    if (statusGroup) {
-      statusGroup.classList.toggle("d-none", !isVisible);
-    }
-
-    if (statusField) {
-      statusField.disabled = !isVisible;
-      statusField.value = "Activo";
-    }
-  }
-
-  /**
-   * Actualiza los textos del modal según el modo.
-   * @param {boolean} isEdit
-   */
-  function updateModalTexts(isEdit) {
-    const title = document.getElementById("roleModalLabel");
-    const button = document.querySelector("#roleForm button[type='submit']");
-
-    if (title) {
-      title.textContent = isEdit ? "Actualizar rol" : "Registrar rol";
-    }
-
-    if (button) {
-      button.innerHTML = isEdit
-        ? '<i class="bi bi-save"></i> Actualizar'
-        : '<i class="bi bi-save"></i> Guardar';
-    }
-  }
-
-  /**
-   * Llena el formulario con los datos de un rol.
-   * @param {any} role
-   */
-  function populateForm(role) {
-    const form = document.getElementById("roleForm");
-    if (!form || !role) return;
-
-    form.dataset.mode = "edit";
-
-    document.getElementById("roleId").value = role.idRoleApp;
-    document.getElementById("txtRoleAppName").value = role.name || "";
-    document.getElementById("txtRoleAppDescription").value = role.description || "";
-    document.getElementById("txtRoleAppStatus").value = role.status || "Activo";
-
-    toggleStatusField(true);
-    updateModalTexts(true);
-  }
-
-  /**
-   * Inicializa la tabla de roles con DataTables.
-   */
-  function initTable() {
-    rolesTable = $("#rolesTable").DataTable({
-      ajax: {
-        url: `${base_url}/pos/Roles/getRoles`,
-        dataSrc: "",
+  // TODO: Funcion para mostrar los roles
+  #initTable = () => {
+    this.#rolesTable = $("#rolesTable").DataTable({
+      ajax: (data, callback, settings) => {
+        this.apiRoles
+          .get("getRoles")
+          .then((response) => {
+            callback({
+              data: response.data || [],
+            });
+          })
+          .catch((error) => {
+            console.error("Error al cargar los roles:", error);
+            callback({ data: [] });
+          });
       },
       columns: [
         { data: "cont" },
@@ -202,224 +96,167 @@
           .forEach((el) => el.classList.add("pagination-sm"));
       },
     });
-  }
+  };
 
-  /**
-   * Configura los eventos de la tabla (editar, eliminar, reporte).
-   */
-  function setupTableEvents() {
-    const table = document.getElementById("rolesTable");
-    if (!table) return;
-
-    table.addEventListener("click", async (event) => {
-      const target = event.target;
-      const button = target.closest("button");
-      if (!button || !rolesTable) return;
-
-      const rowElement = button.closest("tr");
-      const rowData = rolesTable.row(rowElement?.classList.contains("child") ? rowElement.previousElementSibling : rowElement).data();
-      if (!rowData) return;
-
-      if (button.classList.contains("edit-role")) {
-        await loadRole(rowData.idRoleApp);
-      }
-
-      if (button.classList.contains("delete-role")) {
-        confirmDelete(rowData.idRoleApp, rowData.name, button.dataset.token);
-      }
-
-      if (button.classList.contains("report-role")) {
-        fillReport(button.dataset);
-      }
+  // TODO: Funcion para abrir todos los modals
+  #openModal = () => {
+    $(this.#btnOpenModalRole).click(() => {
+      $(this.#modalAddRole).modal("show");
     });
-  }
+  };
 
-  /**
-   * Llena el modal de reporte con los datos del rol.
-   * @param {DOMStringMap|any} data
-   */
-  function fillReport(data) {
-    document.getElementById("reportRoleName").textContent = data.name || "-";
-    document.getElementById("reportRoleDescription").textContent = data.description || "Sin descripción";
-    document.getElementById("reportRoleStatus").textContent = data.status || "-";
-    document.getElementById("reportRoleUpdated").textContent = data.updated || "-";
-    showModal(reportModal);
-  }
+  // TODO: Funcion para seleccionar los check
+  #selectedPermision = () => {
+    $(document).on("click", ".checkPermision", (event) => {
+      let Interface = $(event.currentTarget).attr("data-interface");
+      let Permission = $(event.currentTarget).attr("data-permision");
+      let checkPermision = $("#" + Permission);
 
-  /**
-   * Solicita los datos de un rol y abre el modal en modo edición.
-   * @param {number} roleId
-   */
-  async function loadRole(roleId) {
-    try {
-      const response = await fetch(`${base_url}/pos/Roles/getRole?id=${roleId}`);
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}`);
-      }
-      const data = await response.json();
-      if (!data.status) {
-        showAlert({
-          icon: "error",
-          title: data.title || "Ocurrió un error",
-          message: data.message || "No fue posible obtener la información del rol.",
-        });
-        return;
+      if (!this.#permissions.get(Interface)) {
+        this.#permissions.set(Interface, []);
       }
 
-      populateForm(data.data);
-      showModal(roleModal);
-    } catch (error) {
-      console.error("Error cargando rol", error);
-      showAlert({
-        icon: "error",
-        title: "Ocurrió un error",
-        message: "No fue posible obtener la información del rol. Inténtalo nuevamente.",
-      });
-    }
-  }
-
-  /**
-   * Envía el formulario para crear o actualizar un rol.
-   * @param {SubmitEvent} event
-   */
-  async function handleSubmit(event) {
-    event.preventDefault();
-    const form = event.target;
-    const formData = new FormData(form);
-    const mode = form.dataset.mode || "create";
-    const url = mode === "edit" ? `${base_url}/pos/Roles/updateRole` : `${base_url}/pos/Roles/setRole`;
-
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}`);
+      if (checkPermision.prop("checked")) {
+        checkPermision.prop("checked", false);
+      } else {
+        checkPermision.prop("checked", true);
       }
 
-      const data = await response.json();
-      if (!data.status) {
-        showAlert({
-          icon: data.icon || "error",
-          title: data.title || "Ocurrió un error",
-          message: data.message || "No fue posible guardar el rol.",
-        });
-        return;
+      if (checkPermision.prop("checked")) {
+        if (this.#permissions.get(Interface).indexOf(Permission) === -1) {
+          this.#permissions.get(Interface).push(Permission);
+        }
+      } else {
+        let INDEX = this.#permissions.get(Interface).indexOf(Permission);
+        if (INDEX !== -1) {
+          this.#permissions.get(Interface).splice(INDEX, 1);
+        }
       }
-
-      showAlert({
-        icon: data.icon || "success",
-        title: data.title || "Operación exitosa",
-        message: data.message || "El rol se guardó correctamente.",
-      });
-
-      hideModal(roleModal);
-      resetForm();
-      rolesTable.ajax.reload(null, false);
-    } catch (error) {
-      console.error("Error guardando rol", error);
-      showAlert({
-        icon: "error",
-        title: "Ocurrió un error",
-        message: "No fue posible guardar el rol, inténtalo nuevamente.",
-      });
-    }
-  }
-
-  /**
-   * Confirma la eliminación de un rol.
-   * @param {number} roleId
-   * @param {string} roleName
-   * @param {string} token
-   */
-  function confirmDelete(roleId, roleName, token) {
-    Swal.fire({
-      title: "Eliminar rol",
-      text: `¿Deseas eliminar el rol "${roleName}"?`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#d33",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        deleteRole(roleId, token);
-      }
+      console.log(this.#permissions);
     });
-  }
+  };
 
-  /**
-   * Envía la solicitud de eliminación al servidor.
-   * @param {number} roleId
-   * @param {string} token
-   */
-  async function deleteRole(roleId, token) {
-    try {
-      const response = await fetch(`${base_url}/pos/Roles/deleteRole`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: roleId, token: token || getSecurityToken() }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}`);
-      }
-
-      const data = await response.json();
-      if (!data.status) {
-        showAlert({
-          icon: data.icon || "error",
-          title: data.title || "Ocurrió un error",
-          message: data.message || "No fue posible eliminar el rol.",
+  // TODO: Cargamos todos los permisos todos los permisos
+  #getPermissions = () => {
+    this.apiRoles.get("getPermissions").then((response) => {
+      if (!response.status) {
+        return showAlert({
+          icon: response.type,
+          title: "Error",
+          message: response.message,
         });
-        return;
       }
 
-      showAlert({
-        icon: data.icon || "success",
-        title: data.title || "Operación exitosa",
-        message: data.message || "El rol se eliminó correctamente.",
+      this.#permissionsHtml.empty("");
+      let html = "";
+      response.data.forEach((element) => {
+        html += `<div class="d-flex gap-2 flex-column mb-3">
+                      <h6 class="fw-normal"><i class="bi bi-file-easel"></i> Interfaz: <strong>${
+                        element.interface_name
+                      }</strong></h6>
+                      <div class="d-flex gap-2">
+                          <div style="cursor: pointer;" data-interface="${
+                            element.interface_name
+                          }" data-permision="create_${
+          element.interface_id
+        }" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+          element.create == 1 ? true : "pe-none user-select-none"
+        }">
+                              <input ${
+                                element.create == 1 ? "" : "disabled"
+                              } id="create_${
+          element.interface_id
+        }" type="checkbox" value="">
+                              <label class="${
+                                element.create == 1
+                                  ? true
+                                  : "text-decoration-line-through text-danger"
+                              }" style="cursor: pointer;">
+                              Crear
+                              </label>
+                          </div>
+                          <div style="cursor: pointer;" data-interface="${
+                            element.interface_name
+                          }" data-permision="read_${
+          element.interface_id
+        }" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+          element.read == 1 ? true : "pe-none user-select-none"
+        }">
+                              <input ${
+                                element.read == 1 ? "" : "disabled"
+                              } id="read_${
+          element.interface_id
+        }" type="checkbox" value="">
+                              <label class="${
+                                element.read == 1
+                                  ? true
+                                  : "text-decoration-line-through text-danger"
+                              }" style="cursor: pointer;">
+                              Leer
+                              </label>
+                          </div>
+                          <div style="cursor: pointer;" data-interface="${
+                            element.interface_name
+                          }" data-permision="update_${
+          element.interface_id
+        }" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+          element.update == 1 ? true : "pe-none user-select-none"
+        }">
+                              <input ${
+                                element.update == 1 ? "" : "disabled"
+                              } id="update_${
+          element.interface_id
+        }" type="checkbox" value="">
+                              <label class="${
+                                element.update == 1
+                                  ? true
+                                  : "text-decoration-line-through text-danger"
+                              }" style="cursor: pointer;">
+                              Actualizar
+                              </label>
+                          </div>
+                          <div style="cursor: pointer;" data-interface="${
+                            element.interface_name
+                          }" data-permision="delete_${
+          element.interface_id
+        }" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
+          element.delete == 1 ? true : "pe-none user-select-none"
+        }">
+                              <input ${
+                                element.delete == 1 ? "" : "disabled"
+                              } id="delete_${
+          element.interface_id
+        }" type="checkbox" value="">
+                              <label class="${
+                                element.delete == 1
+                                  ? true
+                                  : "text-decoration-line-through text-danger"
+                              }" style="cursor: pointer;">
+                              Eliminar
+                              </label>
+                          </div>
+                      </div>
+                  </div>`;
       });
+      this.#permissionsHtml.append(html);
 
-      rolesTable.ajax.reload(null, false);
-    } catch (error) {
-      console.error("Error eliminando rol", error);
-      showAlert({
-        icon: "error",
-        title: "Ocurrió un error",
-        message: "No fue posible eliminar el rol, inténtalo nuevamente.",
-      });
-    }
-  }
+      console.log(response.data);
+    });
+  };
 
-  /**
-   * Configura los botones y formularios de la vista.
-   */
-  function setupEvents() {
-    const openModalBtn = document.getElementById("btnOpenRoleModal");
-    const form = document.getElementById("roleForm");
+  // TODO: Funcion para registrar un rol con su permiso
 
-    if (openModalBtn) {
-      openModalBtn.addEventListener("click", () => {
-        resetForm();
-        showModal(roleModal);
-      });
-    }
+  #setRole = () => {
+    this.#btnAddRole.click(() => {
+      console.log(this.#permissions);
+      
+      this.apiRoles
+        .post("setRole", Object.fromEntries(this.#permissions))
+        .then((response) => {
+          console.log(response);
+        });
+    });
+  };
+}
 
-    if (form) {
-      form.addEventListener("submit", handleSubmit);
-    }
-  }
-
-  document.addEventListener("DOMContentLoaded", () => {
-    roleModal = document.getElementById("roleModal");
-    reportModal = document.getElementById("roleReportModal");
-
-    resetForm();
-    initTable();
-    setupTableEvents();
-    setupEvents();
-  });
-})();
+const classRoles = new Roles(base_url);

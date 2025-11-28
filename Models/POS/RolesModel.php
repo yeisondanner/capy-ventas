@@ -68,6 +68,81 @@ class RolesModel extends Mysql
      *
      * @return array
      */
+    // * Mis funciones
+    // TODO: Funciones get
+    public function getBusiness(int $bussinesId)
+    {
+        $sql = <<<SQL
+            SELECT
+                userapp_id,
+                status
+            FROM business
+            WHERE idBusiness = ?
+              AND status = 'Activo'
+            LIMIT 1;
+        SQL;
+
+        $result = $this->select($sql, [$bussinesId]);
+        return is_array($result) ? $result : [];
+    }
+
+    public function getSuscription(int $userAppId)
+    {
+        $sql = <<<SQL
+            SELECT
+                max(plan_id) as plan_id,
+                next_billing_date,
+                status
+            FROM subscriptions
+            WHERE user_app_id = ?
+              AND status = 'active'
+            LIMIT 1;
+        SQL;
+
+        $result = $this->select($sql, [$userAppId]);
+        return is_array($result) ? $result : [];
+    }
+    // TODO: Funciones getall
+    public function getInterfaces()
+    {
+        $sql = <<<SQL
+            SELECT
+                idInterface,
+                name,
+                type,
+                module_id,
+                status
+            FROM interface_app
+            WHERE status = 'Activo';
+        SQL;
+
+        $result = $this->select_all($sql, []);
+        return is_array($result) ? $result : [];
+    }
+
+    public function getInterfacesByPlan(int $planId)
+    {
+        $sql = <<<SQL
+            SELECT
+                interface_id,
+                plan_id,
+                `create`,
+                `delete`,
+                `update`,
+                `read`,
+                status
+            FROM plans_interface_app
+            WHERE plan_id = ?
+              AND status = 'Activo';
+        SQL;
+
+        $result = $this->select_all($sql, [$planId]);
+        return is_array($result) ? $result : [];
+    }
+    // TODO: Funciones set
+    // TODO: Funciones update
+    // TODO: Funciones delete
+
     public function selectRoleByName(int $businessId, string $name, int $excludeId = 0): array
     {
         $sql = 'SELECT idRoleApp FROM role_app WHERE business_id = ? AND name = ?';

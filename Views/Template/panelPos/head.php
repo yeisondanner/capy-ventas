@@ -9,7 +9,15 @@ $nameVarCart = $name_sesion . 'cart';
 unset($_SESSION[$nameVarCart]);
 //vaiables de las rutas del css
 $pageCssFolder = strtolower($data["page_container"]);
-$pageCssFile = "style_" . strtolower($data["page_js_css"]) . ".css?" . versionSystem();
+if (is_array($data["page_js_css"])) {
+    $pageCssFile = [];
+    foreach ($data["page_js_css"] as $key => $value) {
+        array_push($pageCssFile, "style_" . strtolower($value) . ".css?" . versionSystem());
+    }
+} else {
+    $pageCssFile = "style_" . strtolower($data["page_js_css"]) . ".css?" . versionSystem();
+}
+
 //variables del contendor
 $pageContainer = ucfirst($data["page_container"]);
 get_option_and_permission_app();
@@ -35,7 +43,15 @@ get_option_and_permission_app();
     <!--TODO: Cargamos el icono de la pagina-->
     <link rel="shortcut icon" href="<?= media() ?>/head-capibara.png?<?= versionSystem() ?>" type="image/x-icon">
     <!-- CSS de la vista -->
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/app/POS/<?= $pageCssFolder ?>/<?= $pageCssFile ?>">
+    <?php
+    if (is_array($pageCssFile)) {
+        foreach ($pageCssFile as $key => $value) {
+            echo "<link rel='stylesheet' type='text/css' href='" . media() . "/css/app/POS/" . $pageCssFolder . "/" . $value . "'>";
+        }
+    } else {
+        echo "<link rel='stylesheet' type='text/css' href='" . media() . "/css/app/POS/" . $pageCssFolder . "/" . $pageCssFile . "'>";
+    }
+    ?>
     <?php require_once "./Views/App/POS/" . $pageContainer . "/Libraries/head.php"; ?>
     <script type="text/javascript">
         // TODO: Base url
