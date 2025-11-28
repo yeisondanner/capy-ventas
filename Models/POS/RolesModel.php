@@ -277,6 +277,12 @@ class RolesModel extends Mysql
         return (bool) $this->delete($sql, [$roleId, $businessId]);
     }
 
+    public function dropPermissionsByRole(int $roleId): bool
+    {
+        $sql = 'DELETE FROM permission WHERE rol_id = ?';
+
+        return (bool) $this->delete($sql, [$roleId]);
+    }
     /**
      * Desactiva un rol con dependencias.
      *

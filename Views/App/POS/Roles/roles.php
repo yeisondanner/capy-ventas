@@ -2,7 +2,7 @@
 <main class="app-content">
     <div class="app-title">
         <div>
-            <h1><i class="bi bi-shield-check"></i> Roles de aplicación</h1>
+            <h1><i class="bi bi-ui-checks-grid"></i> Roles de aplicación</h1>
             <p>Administra los roles disponibles para asignar a los empleados de tu negocio.</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
@@ -56,17 +56,17 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <label for="txtName" class="form-label fw-bold">Nombre (<span class="text-danger">*</span>)</label>
+                            <label for="txtName" class="form-label fw-bold"><i class="bi bi-shield-check"></i> Nombre (<span class="text-danger">*</span>)</label>
                             <input type="text" class="form-control" id="txtName" placeholder="Ej. Administrador">
                         </div>
                         <div class="mb-3">
-                            <label for="txtDescription" class="form-label fw-bold">Descripción <span class="fw-medium text-muted"><i>(Opcional)</i></span></label>
+                            <label for="txtDescription" class="form-label fw-bold"><i class="bi bi-chat-left-text"></i> Descripción <span class="fw-medium text-muted"><i>(Opcional)</i></span></label>
                             <textarea class="form-control" id="txtDescription" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="col-md-8">
                         <div class="card shadow-sm">
-                            <h6 class="card-header bg-secondary text-white"><i class="bi bi-shield-check"></i> Permisos</h6>
+                            <h6 class="card-header bg-secondary text-white"><i class="bi bi-ui-checks-grid"></i> Permisos</h6>
                             <div class="card-body pb-0" id="cardPermissions" style="max-height: 50vh; overflow-y: auto;">
                             </div>
                         </div>
@@ -92,19 +92,26 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <label for="txtNameUpdate" class="form-label fw-bold">Nombre (<span class="text-danger">*</span>)</label>
+                            <label for="txtNameUpdate" class="form-label fw-bold"><i class="bi bi-shield-check"></i> Nombre (<span class="text-danger">*</span>)</label>
                             <input type="text" class="form-control" id="txtNameUpdate" placeholder="Ej. Administrador">
                         </div>
                         <div class="mb-3">
-                            <label for="txtDescriptionUpdate" class="form-label fw-bold">Descripción <span class="fw-medium text-muted"><i>(Opcional)</i></span></label>
+                            <label for="selectStatusUpdate" class="form-label fw-bold"><i class="bi bi-toggle-on"></i> Estado (<span class="text-danger">*</span>)</label>
+                            <select class="form-select" id="selectStatusUpdate">
+                                <option disabled>Seleccionar</option>
+                                <option value="Activo">Activo</option>
+                                <option value="Inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="txtDescriptionUpdate" class="form-label fw-bold"><i class="bi bi-chat-left-text"></i> Descripción <span class="fw-medium text-muted"><i>(Opcional)</i></span></label>
                             <textarea class="form-control" id="txtDescriptionUpdate" rows="3"></textarea>
                         </div>
                     </div>
                     <div class="col-md-8">
                         <div class="card shadow-sm">
-                            <h6 class="card-header bg-secondary text-white"><i class="bi bi-shield-check"></i> Permisos</h6>
+                            <h6 class="card-header bg-secondary text-white"><i class="bi bi-ui-checks-grid"></i> Permisos</h6>
                             <div class="card-body pb-0" id="cardPermissionsUpdate" style="max-height: 50vh; overflow-y: auto;">
-                                
                             </div>
                         </div>
                     </div>

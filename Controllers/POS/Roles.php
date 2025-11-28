@@ -192,6 +192,7 @@ class Roles extends Controllers
                 "role" => [
                     "idRoleApp" => $role["idRoleApp"],
                     "name" => $role["name"],
+                    "status" => $role["status"],
                     "description" => $role["description"],
                 ],
                 "permissions_interface" => $interface_permissions,
@@ -277,13 +278,17 @@ class Roles extends Controllers
             $this->responseError('Método de solicitud no permitido.');
         }
 
-        $userId = $this->getUserId();
-        $this->validateCsrfToken($_POST['token'] ?? '', $userId);
+        // $userId = $this->getUserId();
+        // $this->validateCsrfToken($_POST['token'] ?? '', $userId);
 
-        $roleId      = (int) ($_POST['roleId'] ?? 0);
-        $name        = ucwords(strClean($_POST['txtRoleAppName'] ?? ''));
-        $description = strClean($_POST['txtRoleAppDescription'] ?? '');
-        $status      = $_POST['txtRoleAppStatus'] === 'Inactivo' ? 'Inactivo' : 'Activo';
+        $raw = file_get_contents('php://input');
+        $data = json_decode($raw, true);
+
+        $roleId      = (int) ($data['id'] ?? 0);
+        $name    = strClean($data['name']);
+        $description = ucwords(strClean($data['description']));
+        $status      = strClean($data['status']);
+        $permissions = $data['permissions'];
 
         if ($roleId <= 0) {
             $this->responseError('No se pudo identificar el rol seleccionado.');
@@ -295,7 +300,6 @@ class Roles extends Controllers
 
         $businessId = $this->getBusinessId();
         $role       = $this->model->selectRole($roleId, $businessId);
-
         if (empty($role)) {
             $this->responseError('El rol seleccionado no existe o no pertenece a tu negocio.');
         }
@@ -313,6 +317,20 @@ class Roles extends Controllers
 
         if (!$updated) {
             $this->responseError('No fue posible actualizar el rol, inténtalo nuevamente.');
+        }
+
+        // ? Eliminamos los permisos
+        $this->model->dropPermissionsByRole($roleId);
+
+        // ? Actualizamos los permisos
+        foreach ($permissions as $key => $value) {
+            if (!empty($value)) {
+                $create = in_array('create', $value) ? 1 : 0;
+                $update = in_array('update', $value) ? 1 : 0;
+                $read = in_array('read', $value) ? 1 : 0;
+                $delete = in_array('delete', $value) ? 1 : 0;
+                $this->model->setPermission($key, $roleId, $create, $read, $update, $delete);
+            }
         }
 
         toJson([

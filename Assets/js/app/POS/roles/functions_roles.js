@@ -8,6 +8,7 @@ export class Roles {
   // TODO: Seleccionamos los botones
   #btnOpenModalAddRole = $("#btnOpenModalAddRole");
   #btnAddRole = $("#btnAddRole");
+  #btnUpdateRole = $("#btnUpdateRole");
 
   // TODO: Seleccionamos los modals
   #modalAddRole = $("#modalAddRole");
@@ -23,6 +24,7 @@ export class Roles {
     this.#openModal();
     this.#selectedPermision();
     this.#setRole();
+    this.#updateRole();
   }
 
   // TODO: Funcion para mostrar los roles
@@ -126,7 +128,9 @@ export class Roles {
               `Actualizar Rol #${response.data.role.idRoleApp}`
             );
             $("#txtNameUpdate").val(response.data.role.name);
+            $("#selectStatusUpdate").val(response.data.role.status);
             $("#txtDescriptionUpdate").val(response.data.role.description);
+            this.#btnUpdateRole.attr("data-role-id", response.data.role.idRoleApp);
             this.#loadPermissionsUpdate(
               response.data.permissions_interface,
               response.data.permissions_app
@@ -167,6 +171,7 @@ export class Roles {
 
   // TODO: Cargamos los permisos para actualizar
   #loadPermissionsUpdate = (permissionsInterface, permissionsApp) => {
+    this.#permissionsHtml.empty("");
     this.#permissionsUpdateHtml.empty("");
     this.#permissions.clear();
     let html = "";
@@ -292,6 +297,7 @@ export class Roles {
       }
 
       this.#permissionsHtml.empty("");
+      this.#permissionsUpdateHtml.empty("");
       let html = "";
       response.data.forEach((element) => {
         html += `<div class="d-flex gap-2 flex-column mb-3">
@@ -420,10 +426,61 @@ export class Roles {
     });
   };
 
+  // TODO: Funcion para actualizar un rol con sus permisos
+  #updateRole = () => {
+    this.#btnUpdateRole.click((event) => {
+      // ? Validamos que se envie el nombre
+      let name = $("#txtNameUpdate").val();
+      if (!name) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "El nombre es requerido",
+        });
+      }
+
+      // ? Validamos que existas al menos un permiso
+      // console.log(this.#permissions.size);
+      // falta implementar
+
+      // ? Cargamos el id del role
+      let role_id = $(event.currentTarget).attr("data-role-id");
+
+      let status = $("#selectStatusUpdate").val();
+
+      // ? Datos opcionales
+      let description = $("#txtDescriptionUpdate").val();
+      !description ? null : description;
+
+      this.apiRoles
+        .post("updateRole", {
+          id: role_id,
+          name: name,
+          description: description,
+          status: status, // ? Actualizar luego
+          permissions: Object.fromEntries(this.#permissions),
+        })
+        .then((response) => {
+          if (response.status) {
+            this.#rolesTable.ajax.reload();
+            this.#cleanForm();
+            this.#modalUpdateRole.modal("hide");
+          }
+          showAlert({
+            icon: response.type,
+            title: response.title,
+            message: response.message,
+          });
+        });
+    });
+  };
+
   // TODO: Funcion para limpiar los formularios de registro y actualizar
   #cleanForm = () => {
     $("#txtName").val(null);
     $("#txtdDescription").val(null);
+    $("#txtNameUpdate").val(null);
+    $("#txtdDescriptionUpdate").val(null);
     this.#permissions.clear();
   };
 }
