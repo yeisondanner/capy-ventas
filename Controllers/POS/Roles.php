@@ -77,7 +77,7 @@ class Roles extends Controllers
                 . ' data-updated="' . $updatedAt . '"><i class="bi bi-eye"></i></button>'
                 . '<button class="btn btn-warning update_role" data-id="' . (int) $role['idRoleApp'] . '">'
                 . '<i class="bi bi-pencil-square"></i></button>'
-                . '<button class="btn btn-danger delete-role" data-id="' . (int) $role['idRoleApp'] . '"'
+                . '<button class="btn btn-danger delete_role" data-id="' . (int) $role['idRoleApp'] . '"'
                 . ' data-name="' . $name . '" data-token="' . csrf(false) . '"><i class="bi bi-trash"></i></button>'
                 . '</div>';
 
@@ -121,6 +121,18 @@ class Roles extends Controllers
             $this->responseError('Ya existe un rol con el mismo nombre en tu negocio.');
         }
 
+        // TODO: consultamos los permisos de la interfaz de acuerdo a su plan
+        $auxArrayPermissionsInterface = array();
+        $permissionsInterfase = $this->selectPermissions();
+        foreach ($permissionsInterfase as $key => $value) {
+            $auxArrayPermissionsInterface[$value['plan_interface_id']] = [
+                "create" => $value["create"],
+                "read" => $value["read"],
+                "update" => $value["update"],
+                "delete" => $value["delete"],
+            ];
+        }
+
         $payload = [
             'name'        => $name,
             'description' => $description,
@@ -134,11 +146,19 @@ class Roles extends Controllers
 
         // TODO: Insertamos los permisos de la interfaces
         foreach ($permissions as $key => $value) {
-            if (!empty($value)) {
+            // toJson($auxArrayPermissionsInterface[$key]);
+            if (!empty($value) && $auxArrayPermissionsInterface[$key]) {
                 $create = in_array('create', $value) ? 1 : 0;
-                $update = in_array('update', $value) ? 1 : 0;
                 $read = in_array('read', $value) ? 1 : 0;
+                $update = in_array('update', $value) ? 1 : 0;
                 $delete = in_array('delete', $value) ? 1 : 0;
+
+                // * Evaluamos el permiso que se va ingresar con el permiso de la interfaz
+                (($create === 1) && ($create == $auxArrayPermissionsInterface[$key]["create"])) ? $create = 1 : $create = 0;
+                (($read === 1) && ($read == $auxArrayPermissionsInterface[$key]["read"])) ? $read = 1 : $read = 0;
+                (($update === 1) && ($update == $auxArrayPermissionsInterface[$key]["update"])) ? $update = 1 : $update = 0;
+                (($delete === 1) && ($delete == $auxArrayPermissionsInterface[$key]["delete"])) ? $delete = 1 : $delete = 0;
+
                 $this->model->setPermission($key, $inserted, $create, $read, $update, $delete);
             }
         }
@@ -322,13 +342,33 @@ class Roles extends Controllers
         // ? Eliminamos los permisos
         $this->model->dropPermissionsByRole($roleId);
 
-        // ? Actualizamos los permisos
+        // TODO: consultamos los permisos de la interfaz de acuerdo a su plan
+        $auxArrayPermissionsInterface = array();
+        $permissionsInterfase = $this->selectPermissions();
+        foreach ($permissionsInterfase as $key => $value) {
+            $auxArrayPermissionsInterface[$value['plan_interface_id']] = [
+                "create" => $value["create"],
+                "read" => $value["read"],
+                "update" => $value["update"],
+                "delete" => $value["delete"],
+            ];
+        }
+
+        // TODO: Insertamos nuevamente los permisos de la interfaces
         foreach ($permissions as $key => $value) {
-            if (!empty($value)) {
+            // toJson($auxArrayPermissionsInterface[$key]);
+            if (!empty($value) && $auxArrayPermissionsInterface[$key]) {
                 $create = in_array('create', $value) ? 1 : 0;
-                $update = in_array('update', $value) ? 1 : 0;
                 $read = in_array('read', $value) ? 1 : 0;
+                $update = in_array('update', $value) ? 1 : 0;
                 $delete = in_array('delete', $value) ? 1 : 0;
+
+                // * Evaluamos el permiso que se va ingresar con el permiso de la interfaz
+                (($create === 1) && ($create == $auxArrayPermissionsInterface[$key]["create"])) ? $create = 1 : $create = 0;
+                (($read === 1) && ($read == $auxArrayPermissionsInterface[$key]["read"])) ? $read = 1 : $read = 0;
+                (($update === 1) && ($update == $auxArrayPermissionsInterface[$key]["update"])) ? $update = 1 : $update = 0;
+                (($delete === 1) && ($delete == $auxArrayPermissionsInterface[$key]["delete"])) ? $delete = 1 : $delete = 0;
+
                 $this->model->setPermission($key, $roleId, $create, $read, $update, $delete);
             }
         }

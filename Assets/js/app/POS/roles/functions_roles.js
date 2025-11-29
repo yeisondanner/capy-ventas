@@ -9,10 +9,12 @@ export class Roles {
   #btnOpenModalAddRole = $("#btnOpenModalAddRole");
   #btnAddRole = $("#btnAddRole");
   #btnUpdateRole = $("#btnUpdateRole");
+  #btnDeleteRole = $("#btnDeleteRole");
 
   // TODO: Seleccionamos los modals
   #modalAddRole = $("#modalAddRole");
   #modalUpdateRole = $("#modalUpdateRole");
+  #modalDeleteRole = $("#modalDeleteRole");
 
   // TODO: Seleccionamos los html
   #permissionsHtml = $("#cardPermissions");
@@ -143,6 +145,11 @@ export class Roles {
           }
         });
     });
+
+    // * Open modal delete role
+    $(document).on("click",".delete_role", () => {
+      this.#modalDeleteRole.modal("show");
+    });
   };
 
   // TODO: Funcion para seleccionar los check
@@ -240,7 +247,7 @@ export class Roles {
                       <h6 class="fw-normal"><i class="bi bi-file-easel"></i> Interfaz: <strong>${
                         element.interface_name
                       }</strong></h6>
-                      <div class="d-flex gap-2">
+                      <div class="d-flex gap-2 flex-wrap">
                           <div style="cursor: pointer;" data-interface="${
                             element.plan_interface_id
                           }" data-permision="create" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
@@ -338,7 +345,7 @@ export class Roles {
                       <h6 class="fw-normal"><i class="bi bi-file-easel"></i> Interfaz: <strong>${
                         element.interface_name
                       }</strong></h6>
-                      <div class="d-flex gap-2">
+                      <div class="d-flex gap-2 flex-wrap">
                           <div style="cursor: pointer;" data-interface="${
                             element.plan_interface_id
                           }" data-permision="create" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
@@ -508,6 +515,8 @@ export class Roles {
         });
     });
   };
+
+  // TODO: Funcion para eliminar un rol con sus permisos
 
   // TODO: Funcion para limpiar los formularios de registro y actualizar
   #cleanForm = () => {
