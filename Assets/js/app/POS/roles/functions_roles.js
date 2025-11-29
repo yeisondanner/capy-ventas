@@ -15,10 +15,12 @@ export class Roles {
   #modalAddRole = $("#modalAddRole");
   #modalUpdateRole = $("#modalUpdateRole");
   #modalDeleteRole = $("#modalDeleteRole");
+  #modalReportRole = $("#modalReportRole");
 
   // TODO: Seleccionamos los html
   #permissionsHtml = $("#cardPermissions");
   #permissionsUpdateHtml = $("#cardPermissionsUpdate");
+  #permissionsReportHtml = $("#cardPermissionsReport");
 
   constructor(base_url) {
     this.apiRoles = new ApiRoles(base_url);
@@ -27,6 +29,7 @@ export class Roles {
     this.#selectedPermision();
     this.#setRole();
     this.#updateRole();
+    this.#deleteRole();
   }
 
   // TODO: Funcion para mostrar los roles
@@ -147,8 +150,88 @@ export class Roles {
     });
 
     // * Open modal delete role
-    $(document).on("click",".delete_role", () => {
+    $(document).on("click", ".delete_role", (event) => {
+      const id = $(event.currentTarget).attr("data-id");
+      const name = $(event.currentTarget).attr("data-name");
+      let description = $(event.currentTarget).attr("data-description");
+
+      if (!description) {
+        description = `<i class="text-muted">Sin descripcion</i>`;
+      }
+
+      $(".card_information_role")
+        .html(`<p class="mb-2">¿Estas seguro de eliminar el rol <strong class="text-primary">${name}</strong>?</p>
+                    <p class="mb-2"><strong><i class="bi bi-exclamation-diamond"></i> Nota</strong>: Se eliminaran permisos asociados a este rol.</p>
+                    <p class="mb-0" style="text-align: justify;"><strong>Descripcion:</strong> ${description}</p>`);
+
+      $("#modalDeleteRoleLabel").text(`Eliminar Rol #${id}`);
+      this.#btnDeleteRole.attr("data-id", id);
       this.#modalDeleteRole.modal("show");
+    });
+
+    // * Open modal report
+    $(document).on("click", ".report_role", (event) => {
+      const id = $(event.currentTarget).attr("data-id");
+      const name = $(event.currentTarget).attr("data-name");
+      let description = $(event.currentTarget).attr("data-description");
+      const status = $(event.currentTarget).attr("data-status");
+      const date = $(event.currentTarget).attr("data-updated");
+      if (!description) {
+        description = "Sin descripción";
+      }
+
+      // ? Asiganamos los valores para mostrar en la vista
+      $("#modalReportRoleLabel").text(`Información del Rol #${id}`);
+      $("#txtNameReport").val(name);
+      $("#txtDescriptionReport").val(description);
+      $("#txtStatusReport").val(status);
+      $("#txtDateReport").text(date);
+
+      // ? Consultamos los permisos para mostrar en la vista
+      this.apiRoles.get("getPermissionsApp", { id: id }).then((response) => {
+        if (!response.status) {
+          return showAlert({
+            icon: response.type,
+            title: response.title,
+            message: response.message,
+          });
+        }
+        this.#permissionsReportHtml.empty("");
+        let html = "";
+        response.data.forEach((element, index) => {
+          console.log(element);
+          
+          html += `<div class="d-flex flex-column">
+                      <h6 class="fw-normal"><i class="bi bi-file-easel"></i> Interfaz: <strong>${element.interface_name}</strong></h6>
+                      <div class="d-flex gap-2 flex-wrap">`;
+          if (element.create === 1) {
+            html += `<div class="flex-fill">
+                              <div class="p-2 border rounded-2 shadow-sm bg-light"><i class="bi bi-check-all"></i> Crear</div>
+                          </div>`;
+          }
+          if (element.read === 1) {
+            html += `<div class="flex-fill">
+                              <div class="p-2 border rounded-2 shadow-sm bg-light"><i class="bi bi-check-all"></i> Leer</div>
+                          </div>`;
+          }
+          if (element.update === 1) {
+            html += `<div class="flex-fill">
+                              <div class="p-2 border rounded-2 shadow-sm bg-light"><i class="bi bi-check-all"></i> Actualizar</div>
+                          </div>`;
+          }
+          if (element.delete === 1) {
+            html += `<div class="flex-fill">
+                              <div class="p-2 border rounded-2 shadow-sm bg-light"><i class="bi bi-check-all"></i> Eliminar</div>
+                          </div>`;
+          }
+          html += `</div></div>`;
+          if (response.data[index + 1]) {
+            html += `<hr>`;
+          }
+        });
+        this.#permissionsReportHtml.append(html);
+        this.#modalReportRole.modal("show");
+      });
     });
   };
 
@@ -219,7 +302,7 @@ export class Roles {
     this.#permissionsUpdateHtml.empty("");
     this.#permissions.clear();
     let html = "";
-    permissionsInterface.forEach((element) => {
+    permissionsInterface.forEach((element, index) => {
       let perApp = permissionsApp.find(
         (item) => item.plan_interface_id === element.plan_interface_id
       );
@@ -322,6 +405,9 @@ export class Roles {
                           </div>
                       </div>
                   </div>`;
+      if (permissionsInterface[index + 1]) {
+        html += `<hr>`;
+      }
     });
     return this.#permissionsUpdateHtml.append(html);
   };
@@ -340,7 +426,7 @@ export class Roles {
       this.#permissionsHtml.empty("");
       this.#permissionsUpdateHtml.empty("");
       let html = "";
-      response.data.forEach((element) => {
+      response.data.forEach((element, index) => {
         html += `<div class="d-flex gap-2 flex-column mb-3">
                       <h6 class="fw-normal"><i class="bi bi-file-easel"></i> Interfaz: <strong>${
                         element.interface_name
@@ -420,6 +506,9 @@ export class Roles {
                           </div>
                       </div>
                   </div>`;
+        if (response.data[index + 1]) {
+          html += `<hr>`;
+        }
       });
       this.#permissionsHtml.append(html);
     });
@@ -517,7 +606,27 @@ export class Roles {
   };
 
   // TODO: Funcion para eliminar un rol con sus permisos
-
+  #deleteRole = () => {
+    this.#btnDeleteRole.click((event) => {
+      const id = $(event.currentTarget).attr("data-id");
+      this.apiRoles
+        .post("deleteRole", {
+          id: id,
+        })
+        .then((response) => {
+          if (response.status) {
+            this.#rolesTable.ajax.reload();
+            this.#cleanForm();
+            this.#modalDeleteRole.modal("hide");
+          }
+          showAlert({
+            icon: response.type,
+            title: response.title,
+            message: response.message,
+          });
+        });
+    });
+  };
   // TODO: Funcion para limpiar los formularios de registro y actualizar
   #cleanForm = () => {
     $("#txtName").val(null);

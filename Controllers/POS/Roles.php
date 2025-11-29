@@ -72,13 +72,13 @@ class Roles extends Controllers
             $roles[$key]['updated_at']  = $updatedAt;
 
             $roles[$key]['actions'] = '<div class="btn-group btn-group-sm" role="group">'
-                . '<button class="btn btn-secondary report-role" data-id="' . (int) $role['idRoleApp'] . '"'
-                . ' data-name="' . $name . '" data-description="' . $description . '" data-status="' . $status . '"'
+                . '<button class="btn btn-secondary report_role" data-id="' . (int) $role['idRoleApp'] . '"'
+                . ' data-name="' . $name . '" data-description="' . $role['description'] . '" data-status="' . $status . '"'
                 . ' data-updated="' . $updatedAt . '"><i class="bi bi-eye"></i></button>'
                 . '<button class="btn btn-warning update_role" data-id="' . (int) $role['idRoleApp'] . '">'
                 . '<i class="bi bi-pencil-square"></i></button>'
                 . '<button class="btn btn-danger delete_role" data-id="' . (int) $role['idRoleApp'] . '"'
-                . ' data-name="' . $name . '" data-token="' . csrf(false) . '"><i class="bi bi-trash"></i></button>'
+                . ' data-name="' . $name . '" data-token="' . csrf(false) . '" data-description="' . $role['description'] . '"><i class="bi bi-trash"></i></button>'
                 . '</div>';
 
             $counter++;
@@ -218,6 +218,44 @@ class Roles extends Controllers
                 "permissions_interface" => $interface_permissions,
                 "permissions_app" => $permissions,
             ]
+        ]);
+    }
+
+    public function getPermissionsApp(): void
+    {
+        $roleId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+        if ($roleId <= 0) {
+            $this->responseError('Identificador de rol inválido.');
+        }
+
+        $businessId = $this->getBusinessId();
+        $role       = $this->model->selectRole($roleId, $businessId);
+
+        if (empty($role)) {
+            $this->responseError('No se encontró el rol solicitado.');
+        }
+
+        // TODO: Consultamos todas la interfaces
+        $interfaces = $this->model->getInterfaces();
+        if (!$interfaces) {
+            $this->responseError('Ninguna interfaz activa.');
+        }
+
+        $auxInterfaces = [];
+        foreach ($interfaces as $value) {
+            $auxInterfaces[$value['idInterface']] = $value['name'];
+        }
+
+        $permissions = $this->model->getPermissions($role['idRoleApp']);
+        foreach ($permissions as $key => $value) {
+            $permissions[$key]['interface_name'] = $auxInterfaces[$value['interface_id']];
+        }
+        toJson([
+            'status' => true,
+            'title' => 'Lista de permisos',
+            'message' => 'Lista de interfaces con sus permisos',
+            'type' => 'success',
+            'data' => $permissions
         ]);
     }
 
@@ -389,7 +427,7 @@ class Roles extends Controllers
      */
     public function deleteRole(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
 
@@ -399,40 +437,33 @@ class Roles extends Controllers
         }
 
         $roleId = (int) ($input['id'] ?? 0);
-        $token  = (string) ($input['token'] ?? '');
+        // $token  = (string) ($input['token'] ?? '');
 
         if ($roleId <= 0) {
             $this->responseError('No se pudo identificar el rol seleccionado.');
         }
 
-        $userId = $this->getUserId();
-        $this->validateCsrfToken($token, $userId);
+        // $userId = $this->getUserId();
+        // $this->validateCsrfToken($token, $userId);
 
         $businessId = $this->getBusinessId();
         $role       = $this->model->selectRole($roleId, $businessId);
-
         if (empty($role)) {
             $this->responseError('El rol seleccionado no existe o no pertenece a tu negocio.');
         }
 
         $employees   = $this->model->countEmployeesByRole($roleId, $businessId);
-        $permissions = $this->model->countPermissionsByRole($roleId);
-
-        if ($employees > 0 || $permissions > 0) {
-            $deactivated = $this->model->deactivateRole($roleId, $businessId);
-            if (!$deactivated) {
-                $this->responseError('No fue posible desactivar el rol, inténtalo nuevamente.');
-            }
-
-            toJson([
-                'title'   => 'Rol desactivado',
-                'message' => 'El rol tiene asociaciones activas, por lo que se marcó como inactivo y dejará de mostrarse en los selectores.',
-                'type'    => 'info',
-                'icon'    => 'info',
-                'status'  => true,
-            ]);
+        if ($employees > 0) {
+            $this->responseError('No es posible eliminar el rol, porque ya se ecuentra asigando a un empleado.');
         }
 
+        // * Eliminamos los permisos asociados al role
+        $permissions = $this->model->dropPermissionsByRole($roleId);
+        if (!$permissions) {
+            $this->responseError('No fue posible eliminar los permisos, inténtalo nuevamente.');
+        }
+
+        // * Recien elimamos al rol
         $deleted = $this->model->deleteRole($roleId, $businessId);
         if (!$deleted) {
             $this->responseError('No fue posible eliminar el rol, inténtalo nuevamente.');

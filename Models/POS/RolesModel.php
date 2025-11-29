@@ -145,16 +145,18 @@ class RolesModel extends Mysql
     {
         $sql = <<<SQL
             SELECT
-                plans_interface_app_id as plan_interface_id,
-                rol_id,
-                `create`,
-                `delete`,
-                `update`,
-                `read`,
-                status
-            FROM permission
+                p.plans_interface_app_id as plan_interface_id,
+                pi.interface_id,
+                p.rol_id,
+                p.`create`,
+                p.`delete`,
+                p.`update`,
+                p.`read`,
+                p.status
+            FROM permission AS p
+            INNER JOIN plans_interface_app AS pi ON p.plans_interface_app_id = pi.idPlansInterfaceApp 
             WHERE rol_id = ?
-              AND status = 'Activo';
+              AND p.status = 'Activo';
         SQL;
 
         $result = $this->select_all($sql, [$roleId]);
@@ -283,26 +285,6 @@ class RolesModel extends Mysql
 
         return (bool) $this->delete($sql, [$roleId]);
     }
-    /**
-     * Desactiva un rol con dependencias.
-     *
-     * @param int $roleId     Identificador del rol.
-     * @param int $businessId Identificador del negocio.
-     *
-     * @return bool
-     */
-    public function deactivateRole(int $roleId, int $businessId): bool
-    {
-        $sql = <<<SQL
-            UPDATE role_app
-            SET status = 'Inactivo'
-            WHERE idRoleApp = ?
-              AND business_id = ?
-            LIMIT 1;
-        SQL;
-
-        return (bool) $this->update($sql, [$roleId, $businessId]);
-    }
 
     /**
      * Cuenta los empleados asociados a un rol dentro de un negocio.
@@ -317,22 +299,6 @@ class RolesModel extends Mysql
         $sql = 'SELECT COUNT(*) AS total FROM employee WHERE rolapp_id = ? AND bussines_id = ?;';
 
         $result = $this->select($sql, [$roleId, $businessId]);
-
-        return isset($result['total']) ? (int) $result['total'] : 0;
-    }
-
-    /**
-     * Cuenta los permisos vinculados a un rol.
-     *
-     * @param int $roleId Identificador del rol.
-     *
-     * @return int
-     */
-    public function countPermissionsByRole(int $roleId): int
-    {
-        $sql = 'SELECT COUNT(*) AS total FROM permission WHERE rol_id = ?;';
-
-        $result = $this->select($sql, [$roleId]);
 
         return isset($result['total']) ? (int) $result['total'] : 0;
     }
