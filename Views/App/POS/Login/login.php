@@ -64,25 +64,25 @@
                 </div>
 
                 <div class="mb-3 contacto">
-                    <p class="mb-0">
-                        Si no tienes cuenta, contactate con el <strong>capy administrador</strong>.
-                        <a class="semibold-text" href="tel:+51999999999">Aquí</a>
+                    <p class="mb-0 d-flex justify-content-between">
+                        <span>¿No tienes cuenta en <strong>Capy Ventas</strong>?</span>
+                        <span class="text-primary"><i class="bi bi-hand-index-thumb"></i> <a class="semibold-text" href="./account">Crear Cuenta</a></span>
                     </p>
                 </div>
 
-                <!--                <div class="mb-3">-->
-                <!--                    <div class="utility">-->
-                <!--                        <div class="form-check">-->
-                <!--                            <label class="form-check-label">-->
-                <!--                                <input class="form-check-input" type="checkbox" id="chbxRemember" name="chbxRemember">-->
-                <!--                                <label class="form-check-label" for="chbxRemember">Recuérdame</label>-->
-                <!--                            </label>-->
-                <!--                        </div>-->
-                <!--                        <p class="semibold-text mb-0">-->
-                <!--                            <a href="#" data-toggle="flip">¿Olvidaste tu contraseña?</a>-->
-                <!--                        </p>-->
-                <!--                    </div>-->
-                <!--                </div>-->
+                <!-- <div class="mb-3">
+                    <div class="utility">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="chbxRemember" name="chbxRemember">
+                                <label class="form-check-label" for="chbxRemember">Recuérdame</label>
+                            </label>
+                        </div>
+                        <p class="semibold-text mb-0">
+                            <a href="#" data-toggle="flip">¿Olvidaste tu contraseña?</a>
+                        </p>
+                    </div>
+                </div> -->
 
 
                 <div class="mb-3 btn-container d-grid">
