@@ -35,6 +35,7 @@ class Inventory extends Controllers
 
     public function inventory()
     {
+        validate_permission_app(3, "r");
         $data = [
             'page_id'          => 3,
             'page_title'       => 'Inventario de productos',

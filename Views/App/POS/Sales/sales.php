@@ -228,8 +228,8 @@
 
                 <!-- Monto con el que paga el cliente -->
                 <div class="mb-3">
-                    <label class="form-label form-label-sm small">Con cuánto está pagando</label>
-                    <div class="input-group input-group-sm">
+                    <label class="form-label small">Con cuánto está pagando</label>
+                    <div class="input-group">
                         <span class="input-group-text">S/</span>
                         <input type="number" class="form-control text-end" id="montoPaga" min="0" step="0.10" placeholder="0.00">
                     </div>
