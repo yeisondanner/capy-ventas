@@ -124,6 +124,7 @@ class RolesModel extends Mysql
     {
         $sql = <<<SQL
             SELECT
+                idPlansInterfaceApp as plan_interface_id,
                 interface_id,
                 plan_id,
                 `create`,
@@ -137,6 +138,28 @@ class RolesModel extends Mysql
         SQL;
 
         $result = $this->select_all($sql, [$planId]);
+        return is_array($result) ? $result : [];
+    }
+
+    public function getPermissions(int $roleId)
+    {
+        $sql = <<<SQL
+            SELECT
+                p.plans_interface_app_id as plan_interface_id,
+                pi.interface_id,
+                p.rol_id,
+                p.`create`,
+                p.`delete`,
+                p.`update`,
+                p.`read`,
+                p.status
+            FROM permission AS p
+            INNER JOIN plans_interface_app AS pi ON p.plans_interface_app_id = pi.idPlansInterfaceApp 
+            WHERE rol_id = ?
+              AND p.status = 'Activo';
+        SQL;
+
+        $result = $this->select_all($sql, [$roleId]);
         return is_array($result) ? $result : [];
     }
     // TODO: Funciones set
@@ -182,6 +205,27 @@ class RolesModel extends Mysql
             $data['description'] !== '' ? $data['description'] : null,
             $data['status'],
             $businessId,
+        ];
+
+        return (int) $this->insert($sql, $params);
+    }
+
+    public function setPermission(int $planInterfaceId, int $roleId, int $create, int $read, int $update, int $delete)
+    {
+        $sql = <<<SQL
+            INSERT INTO permission
+                (plans_interface_app_id, rol_id, `create`, `read`, `update`, `delete`)
+            VALUES
+                (?, ?, ?, ?, ?, ?);
+        SQL;
+
+        $params = [
+            $planInterfaceId,
+            $roleId,
+            $create,
+            $read,
+            $update,
+            $delete
         ];
 
         return (int) $this->insert($sql, $params);
@@ -235,25 +279,11 @@ class RolesModel extends Mysql
         return (bool) $this->delete($sql, [$roleId, $businessId]);
     }
 
-    /**
-     * Desactiva un rol con dependencias.
-     *
-     * @param int $roleId     Identificador del rol.
-     * @param int $businessId Identificador del negocio.
-     *
-     * @return bool
-     */
-    public function deactivateRole(int $roleId, int $businessId): bool
+    public function dropPermissionsByRole(int $roleId): bool
     {
-        $sql = <<<SQL
-            UPDATE role_app
-            SET status = 'Inactivo'
-            WHERE idRoleApp = ?
-              AND business_id = ?
-            LIMIT 1;
-        SQL;
+        $sql = 'DELETE FROM permission WHERE rol_id = ?';
 
-        return (bool) $this->update($sql, [$roleId, $businessId]);
+        return (bool) $this->delete($sql, [$roleId]);
     }
 
     /**
@@ -269,22 +299,6 @@ class RolesModel extends Mysql
         $sql = 'SELECT COUNT(*) AS total FROM employee WHERE rolapp_id = ? AND bussines_id = ?;';
 
         $result = $this->select($sql, [$roleId, $businessId]);
-
-        return isset($result['total']) ? (int) $result['total'] : 0;
-    }
-
-    /**
-     * Cuenta los permisos vinculados a un rol.
-     *
-     * @param int $roleId Identificador del rol.
-     *
-     * @return int
-     */
-    public function countPermissionsByRole(int $roleId): int
-    {
-        $sql = 'SELECT COUNT(*) AS total FROM permission WHERE rol_id = ?;';
-
-        $result = $this->select($sql, [$roleId]);
 
         return isset($result['total']) ? (int) $result['total'] : 0;
     }
