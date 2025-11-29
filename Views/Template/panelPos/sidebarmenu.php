@@ -29,6 +29,7 @@ $data_menu_employee = function (int $interface): array {
         return $item['idInterface'] == $interface;
     })));
 };
+$linkestadointerfaz = base_url() . '/pos/Errors/estado_plan_interfaz';
 ?>
 <!-- Sidebar menu-->
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
@@ -88,22 +89,76 @@ $data_menu_employee = function (int $interface): array {
     <ul class="app-menu">
         <?php if (!isset($_SESSION[$nameVarPermissionEmployee])):  ?>
             <li><a class="app-menu__item <?= $data['page_id'] === 0 ? 'active' : '' ?>" href="<?= base_url() ?>/pos/dashboard"><i class="app-menu__icon bi bi-house-door"></i><span class="app-menu__label">Inicio</span></a></li>
-            <li><a class="app-menu__item <?= $data['page_id'] === 1 ? 'active' : '' ?>" href=" <?= $data_menu(1) ? base_url() . '/pos/sales' : '' ?>"><i class="app-menu__icon bi bi-cart"></i><span class="app-menu__label"><?= $data_menu(1) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(1) ? $data_menu(1)['Interface'] : 'Vender' ?></span></a></li>
-            <li><a class="app-menu__item <?= $data['page_id'] === 2 ? 'active' : '' ?>" href="<?= $data_menu(2) ? base_url() . '/pos/movements' : '' ?>"><i class="app-menu__icon bi bi-pc-display-horizontal"></i><span class="app-menu__label"><?= $data_menu(2) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(2) ? $data_menu(2)['Interface'] : 'Movimientos' ?></span></a></li>
-            <li><a class="app-menu__item <?= $data['page_id'] === 3 ? 'active' : '' ?>" href="<?= $data_menu(3) ? base_url() . '/pos/inventory' : '' ?>"><i class="app-menu__icon bi bi-box-seam"></i><span class="app-menu__label"><?= $data_menu(3) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(3) ? $data_menu(3)['Interface'] : 'Inventario' ?></span></a></li>
-            <li><a class="app-menu__item <?= $data['page_id'] === 4 ? 'active' : '' ?>" href="<?= $data_menu(4) ? base_url() . '/pos/customers' : '' ?>"><i class="app-menu__icon bi bi-person-lines-fill"></i><span class="app-menu__label"><?= $data_menu(4) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(4) ? $data_menu(4)['Interface'] : 'Clientes' ?></span></a></li>
-            <li><a class="app-menu__item <?= $data['page_id'] === 7 ? 'active' : '' ?>" href="<?= $data_menu(7) ? base_url() . '/pos/suppliers' : '' ?>"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label"><?= $data_menu(7) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(7) ? $data_menu(7)['Interface'] : 'Proveedores' ?></span></a></li>
-            <li><a class="app-menu__item <?= $data['page_id'] === 5 ? 'active' : '' ?>" href="<?= $data_menu(5) ? base_url() . '/pos/employee' : '' ?>"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label"><?= $data_menu(5) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(5) ? $data_menu(5)['Interface'] : 'Empleados' ?></span></a></li>
-            <li><a class="app-menu__item <?= $data['page_id'] === 6 ? 'active' : '' ?>" href="<?= $data_menu(6) ? base_url() . '/pos/roles' : '' ?>"><i class="app-menu__icon bi bi-shield-check"></i><span class="app-menu__label"><?= $data_menu(6) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(6) ? $data_menu(6)['Interface'] : 'Roles' ?></span></a></li>
+            <li><a class="app-menu__item <?= $data['page_id'] === 1 ? 'active' : '' ?>" href=" <?= $data_menu(1) ? base_url() . '/pos/sales' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-cart"></i><span class="app-menu__label"><?= $data_menu(1) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(1) ? $data_menu(1)['Interface'] : 'Vender' ?></span></a></li>
+            <li><a class="app-menu__item <?= $data['page_id'] === 2 ? 'active' : '' ?>" href="<?= $data_menu(2) ? base_url() . '/pos/movements' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-pc-display-horizontal"></i><span class="app-menu__label"><?= $data_menu(2) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(2) ? $data_menu(2)['Interface'] : 'Movimientos' ?></span></a></li>
+            <li><a class="app-menu__item <?= $data['page_id'] === 3 ? 'active' : '' ?>" href="<?= $data_menu(3) ? base_url() . '/pos/inventory' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-box-seam"></i><span class="app-menu__label"><?= $data_menu(3) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(3) ? $data_menu(3)['Interface'] : 'Inventario' ?></span></a></li>
+            <li><a class="app-menu__item <?= $data['page_id'] === 4 ? 'active' : '' ?>" href="<?= $data_menu(4) ? base_url() . '/pos/customers' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-person-lines-fill"></i><span class="app-menu__label"><?= $data_menu(4) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(4) ? $data_menu(4)['Interface'] : 'Clientes' ?></span></a></li>
+            <li><a class="app-menu__item <?= $data['page_id'] === 7 ? 'active' : '' ?>" href="<?= $data_menu(7) ? base_url() . '/pos/suppliers' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label"><?= $data_menu(7) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(7) ? $data_menu(7)['Interface'] : 'Proveedores' ?></span></a></li>
+            <li><a class="app-menu__item <?= $data['page_id'] === 5 ? 'active' : '' ?>" href="<?= $data_menu(5) ? base_url() . '/pos/employee' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label"><?= $data_menu(5) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(5) ? $data_menu(5)['Interface'] : 'Empleados' ?></span></a></li>
+            <li><a class="app-menu__item <?= $data['page_id'] === 6 ? 'active' : '' ?>" href="<?= $data_menu(6) ? base_url() . '/pos/roles' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-shield-check"></i><span class="app-menu__label"><?= $data_menu(6) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(6) ? $data_menu(6)['Interface'] : 'Roles' ?></span></a></li>
         <?php else: ?>
-            <li><a class="app-menu__item <?= $data['page_id'] === 0 ? 'active' : '' ?>" href="<?= base_url() ?>/pos/dashboard"><i class="app-menu__icon bi bi-house-door"></i><span class="app-menu__label">Inicio</span></a></li>
-            <li><a <?= $data_menu_employee(1) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 1 ? 'active' : '' ?>" href=" <?= $data_menu_employee(1) ? base_url() . '/pos/sales' : base_url() . '/pos/Errors/no_permisos' ?>"><i class="app-menu__icon bi bi-cart"></i><span class="app-menu__label"><?= $data_menu_employee(1) ? $data_menu_employee(1)['Interface'] : 'Vender' ?></span></a></li>
-            <li><a <?= $data_menu_employee(2) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 2 ? 'active' : '' ?>" href="<?= $data_menu_employee(2) ? base_url() . '/pos/movements' : base_url() . '/pos/Errors/no_permisos' ?>"><i class="app-menu__icon bi bi-pc-display-horizontal"></i><span class="app-menu__label"><?= $data_menu_employee(2) ? $data_menu_employee(2)['Interface'] : 'Movimientos' ?></span></a></li>
-            <li><a <?= $data_menu_employee(3) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 3 ? 'active' : '' ?>" href="<?= $data_menu_employee(3) ? base_url() . '/pos/inventory' : base_url() . '/pos/Errors/no_permisos' ?>"><i class="app-menu__icon bi bi-box-seam"></i><span class="app-menu__label"><?= $data_menu_employee(3) ? $data_menu_employee(3)['Interface'] : 'Inventario' ?></span></a></li>
-            <li><a <?= $data_menu_employee(4) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 4 ? 'active' : '' ?>" href="<?= $data_menu_employee(4) ? base_url() . '/pos/customers' : base_url() . '/pos/Errors/no_permisos' ?>"><i class="app-menu__icon bi bi-person-lines-fill"></i><span class="app-menu__label"><?= $data_menu_employee(4) ? $data_menu_employee(4)['Interface'] : 'Clientes' ?></span></a></li>
-            <li><a <?= $data_menu_employee(7) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 7 ? 'active' : '' ?>" href="<?= $data_menu_employee(7) ? base_url() . '/pos/suppliers' : base_url() . '/pos/Errors/no_permisos' ?>"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label"><?= $data_menu_employee(7) ? $data_menu_employee(7)['Interface'] : 'Proveedores' ?></span></a></li>
-            <li><a <?= $data_menu_employee(5) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 5 ? 'active' : '' ?>" href="<?= $data_menu_employee(5) ? base_url() . '/pos/employee' : base_url() . '/pos/Errors/no_permisos' ?>"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label"><?= $data_menu_employee(5) ? $data_menu_employee(5)['Interface'] : 'Empleados' ?></span></a></li>
-            <li><a <?= $data_menu_employee(6) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 6 ? 'active' : '' ?>" href="<?= $data_menu_employee(6) ? base_url() . '/pos/roles' : base_url() . '/pos/Errors/no_permisos' ?>"><i class="app-menu__icon bi bi-shield-check"></i><span class="app-menu__label"><?= $data_menu_employee(6) ? $data_menu_employee(6)['Interface'] : 'Roles' ?></span></a></li>
+            <li>
+                <a class="app-menu__item <?= $data['page_id'] === 0 ? 'active' : '' ?>" href="<?= base_url() ?>/pos/dashboard">
+                    <i class="app-menu__icon bi bi-house-door"></i>
+                    <span class="app-menu__label">Inicio</span>
+                </a>
+            </li>
+            <?php if ($data_menu_employee(1)) : ?>
+                <li>
+                    <a <?= $data_menu_employee(1) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 1 ? 'active' : '' ?>" href=" <?= $data_menu_employee(1) ? base_url() . '/pos/sales' : base_url() . '/pos/Errors/no_permisos' ?>">
+                        <i class="app-menu__icon bi bi-cart"></i>
+                        <span class="app-menu__label"><?= $data_menu_employee(1) ? $data_menu_employee(1)['Interface'] : 'Vender' ?></span>
+                    </a>
+                </li>
+            <?php endif; ?>
+            <?php if ($data_menu_employee(2)) : ?>
+                <li>
+                    <a <?= $data_menu_employee(2) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 2 ? 'active' : '' ?>" href="<?= $data_menu_employee(2) ? base_url() . '/pos/movements' : base_url() . '/pos/Errors/no_permisos' ?>">
+                        <i class="app-menu__icon bi bi-pc-display-horizontal"></i>
+                        <span class="app-menu__label"><?= $data_menu_employee(2) ? $data_menu_employee(2)['Interface'] : 'Movimientos' ?></span>
+                    </a>
+                </li>
+            <?php endif; ?>
+            <?php if ($data_menu_employee(3)) : ?>
+                <li>
+                    <a <?= $data_menu_employee(3) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 3 ? 'active' : '' ?>" href="<?= $data_menu_employee(3) ? base_url() . '/pos/inventory' : base_url() . '/pos/Errors/no_permisos' ?>">
+                        <i class="app-menu__icon bi bi-box-seam"></i>
+                        <span class="app-menu__label"><?= $data_menu_employee(3) ? $data_menu_employee(3)['Interface'] : 'Inventario' ?></span>
+                    </a>
+                </li>
+            <?php endif; ?>
+            <?php if ($data_menu_employee(4)) : ?>
+                <li>
+                    <a <?= $data_menu_employee(4) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 4 ? 'active' : '' ?>" href="<?= $data_menu_employee(4) ? base_url() . '/pos/customers' : base_url() . '/pos/Errors/no_permisos' ?>">
+                        <i class="app-menu__icon bi bi-person-lines-fill"></i>
+                        <span class="app-menu__label"><?= $data_menu_employee(4) ? $data_menu_employee(4)['Interface'] : 'Clientes' ?></span>
+                    </a>
+                </li>
+            <?php endif; ?>
+            <?php if ($data_menu_employee(7)) : ?>
+                <li>
+                    <a <?= $data_menu_employee(7) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 7 ? 'active' : '' ?>" href="<?= $data_menu_employee(7) ? base_url() . '/pos/suppliers' : base_url() . '/pos/Errors/no_permisos' ?>">
+                        <i class="app-menu__icon bi bi-people"></i>
+                        <span class="app-menu__label"><?= $data_menu_employee(7) ? $data_menu_employee(7)['Interface'] : 'Proveedores' ?></span>
+                    </a>
+                </li>
+            <?php endif; ?>
+            <?php if ($data_menu_employee(5)) : ?>
+                <li>
+                    <a <?= $data_menu_employee(5) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 5 ? 'active' : '' ?>" href="<?= $data_menu_employee(5) ? base_url() . '/pos/employee' : base_url() . '/pos/Errors/no_permisos' ?>">
+                        <i class="app-menu__icon bi bi-people"></i>
+                        <span class="app-menu__label"><?= $data_menu_employee(5) ? $data_menu_employee(5)['Interface'] : 'Empleados' ?></span>
+                    </a>
+                </li>
+            <?php endif; ?>
+            <?php if ($data_menu_employee(6)) : ?>
+                <li>
+                    <a <?= $data_menu_employee(6) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 6 ? 'active' : '' ?>" href="<?= $data_menu_employee(6) ? base_url() . '/pos/roles' : base_url() . '/pos/Errors/no_permisos' ?>">
+                        <i class="app-menu__icon bi bi-shield-check"></i>
+                        <span class="app-menu__label"><?= $data_menu_employee(6) ? $data_menu_employee(6)['Interface'] : 'Roles' ?></span>
+                    </a>
+                </li>
+            <?php endif; ?>
 
         <?php endif; ?>
     </ul>
