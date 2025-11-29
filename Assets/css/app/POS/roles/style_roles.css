@@ -13,3 +13,76 @@ body {
 #roleReportModal dd {
   word-break: break-word;
 }
+
+/* Contenedor principal: alinea la caja y el texto */
+.cust-chk-wrapper {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  font-size: 0.95rem;
+  user-select: none; /* Evita que se seleccione el texto al dar clic rápido */
+  color: #4b5563; /* Gris oscuro suave */
+}
+
+/* Ocultar el input nativo del navegador */
+.cust-chk-wrapper input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* La cajita del checkbox (Diseño Personalizado) */
+.cust-chk-box {
+  position: relative;
+  height: 22px;
+  width: 22px;
+  background-color: #fff;
+  border: 2px solid #d1d5db; /* Borde gris claro */
+  border-radius: 6px; /* Bordes redondeados modernos */
+  margin-right: 10px; /* Espacio entre caja y texto */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* CREAR EL CHECK (EL TIC) CON CSS PURO */
+.cust-chk-box:after {
+  content: "";
+  position: absolute;
+  display: none; /* Oculto por defecto */
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* --- ESTADOS --- */
+
+/* Hover: Cuando pasas el mouse por encima */
+.cust-chk-wrapper:hover input ~ .cust-chk-box {
+  border-color: #4f46e5; /* Color Indigo (Mismo que tu botón) */
+  background-color: #f3f4f6;
+}
+
+/* Checked: Cuando está marcado */
+.cust-chk-wrapper input:checked ~ .cust-chk-box {
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+  transform: scale(1.05); /* Pequeño efecto de rebote */
+}
+
+/* Mostrar el tic cuando está marcado */
+.cust-chk-wrapper input:checked ~ .cust-chk-box:after {
+  display: block;
+}
+
+/* Disabled: Cuando está deshabilitado */
+.cust-chk-wrapper input:disabled ~ .cust-chk-box {
+  background-color: #e5e7eb;
+  border-color: #e5e7eb;
+  cursor: not-allowed;
+}

@@ -73,8 +73,18 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" id="btnAddRole" class="btn btn-primary"><i class="bi bi-save2"></i> Guardar</button>
+            <div class="modal-footer d-flex justify-content-between align-items-center">
+                <div class="">
+                    <label class="cust-chk-wrapper m-0">
+                        <input type="checkbox" class="checkAllPermissions">
+                        <span class="cust-chk-box"></span>
+                        <span class="fw-semibold user-select-none">Marcar todos</span>
+                    </label>
+                </div>
+                <button type="button" class="btn btn-primary" id="btnAddRole">
+                    <i class="bi bi-save2"></i>
+                    Guardar
+                </button>
             </div>
         </div>
     </div>
@@ -117,8 +127,18 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" id="btnUpdateRole" class="btn btn-primary"><i class="bi bi-save2"></i> Actualizar</button>
+            <div class="modal-footer d-flex justify-content-between align-items-center">
+                <div class="">
+                    <label class="cust-chk-wrapper m-0">
+                        <input type="checkbox" class="checkAllPermissions">
+                        <span class="cust-chk-box"></span>
+                        <span class="fw-semibold user-select-none">Marcar todos</span>
+                    </label>
+                </div>
+                <button type="button" class="btn btn-primary" id="btnUpdateRole">
+                    <i class="bi bi-save2"></i>
+                    Actualizar
+                </button>
             </div>
         </div>
     </div>

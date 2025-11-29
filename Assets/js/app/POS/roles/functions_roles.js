@@ -116,6 +116,7 @@ export class Roles {
 
     // * Open modal update role
     $(document).on("click", ".update_role", (event) => {
+      this.#cleanForm();
       let role_id = $(event.currentTarget).attr("data-id");
       this.apiRoles
         .get("getRole", {
@@ -130,7 +131,10 @@ export class Roles {
             $("#txtNameUpdate").val(response.data.role.name);
             $("#selectStatusUpdate").val(response.data.role.status);
             $("#txtDescriptionUpdate").val(response.data.role.description);
-            this.#btnUpdateRole.attr("data-role-id", response.data.role.idRoleApp);
+            this.#btnUpdateRole.attr(
+              "data-role-id",
+              response.data.role.idRoleApp
+            );
             this.#loadPermissionsUpdate(
               response.data.permissions_interface,
               response.data.permissions_app
@@ -148,24 +152,57 @@ export class Roles {
       let Permission = $(event.currentTarget).attr("data-permision");
       let checkPermision = $("#" + Permission + "_" + Interface);
 
+      if (!$(event.target).is("input[type='checkbox']")) {
+        checkPermision.prop("checked", !checkPermision.prop("checked"));
+      }
+
       if (!this.#permissions.get(Interface)) {
         this.#permissions.set(Interface, []);
       }
 
       if (checkPermision.prop("checked")) {
-        checkPermision.prop("checked", false);
+        if (this.#permissions.get(Interface).indexOf(Permission) === -1) {
+          this.#permissions.get(Interface).push(Permission);
+        }
+      } else {
         let INDEX = this.#permissions.get(Interface).indexOf(Permission);
         if (INDEX !== -1) {
           this.#permissions.get(Interface).splice(INDEX, 1);
         }
-      } else {
-        checkPermision.prop("checked", true);
-        if (this.#permissions.get(Interface).indexOf(Permission) === -1) {
-          this.#permissions.get(Interface).push(Permission);
-        }
       }
+    });
 
-      console.log(this.#permissions);
+    $(document).on("change", ".checkAllPermissions", (event) => {
+      const isChecked = $(event.target).prop("checked");
+
+      const allInputs = $(
+        ".checkPermision input[type='checkbox']:not(:disabled)"
+      );
+
+      allInputs.prop("checked", isChecked);
+
+      allInputs.each((index, element) => {
+        let parent = $(element).closest(".checkPermision");
+        let Interface = parent.attr("data-interface");
+        let Permission = parent.attr("data-permision");
+
+        if (!this.#permissions.get(Interface)) {
+          this.#permissions.set(Interface, []);
+        }
+
+        let currentPermissions = this.#permissions.get(Interface);
+
+        if (isChecked) {
+          if (currentPermissions.indexOf(Permission) === -1) {
+            currentPermissions.push(Permission);
+          }
+        } else {
+          let idx = currentPermissions.indexOf(Permission);
+          if (idx !== -1) {
+            currentPermissions.splice(idx, 1);
+          }
+        }
+      });
     });
   };
 
@@ -176,32 +213,29 @@ export class Roles {
     this.#permissions.clear();
     let html = "";
     permissionsInterface.forEach((element) => {
-      // console.log(permissionsApp);
-      // console.log(element);
       let perApp = permissionsApp.find(
         (item) => item.plan_interface_id === element.plan_interface_id
       );
 
       if (perApp) {
-        if (!this.#permissions.get(perApp.plan_interface_id)) {
-          this.#permissions.set(perApp.plan_interface_id, []);
+        const planInterfaceId = perApp.plan_interface_id.toString();
+        if (!this.#permissions.get(planInterfaceId)) {
+          this.#permissions.set(planInterfaceId, []);
         }
         perApp.create == 1
-          ? this.#permissions.get(perApp.plan_interface_id).push("create")
+          ? this.#permissions.get(planInterfaceId).push("create")
           : false;
         perApp.read == 1
-          ? this.#permissions.get(perApp.plan_interface_id).push("read")
+          ? this.#permissions.get(planInterfaceId).push("read")
           : false;
         perApp.update == 1
-          ? this.#permissions.get(perApp.plan_interface_id).push("update")
+          ? this.#permissions.get(planInterfaceId).push("update")
           : false;
         perApp.delete == 1
-          ? this.#permissions.get(perApp.plan_interface_id).push("delete")
+          ? this.#permissions.get(planInterfaceId).push("delete")
           : false;
       }
-      // console.log(perApp && perApp.read == 1 ? "checked" : "");
 
-      // return;
       html += `<div class="d-flex gap-2 flex-column mb-3">
                       <h6 class="fw-normal"><i class="bi bi-file-easel"></i> Interfaz: <strong>${
                         element.interface_name
@@ -221,7 +255,7 @@ export class Roles {
                                 element.create == 1
                                   ? true
                                   : "text-decoration-line-through text-danger"
-                              }" style="cursor: pointer;">
+                              }" style="cursor: pointer; pointer-events: none;">
                               Crear
                               </label>
                           </div>
@@ -239,7 +273,7 @@ export class Roles {
                                 element.read == 1
                                   ? true
                                   : "text-decoration-line-through text-danger"
-                              }" style="cursor: pointer;">
+                              }" style="cursor: pointer; pointer-events: none;">
                               Leer
                               </label>
                           </div>
@@ -257,7 +291,7 @@ export class Roles {
                                 element.update == 1
                                   ? true
                                   : "text-decoration-line-through text-danger"
-                              }" style="cursor: pointer;">
+                              }" style="cursor: pointer; pointer-events: none;">
                               Actualizar
                               </label>
                           </div>
@@ -275,7 +309,7 @@ export class Roles {
                                 element.delete == 1
                                   ? true
                                   : "text-decoration-line-through text-danger"
-                              }" style="cursor: pointer;">
+                              }" style="cursor: pointer; pointer-events: none;">
                               Eliminar
                               </label>
                           </div>
@@ -319,7 +353,7 @@ export class Roles {
                                 element.create == 1
                                   ? true
                                   : "text-decoration-line-through text-danger"
-                              }" style="cursor: pointer;">
+                              }" style="cursor: pointer; pointer-events: none;">
                               Crear
                               </label>
                           </div>
@@ -337,7 +371,7 @@ export class Roles {
                                 element.read == 1
                                   ? true
                                   : "text-decoration-line-through text-danger"
-                              }" style="cursor: pointer;">
+                              }" style="cursor: pointer; pointer-events: none;">
                               Leer
                               </label>
                           </div>
@@ -355,7 +389,7 @@ export class Roles {
                                 element.update == 1
                                   ? true
                                   : "text-decoration-line-through text-danger"
-                              }" style="cursor: pointer;">
+                              }" style="cursor: pointer; pointer-events: none;">
                               Actualizar
                               </label>
                           </div>
@@ -373,7 +407,7 @@ export class Roles {
                                 element.delete == 1
                                   ? true
                                   : "text-decoration-line-through text-danger"
-                              }" style="cursor: pointer;">
+                              }" style="cursor: pointer; pointer-events: none;">
                               Eliminar
                               </label>
                           </div>
@@ -481,6 +515,7 @@ export class Roles {
     $("#txtdDescription").val(null);
     $("#txtNameUpdate").val(null);
     $("#txtdDescriptionUpdate").val(null);
+    $(".checkAllPermissions").prop("checked", false);
     this.#permissions.clear();
   };
 }
