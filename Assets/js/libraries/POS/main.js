@@ -55,7 +55,6 @@
     dropdownList.innerHTML = `
     <li class="px-3 py-2 text-muted small">No encontramos negocios registrados.</li>
     <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#addBusinessModal">Agregar negocio</a></li>
   `;
   }
   /**

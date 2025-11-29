@@ -73,7 +73,7 @@ $linkestadointerfaz = base_url() . '/pos/Errors/estado_plan_interfaz';
                         <span>Configuraciones</span>
                     </a>-->
                     <?php
-                    if ($data_menu(8)):
+                    if ($data_menu(8) && $data_menu(8)['create'] === '1'):
                     ?>
                         <a href="#" class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0" data-bs-toggle="modal" data-bs-target="#addBusinessModal">
                             <i class="bi bi-plus-circle"></i>
