@@ -17,10 +17,15 @@ class MovementsModel extends Mysql
             END AS voucher_name,
             vh.amount,
             pm.name,
-            vh.date_time
+            vh.date_time,
+            CONCAT(p.`names`, ' ', p.lastname) AS fullname
         FROM voucher_header vh
         INNER JOIN payment_method pm
             ON vh.payment_method_id = pm.idPaymentMethod
+      	INNER JOIN user_app ua
+      	ON vh.user_app_id = ua.idUserApp
+      	INNER JOIN people p
+      	ON ua.people_id = p.idPeople
         WHERE vh.business_id = ?";
 
         $arrValues = [$businessId];
@@ -57,17 +62,23 @@ class MovementsModel extends Mysql
             vd.sales_price_product,
             vh.amount,
             vh.percentage_discount,
-            vd.stock_product
+            vd.stock_product,
+            CONCAT(p.`names`, ' ', p.lastname) AS fullname
         FROM voucher_detail vd
         INNER JOIN voucher_header vh
             ON vd.voucherheader_id = vh.idVoucherHeader
+        INNER JOIN user_app ua
+            ON vh.user_app_id = ua.idUserApp
+        INNER JOIN people p
+            ON ua.people_id = p.idPeople
         WHERE vh.idVoucherHeader = ?
           AND vh.business_id = ?
         ORDER BY vd.name_product ASC;
-        SQL;
+    SQL;
 
         return $this->select_all($sql, [$voucherId, $businessId]);
     }
+
 
     public function getTotals(int $businessId, $minDate = null, $maxDate = null, $searchConcept = null): array
     {

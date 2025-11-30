@@ -101,14 +101,16 @@ class Movements extends Controllers
 
         // Traemos solo los movimientos de ese negocio con filtros
         $arrData = $this->model->select_movements($businessId, $minDate, $maxDate, $searchConcept);
-
+        
         $cont = 1; // Contador para la tabla
 
+
         foreach ($arrData as $key => $value) {
+            
             $idVoucher = $value['idVoucherHeader'];
 
             $arrData[$key]['cont'] = $cont;
-
+            $arrData[$key]['date_time'] = dateFormat($value['date_time']);
             $arrData[$key]['actions'] = '
                 <div class="btn-group">
                     <button
@@ -165,9 +167,10 @@ class Movements extends Controllers
             'name_bussines'       => $headerRow['name_bussines'],
             'direction_bussines'  => $headerRow['direction_bussines'],
             'document_bussines'   => $headerRow['document_bussines'],
-            'date_time'           => $headerRow['date_time'],
+            'date_time'           => dateFormat($headerRow['date_time']),
             'name_customer'       => $headerRow['name_customer'],
             'direction_customer'  => $headerRow['direction_customer'],
+            'fullname'            => $headerRow['fullname'],
             'amount'              => $headerRow['amount'],
             'percentage_discount' => $headerRow['percentage_discount'],
         ];

@@ -127,6 +127,7 @@
                                     <th>Concepto</th>
                                     <th>Valor</th>
                                     <th>Medios de Pago</th>
+                                    <th>Nombre de Vendedor</th>
                                     <th>Fecha y Hora</th>
 
                                 </tr>
@@ -141,69 +142,7 @@
 </main>
 <?= footerPos($data) ?>
 
-<!-- Modal: Registrar producto -->
-<div class="modal fade" id="modalProduct" tabindex="-1" aria-labelledby="modalProductLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <form class="modal-content" id="formSaveProduct" autocomplete="off">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalProductLabel">Registrar producto</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <?= csrf(); ?>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="txtProductName" class="form-label">Nombre <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="txtProductName" name="txtProductName" maxlength="255"
-                            required placeholder="Ej. Café molido premium">
-                    </div>
-                    <div class="col-md-6">
-                        <label for="txtProductCategory" class="form-label">Categoría <span class="text-danger">*</span></label>
-                        <select class="form-select" id="txtProductCategory" name="txtProductCategory" required>
-                            <option value="" selected disabled>Selecciona una categoría</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="txtProductSupplier" class="form-label">Proveedor <span class="text-danger">*</span></label>
-                        <select class="form-select" id="txtProductSupplier" name="txtProductSupplier" required>
-                            <option value="" selected disabled>Selecciona un proveedor</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="txtProductMeasurement" class="form-label">Unidad de medida <span class="text-danger">*</span></label>
-                        <select class="form-select" id="txtProductMeasurement" name="txtProductMeasurement" required>
-                            <option value="" selected disabled>Selecciona una unidad</option>
-                        </select>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="txtProductStock" class="form-label">Stock (opcional)</label>
-                        <input type="number" step="0.01" min="0" class="form-control" id="txtProductStock"
-                            name="txtProductStock" placeholder="0.00">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="txtProductPurchasePrice" class="form-label">Precio compra <span class="text-danger">*</span></label>
-                        <input type="number" step="0.01" min="0" class="form-control" id="txtProductPurchasePrice"
-                            name="txtProductPurchasePrice" required placeholder="0.00">
-                    </div>
-                    <div class="col-md-4">
-                        <label for="txtProductSalesPrice" class="form-label">Precio venta <span class="text-danger">*</span></label>
-                        <input type="number" step="0.01" min="0" class="form-control" id="txtProductSalesPrice"
-                            name="txtProductSalesPrice" required placeholder="0.00">
-                    </div>
-                    <div class="col-12">
-                        <label for="txtProductDescription" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="txtProductDescription" name="txtProductDescription"
-                            rows="3" placeholder="Describe las características principales del producto"></textarea>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
-            </div>
-        </form>
-    </div>
-</div>
+
 
 <!-- Modal Comprobante -->
 <div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
@@ -216,7 +155,7 @@
             </div>
 
             <div class="modal-body">
-                <div class="voucher-container p-3">
+                <div id="voucherContainer" class="voucher-container p-3">
 
                     <!-- ENCABEZADO -->
                     <div class="text-center mb-3">
@@ -245,6 +184,12 @@
                                 <div class="small">
                                     <span class="fw-semibold">Dirección:</span>
                                     <span id="direction_customer">Sin dirección</span>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <div class="small">
+                                    <span class="fw-semibold">Nombre Vendedor:</span>
+                                    <span id="fullname">Sin vendedor</span>
                                 </div>
                             </div>
                         </div>
@@ -298,8 +243,11 @@
             </div>
 
             <div class="modal-footer">
+                <button type="button" class="btn btn-warning" id="download-png">Exportar PNG</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                
             </div>
+            
 
         </div>
     </div>
