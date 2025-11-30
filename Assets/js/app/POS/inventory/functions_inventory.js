@@ -945,7 +945,7 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-
+      showAlert({ title: "Registrando producto..." }, "loading");
       const formData = new FormData(form);
       try {
         const response = await fetch(`${base_url}/pos/Inventory/setProduct`, {
@@ -965,7 +965,11 @@
             (data.status ? "Operación exitosa" : "Ocurrió un error"),
           message: data.message || "",
         });
-
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
+        }
         if (data.status) {
           form.reset();
           populateSelect(
@@ -1007,7 +1011,7 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-
+      showAlert({ title: "Actualizando producto..." }, "loading");
       const formData = new FormData(form);
       try {
         const response = await fetch(
@@ -1030,7 +1034,11 @@
             (data.status ? "Operación exitosa" : "Ocurrió un error"),
           message: data.message || "",
         });
-
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
+        }
         if (data.status) {
           hideModal(modalUpdate);
           productsTable.ajax.reload(null, false);
@@ -1172,6 +1180,11 @@
             data.message ||
             "No fue posible obtener la información del producto.",
         });
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
+        }
         return;
       }
 

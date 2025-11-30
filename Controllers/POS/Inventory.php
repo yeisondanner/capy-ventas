@@ -54,6 +54,7 @@ class Inventory extends Controllers
      */
     public function getProducts(): void
     {
+        validate_permission_app(3, "r");
         $businessId = $this->getBusinessId();
         $products   = $this->model->selectProducts($businessId);
         $currency   = getCurrency();
@@ -80,11 +81,11 @@ class Inventory extends Controllers
                 : '<span class="badge badge-secondary bg-secondary"><i class="bi bi-slash-circle"></i> Inactivo</span>';
 
             $products[$key]['actions'] = '<div class="btn-group btn-group-sm" role="group">'
-                . '<button class="btn btn-outline-secondary text-secondary report-product" data-id="' . (int) $product['idProduct'] . '" data-name="' . $productName . '" title="Ver reporte del producto">'
+                . '<button class="btn btn-outline-secondary report-product" data-id="' . (int) $product['idProduct'] . '" data-name="' . $productName . '" title="Ver reporte del producto">'
                 . '<i class="bi bi-file-earmark-text"></i></button>'
-                . '<button class="btn btn-outline-primary text-primary edit-product" data-id="' . (int) $product['idProduct'] . '">'
+                . '<button class="btn btn-outline-primary edit-product" data-id="' . (int) $product['idProduct'] . '">'
                 . '<i class="bi bi-pencil-square"></i></button>'
-                . '<button class="btn btn-outline-danger text-danger delete-product" data-id="' . (int) $product['idProduct'] . '" data-name="' . $productName . '" data-token="' . csrf(false) . '">'
+                . '<button class="btn btn-outline-danger delete-product" data-id="' . (int) $product['idProduct'] . '" data-name="' . $productName . '" data-token="' . csrf(false) . '">'
                 . '<i class="bi bi-trash"></i></button>'
                 . '</div>';
 
@@ -101,13 +102,13 @@ class Inventory extends Controllers
      */
     public function setProduct(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(3, "c", false)['status']) ? toJson(validate_permission_app(3, "c", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
         $userId = $this->getUserId();
         $this->validateCsrfToken($_POST['token'] ?? '', $userId);
-
         $requiredFields = [
             'txtProductName',
             'txtProductCategory',
@@ -116,13 +117,7 @@ class Inventory extends Controllers
             'txtProductPurchasePrice',
             'txtProductSalesPrice',
         ];
-
-        foreach ($requiredFields as $field) {
-            if (!isset($_POST[$field])) {
-                $this->responseError('El campo ' . $field . ' es obligatorio.');
-            }
-        }
-
+        validateFields($requiredFields);
         $businessId    = $this->getBusinessId();
         $name          = ucwords(strClean($_POST['txtProductName'] ?? ''));
         $categoryId    = (int) ($_POST['txtProductCategory'] ?? 0);
@@ -194,6 +189,8 @@ class Inventory extends Controllers
      */
     public function getProduct(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(3, "r", false)['status']) ? toJson(validate_permission_app(3, "r", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -248,6 +245,8 @@ class Inventory extends Controllers
      */
     public function updateProduct(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(3, "u", false)['status']) ? toJson(validate_permission_app(3, "u", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -355,6 +354,8 @@ class Inventory extends Controllers
      */
     public function deleteProduct(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(3, "d", false)['status']) ? toJson(validate_permission_app(3, "d", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             $this->responseError('Método de solicitud no permitido.');
         }
