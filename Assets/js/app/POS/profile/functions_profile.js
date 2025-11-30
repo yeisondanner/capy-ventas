@@ -1,104 +1,49 @@
-'use strict';
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Tooltip del badge de suscripción
-    const billingBadge = document.querySelector('.tile .badge.bg-info');
+(function () {
+  "use strict";
+  // Formulario de edición de perfil (solo 6 campos)
+  const formEditProfile = document.getElementById("formEditProfile");
+  // Tooltip del badge de suscripción
+  const billingBadge = document.querySelector(".tile .badge.bg-info");
+  //modal del edit
+  const modalEditProfile = document.getElementById("modalEditProfile");
+  document.addEventListener("DOMContentLoaded", () => {
     if (billingBadge) {
-        billingBadge.title = 'Estado de la suscripción y forma de renovación';
+      billingBadge.title = "Estado de la suscripción y forma de renovación";
     }
+    // Llamada a la función para actualizar el perfil
+    update_profile();
+  });
+  /**
+   * Actualizar perfil de usuario
+   */
+  function update_profile() {
+    formEditProfile.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-    // Formulario de edición de perfil (solo 6 campos)
-   'use strict';
+      const formData = new FormData(formEditProfile);
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Tooltip del badge de suscripción
-    const billingBadge = document.querySelector('.tile .badge.bg-info');
-    if (billingBadge) {
-        billingBadge.title = 'Estado de la suscripción y forma de renovación';
-    }
+      try {
+        // Usamos la URL definida en el action del formulario
+        const url = formEditProfile.getAttribute("action");
 
-    // Formulario de edición de perfil (solo 6 campos)
-    const formEditProfile = document.getElementById('formEditProfile');
-    if (formEditProfile) {
-        formEditProfile.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const formData = new FormData(formEditProfile);
-
-            try {
-                // Usamos la URL definida en el action del formulario
-                const url = formEditProfile.getAttribute('action');
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-
-                if (data.status) {
-                    if (typeof showAlert !== 'undefined') {
-                        showAlert.fire('Éxito', data.msg, 'success').then(() => {
-                            window.location.reload();
-                        });
-                    } else {
-                        alert(data.msg);
-                        window.location.reload();
-                    }
-                } else {
-                    if (typeof showAlert !== 'undefined') {
-                        showAlert.fire('Aviso', data.msg, 'warning');
-                    } else {
-                        alert(data.msg || 'No se pudo actualizar el perfil.');
-                    }
-                }
-            } catch (error) {
-                console.error('Error al actualizar el perfil:', error);
-                if (typeof showAlert !== 'undefined') {
-                    showAlert.fire('Error', 'Ocurrió un error al actualizar el perfil.', 'error');
-                } else {
-                    alert('Ocurrió un error al actualizar el perfil.');
-                }
-            }
+        const response = await fetch(url, {
+          method: "POST",
+          body: formData,
         });
-    }
-});
-
-
-            try {
-                const url = base_url + '/pos/profile/updateProfile';
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                const data = await response.json();
-
-                if (data.status) {
-                    if (typeof showAlert !== 'undefined') {
-                        showAlert.fire('Éxito', data.msg, 'success').then(() => {
-                            window.location.reload();
-                        });
-                    } else {
-                        alert(data.msg);
-                        window.location.reload();
-                    }
-                } else {
-                    if (typeof showAlert !== 'undefined') {
-                        showAlert.fire('Aviso', data.msg, 'warning');
-                    } else {
-                        alert(data.msg || 'No se pudo actualizar el perfil.');
-                    }
-                }
-            } catch (error) {
-                console.error('Error al actualizar el perfil:', error);
-                if (typeof showAlert !== 'undefined') {
-                    showAlert.fire('Error', 'Ocurrió un error al actualizar el perfil.', 'error');
-                } else {
-                    alert('Ocurrió un error al actualizar el perfil.');
-                }
-            }
+        const data = await response.json();
+        if (data.status) {
+          formEditProfile.reset();
+          $(modalEditProfile).modal("hide");
+        }
+        showAlert(data);
+      } catch (error) {
+        showAlert({
+          title: "Ocurrio un error inesperado",
+          message: "Ocurrio un error con el servidor: " + error.name,
+          icon: "error",
+          timer: 4000,
         });
-    }
-});
+      }
+    });
+  }
+})();

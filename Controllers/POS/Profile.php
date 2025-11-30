@@ -209,32 +209,20 @@ class Profile extends Controllers
 
         return $formatted;
     }
-        /**
+    /**
      * Actualiza el perfil del usuario autenticado (6 campos del formulario).
      */
     public function updateProfile(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            $arrResponse = [
-                'status' => false,
-                'msg'    => 'Método de solicitud no permitido.'
-            ];
-            header('Content-Type: application/json; charset=utf-8');
-            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-            die();
+            $this->responseError('Método de solicitud no permitido.');
         }
 
         $userInfo  = $_SESSION[$this->nameVarLoginInfo] ?? [];
         $userAppId = (int) ($userInfo['idUser'] ?? 0);
 
         if ($userAppId <= 0) {
-            $arrResponse = [
-                'status' => false,
-                'msg'    => 'No se pudo identificar al usuario.'
-            ];
-            header('Content-Type: application/json; charset=utf-8');
-            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-            die();
+            $this->responseError("No se pudo identificar al usuario.");
         }
 
         // Solo los 6 campos del formulario
@@ -246,13 +234,7 @@ class Profile extends Controllers
         $birthDate = $_POST['birthDate'] ?? null;
 
         if ($fullname === '' || $username === '' || $email === '') {
-            $arrResponse = [
-                'status' => false,
-                'msg'    => 'Nombre completo, usuario y correo son obligatorios.'
-            ];
-            header('Content-Type: application/json; charset=utf-8');
-            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-            die();
+            $this->responseError('Nombre completo, usuario y correo son obligatorios.');
         }
 
         $dataUpdate = [
@@ -276,16 +258,29 @@ class Profile extends Controllers
                 'status' => true,
                 'msg'    => 'Perfil actualizado correctamente.'
             ];
-        } else {
-            $arrResponse = [
-                'status' => false,
-                'msg'    => 'No se realizaron cambios o ocurrió un error al actualizar.'
+            $data = [
+                'title'  => 'Información actualizada',
+                'message' => 'Perfil actualizado correctamente.',
+                'type'   => 'success',
+                'icon'   => 'success',
+                'status' => true,
             ];
+
+            toJson($data);
+        } else {
+            $this->responseError('No se realizaron cambios o ocurrió un error al actualizar.');
         }
-
-        header('Content-Type: application/json; charset=utf-8');
-        echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
-        die();
     }
+    private function responseError(string $message): void
+    {
+        $data = [
+            'title'  => 'Ocurrió un error',
+            'message' => $message,
+            'type'   => 'error',
+            'icon'   => 'error',
+            'status' => false,
+        ];
 
+        toJson($data);
+    }
 }
