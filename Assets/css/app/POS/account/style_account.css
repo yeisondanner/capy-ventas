@@ -13,11 +13,6 @@ body {
   background-color: var(--bs-primary) !important;
 }
 
-.bg-brand-yellow {
-  background-color: #fff7cd; /* Color aproximado de la imagen */
-  color: #5d5d5d;
-}
-
 /* Estilos para el Stepper (Los pasos 1, 2, 3) */
 .step-item {
   position: relative;
@@ -36,13 +31,13 @@ body {
   z-index: 2;
   position: relative;
   background-color: transparent; /* Por defecto transparente */
-  border: 2px solid #eec643; /* Borde dorado/amarillo oscuro */
+  border: 2px solid var(--bs-primary); /* Borde dorado/amarillo oscuro */
   color: #5d5d5d;
 }
 
 /* Estado Activo (Paso 1) */
 .step-active .step-circle {
-  background-color: #eec643;
+  background-color: var(--bs-primary);
   color: white;
 }
 
@@ -58,7 +53,7 @@ body {
   top: 40px;
   bottom: 0;
   width: 2px;
-  background-color: #eec643;
+  background-color: var(--bs-primary);
   height: 40px; /* Altura de la línea */
 }
 
@@ -77,11 +72,10 @@ body {
   z-index: 1000;
   transition: all 0.3s ease-in-out;
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.08);
     box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
   }
 }
-
 
 .account-content .account-form .input-group .form-control {
   border-radius: 1.2rem;
@@ -91,7 +85,7 @@ body {
 
 .account-content .account-form .input-group .form-control:focus {
   border-color: var(--bs-primary);
-  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+  box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary), 0.25);
 }
 
 .account-content .account-form .input-group .input-group-text {

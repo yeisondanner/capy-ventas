@@ -4,7 +4,7 @@ export class Account {
     this.#funcionPrueba();
   }
 
-  #funcionPrueba() {
+  #funcionPrueba = () => {
     console.log("Estamos en el registro de cuenta");
   }
 }

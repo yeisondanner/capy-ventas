@@ -6,7 +6,7 @@ export class ApiAccount {
 
   async get(endpoint, params = {}) {
     try {
-      let url = new URL(`${this.URL}/Register/${endpoint}`);
+      let url = new URL(`${this.URL}/Account/${endpoint}`);
       
       if (Object.keys(params).length > 0) {
         url.search = new URLSearchParams(params).toString();
@@ -31,7 +31,7 @@ export class ApiAccount {
 
   async post(endpoint, body) {
     try {
-      const response = await fetch(`${this.URL}/Register/${endpoint}`, {
+      const response = await fetch(`${this.URL}/Account/${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

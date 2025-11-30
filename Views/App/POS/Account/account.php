@@ -27,7 +27,7 @@
     <section class="d-flex justify-content-center align-items-center min-vh-100 p-3">
         <div class="card shadow-lg border-0 overflow-hidden w-100 rounded-3" style="max-width: 1000px;">
             <div class="row g-0 account-content">
-                <div class="col-lg-5 bg-brand-yellow p-5 d-flex flex-column justify-content-between">
+                <div class="d-none d-md-block col-md-5 bg-warning-subtle p-5 d-flex flex-column justify-content-between">
                     <div>
                         <div class="mb-5 d-flex align-items-center gap-2">
                             <div class="bg-info text-white rounded py-1 px-2"><i class="bi bi-patch-check"></i></div>
@@ -75,7 +75,7 @@
                     </div>
 
                 </div>
-                <div class="col-lg-7 bg-white p-5">
+                <div class="col-md-7 bg-white p-5">
                     <div class="text-center mb-4 mt-lg-5">
                         <div class="login-head">
                             <img src="<?= media() ?>/carpincho.png" alt="">
@@ -96,7 +96,7 @@
                         </div>
 
                         <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="termsCheck" checked>
+                            <input class="form-check-input" type="checkbox" id="termsCheck">
                             <label class="form-check-label small text-muted" for="termsCheck">
                                 He leído y acepto los <a href="#" class="text-dark fw-bold">Términos y Condiciones</a>, y autorizo expresamente el tratamiento de mis datos personales conforme a la <a href="#" class="text-dark fw-bold">Política de Privacidad</a>.
                             </label>
@@ -123,6 +123,8 @@
     <script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/SweerAlert2.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
+    <script type="module" src="<?= media() ?>/js/app/POS/account/functions_account_api.js?<?= versionSystem() ?>"></script>
+    <script type="module" src="<?= media() ?>/js/app/POS/account/functions_account.js?<?= versionSystem() ?>"></script>
     <script type="module" src="<?= media() ?>/js/app/POS/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
 </body>
 
