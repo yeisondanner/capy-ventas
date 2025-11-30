@@ -78,7 +78,7 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
             class="btn btn-sm btn-outline-primary"
             data-bs-toggle="modal"
             data-bs-target="#modalEditProfile">
-        <i class="bi bi-pencil-square"></i> Editar
+        <i class="bi bi-pencil-square"></i> Editar Perfil
     </button>
 </div>
 
