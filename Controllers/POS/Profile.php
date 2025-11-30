@@ -209,4 +209,83 @@ class Profile extends Controllers
 
         return $formatted;
     }
+        /**
+     * Actualiza el perfil del usuario autenticado (6 campos del formulario).
+     */
+    public function updateProfile(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $arrResponse = [
+                'status' => false,
+                'msg'    => 'Método de solicitud no permitido.'
+            ];
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            die();
+        }
+
+        $userInfo  = $_SESSION[$this->nameVarLoginInfo] ?? [];
+        $userAppId = (int) ($userInfo['idUser'] ?? 0);
+
+        if ($userAppId <= 0) {
+            $arrResponse = [
+                'status' => false,
+                'msg'    => 'No se pudo identificar al usuario.'
+            ];
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            die();
+        }
+
+        // Solo los 6 campos del formulario
+        $fullname  = trim($_POST['fullname'] ?? '');
+        $username  = trim($_POST['username'] ?? '');
+        $email     = trim($_POST['email'] ?? '');
+        $phone     = trim($_POST['phone'] ?? '');
+        $country   = trim($_POST['country'] ?? '');
+        $birthDate = $_POST['birthDate'] ?? null;
+
+        if ($fullname === '' || $username === '' || $email === '') {
+            $arrResponse = [
+                'status' => false,
+                'msg'    => 'Nombre completo, usuario y correo son obligatorios.'
+            ];
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+            die();
+        }
+
+        $dataUpdate = [
+            'fullname'  => $fullname,
+            'username'  => $username,
+            'email'     => $email,
+            'phone'     => $phone,
+            'country'   => $country,
+            'birthDate' => $birthDate,
+        ];
+
+        $requestUpdate = $this->model->updateUserProfile($userAppId, $dataUpdate);
+
+        if ($requestUpdate) {
+            // Opcional: refrescar datos básicos de la sesión
+            $_SESSION[$this->nameVarLoginInfo]['name']  = $fullname;
+            $_SESSION[$this->nameVarLoginInfo]['user']  = $username;
+            $_SESSION[$this->nameVarLoginInfo]['email'] = $email;
+
+            $arrResponse = [
+                'status' => true,
+                'msg'    => 'Perfil actualizado correctamente.'
+            ];
+        } else {
+            $arrResponse = [
+                'status' => false,
+                'msg'    => 'No se realizaron cambios o ocurrió un error al actualizar.'
+            ];
+        }
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($arrResponse, JSON_UNESCAPED_UNICODE);
+        die();
+    }
+
 }

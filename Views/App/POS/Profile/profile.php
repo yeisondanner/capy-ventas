@@ -37,14 +37,16 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
     <div class="row g-4">
         <div class="col-lg-4">
             <div class="tile profile-card h-100">
-                <div class="tile-title-w-btn d-flex align-items-center">
+                <div class="tile-title-w-btn d-flex align-items-center justify-content-between">
                     <div>
                         <h3 class="tile-title mb-0">Datos del usuario</h3>
                         <small class="text-muted">Información básica de tu cuenta</small>
                     </div>
-                    <span class="badge bg-<?= ($user['status'] ?? '') === 'Activo' ? 'success' : 'secondary' ?>">
-                        <?= htmlspecialchars($user['status'] ?? 'Desconocido', ENT_QUOTES, 'UTF-8'); ?>
-                    </span>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge bg-<?= ($user['status'] ?? '') === 'Activo' ? 'success' : 'secondary' ?>">
+                            <?= htmlspecialchars($user['status'] ?? 'Desconocido', ENT_QUOTES, 'UTF-8'); ?>
+                        </span>
+                    </div>
                 </div>
                 <div class="d-flex align-items-center gap-3 mt-3">
                     <div class="avatar-wrapper">
@@ -70,21 +72,20 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                         <p class="mb-1 text-muted">Nacimiento</p>
                         <p class="mb-0 fw-semibold"><?= formatDateProfile($user['birthDate'] ?? null, false); ?></p>
                     </div>
-                    <div class="col-6">
-                        <p class="mb-1 text-muted">Registro</p>
-                        <p class="mb-0 fw-semibold"><?= formatDateProfile($user['registeredAt'] ?? null); ?></p>
-                    </div>
-                    <div class="col-6">
-                        <p class="mb-1 text-muted">Última actualización</p>
-                        <p class="mb-0 fw-semibold"><?= formatDateProfile($user['updatedAt'] ?? null); ?></p>
-                    </div>
-                    <div class="col-12">
-                        <p class="mb-1 text-muted">Vigencia del plan</p>
-                        <p class="mb-0 fw-semibold"><?= formatDateProfile($user['planExpiresAt'] ?? null); ?></p>
-                    </div>
+
+                     <div class="d-flex justify-content-end mt-3">
+    <button type="button"
+            class="btn btn-sm btn-outline-primary"
+            data-bs-toggle="modal"
+            data-bs-target="#modalEditProfile">
+        <i class="bi bi-pencil-square"></i> Editar
+    </button>
+</div>
+
                 </div>
             </div>
         </div>
+        
         <div class="col-lg-8">
             <div class="tile h-100">
                 <div class="tile-title-w-btn d-flex align-items-center">
@@ -157,7 +158,7 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                     <tr>
                         <th>Boleta</th>
                         <th>Plan</th>
-                        <th>Periodo</th>
+                        <th>Periodo</td>
                         <th>Inicio</th>
                         <th>Fin</th>
                         <th>Subtotal</th>
@@ -249,4 +250,90 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
         </div>
     </div>
 </main>
+<!-- Modal Editar Perfil -->
+<div class="modal fade" id="modalEditProfile" tabindex="-1" aria-labelledby="modalEditProfileLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditProfileLabel">
+                    <i class="bi bi-pencil-square"></i> Editar perfil
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+    <form id="formEditProfile"
+      method="post"
+      action="<?= base_url() ?>/pos/profile/updateProfile"
+      autocomplete="off">
+
+                <div class="modal-body">
+                    <div class="row g-3">
+
+                        <div class="col-md-8">
+                            <label for="fullname" class="form-label fw-semibold">Nombre completo</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="fullname"
+                                   name="fullname"
+                                   value="<?= htmlspecialchars($user['fullname'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                        </div>
+
+                        <div class="col-md-4">
+                            <label for="username" class="form-label fw-semibold">Usuario</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="username"
+                                   name="username"
+                                   value="<?= htmlspecialchars($user['user'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="email" class="form-label fw-semibold">Correo electrónico</label>
+                            <input type="email"
+                                   class="form-control"
+                                   id="email"
+                                   name="email"
+                                   value="<?= htmlspecialchars($user['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label fw-semibold">Teléfono</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="phone"
+                                   name="phone"
+                                   value="<?= htmlspecialchars($user['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="country" class="form-label fw-semibold">País</label>
+                            <input type="text"
+                                   class="form-control"
+                                   id="country"
+                                   name="country"
+                                   value="<?= htmlspecialchars($user['country'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="birthDate" class="form-label fw-semibold">Fecha de nacimiento</label>
+                            <input type="date"
+                                   class="form-control"
+                                   id="birthDate"
+                                   name="birthDate"
+                                   value="<?= !empty($user['birthDate']) ? date('Y-m-d', strtotime($user['birthDate'])) : ''; ?>">
+                        </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">
+                        Guardar cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 <?= footerPos($data) ?>
