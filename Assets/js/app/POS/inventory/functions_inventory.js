@@ -1187,13 +1187,10 @@
         }
         return;
       }
-
       const form = document.getElementById("formUpdateProduct");
       if (!form) return;
-
       const product = data.data;
       form.reset();
-
       populateSelect(
         document.getElementById("update_txtProductCategory"),
         cachedCategories,
@@ -1209,7 +1206,6 @@
         cachedMeasurements,
         "Selecciona una unidad"
       );
-
       document.getElementById("update_txtProductId").value = product.idProduct;
       document.getElementById("update_txtProductName").value = product.name;
       document.getElementById(
@@ -1229,7 +1225,6 @@
         product.sales_price;
       document.getElementById("update_txtProductDescription").value =
         product.description || "";
-
       showModal(modalUpdate);
     } catch (error) {
       console.error("Error obteniendo producto", error);
@@ -1240,7 +1235,6 @@
       });
     }
   }
-
   /**
    * Obtiene los datos del producto seleccionado y muestra el modal de reporte.
    *
@@ -1273,6 +1267,11 @@
             data.message ||
             "No fue posible obtener la información del producto.",
         });
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
+        }
         return;
       }
 
