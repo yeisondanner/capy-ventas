@@ -758,7 +758,13 @@
       if (!result.isConfirmed) {
         return;
       }
-
+      showAlert(
+        {
+          title: "Eliminando categoría...",
+          message: "Por favor, espera mientras se elimina la categoría.",
+        },
+        "loading"
+      );
       try {
         const response = await fetch(
           `${base_url}/pos/Inventory/deleteCategory`,
