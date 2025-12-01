@@ -551,6 +551,8 @@ class Inventory extends Controllers
      */
     public function deleteCategory(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(10, "d", false)['status']) ? toJson(validate_permission_app(10, "d", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             $this->responseError('Método de solicitud no permitido.');
         }

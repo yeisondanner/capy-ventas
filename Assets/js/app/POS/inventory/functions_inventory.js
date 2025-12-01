@@ -744,6 +744,7 @@
       : "esta categoría";
 
     Swal.fire({
+      target: document.getElementById("modalCategory"), //renderizar dentro del modal
       title: "¿Eliminar categoría?",
       html: `Se eliminará definitivamente ${safeName}. Esta acción no se puede deshacer.`,
       icon: "warning",
@@ -784,6 +785,11 @@
         if (data.status) {
           await refreshCategoryList(false);
           await loadSelectors();
+        }
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
         }
       } catch (error) {
         console.error("Error eliminando categoría", error);
