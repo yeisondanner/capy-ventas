@@ -35,15 +35,13 @@ class Movements extends Controllers
 
     public function movements()
     {
+        validate_permission_app(2, "r");
         $businessId = $this->getBusinessId();
-
         // Por defecto, usar filtros para hoy al cargar la página
         $minDate = date('Y-m-d');
         $maxDate = date('Y-m-d');
         $searchConcept = null; // Por defecto no hay búsqueda
-
         $totals = $this->model->getTotals($businessId, $minDate, $maxDate, $searchConcept);
-
         $data = [
             'page_id'          => 2,
             'page_title'       => 'Inventario de productos',
@@ -63,9 +61,9 @@ class Movements extends Controllers
      */
     public function getMovements(): void
     {
+        validate_permission_app(2, "r");
         // ID del negocio desde la sesión
         $businessId = $this->getBusinessId();
-
         // Filtros de fecha
         $minDate = (isset($_GET["minDate"]) && !empty($_GET["minDate"])) ? strClean($_GET['minDate']) : null;
         $maxDate = (isset($_GET["maxDate"]) && !empty($_GET["maxDate"])) ? strClean($_GET['maxDate']) : null;
@@ -101,12 +99,12 @@ class Movements extends Controllers
 
         // Traemos solo los movimientos de ese negocio con filtros
         $arrData = $this->model->select_movements($businessId, $minDate, $maxDate, $searchConcept);
-        
+
         $cont = 1; // Contador para la tabla
 
 
         foreach ($arrData as $key => $value) {
-            
+
             $idVoucher = $value['idVoucherHeader'];
 
             $arrData[$key]['cont'] = $cont;
@@ -215,66 +213,66 @@ class Movements extends Controllers
      * @return void
      */
     public function getTotals(): void
-{
-    $businessId = $this->getBusinessId();
+    {
+        $businessId = $this->getBusinessId();
 
-    // Filtros de fecha
-    $minDate = (isset($_GET["minDate"]) && !empty($_GET["minDate"])) ? strClean($_GET['minDate']) : null;
-    $maxDate = (isset($_GET["maxDate"]) && !empty($_GET["maxDate"])) ? strClean($_GET['maxDate']) : null;
-    $filterType = (isset($_GET["filterType"]) && !empty($_GET["filterType"])) ? strClean($_GET['filterType']) : 'daily';
-    $searchConcept = (isset($_GET["searchConcept"]) && !empty($_GET["searchConcept"])) ? strClean($_GET['searchConcept']) : null;
+        // Filtros de fecha
+        $minDate = (isset($_GET["minDate"]) && !empty($_GET["minDate"])) ? strClean($_GET['minDate']) : null;
+        $maxDate = (isset($_GET["maxDate"]) && !empty($_GET["maxDate"])) ? strClean($_GET['maxDate']) : null;
+        $filterType = (isset($_GET["filterType"]) && !empty($_GET["filterType"])) ? strClean($_GET['filterType']) : 'daily';
+        $searchConcept = (isset($_GET["searchConcept"]) && !empty($_GET["searchConcept"])) ? strClean($_GET['searchConcept']) : null;
 
-    // Calcular fechas según el tipo de filtro SI NO se han enviado fechas específicas
-    if ($filterType !== 'custom') {
-        // Si se ha seleccionado un tipo de filtro diferente a personalizado Y no se han enviado fechas específicas en minDate y maxDate
-        // entonces calcular las fechas predeterminadas
-        if ($minDate === null && $maxDate === null) {
-            switch ($filterType) {
-                case 'daily':
-                    $minDate = date('Y-m-d');
-                    $maxDate = date('Y-m-d');
-                    break;
-                case 'weekly':
-                    $minDate = date('Y-m-d', strtotime('monday this week'));
-                    $maxDate = date('Y-m-d', strtotime('sunday this week'));
-                    break;
-                case 'monthly':
-                    $minDate = date('Y-m-01');
-                    $maxDate = date('Y-m-t');
-                    break;
-                case 'yearly':
-                    $minDate = date('Y-01-01');
-                    $maxDate = date('Y-12-31');
-                    break;
+        // Calcular fechas según el tipo de filtro SI NO se han enviado fechas específicas
+        if ($filterType !== 'custom') {
+            // Si se ha seleccionado un tipo de filtro diferente a personalizado Y no se han enviado fechas específicas en minDate y maxDate
+            // entonces calcular las fechas predeterminadas
+            if ($minDate === null && $maxDate === null) {
+                switch ($filterType) {
+                    case 'daily':
+                        $minDate = date('Y-m-d');
+                        $maxDate = date('Y-m-d');
+                        break;
+                    case 'weekly':
+                        $minDate = date('Y-m-d', strtotime('monday this week'));
+                        $maxDate = date('Y-m-d', strtotime('sunday this week'));
+                        break;
+                    case 'monthly':
+                        $minDate = date('Y-m-01');
+                        $maxDate = date('Y-m-t');
+                        break;
+                    case 'yearly':
+                        $minDate = date('Y-01-01');
+                        $maxDate = date('Y-12-31');
+                        break;
+                }
             }
+            // Si se han enviado fechas específicas, se usan esas fechas y no se sobrescriben
         }
-        // Si se han enviado fechas específicas, se usan esas fechas y no se sobrescriben
+
+        $totals = $this->model->getTotals($businessId, $minDate, $maxDate, $searchConcept);
+
+        // Valores crudos (por si los quieres seguir usando)
+        $balanceRaw        = (float)($totals['balance']        ?? 0);
+        $totalSalesRaw     = (float)($totals['total_sales']    ?? 0);
+        $totalExpensesRaw  = (float)($totals['total_expenses'] ?? 0);
+
+        // Símbolo de moneda desde el helper
+        $currency = getCurrency(); // ej. "S/"
+
+        // Formateados
+        $formattedTotals = [
+            'balance'         => $currency . ' ' . number_format($balanceRaw, 2, '.', ','),
+            'total_sales'     => $currency . ' ' . number_format($totalSalesRaw, 2, '.', ','),
+            'total_expenses'  => $currency . ' ' . number_format($totalExpensesRaw, 2, '.', ','),
+        ];
+
+        $arrResponse = [
+            'status' => true,
+            'totals' => $formattedTotals,
+        ];
+
+        toJson($arrResponse);
     }
-
-    $totals = $this->model->getTotals($businessId, $minDate, $maxDate, $searchConcept);
-
-    // Valores crudos (por si los quieres seguir usando)
-    $balanceRaw        = (float)($totals['balance']        ?? 0);
-    $totalSalesRaw     = (float)($totals['total_sales']    ?? 0);
-    $totalExpensesRaw  = (float)($totals['total_expenses'] ?? 0);
-
-    // Símbolo de moneda desde el helper
-    $currency = getCurrency(); // ej. "S/"
-
-    // Formateados
-    $formattedTotals = [
-        'balance'         => $currency . ' ' . number_format($balanceRaw, 2, '.', ','),
-        'total_sales'     => $currency . ' ' . number_format($totalSalesRaw, 2, '.', ','),
-        'total_expenses'  => $currency . ' ' . number_format($totalExpensesRaw, 2, '.', ','),
-    ];
-
-    $arrResponse = [
-        'status' => true,
-        'totals' => $formattedTotals,
-    ];
-
-    toJson($arrResponse);
-}
 
 
     /**

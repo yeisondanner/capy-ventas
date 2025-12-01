@@ -31,7 +31,7 @@ class CustomersModel extends Mysql
             INNER JOIN document_type AS dt ON dt.idDocumentType = c.documenttype_id
             WHERE c.business_id = ?
               AND c.status = 'Activo'
-            ORDER BY c.fullname ASC;
+            ORDER BY c.idCustomer DESC;
         SQL;
 
         return $this->select_all($sql, [$businessId]);

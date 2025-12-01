@@ -14,9 +14,11 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body d-flex flex-wrap gap-2">
-                    <button class="btn btn-primary" type="button" id="btnOpenCustomerModal">
-                        <i class="bi bi-plus-lg"></i> Registrar cliente
-                    </button>
+                    <?php if (validate_permission_app(4, "c", false) && (int)validate_permission_app(4, "c", false)['create'] === 1): ?>
+                        <button class="btn btn-primary" type="button" id="btnOpenCustomerModal">
+                            <i class="bi bi-plus-lg"></i> Registrar cliente
+                        </button>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

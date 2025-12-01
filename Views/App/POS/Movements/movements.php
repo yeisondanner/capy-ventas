@@ -60,7 +60,6 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="row g-3">
-
                     <div class="col-12 col-sm-6 col-md-4">
                         <div class="card border-0 shadow-sm h-100 card-enhanced">
                             <div class="card-body d-flex align-items-center">
@@ -76,7 +75,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="col-12 col-sm-6 col-md-4">
                         <div class="card border-0 shadow-sm h-100 card-enhanced">
                             <div class="card-body d-flex align-items-center">
@@ -92,7 +90,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="col-12 col-sm-6 col-md-4">
                         <div class="card border-0 shadow-sm h-100 card-enhanced">
                             <div class="card-body d-flex align-items-center">
@@ -108,8 +105,6 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
             </div>
         </div>
@@ -243,12 +238,9 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" id="download-png">Exportar PNG</button>
+                <button type="button" class="btn btn-warning" id="download-png"><i class="bi bi-card-image"></i> Exportar PNG</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                
             </div>
-            
-
         </div>
     </div>
 </div>

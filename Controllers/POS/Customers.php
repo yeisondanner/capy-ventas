@@ -40,6 +40,7 @@ class Customers extends Controllers
      */
     public function customers(): void
     {
+        validate_permission_app(4, "r");
         $data = [
             'page_id'          => 4,
             'page_title'       => 'Gestión de clientes',
@@ -60,6 +61,7 @@ class Customers extends Controllers
      */
     public function getCustomers(): void
     {
+        validate_permission_app(4, "r");
         $businessId = $this->getBusinessId();
         $customers  = $this->model->selectCustomers($businessId);
         $counter    = 1;
@@ -113,15 +115,15 @@ class Customers extends Controllers
             $isProtected = $this->isProtectedCustomerName($customer['fullname'] ?? '');
 
             $actions  = '<div class="btn-group btn-group-sm" role="group">';
-            $actions .= '<button class="btn btn-outline-secondary text-secondary view-customer" data-id="'
+            $actions .= '<button class="btn btn-outline-secondary view-customer" data-id="'
                 . (int) $customer['idCustomer'] . '" title="Ver detalles del cliente">'
                 . '<i class="bi bi-eye"></i></button>';
 
             if (!$isProtected) {
-                $actions .= '<button class="btn btn-outline-primary text-primary edit-customer" data-id="'
+                $actions .= '<button class="btn btn-outline-primary edit-customer" data-id="'
                     . (int) $customer['idCustomer'] . '" title="Editar cliente">'
                     . '<i class="bi bi-pencil-square"></i></button>';
-                $actions .= '<button class="btn btn-outline-danger text-danger delete-customer" data-id="'
+                $actions .= '<button class="btn btn-outline-danger delete-customer" data-id="'
                     . (int) $customer['idCustomer'] . '" data-name="' . $name . '" data-token="' . csrf(false) . '"'
                     . ' title="Eliminar cliente"><i class="bi bi-trash"></i></button>';
             }
@@ -142,6 +144,8 @@ class Customers extends Controllers
      */
     public function setCustomer(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(4, "c", false)['status']) ? toJson(validate_permission_app(4, "c", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -208,6 +212,8 @@ class Customers extends Controllers
      */
     public function updateCustomer(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(4, "u", false)['status']) ? toJson(validate_permission_app(4, "u", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -284,6 +290,8 @@ class Customers extends Controllers
      */
     public function deleteCustomer(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(4, "d", false)['status']) ? toJson(validate_permission_app(4, "d", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             $this->responseError('Método de solicitud no permitido.');
         }
