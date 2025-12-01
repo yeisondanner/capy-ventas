@@ -40,6 +40,7 @@ class Suppliers extends Controllers
      */
     public function suppliers(): void
     {
+        validate_permission_app(7, "r");
         $data = [
             'page_id'          => 7,
             'page_title'       => 'Gestión de proveedores',
@@ -59,6 +60,7 @@ class Suppliers extends Controllers
      */
     public function getSuppliers(): void
     {
+        validate_permission_app(7, "r");
         $businessId = $this->getBusinessId();
         $suppliers  = $this->model->selectSuppliers($businessId);
         $counter    = 1;
@@ -104,15 +106,15 @@ class Suppliers extends Controllers
             $isProtected = $this->isProtectedSupplierName($supplier['company_name']);
 
             $actions  = '<div class="btn-group btn-group-sm" role="group">';
-            $actions .= '<button class="btn btn-outline-secondary text-secondary view-supplier" data-id="'
+            $actions .= '<button class="btn btn-outline-secondary view-supplier" data-id="'
                 . (int) $supplier['idSupplier'] . '" title="Ver detalles del proveedor">'
                 . '<i class="bi bi-eye"></i></button>';
 
             if (!$isProtected) {
-                $actions .= '<button class="btn btn-outline-primary text-primary edit-supplier" data-id="'
+                $actions .= '<button class="btn btn-outline-primary edit-supplier" data-id="'
                     . (int) $supplier['idSupplier'] . '" title="Editar proveedor">'
                     . '<i class="bi bi-pencil-square"></i></button>';
-                $actions .= '<button class="btn btn-outline-danger text-danger delete-supplier" data-id="'
+                $actions .= '<button class="btn btn-outline-danger delete-supplier" data-id="'
                     . (int) $supplier['idSupplier'] . '" data-name="' . $name . '" data-token="' . csrf(false) . '"'
                     . ' title="Eliminar proveedor"><i class="bi bi-trash"></i></button>';
             }
