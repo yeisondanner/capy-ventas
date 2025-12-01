@@ -431,7 +431,6 @@
       if (!response.ok) {
         throw new Error(`Error ${response.status}`);
       }
-
       const data = await response.json();
       if (!data.status) {
         if (showError) {
@@ -442,6 +441,11 @@
               data.message ||
               "No fue posible cargar las categorías registradas. Actualiza la página e inténtalo nuevamente.",
           });
+        }
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
         }
         categoryList = [];
         renderCategoryList(categoryList);
@@ -493,7 +497,13 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-
+      showAlert(
+        {
+          title: "Procesando",
+          message: "Por favor, espera mientras se procesa la categoría.",
+        },
+        "loading"
+      );
       const formData = new FormData(form);
       const nameValue = (formData.get("txtCategoryName") || "")
         .toString()
@@ -532,6 +542,11 @@
           form.reset();
           await refreshCategoryList(false);
           await loadSelectors();
+        }
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
         }
       } catch (error) {
         console.error("Error registrando categoría", error);
@@ -642,6 +657,11 @@
             Swal.showValidationMessage(
               data.message || "No fue posible actualizar la categoría."
             );
+            if (data.url) {
+              setTimeout(() => {
+                window.location.href = data.url;
+              }, 1000);
+            }
             return false;
           }
 
@@ -1120,7 +1140,13 @@
       if (!result.isConfirmed) {
         return;
       }
-
+      showAlert(
+        {
+          title: "Eliminando producto...",
+          text: "Por favor, espera mientras se elimina el producto.",
+        },
+        "loading"
+      );
       try {
         const response = await fetch(
           `${base_url}/pos/Inventory/deleteProduct`,
