@@ -65,7 +65,14 @@ class Customers extends Controllers
         $businessId = $this->getBusinessId();
         $customers  = $this->model->selectCustomers($businessId);
         $counter    = 1;
-
+        $btnupdate = '';
+        $btnDelete = '';
+        if (validate_permission_app(4, "u", false) && (int)validate_permission_app(4, "u", false)['update'] === 1) {
+            $btnupdate = '+';
+        }
+        if (validate_permission_app(4, "d", false) && (int)validate_permission_app(4, "d", false)['delete'] === 1) {
+            $btnDelete = '+';
+        }
         foreach ($customers as $key => $customer) {
             $rawName          = (string) ($customer['fullname'] ?? '');
             $rawDocumentType  = (string) ($customer['document_type'] ?? '');
@@ -120,12 +127,16 @@ class Customers extends Controllers
                 . '<i class="bi bi-eye"></i></button>';
 
             if (!$isProtected) {
-                $actions .= '<button class="btn btn-outline-primary edit-customer" data-id="'
-                    . (int) $customer['idCustomer'] . '" title="Editar cliente">'
-                    . '<i class="bi bi-pencil-square"></i></button>';
-                $actions .= '<button class="btn btn-outline-danger delete-customer" data-id="'
-                    . (int) $customer['idCustomer'] . '" data-name="' . $name . '" data-token="' . csrf(false) . '"'
-                    . ' title="Eliminar cliente"><i class="bi bi-trash"></i></button>';
+                if ($btnupdate === '+') {
+                    $actions .= '<button class="btn btn-outline-primary edit-customer" data-id="'
+                        . (int) $customer['idCustomer'] . '" title="Editar cliente">'
+                        . '<i class="bi bi-pencil-square"></i></button>';
+                }
+                if ($btnDelete === '+') {
+                    $actions .= '<button class="btn btn-outline-danger delete-customer" data-id="'
+                        . (int) $customer['idCustomer'] . '" data-name="' . $name . '" data-token="' . csrf(false) . '"'
+                        . ' title="Eliminar cliente"><i class="bi bi-trash"></i></button>';
+                }
             }
 
             $actions .= '</div>';
