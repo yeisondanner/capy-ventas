@@ -14,12 +14,16 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body d-flex flex-wrap gap-2">
-                    <button class="btn btn-primary" type="button" id="btnOpenProductModal">
-                        <i class="bi bi-plus-lg"></i> Agregar nuevo producto
-                    </button>
-                    <button class="btn btn-outline-info text-info" type="button" id="btnOpenCategoryModal">
-                        <i class="bi bi-collection"></i> Categorías
-                    </button>
+                    <?php if (validate_permission_app(3, "c", false) && (int)validate_permission_app(3, "c", false)['create'] === 1): ?>
+                        <button class="btn btn-primary" type="button" id="btnOpenProductModal">
+                            <i class="bi bi-plus-lg"></i> Agregar nuevo producto
+                        </button>
+                    <?php endif; ?>
+                    <?php if (validate_permission_app(10, "r", false) && (int)validate_permission_app(10, "r", false)['read'] === 1): ?>
+                        <button class="btn btn-outline-info" type="button" id="btnOpenCategoryModal">
+                            <i class="bi bi-collection"></i> Categorías
+                        </button>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -27,7 +31,7 @@
             <div class="tile">
                 <div class="tile-body">
                     <div class="table-responsive">
-                        <table class="table table-sm table-hover table-bordered" id="table" data-token="<?= csrf(false); ?>">
+                        <table class="table table-sm table-hover table-bordered table-striped" id="table" data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>

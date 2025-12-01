@@ -431,7 +431,6 @@
       if (!response.ok) {
         throw new Error(`Error ${response.status}`);
       }
-
       const data = await response.json();
       if (!data.status) {
         if (showError) {
@@ -442,6 +441,11 @@
               data.message ||
               "No fue posible cargar las categorías registradas. Actualiza la página e inténtalo nuevamente.",
           });
+        }
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
         }
         categoryList = [];
         renderCategoryList(categoryList);
@@ -493,7 +497,13 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-
+      showAlert(
+        {
+          title: "Procesando",
+          message: "Por favor, espera mientras se procesa la categoría.",
+        },
+        "loading"
+      );
       const formData = new FormData(form);
       const nameValue = (formData.get("txtCategoryName") || "")
         .toString()
@@ -532,6 +542,11 @@
           form.reset();
           await refreshCategoryList(false);
           await loadSelectors();
+        }
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
         }
       } catch (error) {
         console.error("Error registrando categoría", error);
@@ -642,6 +657,11 @@
             Swal.showValidationMessage(
               data.message || "No fue posible actualizar la categoría."
             );
+            if (data.url) {
+              setTimeout(() => {
+                window.location.href = data.url;
+              }, 1000);
+            }
             return false;
           }
 
@@ -724,6 +744,7 @@
       : "esta categoría";
 
     Swal.fire({
+      target: document.getElementById("modalCategory"), //renderizar dentro del modal
       title: "¿Eliminar categoría?",
       html: `Se eliminará definitivamente ${safeName}. Esta acción no se puede deshacer.`,
       icon: "warning",
@@ -737,7 +758,13 @@
       if (!result.isConfirmed) {
         return;
       }
-
+      showAlert(
+        {
+          title: "Eliminando categoría...",
+          message: "Por favor, espera mientras se elimina la categoría.",
+        },
+        "loading"
+      );
       try {
         const response = await fetch(
           `${base_url}/pos/Inventory/deleteCategory`,
@@ -764,6 +791,11 @@
         if (data.status) {
           await refreshCategoryList(false);
           await loadSelectors();
+        }
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
         }
       } catch (error) {
         console.error("Error eliminando categoría", error);
@@ -945,7 +977,7 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-
+      showAlert({ title: "Registrando producto..." }, "loading");
       const formData = new FormData(form);
       try {
         const response = await fetch(`${base_url}/pos/Inventory/setProduct`, {
@@ -965,7 +997,11 @@
             (data.status ? "Operación exitosa" : "Ocurrió un error"),
           message: data.message || "",
         });
-
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
+        }
         if (data.status) {
           form.reset();
           populateSelect(
@@ -1007,7 +1043,7 @@
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-
+      showAlert({ title: "Actualizando producto..." }, "loading");
       const formData = new FormData(form);
       try {
         const response = await fetch(
@@ -1030,7 +1066,11 @@
             (data.status ? "Operación exitosa" : "Ocurrió un error"),
           message: data.message || "",
         });
-
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
+        }
         if (data.status) {
           hideModal(modalUpdate);
           productsTable.ajax.reload(null, false);
@@ -1112,7 +1152,13 @@
       if (!result.isConfirmed) {
         return;
       }
-
+      showAlert(
+        {
+          title: "Eliminando producto...",
+          text: "Por favor, espera mientras se elimina el producto.",
+        },
+        "loading"
+      );
       try {
         const response = await fetch(
           `${base_url}/pos/Inventory/deleteProduct`,
@@ -1172,15 +1218,17 @@
             data.message ||
             "No fue posible obtener la información del producto.",
         });
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
+        }
         return;
       }
-
       const form = document.getElementById("formUpdateProduct");
       if (!form) return;
-
       const product = data.data;
       form.reset();
-
       populateSelect(
         document.getElementById("update_txtProductCategory"),
         cachedCategories,
@@ -1196,7 +1244,6 @@
         cachedMeasurements,
         "Selecciona una unidad"
       );
-
       document.getElementById("update_txtProductId").value = product.idProduct;
       document.getElementById("update_txtProductName").value = product.name;
       document.getElementById(
@@ -1216,7 +1263,6 @@
         product.sales_price;
       document.getElementById("update_txtProductDescription").value =
         product.description || "";
-
       showModal(modalUpdate);
     } catch (error) {
       console.error("Error obteniendo producto", error);
@@ -1227,7 +1273,6 @@
       });
     }
   }
-
   /**
    * Obtiene los datos del producto seleccionado y muestra el modal de reporte.
    *
@@ -1260,6 +1305,11 @@
             data.message ||
             "No fue posible obtener la información del producto.",
         });
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
+        }
         return;
       }
 

@@ -172,7 +172,7 @@ class InventoryModel extends Mysql
             FROM category
             WHERE business_id = ?
               AND status = 'Activo'
-            ORDER BY name ASC;
+            ORDER BY idCategory DESC;
         SQL;
 
         return $this->select_all($sql, [$businessId]);
@@ -192,7 +192,7 @@ class InventoryModel extends Mysql
             FROM category
             WHERE business_id = ?
               AND status = 'Activo'
-            ORDER BY name ASC;
+            ORDER BY idCategory DESC;
         SQL;
 
         return $this->select_all($sql, [$businessId]);
