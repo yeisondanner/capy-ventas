@@ -25,7 +25,11 @@ class Employee extends Controllers
         $this->nameVarBusiness = $sessionName . 'business_active';
         $this->nameVarLoginInfo = $sessionName . 'login_info';
     }
-
+    /**
+     * Muestra la página de empleados.
+     *
+     * @return void
+     */
     public function employee()
     {
         validate_permission_app(5, "r");
@@ -47,17 +51,24 @@ class Employee extends Controllers
      */
     public function getEmployees(): void
     {
+        validate_permission_app(5, "r");
         $businessId = $this->getBusinessId();
         $employees  = $this->model->selectEmployees($businessId);
         $counter    = 1;
-
+        $btnupdate = '';
+        $btnDelete = '';
+        $validationUpdate = isset(validate_permission_app(5, "u", false)['update']) ? validate_permission_app(5, "u", false)['update'] : 0;
+        $validationDelete = isset(validate_permission_app(5, "d", false)['delete']) ? validate_permission_app(5, "d", false)['delete'] : 0;
+        if ($validationUpdate === 1) {
+            $btnupdate = '+';
+        }
+        if ($validationDelete === 1) {
+            $btnDelete = '+';
+        }
         foreach ($employees as $key => $employee) {
             $hasUserApp = !empty($employee['userapp_id']) && !empty($employee['user_app_user']);
-
             $userAppUser = !empty($employee['user_app_user']) ? decryption($employee['user_app_user']) : "";
-            $personEmail = !empty($employee['person_email']) ? decryption($employee['person_email']) : "";
             $fullName = trim(($employee['person_names'] ?? "") . " " . ($employee['person_lastname'] ?? ""));
-
             $fullNameEscaped = htmlspecialchars($fullName ?: "Sin nombre registrado", ENT_QUOTES, 'UTF-8');
             $userAppUserEscaped = htmlspecialchars($userAppUser ?: "-", ENT_QUOTES, 'UTF-8');
             $roleNameEscaped = htmlspecialchars($employee['role_app_name'] ?? "", ENT_QUOTES, 'UTF-8');
@@ -71,14 +82,21 @@ class Employee extends Controllers
             $employees[$key]['status']         = $employee['status'] === 'Activo'
                 ? '<span class="badge badge-success bg-success"><i class="bi bi-check-circle"></i> Activo</span>'
                 : '<span class="badge badge-secondary bg-secondary"><i class="bi bi-slash-circle"></i> Inactivo</span>';
-
+            $update = '';
+            $delete = '';
+            if ($btnupdate === '+') {
+                $update = '<button class="btn btn-outline-primary edit-employee" data-id="' . (int) $employee['idEmployee'] . '">'
+                    . '<i class="bi bi-pencil-square"></i></button>';
+            }
+            if ($btnDelete === '+') {
+                $delete = '<button class="btn btn-outline-danger delete-employee" data-id="' . (int) $employee['idEmployee'] . '" data-full-name="' . $fullNameEscaped . '" data-token="' . csrf(false) . '">'
+                    . '<i class="bi bi-trash"></i></button>';
+            }
             $employees[$key]['actions'] = '<div class="btn-group btn-group-sm" role="group">'
-                . '<button class="btn btn-outline-secondary text-secondary report-employee" data-id="' . (int) $employee['idEmployee'] . '" data-full-name="' . $fullNameEscaped . '" title="Ver reporte del empleado">'
+                . '<button class="btn btn-outline-secondary report-employee" data-id="' . (int) $employee['idEmployee'] . '" data-full-name="' . $fullNameEscaped . '" title="Ver reporte del empleado">'
                 . '<i class="bi bi-file-earmark-text"></i></button>'
-                . '<button class="btn btn-outline-primary text-primary edit-employee" data-id="' . (int) $employee['idEmployee'] . '">'
-                . '<i class="bi bi-pencil-square"></i></button>'
-                . '<button class="btn btn-outline-danger text-danger delete-employee" data-id="' . (int) $employee['idEmployee'] . '" data-full-name="' . $fullNameEscaped . '" data-token="' . csrf(false) . '">'
-                . '<i class="bi bi-trash"></i></button>'
+                . $update
+                . $delete
                 . '</div>';
 
             $counter++;
@@ -94,6 +112,8 @@ class Employee extends Controllers
      */
     public function setEmployee(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(5, "c", false)['status']) ? toJson(validate_permission_app(5, "c", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -204,6 +224,8 @@ class Employee extends Controllers
      */
     public function updateEmployee(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(5, "u", false)['status']) ? toJson(validate_permission_app(5, "u", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -287,6 +309,8 @@ class Employee extends Controllers
      */
     public function deleteEmployee(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(5, "d", false)['status']) ? toJson(validate_permission_app(5, "d", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             $this->responseError('Método de solicitud no permitido.');
         }

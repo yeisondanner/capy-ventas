@@ -66,10 +66,12 @@ class Suppliers extends Controllers
         $counter    = 1;
         $btnupdate = '';
         $btnDelete = '';
-        if (validate_permission_app(7, "u", false) && (int)validate_permission_app(7, "u", false)['update'] === 1) {
+        $validationUpdate = isset(validate_permission_app(7, "u", false)['update']) ? validate_permission_app(7, "u", false)['update'] : 0;
+        $validationDelete = isset(validate_permission_app(7, "d", false)['delete']) ? validate_permission_app(7, "d", false)['delete'] : 0;
+        if ($validationUpdate === 1) {
             $btnupdate = '+';
         }
-        if (validate_permission_app(7, "d", false) && (int)validate_permission_app(7, "d", false)['delete'] === 1) {
+        if ($validationDelete === 1) {
             $btnDelete = '+';
         }
         foreach ($suppliers as $key => $supplier) {

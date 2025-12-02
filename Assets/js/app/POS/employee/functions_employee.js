@@ -547,6 +547,11 @@
             (data.status ? "Operación exitosa" : "Ocurrió un error"),
           message: data.message || "",
         });
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
+        }
 
         if (data.status) {
           form.reset();
@@ -614,6 +619,11 @@
             (data.status ? "Operación exitosa" : "Ocurrió un error"),
           message: data.message || "",
         });
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
+        }
 
         if (data.status) {
           hideModal(modalUpdate);
@@ -719,6 +729,11 @@
             (data.status ? "Operación exitosa" : "Ocurrió un error"),
           message: data.message || "",
         });
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
+        }
 
         if (data.status) {
           employeesTable.ajax.reload(null, false);
