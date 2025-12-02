@@ -14,12 +14,16 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body d-flex flex-wrap gap-2">
-                    <?php if (validate_permission_app(3, "c", false) && (int)validate_permission_app(3, "c", false)['create'] === 1): ?>
+                    <?php
+                    $inventory = (int) isset(validate_permission_app(3, "c", false)['create']) ? validate_permission_app(3, "c", false)['create'] : 0;
+                    if ($inventory === 1): ?>
                         <button class="btn btn-primary" type="button" id="btnOpenProductModal">
                             <i class="bi bi-plus-lg"></i> Agregar nuevo producto
                         </button>
                     <?php endif; ?>
-                    <?php if (validate_permission_app(10, "r", false) && (int)validate_permission_app(10, "r", false)['read'] === 1): ?>
+                    <?php
+                    $category = (int) isset(validate_permission_app(10, "r", false)['read']) ? validate_permission_app(10, "r", false)['read'] : 0;
+                    if ($category === 1): ?>
                         <button class="btn btn-outline-info" type="button" id="btnOpenCategoryModal">
                             <i class="bi bi-collection"></i> Categorías
                         </button>
