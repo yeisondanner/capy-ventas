@@ -284,6 +284,11 @@
           suppliersTable.ajax.reload(null, false);
         }
       }
+      if (data.url) {
+        setTimeout(() => {
+          window.location.href = data.url;
+        }, 1000);
+      }
     } catch (error) {
       console.error("Error guardando proveedor", error);
       showAlert({
@@ -370,7 +375,11 @@
             (data.status ? "Operación exitosa" : "Ocurrió un error"),
           message: data.message || "",
         });
-
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
+        }
         if (data.status && suppliersTable) {
           suppliersTable.ajax.reload(null, false);
         }
