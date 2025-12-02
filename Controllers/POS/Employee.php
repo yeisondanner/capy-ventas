@@ -55,16 +55,10 @@ class Employee extends Controllers
         $businessId = $this->getBusinessId();
         $employees  = $this->model->selectEmployees($businessId);
         $counter    = 1;
-        $btnupdate = '';
-        $btnDelete = '';
+        $update = '';
+        $delete = '';
         $validationUpdate = isset(validate_permission_app(5, "u", false)['update']) ? validate_permission_app(5, "u", false)['update'] : 0;
         $validationDelete = isset(validate_permission_app(5, "d", false)['delete']) ? validate_permission_app(5, "d", false)['delete'] : 0;
-        if ($validationUpdate === 1) {
-            $btnupdate = '+';
-        }
-        if ($validationDelete === 1) {
-            $btnDelete = '+';
-        }
         foreach ($employees as $key => $employee) {
             $hasUserApp = !empty($employee['userapp_id']) && !empty($employee['user_app_user']);
             $userAppUser = !empty($employee['user_app_user']) ? decryption($employee['user_app_user']) : "";
@@ -84,11 +78,11 @@ class Employee extends Controllers
                 : '<span class="badge badge-secondary bg-secondary"><i class="bi bi-slash-circle"></i> Inactivo</span>';
             $update = '';
             $delete = '';
-            if ($btnupdate === '+') {
+            if ($validationUpdate === 1) {
                 $update = '<button class="btn btn-outline-primary edit-employee" data-id="' . (int) $employee['idEmployee'] . '">'
                     . '<i class="bi bi-pencil-square"></i></button>';
             }
-            if ($btnDelete === '+') {
+            if ($validationDelete === 1) {
                 $delete = '<button class="btn btn-outline-danger delete-employee" data-id="' . (int) $employee['idEmployee'] . '" data-full-name="' . $fullNameEscaped . '" data-token="' . csrf(false) . '">'
                     . '<i class="bi bi-trash"></i></button>';
             }
