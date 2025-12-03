@@ -14,9 +14,13 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body d-flex flex-wrap gap-2">
-                    <button class="btn btn-primary" type="button" id="btnOpenSupplierModal">
-                        <i class="bi bi-plus-lg"></i> Registrar proveedor
-                    </button>
+                    <?php
+                    $createSupplier = (int) (validate_permission_app(7, "c", false)) ? (int)validate_permission_app(7, "c", false)['create'] : 0;
+                    if ($createSupplier === 1): ?>
+                        <button class="btn btn-primary" type="button" id="btnOpenSupplierModal">
+                            <i class="bi bi-plus-lg"></i> Registrar proveedor
+                        </button>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

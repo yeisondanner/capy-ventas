@@ -200,7 +200,7 @@ export class Roles {
         let html = "";
         response.data.forEach((element, index) => {
           console.log(element);
-          
+
           html += `<div class="d-flex flex-column">
                       <h6 class="fw-normal"><i class="bi bi-file-easel"></i> Interfaz: <strong>${element.interface_name}</strong></h6>
                       <div class="d-flex gap-2 flex-wrap">`;
@@ -597,10 +597,15 @@ export class Roles {
             this.#modalUpdateRole.modal("hide");
           }
           showAlert({
-            icon: response.type,
+            icon: response.type ?? response.icon,
             title: response.title,
             message: response.message,
           });
+          if (response.url) {
+            setTimeout(() => {
+              window.location.href = response.url;
+            }, 1500);
+          }
         });
     });
   };
@@ -620,10 +625,15 @@ export class Roles {
             this.#modalDeleteRole.modal("hide");
           }
           showAlert({
-            icon: response.type,
+            icon: response.type ?? response.icon,
             title: response.title,
             message: response.message,
           });
+          if (response.url) {
+            setTimeout(() => {
+              window.location.href = response.url;
+            }, 1500);
+          }
         });
     });
   };

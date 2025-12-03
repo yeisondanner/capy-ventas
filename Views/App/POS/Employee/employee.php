@@ -14,9 +14,13 @@
         <div class="col-md-12">
             <div class="tile">
                 <div class="tile-body d-flex flex-wrap gap-2">
-                    <button class="btn btn-primary" type="button" id="btnOpenEmployeeModal">
-                        <i class="bi bi-plus-lg"></i> Agregar nuevo empleado
-                    </button>
+                    <?php
+                    $createEmployee = (int) (validate_permission_app(5, "c", false)) ? (int)validate_permission_app(5, "c", false)['create'] : 0;
+                    if ($createEmployee === 1): ?>
+                        <button class="btn btn-primary" type="button" id="btnOpenEmployeeModal">
+                            <i class="bi bi-plus-lg"></i> Agregar nuevo empleado
+                        </button>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

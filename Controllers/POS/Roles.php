@@ -33,6 +33,7 @@ class Roles extends Controllers
      */
     public function roles(): void
     {
+        validate_permission_app(6, "r");
         $data = [
             'page_id'          => 6,
             'page_title'       => 'Roles de aplicación',
@@ -55,7 +56,10 @@ class Roles extends Controllers
         $businessId = $this->getBusinessId();
         $roles      = $this->model->selectRoles($businessId);
         $counter    = 1;
-
+        $btnupdate = '';
+        $btnDelete = '';
+        $validationUpdate = (validate_permission_app(6, "u", false)) ? (int) validate_permission_app(6, "u", false)['update'] : 0;
+        $validationDelete = (validate_permission_app(6, "d", false)) ? (int) validate_permission_app(6, "d", false)['delete'] : 0;
         foreach ($roles as $key => $role) {
             $name        = htmlspecialchars((string) ($role['name'] ?? ''), ENT_QUOTES, 'UTF-8');
             $description = htmlspecialchars((string) ($role['description'] ?? 'Sin descripción'), ENT_QUOTES, 'UTF-8');
@@ -70,15 +74,20 @@ class Roles extends Controllers
                 ? '<span class="badge bg-success"><i class="bi bi-check-circle"></i> Activo</span>'
                 : '<span class="badge bg-secondary"><i class="bi bi-slash-circle"></i> Inactivo</span>';
             $roles[$key]['updated_at']  = $updatedAt;
-
+            if ($validationUpdate === 1) {
+                $btnupdate = '<button class="btn btn-warning update_role" data-id="' . (int) $role['idRoleApp'] . '">'
+                    . '<i class="bi bi-pencil-square"></i></button>';
+            }
+            if ($validationDelete === 1) {
+                $btnDelete = '<button class="btn btn-danger delete_role" data-id="' . (int) $role['idRoleApp'] . '"'
+                    . ' data-name="' . $name . '" data-token="' . csrf(false) . '" data-description="' . $role['description'] . '"><i class="bi bi-trash"></i></button>';
+            }
             $roles[$key]['actions'] = '<div class="btn-group btn-group-sm" role="group">'
                 . '<button class="btn btn-secondary report_role" data-id="' . (int) $role['idRoleApp'] . '"'
                 . ' data-name="' . $name . '" data-description="' . $role['description'] . '" data-status="' . $status . '"'
                 . ' data-updated="' . $updatedAt . '"><i class="bi bi-eye"></i></button>'
-                . '<button class="btn btn-warning update_role" data-id="' . (int) $role['idRoleApp'] . '">'
-                . '<i class="bi bi-pencil-square"></i></button>'
-                . '<button class="btn btn-danger delete_role" data-id="' . (int) $role['idRoleApp'] . '"'
-                . ' data-name="' . $name . '" data-token="' . csrf(false) . '" data-description="' . $role['description'] . '"><i class="bi bi-trash"></i></button>'
+                . $btnupdate
+                . $btnDelete
                 . '</div>';
 
             $counter++;
@@ -96,6 +105,8 @@ class Roles extends Controllers
      */
     public function setRole(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(6, "c", false)['status']) ? toJson(validate_permission_app(6, "c", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -332,6 +343,8 @@ class Roles extends Controllers
      */
     public function updateRole(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(6, "u", false)['status']) ? toJson(validate_permission_app(6, "u", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -427,6 +440,8 @@ class Roles extends Controllers
      */
     public function deleteRole(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(6, "d", false)['status']) ? toJson(validate_permission_app(6, "d", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }

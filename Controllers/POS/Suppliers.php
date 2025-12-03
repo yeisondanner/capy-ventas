@@ -64,7 +64,8 @@ class Suppliers extends Controllers
         $businessId = $this->getBusinessId();
         $suppliers  = $this->model->selectSuppliers($businessId);
         $counter    = 1;
-
+        $validationUpdate = (validate_permission_app(7, "u", false)) ? (int) validate_permission_app(7, "u", false)['update'] : 0;
+        $validationDelete = (validate_permission_app(7, "d", false)) ? (int) validate_permission_app(7, "d", false)['delete'] : 0;
         foreach ($suppliers as $key => $supplier) {
             $rawName      = (string) ($supplier['company_name'] ?? '');
             $rawDocument  = (string) ($supplier['document_number'] ?? '');
@@ -111,12 +112,16 @@ class Suppliers extends Controllers
                 . '<i class="bi bi-eye"></i></button>';
 
             if (!$isProtected) {
-                $actions .= '<button class="btn btn-outline-primary edit-supplier" data-id="'
-                    . (int) $supplier['idSupplier'] . '" title="Editar proveedor">'
-                    . '<i class="bi bi-pencil-square"></i></button>';
-                $actions .= '<button class="btn btn-outline-danger delete-supplier" data-id="'
-                    . (int) $supplier['idSupplier'] . '" data-name="' . $name . '" data-token="' . csrf(false) . '"'
-                    . ' title="Eliminar proveedor"><i class="bi bi-trash"></i></button>';
+                if ($validationUpdate === 1) {
+                    $actions .= '<button class="btn btn-outline-primary edit-supplier" data-id="'
+                        . (int) $supplier['idSupplier'] . '" title="Editar proveedor">'
+                        . '<i class="bi bi-pencil-square"></i></button>';
+                }
+                if ($validationDelete === 1) {
+                    $actions .= '<button class="btn btn-outline-danger delete-supplier" data-id="'
+                        . (int) $supplier['idSupplier'] . '" data-name="' . $name . '" data-token="' . csrf(false) . '"'
+                        . ' title="Eliminar proveedor"><i class="bi bi-trash"></i></button>';
+                }
             }
 
             $actions .= '</div>';
@@ -135,6 +140,8 @@ class Suppliers extends Controllers
      */
     public function setSupplier(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(7, "c", false)['status']) ? toJson(validate_permission_app(7, "c", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -191,6 +198,8 @@ class Suppliers extends Controllers
      */
     public function updateSupplier(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(7, "u", false)['status']) ? toJson(validate_permission_app(7, "u", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -257,6 +266,8 @@ class Suppliers extends Controllers
      */
     public function deleteSupplier(): void
     {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(7, "d", false)['status']) ? toJson(validate_permission_app(7, "d", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             $this->responseError('Método de solicitud no permitido.');
         }
