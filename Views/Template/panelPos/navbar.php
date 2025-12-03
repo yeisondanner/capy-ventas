@@ -4,7 +4,8 @@
     <!-- Sidebar toggle button-->
     <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
     <!-- Navbar Right Menu-->
-    <ul class="app-nav">
+    <ul class="app-nav gap-2">
+        <button class="btn btn-warning btn-sm"><i class="bi bi-cash"></i>Caja</button>
         <!--Notification Menu-->
         <!--  <li class="dropdown"><a class="app-nav__item" href="#" data-bs-toggle="dropdown" aria-label="Show notifications"><i class="bi bi-bell fs-5"></i></a>
             <ul class="app-notification dropdown-menu dropdown-menu-right">
