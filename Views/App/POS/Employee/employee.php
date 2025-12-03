@@ -15,7 +15,7 @@
             <div class="tile">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
-                    $createEmployee = (int) (isset(validate_permission_app(5, "c", false)['create']) ? validate_permission_app(5, "c", false)['create'] : 0);
+                    $createEmployee = (int) (validate_permission_app(5, "c", false)) ? (int)validate_permission_app(5, "c", false)['create'] : 0;
                     if ($createEmployee === 1): ?>
                         <button class="btn btn-primary" type="button" id="btnOpenEmployeeModal">
                             <i class="bi bi-plus-lg"></i> Agregar nuevo empleado

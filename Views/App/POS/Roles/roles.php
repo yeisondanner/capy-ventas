@@ -15,7 +15,7 @@
             <div class="tile">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
-                    $createRole = (int) isset(validate_permission_app(6, "c", false)['create']) ? validate_permission_app(6, "c", false)['create'] : 0;
+                    $createRole = (int) (validate_permission_app(6, "c", false)) ? (int)validate_permission_app(6, "c", false)['create'] : 0;
                     if ($createRole === 1): ?>
                         <button class="btn btn-primary" type="button" id="btnOpenModalAddRole">
                             <i class="bi bi-plus-lg"></i> Registrar rol

@@ -15,7 +15,7 @@
             <div class="tile">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
-                    $createSupplier = (int) isset(validate_permission_app(7, "c", false)['create']) ? validate_permission_app(7, "c", false)['create'] : 0;
+                    $createSupplier = (int) (validate_permission_app(7, "c", false)) ? (int)validate_permission_app(7, "c", false)['create'] : 0;
                     if ($createSupplier === 1): ?>
                         <button class="btn btn-primary" type="button" id="btnOpenSupplierModal">
                             <i class="bi bi-plus-lg"></i> Registrar proveedor

@@ -282,7 +282,7 @@ class InventoryModel extends Mysql
     public function selectMeasurements(): array
     {
         $sql = <<<SQL
-            SELECT idMeasurement, name
+            SELECT idMeasurement, concat(`name`, ' (', `description`, ')') AS `name`
             FROM measurement
             WHERE status = 'Activo'
             ORDER BY name ASC;

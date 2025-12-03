@@ -42,7 +42,7 @@ const NOMBRE_SISTEMA = "Sistema de Roles";
 //Nombre de la compania
 const NOMBRE_COMPANIA = "CYD TECH";
 //Version sistema
-const VERSION_SISTEMA = "0.0.0.2";
+const VERSION_SISTEMA = "0.0.0.3";
 //Zona horaria
 date_default_timezone_set('America/Lima');
 
