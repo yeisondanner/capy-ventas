@@ -58,8 +58,8 @@ class Roles extends Controllers
         $counter    = 1;
         $btnupdate = '';
         $btnDelete = '';
-        $validationUpdate = isset(validate_permission_app(6, "u", false)['update']) ? validate_permission_app(6, "u", false)['update'] : 0;
-        $validationDelete = isset(validate_permission_app(6, "d", false)['delete']) ? validate_permission_app(6, "d", false)['delete'] : 0;
+        $validationUpdate = (validate_permission_app(6, "u", false)) ? (int) validate_permission_app(6, "u", false)['update'] : 0;
+        $validationDelete = (validate_permission_app(6, "d", false)) ? (int) validate_permission_app(6, "d", false)['delete'] : 0;
         foreach ($roles as $key => $role) {
             $name        = htmlspecialchars((string) ($role['name'] ?? ''), ENT_QUOTES, 'UTF-8');
             $description = htmlspecialchars((string) ($role['description'] ?? 'Sin descripción'), ENT_QUOTES, 'UTF-8');

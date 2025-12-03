@@ -64,16 +64,8 @@ class Suppliers extends Controllers
         $businessId = $this->getBusinessId();
         $suppliers  = $this->model->selectSuppliers($businessId);
         $counter    = 1;
-        $btnupdate = '';
-        $btnDelete = '';
-        $validationUpdate = isset(validate_permission_app(7, "u", false)['update']) ? validate_permission_app(7, "u", false)['update'] : 0;
-        $validationDelete = isset(validate_permission_app(7, "d", false)['delete']) ? validate_permission_app(7, "d", false)['delete'] : 0;
-        if ($validationUpdate === 1) {
-            $btnupdate = '+';
-        }
-        if ($validationDelete === 1) {
-            $btnDelete = '+';
-        }
+        $validationUpdate = (validate_permission_app(7, "u", false)) ? (int) validate_permission_app(7, "u", false)['update'] : 0;
+        $validationDelete = (validate_permission_app(7, "d", false)) ? (int) validate_permission_app(7, "d", false)['delete'] : 0;
         foreach ($suppliers as $key => $supplier) {
             $rawName      = (string) ($supplier['company_name'] ?? '');
             $rawDocument  = (string) ($supplier['document_number'] ?? '');
@@ -120,12 +112,12 @@ class Suppliers extends Controllers
                 . '<i class="bi bi-eye"></i></button>';
 
             if (!$isProtected) {
-                if ($btnupdate === '+') {
+                if ($validationUpdate === 1) {
                     $actions .= '<button class="btn btn-outline-primary edit-supplier" data-id="'
                         . (int) $supplier['idSupplier'] . '" title="Editar proveedor">'
                         . '<i class="bi bi-pencil-square"></i></button>';
                 }
-                if ($btnDelete === '+') {
+                if ($validationDelete === 1) {
                     $actions .= '<button class="btn btn-outline-danger delete-supplier" data-id="'
                         . (int) $supplier['idSupplier'] . '" data-name="' . $name . '" data-token="' . csrf(false) . '"'
                         . ' title="Eliminar proveedor"><i class="bi bi-trash"></i></button>';

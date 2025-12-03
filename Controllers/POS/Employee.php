@@ -55,10 +55,8 @@ class Employee extends Controllers
         $businessId = $this->getBusinessId();
         $employees  = $this->model->selectEmployees($businessId);
         $counter    = 1;
-        $update = '';
-        $delete = '';
-        $validationUpdate = isset(validate_permission_app(5, "u", false)['update']) ? validate_permission_app(5, "u", false)['update'] : 0;
-        $validationDelete = isset(validate_permission_app(5, "d", false)['delete']) ? validate_permission_app(5, "d", false)['delete'] : 0;
+        $validationUpdate = (validate_permission_app(5, "u", false)) ? (int) validate_permission_app(5, "u", false)['update'] : 0;
+        $validationDelete = (validate_permission_app(5, "d", false)) ? (int) validate_permission_app(5, "d", false)['delete'] : 0;
         foreach ($employees as $key => $employee) {
             $hasUserApp = !empty($employee['userapp_id']) && !empty($employee['user_app_user']);
             $userAppUser = !empty($employee['user_app_user']) ? decryption($employee['user_app_user']) : "";

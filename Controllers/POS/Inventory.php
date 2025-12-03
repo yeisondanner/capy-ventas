@@ -59,16 +59,8 @@ class Inventory extends Controllers
         $products   = $this->model->selectProducts($businessId);
         $currency   = getCurrency();
         $counter    = 1;
-        $btnupdate = '';
-        $btnDelete = '';
-        $validationUpdate = isset(validate_permission_app(3, "u", false)['update']) ? validate_permission_app(3, "u", false)['update'] : 0;
-        $validationDelete = isset(validate_permission_app(3, "d", false)['delete']) ? validate_permission_app(3, "d", false)['delete'] : 0;
-        if ($validationUpdate === 1) {
-            $btnupdate = '+';
-        }
-        if ($validationDelete === 1) {
-            $btnDelete = '+';
-        }
+        $validationUpdate = (validate_permission_app(3, "u", false)) ? (int) validate_permission_app(3, "u", false)['update'] : 0;
+        $validationDelete = (validate_permission_app(3, "d", false)) ? (int) validate_permission_app(3, "d", false)['delete'] : 0;
         foreach ($products as $key => $product) {
             $productName = htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8');
             $categoryName = htmlspecialchars($product['category'], ENT_QUOTES, 'UTF-8');
@@ -89,11 +81,11 @@ class Inventory extends Controllers
                 ? '<span class="badge badge-success bg-success"><i class="bi bi-check-circle"></i> Activo</span>'
                 : '<span class="badge badge-secondary bg-secondary"><i class="bi bi-slash-circle"></i> Inactivo</span>';
 
-            if ($btnupdate === '+') {
+            if ($validationUpdate === 1) {
                 $btnupdate = '<button class="btn btn-outline-primary edit-product" data-id="' . (int) $product['idProduct'] . '">'
                     . '<i class="bi bi-pencil-square"></i></button>';
             }
-            if ($btnDelete === '+') {
+            if ($validationDelete === 1) {
                 $btnDelete = '<button class="btn btn-outline-danger delete-product" data-id="' . (int) $product['idProduct'] . '" data-name="' . $productName . '" data-token="' . csrf(false) . '">'
                     . '<i class="bi bi-trash"></i></button>';
             }
