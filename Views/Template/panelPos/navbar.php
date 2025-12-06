@@ -80,7 +80,6 @@
                 </div>
                 <i class="bi bi-shop-window display-6 opacity-50"></i>
             </div>
-
             <div class="modal-body p-4 p-lg-5">
                 <form id="openRegisterForm">
                     <div class="row mb-4 g-3">
@@ -107,7 +106,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="mb-4">
                         <label class="form-label fw-bold text-dark">Monto Inicial (Base)</label>
                         <div class="input-group input-group-lg shadow-sm">
@@ -116,7 +114,6 @@
                                 id="initialAmount" value="150.00" required min="0" step="0.01">
                         </div>
                     </div>
-
                     <div class="d-grid">
                         <button type="submit" class="btn btn-success btn-lg py-3 fw-bold shadow">
                             <i class="bi bi-unlock-fill me-2"></i>CONFIRMAR APERTURA
