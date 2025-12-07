@@ -1889,3 +1889,86 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         $crudpermission[$permission] => $result[$crudpermission[$permission]]
     ];
 }
+
+// Funciones samuel
+function generateVerificationCode($longitud = 6)
+{
+    // Definimos los caracteres permitidos
+    $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $longitudCaracteres = strlen($caracteres);
+    $codigo = '';
+
+    for ($i = 0; $i < $longitud; $i++) {
+        // Seleccionamos un índice aleatorio seguro
+        $indiceAleatorio = random_int(0, $longitudCaracteres - 1);
+        // Concatenamos el caracter correspondiente
+        $codigo .= $caracteres[$indiceAleatorio];
+    }
+
+    return $codigo;
+}
+
+function saveSessionVerification($correo, $codigo)
+{
+    // 1. Validar si la sesión ya está iniciada
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // 2. Guardar los 3 datos clave en la sesión
+    $_SESSION['verificacion_correo'] = $correo;
+    $_SESSION['verificacion_codigo'] = $codigo;
+    $_SESSION['verificacion_tiempo'] = time(); // Timestamp actual
+    $_SESSION['verificacion_status'] = false; // Timestamp actual
+}
+
+function validateVerificationCode($codigoInput)
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // ? 1. Verificar que existan los datos
+    if (!isset($_SESSION['verificacion_codigo']) || !isset($_SESSION['verificacion_correo']) || !isset($_SESSION['verificacion_tiempo'])) {
+        return [
+            'status' => false,
+            'message' => 'No hay ningún correo electrónico verificado.',
+            'title'   => 'Verificación de código.',
+            'type'    => 'error',
+            'icon'    => 'error',
+        ];
+    }
+
+    // ? 3. Verificar tiempo (10 minutos = 600 segundos)
+    if (time() - $_SESSION['verificacion_tiempo'] > 600) {
+        return [
+            'status' => false,
+            'message' => 'El código ha expirado.',
+            'title'   => 'Verificación de código.',
+            'type'    => 'error',
+            'icon'    => 'error',
+        ];
+    }
+
+    // ? 4. Verificar el código exacto
+    if (decryption($_SESSION['verificacion_codigo']) === $codigoInput) {
+        // Borrar datos para evitar reuso
+        $_SESSION['verificacion_status'] = true;
+
+        return [
+            'status' => true,
+            'message' => 'Verificación exitosa.',
+            'title'   => 'Verificación.',
+            'type'    => 'success',
+            'icon'    => 'success',
+        ];
+    }
+
+    return [
+        'status' => false,
+        'message' => 'El código es incorrecto, ingrese nuevamente un código válido.',
+        'title'   => 'Verificación de código.',
+        'type'    => 'error',
+        'icon'    => 'error',
+    ];
+}
