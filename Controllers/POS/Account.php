@@ -55,31 +55,56 @@ class Account extends Controllers
 				'name' => decryption(getRemitente())
 			]
 		];
+		// TODO: Generamos el codigo de 6 digitos
+		$code = generateVerificationCode(6);
 
+		// TODO: Creamos las sessiones
+		saveSessionVerification(encryption($email), encryption($code));
 		//cargamos la plantilla de recuperación de contraseña               
 		$data = [
-			'nombres' => "Samuel vela Llanos",
-			'titulo' => "hola",
-			'descripcion' => "cuy",
-			'enlace' => "cuy"
+			'nombres'     => "Capy Amigo",
+			'titulo'      => "Bienvenido a CapyVentas",
+			'descripcion' => "Gracias por unirte a nosotros. Estás a un solo paso de gestionar tus ventas de manera más eficiente. \nPor favor, usa el siguiente código de verificación para confirmar tu correo electrónico y activar tu cuenta:",
+			'codigo'      => $code
 		];
 		// Cargar plantilla HTML externa
-		$plantillaHTML = renderTemplate('./Views/Template/email/notification_standar.php', $data);
+		$plantillaHTML = renderTemplate('./Views/Template/email/notification_sendcode.php', $data);
 		$params = [
 			// 'to' => [decryption($email)], // o string
 			'to' => $email, // o string
-			'subject' => 'NOTIFICACION [ ' . "hola". ' ]- ' . getCompanyName(),
-			'body' => "pp",
+			'subject' => 'NOTIFICACION [ ' . "hola" . ' ]- ' . getCompanyName(),
+			'body' => $plantillaHTML,
 			'attachments' => [] // opcional
 		];
 		//enviamos el correo
 		if (!sendEmail($config, $params)) {
-			// registerLog("Ocurrio un error inesperado", "No se pudo enviar el correo de notificacion al usuario {$request['u_fullname']}", 1, $request["idUser"]);
+			$this->responseError("No se pudo enviar el correo de notificacion al usuario {$email}");
 		}
 
+		return toJson([
+			'title'   => 'Revisa tu correo',
+			'message' => "Se ha enviado un código de 6 dígitos a $email. Tienes 10 minutos para usarlo.",
+			'type'    => 'success',
+			'icon'    => 'success',
+			'status'  => true,
+		]);
+	}
 
-		// toJson(sendEmail($config, $params));
-		toJson(sendEmail($config, $params));
+	public function validateVerificationCode()
+	{
+		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+			$this->responseError('Método de solicitud no permitido.');
+		}
+
+		// $raw = file_get_contents('php://input');
+		// $data = json_decode($raw, true);
+
+		// toJson($data);
+
+		$code    = strClean($_POST['code']);
+		$response = validateVerificationCode($code);
+
+		toJson($response);
 	}
 
 	private function responseError(string $message): void
