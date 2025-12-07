@@ -25,7 +25,7 @@
     </section>
 
     <!-- PASO 1 -->
-    <section id="step-1" class="d-flex justify-content-center align-items-center min-vh-100 p-3">
+    <section id="setCode" class="d-flex justify-content-center align-items-center min-vh-100 p-3">
         <div class="card shadow-lg border-0 overflow-hidden w-100 rounded-3" style="max-width: 1000px;">
             <div class="row g-0 account-content">
                 <div class="d-none d-md-block col-md-5 bg-warning-subtle p-5 d-flex flex-column justify-content-between">
@@ -98,18 +98,18 @@
                                 <span class="input-group-text text-muted">
                                     <i class="bi bi-envelope-at"></i>
                                 </span>
-                                <input type="email" class="form-control" placeholder="Escribe tu correo electrónico">
+                                <input type="email" class="form-control" placeholder="Escribe tu correo electrónico" id="email">
                             </div>
                         </div>
 
                         <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="termsCheck">
+                            <input class="form-check-input" type="checkbox" id="accept_terms">
                             <label class="form-check-label small text-muted" for="termsCheck">
                                 He leído y acepto los <a href="#" class="text-dark fw-bold">Términos y Condiciones</a>, y autorizo expresamente el tratamiento de mis datos personales conforme a la <a href="#" class="text-dark fw-bold">Política de Privacidad</a>.
                             </label>
                         </div>
 
-                        <button id="btn-step-1" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Enviar código</button>
+                        <button id="btnStep1" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Enviar código</button>
                     </form>
 
                     <div class="text-center mt-4">
@@ -123,7 +123,7 @@
     </section>
 
     <!-- PASO 2 -->
-    <section id="step-2" class="d-flex justify-content-center align-items-center min-vh-100 p-3 d-none">
+    <section id="verifyCode" class="d-flex justify-content-center align-items-center min-vh-100 p-3 d-none">
         <div class="card shadow-lg border-0 overflow-hidden w-100 rounded-3" style="max-width: 1000px;">
             <div class="row g-0 account-content">
                 <div class="d-none d-md-block col-md-5 bg-warning-subtle p-5 d-flex flex-column justify-content-between">
@@ -196,7 +196,7 @@
                                 <span class="input-group-text text-muted">
                                     <i class="bi bi-envelope-check-fill"></i>
                                 </span>
-                                <input type="input" class="form-control" placeholder="Escribe tu código de verificación">
+                                <input id="code" type="input" class="form-control" placeholder="Escribe tu código de verificación">
                             </div>
                         </div>
 
@@ -207,7 +207,7 @@
                             </label>
                         </div> -->
 
-                        <button id="btn-step-2" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Verificar código</button>
+                        <button id="btnVerifyCode" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Verificar código</button>
                     </form>
 
                     <div class="text-center mt-4">
@@ -221,7 +221,7 @@
     </section>
 
     <!-- PASO 3 -->
-    <section id="step-3" class="d-flex justify-content-center align-items-center min-vh-100 p-3 d-none">
+    <section id="createAccount" class="d-flex justify-content-center align-items-center min-vh-100 p-3 d-none">
         <div class="card shadow-lg border-0 overflow-hidden w-100 rounded-3" style="max-width: 1000px;">
             <div class="row g-0 account-content">
                 <div class="d-none d-md-block col-md-5 bg-warning-subtle p-5 d-flex flex-column justify-content-between">
@@ -434,7 +434,7 @@
                         </div>
 
 
-                        <button id="btn-step-1" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Registrarse</button>
+                        <button id="btnCreateAccount" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Registrarse</button>
                     </form>
 
                     

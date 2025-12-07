@@ -82,6 +82,11 @@ class Account extends Controllers
 		toJson(sendEmail($config, $params));
 	}
 
+	public function verifyCode()
+	{
+		
+	}
+
 	private function responseError(string $message): void
 	{
 		$data = [
