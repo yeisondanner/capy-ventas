@@ -250,22 +250,22 @@
    * Obtiene los tipos de negocio disponibles.
    */
   function loadBusinessTypes() {
-    const select = document.getElementById("businessType");
+    const select = document.querySelectorAll(".businessType");
     if (!select) return;
 
     fetch(`${base_url}/pos/Business/getBusinessTypes`)
       .then((response) => response.json())
       .then((result) => {
         if (!result?.status || !Array.isArray(result.data)) return;
-
-        select.innerHTML =
-          '<option value="" disabled selected>Selecciona un tipo de negocio</option>';
-
-        result.data.forEach((type) => {
-          const option = document.createElement("option");
-          option.value = type.idBusinessType;
-          option.textContent = type.name;
-          select.appendChild(option);
+        select.forEach((select) => {
+          select.innerHTML =
+            '<option value="" disabled selected>Selecciona un tipo de negocio</option>';
+          result.data.forEach((type) => {
+            const option = document.createElement("option");
+            option.value = type.idBusinessType;
+            option.textContent = type.name;
+            select.appendChild(option);
+          });
         });
       })
       .catch(() => {});

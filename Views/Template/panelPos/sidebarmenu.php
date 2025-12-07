@@ -188,7 +188,7 @@ $linkestadointerfaz = base_url() . '/pos/Errors/estado_plan_interfaz';
                         <label for="businessType" class="form-label">Tipo de negocio <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-building"></i></span>
-                            <select class="form-select" id="businessType" name="businessType" required>
+                            <select class="form-select businessType" id="businessType" name="businessType" required>
                                 <option value="" selected disabled>Selecciona un tipo de negocio</option>
                             </select>
                         </div>
