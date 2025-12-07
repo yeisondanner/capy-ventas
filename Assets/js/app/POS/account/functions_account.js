@@ -1,18 +1,16 @@
 import { ApiAccount } from "./functions_account_api.js";
 export class Account {
-  #btnSetCode = $("#btnSetCode");
+  #btnSendCode = $("#btnSendCode");
   #btnVerifyCode = $("#btnVerifyCode");
 
-
   constructor() {
+    this.apiAccount = new ApiAccount(base_url);
     this.#sendCodeVerification();
-    this.#sendVerificationCode();
+    // this.#sendVerificationCode();
   }
 
-
-
   #sendCodeVerification = () => {
-    this.#btnSetCode.click(() => {
+    this.#btnSendCode.click(() => {
       // ? Validamos que se envie el correo electronico
       let email = $("#email").val();
       if (!email) {
@@ -23,7 +21,10 @@ export class Account {
         });
       }
 
+      // TODO: Validar el formato de correo electronico
+
       let accept_terms = $("#accept_terms").is(":checked");
+
       if (!accept_terms) {
         return showAlert({
           icon: "warning",
@@ -32,12 +33,13 @@ export class Account {
         });
       }
 
-      this.ApiAccount.post("sendCodeVerification", {
+      this.apiAccount.post("sendCodeVerification", {
         email: email,
-        accept_terms: accept_terms,
+        accept_terms: accept_terms
       }).then((response) => {
         if (response.status) {
-          $("#setCode").removeClass("d-none");
+          $("#setCode").addClass("d-none");
+          $("#verifyCode").removeClass("d-none");
         }
         showAlert({
           icon: response.type,
@@ -59,9 +61,8 @@ export class Account {
           message: "El código es requerido",
         });
       }
-     
 
-      this.ApiAccount.post("validateVerificationCode", {
+      this.apiAccount.post("validateVerificationCode", {
         code: code,
       }).then((response) => {
         if (response.status) {
@@ -76,7 +77,5 @@ export class Account {
     });
   };
 }
-
-
 
 new Account();

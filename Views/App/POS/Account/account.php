@@ -109,7 +109,7 @@
                             </label>
                         </div>
 
-                        <button id="btnStep1" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Enviar código</button>
+                        <button id="btnSendCode" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Enviar código</button>
                     </form>
 
                     <div class="text-center mt-4">

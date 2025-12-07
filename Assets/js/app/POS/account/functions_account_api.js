@@ -1,7 +1,9 @@
 "use strict";
 export class ApiAccount {
   constructor(URL = "") {
-    this.URL = URL + "/pos";
+    this.URL = URL;
+    console.log(this.URL);
+    
   }
 
   async get(endpoint, params = {}) {

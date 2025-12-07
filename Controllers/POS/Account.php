@@ -28,19 +28,24 @@ class Account extends Controllers
 			$this->responseError('Método de solicitud no permitido.');
 		}
 
-		// $raw = file_get_contents('php://input');
-		// $data = json_decode($raw, true);
+		$raw = file_get_contents('php://input');
+		$data = json_decode($raw, true);
 
-		// toJson($data);
+		$accept_terms = strClean($data['accept_terms']);
+		$email    = strClean($data['email']);
 
-		$email    = strClean($_POST['email']);
-		$accept_terms = strClean($_POST['accept_terms']);
-
-		$accept_terms = ($accept_terms && $accept_terms !== 'false') ? true : false;
+		// * Valimos que llegue el correo electronico
+		if(!$email || empty($email)){
+			$this->responseError("El correo electronico es requerido.");
+		}
+		
+		// * Validamos que sea un email
+		// TODO: falta
+		
 		// * Habilitar cuando se consuma el endopoint
-		// if(!$accept_terms){
-		// 	$this->responseError("Acepte los terminos de referencia.");
-		// }
+		if(!$accept_terms){
+			$this->responseError("Acepte los terminos de referencia.");
+		}
 
 		$config = [
 			'smtp' => [
