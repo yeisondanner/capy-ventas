@@ -55,7 +55,7 @@ class PermissionModel extends Mysql
         $this->datetimeStart = date("Y-m-d H:i:s");
         $this->dateStart = date("Y-m-d");
         $this->datetimeEnd = $dataEndNextBilling;
-        $this->dateEnd = date("Y-m-d");
+        $this->dateEnd = date("Y-m-d", strtotime("+30 days"));
         $this->datetimeNextBilling = $dataEndNextBilling;
         $this->pricePerCycle = 0.00;
         //consultas  necesarias para insertar la suscripción, factura y actualizar la fecha de vencimiento en user_app
