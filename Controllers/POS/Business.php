@@ -24,6 +24,25 @@ class Business extends Controllers
         $this->nameVarBusiness  = $sessionName . 'business_active';
         $this->nameVarLoginInfo = $sessionName . 'login_info';
     }
+    /**
+     * Metodo que se encarga de entrar a las configuracion
+     * del negocio
+     */
+    public function configuration(): void
+    {
+        validate_permission_app(11, "r");
+        $data = [
+            'page_id'          => 11,
+            'page_title'       => 'Configuración de negocio',
+            'page_description' => 'Configuración de negocio.',
+            'page_container'   => 'Business',
+            'page_view'        => 'configuration',
+            'page_js_css'      => 'configuration',
+            'sesion_posbusiness_active' => $_SESSION[$this->nameVarBusiness] ?? null,
+        ];
+
+        $this->views->getView($this, 'configuration', $data, 'POS');
+    }
 
     /**
      * Devuelve los negocios registrados por el usuario autenticado.

@@ -68,10 +68,16 @@ $linkestadointerfaz = base_url() . '/pos/Errors/estado_plan_interfaz';
 
                 <!-- Opciones -->
                 <div class="list-group list-group-flush">
-                    <a href="#" class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0">
-                        <i class="bi bi-gear"></i>
-                        <span>Configuraciones</span>
-                    </a>
+                    <?php
+                    if ($data_menu(11) && $data_menu(11)['read'] === '1'):
+                    ?>
+                        <a href="<?= base_url() ?>/pos/business/configuration" class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0">
+                            <i class="bi bi-gear"></i>
+                            <span>Configuraciones</span>
+                        </a>
+                    <?php
+                    endif;
+                    ?>
                     <?php
                     if ($data_menu(8) && $data_menu(8)['create'] === '1'):
                     ?>
