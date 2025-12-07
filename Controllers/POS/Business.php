@@ -31,6 +31,7 @@ class Business extends Controllers
     public function configuration(): void
     {
         validate_permission_app(11, "r");
+        $idBusiness = $_SESSION[$this->nameVarBusiness]['idBusiness'] ?? null;
         $data = [
             'page_id'          => 11,
             'page_title'       => 'Configuración de negocio',
@@ -38,7 +39,7 @@ class Business extends Controllers
             'page_container'   => 'Business',
             'page_view'        => 'configuration',
             'page_js_css'      => 'configuration',
-            'sesion_posbusiness_active' => $_SESSION[$this->nameVarBusiness] ?? null,
+            'sesion_posbusiness_active' => $this->model->select_info_business($idBusiness),
         ];
 
         $this->views->getView($this, 'configuration', $data, 'POS');

@@ -39,6 +39,12 @@ class BusinessModel extends Mysql
         $request = $this->select_all($sql, [$this->userId]);
         return $request ?? [];
     }
+    /**
+     * Obtiene todos los negocios asociados a un usuario específico.
+     *
+     * @param int $userId Identificador del usuario propietario.
+     * @return array Lista de negocios.
+     */
     public function selectBusinessesByUserEmployee(int $userId): array
     {
         $this->userId = $userId;
@@ -249,5 +255,28 @@ class BusinessModel extends Mysql
         }
 
         return $request;
+    }
+    /**
+     * Seleccionamos la informacion del negocio
+     * por su id
+     * @param int $idbusiness
+     * @return array
+     */
+    public function select_info_business(int $idbusiness): array
+    {
+        $this->businessId = $idbusiness;
+        $sql = <<<SQL
+            SELECT
+                *,
+                b.`name` AS 'business',
+                bt.`name` AS 'businesstype'
+            FROM business AS b
+            INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
+            WHERE b.idBusiness = ?
+            LIMIT 1;
+        SQL;
+
+        $request = $this->select($sql, [$this->businessId]);
+        return $request ?: null;
     }
 }

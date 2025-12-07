@@ -14,75 +14,175 @@ $dataBusines = $data['sesion_posbusiness_active'];
         </ul>
     </div>
     <div class="tile">
-        <?= csrf(true, 1); ?>
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label for="update_businessType" class="form-label">Tipo de negocio <span class="text-danger">*</span></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-building"></i></span>
-                    <select class="form-select businessType" id="update_businessType" name="update_businessType" required>
-                        <option value="" selected disabled>Selecciona un tipo de negocio</option>
-                    </select>
+        <form id="businessForm" class="needs-validation" novalidate>
+            <input type="hidden" name="idBusiness" value="1">
+            <input type="hidden" name="userapp_id" value="1">
+            <?= csrf(true, 1); ?>
+            <div class="row g-4 align-items-stretch">
+                <!-- Columna Izquierda: Identidad y Opciones Avanzadas -->
+                <div class="col-lg-4 d-flex flex-column">
+                    <!-- Tarjeta de Identidad -->
+                    <div class="card-pos mb-4">
+                        <div class="card-header-pos">
+                            <h5 class="card-title-pos"><i class="bi bi-image"></i> Identidad Visual</h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="logo-upload-area mb-3" onclick="document.getElementById('logoInput').click()">
+                                <img src="<?= GENERAR_PERFIL ?><?= htmlspecialchars($dataBusines['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8'); ?>" id="logoPreview" class="logo-preview-img mb-2" alt="Logo">
+                                <div class="text-primary fw-medium small"><i class="bi bi-cloud-upload me-1"></i> Cambiar Logo</div>
+                                <div class="text-muted small mt-1" style="font-size: 0.75rem;">Click para subir (Max 2MB)</div>
+                            </div>
+                            <input type="file" class="d-none" id="logoInput" name="logo" accept="image/*">
+                        </div>
+                    </div>
+
+                    <!-- Tarjeta de Opciones / Danger Zone -->
+                    <!-- AÑADIDO: clases flex-grow-1 y d-flex para que ocupe el resto de la altura -->
+                    <div class="card-pos flex-grow-1 d-flex flex-column">
+                        <div class="card-header-pos">
+                            <h5 class="card-title-pos"><i class="bi bi-sliders"></i> Opciones Avanzadas</h5>
+                        </div>
+                        <!-- AÑADIDO: d-flex flex-column en el body para poder usar mt-auto abajo -->
+                        <div class="card-body p-4 d-flex flex-column">
+
+                            <!-- Apertura de Caja -->
+                            <div class="d-flex align-items-center justify-content-between p-3 bg-light rounded border border-light mb-4">
+                                <div>
+                                    <label class="form-check-label fw-semibold text-dark d-block" for="openBoxSwitch"><i class="bi bi-cash-coin me-1"></i> Apertura de Caja</label>
+                                    <small class="text-muted" style="font-size: 0.8rem;">Requerir inicio de turno</small>
+                                </div>
+                                <div class="form-check form-switch m-0">
+                                    <input class="form-check-input" type="checkbox" id="openBoxSwitch" name="openBox" <?= $dataBusines['openBox'] == 'Si' ? 'checked'  : ''; ?>>
+                                </div>
+                            </div>
+
+                            <hr class="border-secondary opacity-25 my-4">
+
+                            <!-- Zona de Peligro: Eliminar Negocio -->
+                            <!-- AÑADIDO: mt-auto para empujar esto siempre al fondo de la tarjeta -->
+                            <div class="mt-auto">
+                                <label class="form-label d-block text-danger small fw-bold text-uppercase mb-2">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Zona de Peligro
+                                </label>
+                                <div class="danger-zone-bg mb-3">
+                                    <p class="small text-muted mb-0" style="line-height: 1.4; font-size: 0.8rem;">
+                                        Esta acción eliminará permanentemente el negocio y todos sus datos asociados.
+                                    </p>
+                                </div>
+                                <button type="button" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 fw-medium" onclick="confirmDelete()">
+                                    <i class="bi bi-trash3"></i> Eliminar Negocio
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Datos del Formulario -->
+                <div class="col-lg-8">
+                    <div class="card-pos h-100">
+                        <div class="card-header-pos d-flex justify-content-between align-items-center">
+                            <h5 class="card-title-pos"><i class="bi bi-building-gear"></i> Datos Generales</h5>
+                        </div>
+
+                        <div class="card-body p-4">
+                            <!-- Sección 1 -->
+                            <div class="section-header mt-0">Información Principal</div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nombre Comercial <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-shop"></i></span>
+                                        <input type="text" class="form-control" name="name" required placeholder="Ej. Market Juanita" value="<?= $dataBusines['business']; ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Tipo de Negocio</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                                        <select class="form-select businessType" name="typebusiness_id" required>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">RUC / NIT / Documento <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
+                                        <input type="text" class="form-control font-monospace" name="document_number" required placeholder="00000000000" maxlength="11" value="<?= $dataBusines['document_number']; ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Correo Electrónico</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                        <input type="email" class="form-control" name="email" required placeholder="admin@negocio.com" value="<?= $dataBusines['email']; ?>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sección 2 -->
+                            <div class="section-header">Ubicación y Contacto</div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Teléfono</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                        <input type="text" class="form-control text-center bg-white" name="telephone_prefix" value="<?= $dataBusines['telephone_prefix']; ?>" style="max-width: 60px;" required>
+                                        <input type="tel" class="form-control" name="phone_number" required placeholder="999 000 000" value="<?= $dataBusines['phone_number']; ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label">Dirección Fiscal</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                        <input type="text" class="form-control" name="direction" placeholder="Calle Principal 123" value="<?= $dataBusines['direction']; ?>">
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <label class="form-label">Ciudad</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-buildings"></i></span>
+                                        <input type="text" class="form-control" name="city" placeholder="Lima" value="<?= $dataBusines['city']; ?>">
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <label class="form-label">País</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-globe-americas"></i></span>
+                                        <input type="text" class="form-control" name="country" placeholder="Perú" value="<?= $dataBusines['country']; ?>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sección 3 -->
+                            <div class="section-header">Configuración Fiscal</div>
+                            <div class="row g-3 align-items-end">
+                                <div class="col-6 col-md-4">
+                                    <label class="form-label">Nombre Impuesto</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                        <input type="text" class="form-control text-uppercase" name="taxname" value="<?= $dataBusines['taxname']; ?>" required>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <label class="form-label">Tasa (%)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-percent"></i></span>
+                                        <input type="number" class="form-control text-end fw-bold" name="tax" value="<?= $dataBusines['tax']; ?>" step="0.01" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Acciones -->
+                            <div class="mt-5 pt-3 border-top d-flex justify-content-end gap-2">
+                                <button type="submit" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+                                    <i class="bi bi-floppy"></i> Guardar Cambios
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <label for="update_businessName" class="form-label">Nombre del negocio <span class="text-danger">*</span></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-shop"></i></span>
-                    <input type="text" class="form-control" id="update_businessName" name="update_businessName" maxlength="255" required placeholder="Ingresa el nombre comercial">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <label for="update_businessDocument" class="form-label">Número de documento <span class="text-danger">*</span></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                    <input type="text" class="form-control" id="update_businessDocument" name="update_businessDocument" maxlength="11" required placeholder="RUC o documento">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <label for="update_businessEmail" class="form-label">Correo electrónico <span class="text-danger">*</span></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                    <input type="email" class="form-control" id="update_businessEmail" name="update_businessEmail" maxlength="255" required placeholder="correo@ejemplo.com">
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-2">
-                <label for="businessTelephonePrefix" class="form-label">Prefijo telefónico <span class="text-danger">*</span></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-telephone-plus"></i></span>
-                    <input type="text" class="form-control" id="businessTelephonePrefix" name="businessTelephonePrefix" maxlength="7" required placeholder="+51" value="+51">
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-2">
-                <label for="businessCountry" class="form-label">País</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                    <input type="text" class="form-control" id="businessCountry" value="PERU" onkeyup="this.value = this.value.toUpperCase()" name="businessCountry" maxlength="100" placeholder="País del negocio">
-                </div>
-            </div>
-            <div class="col-md-12 col-lg-8">
-                <label for="businessPhone" class="form-label">Teléfono <span class="text-danger">*</span></label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                    <input type="text" class="form-control" id="businessPhone" name="businessPhone" maxlength="11" required placeholder="Número de contacto">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <label for="businessCity" class="form-label">Ciudad</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                    <input type="text" class="form-control" id="businessCity" onkeyup="this.value = this.value.toUpperCase()" name="businessCity" maxlength="250" placeholder="Ciudad o provincia">
-                </div>
-            </div>
-            <div class="col-md-6">
-                <label for="businessDirection" class="form-label">Dirección</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-signpost-2"></i></span>
-                    <input type="text" class="form-control" id="businessDirection" onkeyup="this.value = this.value.toUpperCase()" name="businessDirection" placeholder="Dirección comercial">
-                </div>
-            </div>
-        </div>
-        <p class="text-muted small mt-3 mb-0">Los campos marcados con <span class="text-danger">*</span> son obligatorios.</p>
+        </form>
     </div>
 </main>
 <?= footerPos($data) ?>
