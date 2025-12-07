@@ -13,7 +13,10 @@ class BusinessModel extends Mysql
     private string $country;
     private string $telephonePrefix;
     private string $email;
-
+    private string $taxName;
+    private float $tax;
+    private string $openBox;
+    private string $logo;
     /**
      * Obtiene todos los negocios asociados a un usuario específico.
      *
@@ -278,5 +281,64 @@ class BusinessModel extends Mysql
 
         $request = $this->select($sql, [$this->businessId]);
         return $request ?: null;
+    }
+    /**
+     * Metodo que se encarga de actualizar la informacion del negocio
+     * @param array $data
+     * @return int
+     */
+    public function updateBusiness(array $data)
+    {
+        $this->businessId = $data['idBusiness'] ?? 0;
+        $this->typebusinessId = $data['typebusiness_id'] ?? 0;
+        $this->name = $data['name'] ?? '';
+        $this->direction = $data['direction'] ?? null;
+        $this->city = $data['city'] ?? null;
+        $this->documentNumber = $data['document_number'] ?? '';
+        $this->phoneNumber = $data['phone_number'] ?? '';
+        $this->country = $data['country'] ?? null;
+        $this->telephonePrefix = $data['telephone_prefix'] ?? '';
+        $this->email = $data['email'] ?? '';
+        $this->taxName = $data['taxname'] ?? '';
+        $this->tax = $data['tax'] ?? 0;
+        $this->openBox = $data['openBox'] ?? '';
+        $this->logo = $data['logo'] ?? '';
+        $sql = <<<SQL
+            UPDATE 
+                `business` 
+                SET 
+                    `typebusiness_id`=?, 
+                    `name`=?, 
+                    `direction`=?, 
+                    `city`=?, 
+                    `document_number`=?, 
+                    `phone_number`=?, 
+                    `country`=?, 
+                    `telephone_prefix`=?, 
+                    `email`=?, 
+                    `taxname`=?, 
+                    `tax`=?, 
+                    `openBox`=?, 
+                    `logo`=? 
+            WHERE  
+            `idBusiness`=?;
+        SQL;
+        $params = [
+            $this->typebusinessId,
+            $this->name,
+            $this->direction,
+            $this->city,
+            $this->documentNumber,
+            $this->phoneNumber,
+            $this->country,
+            $this->telephonePrefix,
+            $this->email,
+            $this->taxName,
+            $this->tax,
+            $this->openBox,
+            $this->logo,
+            $this->businessId,
+        ];
+        return $this->update($sql, $params);
     }
 }

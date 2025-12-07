@@ -30,10 +30,10 @@ class Business extends Controllers
      */
     public function configuration(): void
     {
-        validate_permission_app(11, "r");
+        validate_permission_app(8, "u");
         $idBusiness = $_SESSION[$this->nameVarBusiness]['idBusiness'] ?? null;
         $data = [
-            'page_id'          => 11,
+            'page_id'          => 9,
             'page_title'       => 'Configuración de negocio',
             'page_description' => 'Configuración de negocio.',
             'page_container'   => 'Business',
@@ -246,5 +246,17 @@ class Business extends Controllers
             'icon'    => 'error',
             'status'  => false,
         ]);
+    }
+    /**
+     * Metodo que se encarga de actualizar la informacion del negocio
+     */
+    public function update()
+    {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(8, "u", false)['status']) ? toJson(validate_permission_app(8, "u", false)) : '';
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+        isCsrf("", 1);
     }
 }

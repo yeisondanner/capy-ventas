@@ -2,6 +2,7 @@
 headerPos($data);
 $dataBusines = $data['sesion_posbusiness_active'];
 ?>
+
 <main class="app-content">
     <div class="app-title">
         <div>
@@ -14,7 +15,7 @@ $dataBusines = $data['sesion_posbusiness_active'];
         </ul>
     </div>
     <div class="tile">
-        <form id="businessForm" class="needs-validation" novalidate>
+        <form id="businessForm" class="needs-validation" novalidate autocomplete="off" enctype="multipart/form-data">
             <input type="hidden" name="idBusiness" value="1">
             <input type="hidden" name="userapp_id" value="1">
             <?= csrf(true, 1); ?>
@@ -57,7 +58,6 @@ $dataBusines = $data['sesion_posbusiness_active'];
                             </div>
 
                             <hr class="border-secondary opacity-25 my-4">
-
                             <!-- Zona de Peligro: Eliminar Negocio -->
                             <!-- AÑADIDO: mt-auto para empujar esto siempre al fondo de la tarjeta -->
                             <div class="mt-auto">
@@ -69,22 +69,19 @@ $dataBusines = $data['sesion_posbusiness_active'];
                                         Esta acción eliminará permanentemente el negocio y todos sus datos asociados.
                                     </p>
                                 </div>
-                                <button type="button" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 fw-medium" onclick="confirmDelete()">
+                                <button type="button" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 fw-medium">
                                     <i class="bi bi-trash3"></i> Eliminar Negocio
                                 </button>
                             </div>
-
                         </div>
                     </div>
                 </div>
-
                 <!-- Columna Derecha: Datos del Formulario -->
                 <div class="col-lg-8">
                     <div class="card-pos h-100">
                         <div class="card-header-pos d-flex justify-content-between align-items-center">
                             <h5 class="card-title-pos"><i class="bi bi-building-gear"></i> Datos Generales</h5>
                         </div>
-
                         <div class="card-body p-4">
                             <!-- Sección 1 -->
                             <div class="section-header mt-0">Información Principal</div>
@@ -97,10 +94,10 @@ $dataBusines = $data['sesion_posbusiness_active'];
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label">Tipo de Negocio</label>
+                                    <label class="form-label" for="update_slctTypeBusiness">Tipo de Negocio</label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
-                                        <select class="form-select businessType" name="typebusiness_id" required>
+                                        <select class="form-select businessType" name="update_slctTypeBusiness" required id="update_slctTypeBusiness">
                                         </select>
                                     </div>
                                 </div>
@@ -185,4 +182,7 @@ $dataBusines = $data['sesion_posbusiness_active'];
         </form>
     </div>
 </main>
+<script>
+    const typeBusiness = "<?= $dataBusines['idBusinessType']; ?>";
+</script>
 <?= footerPos($data) ?>
