@@ -209,4 +209,78 @@ class Profile extends Controllers
 
         return $formatted;
     }
+    /**
+     * Actualiza el perfil del usuario autenticado (6 campos del formulario).
+     */
+    public function updateProfile(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        $userInfo  = $_SESSION[$this->nameVarLoginInfo] ?? [];
+        $userAppId = (int) ($userInfo['idUser'] ?? 0);
+
+        if ($userAppId <= 0) {
+            $this->responseError("No se pudo identificar al usuario.");
+        }
+
+        // Solo los 6 campos del formulario
+        $fullname  = trim($_POST['fullname'] ?? '');
+        $username  = trim($_POST['username'] ?? '');
+        $email     = trim($_POST['email'] ?? '');
+        $phone     = trim($_POST['phone'] ?? '');
+        $country   = trim($_POST['country'] ?? '');
+        $birthDate = $_POST['birthDate'] ?? null;
+
+        if ($fullname === '' || $username === '' || $email === '') {
+            $this->responseError('Nombre completo, usuario y correo son obligatorios.');
+        }
+
+        $dataUpdate = [
+            'fullname'  => $fullname,
+            'username'  => $username,
+            'email'     => $email,
+            'phone'     => $phone,
+            'country'   => $country,
+            'birthDate' => $birthDate,
+        ];
+
+        $requestUpdate = $this->model->updateUserProfile($userAppId, $dataUpdate);
+
+        if ($requestUpdate) {
+            // Opcional: refrescar datos básicos de la sesión
+            $_SESSION[$this->nameVarLoginInfo]['name']  = $fullname;
+            $_SESSION[$this->nameVarLoginInfo]['user']  = $username;
+            $_SESSION[$this->nameVarLoginInfo]['email'] = $email;
+
+            $arrResponse = [
+                'status' => true,
+                'msg'    => 'Perfil actualizado correctamente.'
+            ];
+            $data = [
+                'title'  => 'Información actualizada',
+                'message' => 'Perfil actualizado correctamente.',
+                'type'   => 'success',
+                'icon'   => 'success',
+                'status' => true,
+            ];
+
+            toJson($data);
+        } else {
+            $this->responseError('No se realizaron cambios o ocurrió un error al actualizar.');
+        }
+    }
+    private function responseError(string $message): void
+    {
+        $data = [
+            'title'  => 'Ocurrió un error',
+            'message' => $message,
+            'type'   => 'error',
+            'icon'   => 'error',
+            'status' => false,
+        ];
+
+        toJson($data);
+    }
 }
