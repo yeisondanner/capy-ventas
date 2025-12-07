@@ -138,4 +138,75 @@ class ProfileModel extends Mysql
         $request = $this->select_all($sql, [$userAppId]);
         return $request ?? [];
     }
+        /**
+     * Actualiza solo los datos básicos del perfil (6 campos del formulario).
+     *
+     * @param int   $userAppId ID del usuario en user_app.
+     * @param array $data      fullname, username, email, phone, country, birthDate.
+     * @return bool
+     */
+    public function updateUserProfile(int $userAppId, array $data): bool
+    {
+        // 1. Separar nombres y apellidos a partir de "Nombre completo"
+        $fullname = trim($data['fullname'] ?? '');
+        $names    = $fullname;
+        $lastname = '';
+
+        if (!empty($fullname)) {
+            $parts = preg_split('/\s+/', $fullname);
+            if (count($parts) > 1) {
+                // último “token” como apellido (simple pero suficiente)
+                $lastname = array_pop($parts);
+                $names    = implode(' ', $parts);
+            }
+        }
+
+        $username  = trim($data['username'] ?? '');
+        $email     = trim($data['email'] ?? '');
+        $phone     = trim($data['phone'] ?? '');
+        $country   = trim($data['country'] ?? '');
+        $birthDate = $data['birthDate'] ?? null;
+
+        // Si en tu BD usas prefijo separado, aquí podrías dividir el teléfono.
+        // Para simplificar, guardo todo en phone_number.
+        $telephonePrefix = null;
+        $phoneNumber     = $phone;
+
+        // Encriptar campos que están cifrados en BD
+        $emailEncrypted = !empty($email) ? encryption($email) : null;
+        $userEncrypted  = !empty($username) ? encryption($username) : null;
+
+        $sql = <<<SQL
+            UPDATE user_app AS ua
+            INNER JOIN people AS p ON p.idPeople = ua.people_id
+            SET
+                ua.user            = COALESCE(?, ua.user),
+                ua.update_date     = NOW(),
+                p.names            = COALESCE(?, p.names),
+                p.lastname         = COALESCE(?, p.lastname),
+                p.email            = COALESCE(?, p.email),
+                p.date_of_birth    = COALESCE(?, p.date_of_birth),
+                p.country          = COALESCE(?, p.country),
+                p.telephone_prefix = COALESCE(?, p.telephone_prefix),
+                p.phone_number     = COALESCE(?, p.phone_number),
+                p.update_date      = NOW()
+            WHERE ua.idUserApp = ?;
+        SQL;
+
+        $params = [
+            $userEncrypted,
+            $names ?: null,
+            $lastname ?: null,
+            $emailEncrypted,
+            !empty($birthDate) ? $birthDate : null,
+            $country ?: null,
+            $telephonePrefix,
+            $phoneNumber ?: null,
+            $userAppId,
+        ];
+
+        $result = $this->update($sql, $params);
+        return $result > 0;
+    }
+
 }
