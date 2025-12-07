@@ -258,5 +258,34 @@ class Business extends Controllers
             $this->responseError('Método de solicitud no permitido.');
         }
         isCsrf("", 1);
+        if (!isset($_FILES['update_logoInput'])) {
+            $this->responseError('No se encontró el archivo del logo.');
+        }
+        validateFields([
+            'update_openBoxSwitch',
+            'update_name',
+            'update_slctTypeBusiness',
+            'update_documentNumber',
+            'update_email',
+            'update_country',
+            'update_telephone_prefix',
+            'update_telephone',
+            'update_city',
+            'update_direction',
+            'update_taxname',
+            'update_tax',
+        ]);
+        $openBoxSwitch = strClean($_POST['update_openBoxSwitch']);
+        $name = strClean($_POST['update_name']);
+        $typebusinessId = strClean($_POST['update_slctTypeBusiness']);
+        $documentNumber = strClean($_POST['update_documentNumber']);
+        $email = strClean($_POST['update_email']);
+        $country = strClean($_POST['update_country']);
+        $telephonePrefix = strClean($_POST['update_telephone_prefix']);
+        $phoneNumber = strClean($_POST['update_telephone']);
+        $city = strClean($_POST['update_city']);
+        $direction = strClean($_POST['update_direction']);
+        $taxName = strClean($_POST['update_taxname']);
+        $tax = strClean($_POST['update_tax']);
     }
 }
