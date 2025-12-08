@@ -35,7 +35,7 @@ class BusinessModel extends Mysql
                 bt.`name` AS category
             FROM business AS b
             INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
-            WHERE b.userapp_id = ?
+            WHERE b.userapp_id = ? AND b.status = 'Activo'
             ORDER BY b.registration_date DESC;
         SQL;
 
@@ -64,7 +64,7 @@ class BusinessModel extends Mysql
                         INNER JOIN business AS b ON b.idBusiness = e.bussines_id
                         INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
                     WHERE
-                        ua.idUserApp = ?;
+                        ua.idUserApp = ? AND b.status = 'Activo';
         SQL;
 
         $request = $this->select_all($sql, [$this->userId]);
@@ -156,7 +156,7 @@ class BusinessModel extends Mysql
         $sql = <<<SQL
             SELECT b.idBusiness
             FROM business AS b
-            WHERE b.document_number = ? AND b.userapp_id = ?{$excludeSql}
+            WHERE b.document_number = ? AND b.userapp_id = ?{$excludeSql} AND b.status = 'Activo'
             LIMIT 1;
         SQL;
 
@@ -341,6 +341,44 @@ class BusinessModel extends Mysql
             $this->logo,
             $this->businessId,
         ];
+        return $this->update($sql, $params);
+    }
+    /**
+     * Metodo que desactiva un negocio
+     * @param int $businessId
+     * @return int
+     */
+    public function disableBusiness(int $businessId)
+    {
+        $this->businessId = $businessId;
+        $sql = <<<SQL
+            UPDATE 
+                `business` 
+                SET 
+                    `status`='Inactivo' 
+            WHERE  
+            `idBusiness`=?;
+        SQL;
+        $params = [$this->businessId];
+        return $this->update($sql, $params);
+    }
+    /**
+     * Metodo que activa un negocio
+     * @param int $businessId
+     * @return int
+     */
+    public function enableBusiness(int $businessId)
+    {
+        $this->businessId = $businessId;
+        $sql = <<<SQL
+            UPDATE 
+                `business` 
+                SET 
+                    `status`='Activo' 
+            WHERE  
+            `idBusiness`=?;
+        SQL;
+        $params = [$this->businessId];
         return $this->update($sql, $params);
     }
 }

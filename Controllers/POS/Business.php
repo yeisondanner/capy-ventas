@@ -114,7 +114,7 @@ class Business extends Controllers
     public function create(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(8, "c", false)['status']) ? toJson(validate_permission_app(8, "c", false)) : '';
+        //(!validate_permission_app(8, "c", false)['status']) ? toJson(validate_permission_app(8, "c", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -393,6 +393,53 @@ class Business extends Controllers
             ]);
         } else {
             $this->responseError('No se pudo actualizar el negocio.');
+        }
+    }
+    /**
+     * Metodo que desactiva un negocio
+     * @return void
+     */
+    public function delete_bussiness(): void
+    {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(8, "d", false)['status']) ? toJson(validate_permission_app(8, "d", false)) : '';
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+        isCsrf("", 1);
+        validateFields(['id', 'name']);
+        $idBusiness = (int)strClean($_POST['id']);
+        $name = strClean($_POST['name']);
+        validateFieldsEmpty([
+            'ID DEL NEGOCIO' => $idBusiness,
+            'NOMBRE DEL NEGOCIO' => $name,
+        ]);
+        //validamos que el id del negocio sea un numero
+        if (!is_numeric($idBusiness)) {
+            $this->responseError('El id del negocio debe ser un numero.');
+        }
+        //consultamos a la base de datos la informacion del negocio
+        $businessActually = $this->model->select_info_business($idBusiness);
+        //validamos que exista la informacion del negocio
+        if (empty($businessActually)) {
+            $this->responseError('No se encontró la informacion del negocio.');
+        }
+        //eliminamos el negocio
+        $response = $this->model->disableBusiness($idBusiness);
+        if ($response) {
+            toJson([
+                'title'   => 'Eliminación exitosa',
+                'html' => <<<HTML
+                        <p>El negocio <strong style="color: green;">$name</strong> ha sido eliminado con exito.</p>
+                HTML,
+                'type'    => 'success',
+                'icon'    => 'success',
+                'status'  => true,
+                'url'     => base_url() . '/pos/LogOut',
+                'timer'   => 1500,
+            ]);
+        } else {
+            $this->responseError('No se pudo eliminar el negocio.');
         }
     }
 }

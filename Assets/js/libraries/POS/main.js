@@ -333,6 +333,7 @@ function showAlert(data = {}, type = "float") {
       return Swal.fire({
         title: data.title ?? "¿Estás seguro?",
         text: data.message ?? "Esta acción no se puede deshacer",
+        html: data.html ?? "",
         icon: data.icon ?? "warning",
         showCancelButton: true,
         confirmButtonText: data.confirmText ?? "Sí",

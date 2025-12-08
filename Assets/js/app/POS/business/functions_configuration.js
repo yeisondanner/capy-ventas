@@ -1,8 +1,11 @@
 import UpdateBusiness from "./update_business.js";
+import DeleteBusiness from "./delete_bussiness.js";
 (function () {
   "use strict";
   //creamos un objeto de la clase UpdateBusiness
   const updateBusinessInstance = new UpdateBusiness();
+  //creamos un objeto de la clase DeleteBusiness
+  const deleteBusinessInstance = new DeleteBusiness();
   /**
    * Eventos al cargar el documento
    * @returns void
@@ -11,6 +14,8 @@ import UpdateBusiness from "./update_business.js";
     setTimeout(() => {
       //cargamos la funcionalidad de actualizacion del negocio
       updateBusinessInstance.updateBusiness();
+      //cargamos la funcionalidad de eliminacion del negocio
+      deleteBusinessInstance.deleteBusiness();
       //cargamos la imagen seleccionada
       loadPreviewImage();
       //seleccionamos el tipo de negocio

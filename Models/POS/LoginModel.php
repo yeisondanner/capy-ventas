@@ -103,6 +103,7 @@ class LoginModel extends Mysql
                                 INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
                         WHERE
                                 ua.idUserApp = ?
+                                AND b.status = 'Activo'
                         LIMIT
                                 1;
                 SQL;

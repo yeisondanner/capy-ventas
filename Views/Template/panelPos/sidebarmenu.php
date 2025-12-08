@@ -84,14 +84,14 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     endif;
                     ?>
                     <?php
-                    if ($data_menu(8) && $data_menu(8)['create'] === '1'):
+                    // if ($data_menu(8) && $data_menu(8)['create'] === '1'):
                     ?>
-                        <a href="#" class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0" data-bs-toggle="modal" data-bs-target="#addBusinessModal">
-                            <i class="bi bi-plus-circle"></i>
-                            <span>Agregar otro negocio</span>
-                        </a>
+                    <a href="#" class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0" data-bs-toggle="modal" data-bs-target="#addBusinessModal">
+                        <i class="bi bi-plus-circle"></i>
+                        <span>Agregar otro negocio</span>
+                    </a>
                     <?php
-                    endif;
+                    // endif;
                     ?>
                 </div>
             </div>

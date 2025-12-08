@@ -146,7 +146,8 @@ class PermissionModel extends Mysql
                     business AS b
                 WHERE
                     b.idBusiness = ?
-                    AND b.userapp_id = ?;
+                    AND b.userapp_id = ?
+                    AND b.status = 'Activo';
         SQL;
         $request = $this->select($sql, [$this->idBusiness, $this->idUserApp]) ?? [];
         return $request;
@@ -168,7 +169,8 @@ class PermissionModel extends Mysql
                     INNER JOIN user_app AS ua ON ua.idUserApp = b.userapp_id
                     INNER JOIN subscriptions AS s ON (s.user_app_id=ua.idUserApp AND s.end_date=ua.plan_expiration_date AND s.plan_id!=1)
                 WHERE
-                    b.idBusiness = ?;
+                    b.idBusiness = ?
+                    AND b.status = 'Activo';
         SQL;
         $request = $this->select($sql, [$this->idBusiness]) ?? [];
         return $request;

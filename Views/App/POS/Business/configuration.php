@@ -1,6 +1,7 @@
 <?php
 headerPos($data);
 $dataBusines = $data['sesion_posbusiness_active'];
+$validationDelete = (validate_permission_app(8, "d", false)) ? (int) validate_permission_app(8, "d", false)['delete'] : 0;
 ?>
 
 <main class="app-content">
@@ -58,19 +59,21 @@ $dataBusines = $data['sesion_posbusiness_active'];
                             <hr class="border-secondary opacity-25 my-4">
                             <!-- Zona de Peligro: Eliminar Negocio -->
                             <!-- AÑADIDO: mt-auto para empujar esto siempre al fondo de la tarjeta -->
-                            <div class="mt-auto">
-                                <label class="form-label d-block text-danger small fw-bold text-uppercase mb-2">
-                                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Zona de Peligro
-                                </label>
-                                <div class="danger-zone-bg mb-3">
-                                    <p class="small text-muted mb-0" style="line-height: 1.4; font-size: 0.8rem;">
-                                        Esta acción eliminará permanentemente el negocio y todos sus datos asociados.
-                                    </p>
+                            <?php if ($validationDelete == 1): ?>
+                                <div class="mt-auto">
+                                    <label class="form-label d-block text-danger small fw-bold text-uppercase mb-2">
+                                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Zona de Peligro
+                                    </label>
+                                    <div class="danger-zone-bg mb-3">
+                                        <p class="small text-muted mb-0" style="line-height: 1.4; font-size: 0.8rem;">
+                                            Esta acción eliminará permanentemente el negocio y todos sus datos asociados.
+                                        </p>
+                                    </div>
+                                    <button type="button" id="deleteBusiness" data-id="<?= $dataBusines['idBusiness']; ?>" data-token="<?= csrf(false, 1); ?>" data-name="<?= $dataBusines['business']; ?>" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 fw-medium">
+                                        <i class="bi bi-trash3"></i> Eliminar Negocio
+                                    </button>
                                 </div>
-                                <button type="button" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 fw-medium">
-                                    <i class="bi bi-trash3"></i> Eliminar Negocio
-                                </button>
-                            </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

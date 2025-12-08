@@ -59,6 +59,21 @@ class Login extends Controllers
 			//obtenemos los negocios del cual el usuario es empleado
 			$bussiness = $this->model->select_business_employee($request["idUserApp"]);
 		}
+		//validamos que exista un negocio
+		if (empty($bussiness)) {
+			//se crea el array para la variable de session
+			$bussiness = array(
+				"idBusiness" => 0,
+				"business" => "",
+				"category" => "",
+				"direction" => "",
+				"city" => "",
+				"country" => "",
+				"email" => "",
+				"document_number" => "",
+				"logo" => ""
+			);
+		}
 		//creamos las variables de session para el usuario
 		$data_session = array(
 			"idUser" => $request["idUserApp"],

@@ -1469,7 +1469,13 @@ function get_option_and_permission_app()
     $nameVarPermissionEmployee = $sessionName . 'menu_employee_permission';
     //variables de negocio activo
     $idUser = $_SESSION[$nameVarLoginInfo]['idUser'];
-    $idBusiness = $_SESSION[$nameVarBusiness]['idBusiness'];
+    $idBusiness = ($_SESSION[$nameVarBusiness]['idBusiness']);
+    //si el id esta en cero quiere decir que no tiene negocio asociado
+    if ($idBusiness === 0) {
+        //creamos el array con los permisos vacios
+        $_SESSION[$nameVarPermission] = [];
+        return;
+    }
     //requerimos el modelo de permisos
     require_once "./Models/POS/PermissionModel.php";
     $objPermission = new PermissionModel();
