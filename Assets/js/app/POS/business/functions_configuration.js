@@ -22,8 +22,8 @@ import UpdateBusiness from "./update_business.js";
    * @returns void
    */
   function loadPreviewImage() {
-    if (!document.getElementById("logoInput")) return;
-    const logoInput = document.getElementById("logoInput");
+    if (!document.getElementById("update_logoInput")) return;
+    const logoInput = document.getElementById("update_logoInput");
     // Preview de imagen
     logoInput.addEventListener("change", function (event) {
       const file = event.target.files[0];

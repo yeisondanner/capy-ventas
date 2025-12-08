@@ -32,6 +32,12 @@ class Business extends Controllers
     {
         validate_permission_app(8, "u");
         $idBusiness = $_SESSION[$this->nameVarBusiness]['idBusiness'] ?? null;
+        $infoBusiness = $this->model->select_info_business($idBusiness);
+        if (empty($infoBusiness['logo'])) {
+            $logoBusiness = GENERAR_PERFIL . htmlspecialchars($infoBusiness['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8');
+        } else {
+            $logoBusiness = base_url() . '/Loadfile/iconbusiness?f=' . $infoBusiness['logo'];
+        }
         $data = [
             'page_id'          => 9,
             'page_title'       => 'Configuración de negocio',
@@ -39,7 +45,9 @@ class Business extends Controllers
             'page_container'   => 'Business',
             'page_view'        => 'configuration',
             'page_js_css'      => 'configuration',
-            'sesion_posbusiness_active' => $this->model->select_info_business($idBusiness),
+            'sesion_posbusiness_active' => $infoBusiness,
+            'logoBusiness' => $logoBusiness,
+
         ];
 
         $this->views->getView($this, 'configuration', $data, 'POS');
@@ -261,8 +269,11 @@ class Business extends Controllers
         if (!isset($_FILES['update_logoInput'])) {
             $this->responseError('No se encontró el archivo del logo.');
         }
+        $openBoxSwitch = 'No';
+        if (isset($_POST['update_openBoxSwitch'])) {
+            $openBoxSwitch = 'Si';
+        }
         validateFields([
-            'update_openBoxSwitch',
             'update_name',
             'update_slctTypeBusiness',
             'update_documentNumber',
@@ -275,7 +286,6 @@ class Business extends Controllers
             'update_taxname',
             'update_tax',
         ]);
-        $openBoxSwitch = strClean($_POST['update_openBoxSwitch']);
         $name = strClean($_POST['update_name']);
         $typebusinessId = strClean($_POST['update_slctTypeBusiness']);
         $documentNumber = strClean($_POST['update_documentNumber']);
@@ -287,5 +297,102 @@ class Business extends Controllers
         $direction = strClean($_POST['update_direction']);
         $taxName = strClean($_POST['update_taxname']);
         $tax = strClean($_POST['update_tax']);
+        $idUser = $this->getUserId();
+        $logo = $_FILES['update_logoInput'];
+        validateFieldsEmpty([
+            'CORREO ELECTRONICO' => $email,
+            'NOMBRE DEL NEGOCIO' => $name,
+            'TIPO DE NEGOCIO' => $typebusinessId,
+            'NÚMERO DE DOCUMENTO' => $documentNumber,
+            'PAIS' => $country,
+            'PREFIX DEL TELEFONO' => $telephonePrefix,
+            'TELEFONO' => $phoneNumber,
+            'NOMBRE DEL IMPUESTO' => $taxName,
+            'IMPUESTO' => $tax,
+        ]);
+        //validamos si el archivo es un archivo valido
+        if (isFile('image', $logo, ['png', 'jpg', 'jpeg'])) {
+            $this->responseError('El archivo debe ser una imagen.');
+        }
+        //validamos que el nombre del negocio no sea mayor de 255 caracteres
+        if (strlen($name) > 255) {
+            $this->responseError('El nombre del negocio no puede tener más de 255 caracteres.');
+        }
+        //validamos que el nombre de la ciudad no sea mayor a 250 caracteres
+        if (strlen($city) > 250) {
+            $this->responseError('El nombre de la ciudad no puede tener más de 250 caracteres.');
+        }
+        //validamos que el nombre del pais no sea mayor a 100 caracteres
+        if (strlen($country) > 100) {
+            $this->responseError('El nombre del pais no puede tener más de 100 caracteres.');
+        }
+        //validamos que el numero del documento no sea mayor a 11 caracteres
+        if (strlen($documentNumber) > 11) {
+            $this->responseError('El numero del documento no puede tener más de 11 caracteres.');
+        }
+        //preparamos la ruta de almacenamiento del logo
+        $urlFile = getRoute();
+        verifyFolder($urlFile);
+        $urlFile .= '/Business';
+        verifyFolder($urlFile);
+        $urlFile .= '/logo';
+        verifyFolder($urlFile);
+        //obtenemos el id del negocio
+        $idBusiness = (int)$_SESSION[$this->nameVarBusiness]['idBusiness'];
+        //consultamos a la base de datos la informacion del negocio
+        $businessActually = $this->model->select_info_business($idBusiness);
+        //validamos que exista la informacion del negocio
+        if (empty($businessActually)) {
+            $this->responseError('No se encontró la informacion del negocio.');
+        }
+        $logoname = '';
+        //ahora validamos si tenemos un logo cargado
+        if ($logo['name'] == '') {
+            $logoname = $businessActually['logo'];
+        } else {
+            //eliminamos el logo anterior
+            if ($businessActually['logo'] != '') {
+                delFolder($urlFile, $businessActually['logo'], false);
+            }
+            //obtenemos la extension del archivo
+            $extension = pathinfo($logo['name'], PATHINFO_EXTENSION);
+            $logoname = $businessActually['idBusiness'] . '-' . time() . '.' . $extension;
+            $sizefile = valConvert($logo['size'])['MB'];
+            $urlFile .= '/' . $logoname;
+            if ($sizefile > 2) {
+                resizeAndCompressImage($logo['tmp_name'], $urlFile, 2);
+            } else {
+                move_uploaded_file($logo['tmp_name'], $urlFile);
+            }
+        }
+        //preparamos el array para la actualizacion
+        $data = [
+            'idBusiness' => $idBusiness,
+            'typebusiness_id' => $typebusinessId,
+            'name' => $name,
+            'direction' => $direction,
+            'city' => $city,
+            'document_number' => $documentNumber,
+            'phone_number' => $phoneNumber,
+            'country' => $country,
+            'telephone_prefix' => $telephonePrefix,
+            'email' => $email,
+            'taxname' => $taxName,
+            'tax' => $tax,
+            'openBox' => $openBoxSwitch,
+            'logo' => $logoname
+        ];
+        $responseUpdate = $this->model->updateBusiness($data);
+        if ($responseUpdate) {
+            toJson([
+                'title'   => 'Negocio actualizado',
+                'message' => 'El negocio ha sido actualizado con exito.',
+                'type'    => 'success',
+                'icon'    => 'success',
+                'status'  => true,
+            ]);
+        } else {
+            $this->responseError('No se pudo actualizar el negocio.');
+        }
     }
 }

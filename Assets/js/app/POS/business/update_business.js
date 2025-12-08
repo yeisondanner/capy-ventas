@@ -31,9 +31,6 @@ export default class UpdateBusiness {
       try {
         const response = await fetch(endpoint, config);
         const data = await response.json();
-        if (data.status) {
-          this.#businessForm.reset();
-        }
         showAlert(data);
       } catch (error) {
         showAlert({

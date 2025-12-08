@@ -89,7 +89,8 @@ class BusinessModel extends Mysql
                 b.`name` AS business,
                 b.document_number,
                 b.status,
-                bt.`name` AS category
+                bt.`name` AS category,
+                b.logo
             FROM business AS b
             INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
             WHERE b.idBusiness = ? AND b.userapp_id = ?
@@ -116,7 +117,8 @@ class BusinessModel extends Mysql
                     b.`name` AS business,
                     b.document_number,
                     b.status,
-                    bt.`name` AS category
+                    bt.`name` AS category,
+                    b.logo
                 FROM
                     user_app AS ua
                     INNER JOIN employee AS e ON e.userapp_id = ua.idUserApp

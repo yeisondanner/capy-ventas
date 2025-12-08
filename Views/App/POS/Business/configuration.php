@@ -27,7 +27,7 @@ $dataBusines = $data['sesion_posbusiness_active'];
                         </div>
                         <div class="card-body p-4">
                             <div class="logo-upload-area mb-3" onclick="document.getElementById('update_logoInput').click()">
-                                <img src="<?= GENERAR_PERFIL ?><?= htmlspecialchars($dataBusines['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8'); ?>" id="logoPreview" class="logo-preview-img mb-2" alt="Logo">
+                                <img src="<?= $data['logoBusiness'] ?>" id="logoPreview" class="logo-preview-img mb-2" alt="Logo">
                                 <div class="text-primary fw-medium small"><i class="bi bi-cloud-upload me-1"></i> Cambiar Logo</div>
                                 <div class="text-muted small mt-1" style="font-size: 0.75rem;">Click para subir (Max 2MB)</div>
                             </div>
@@ -92,7 +92,7 @@ $dataBusines = $data['sesion_posbusiness_active'];
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label" for="update_slctTypeBusiness">Tipo de Negocio</label>
+                                    <label class="form-label" for="update_slctTypeBusiness">Tipo de Negocio <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
                                         <select class="form-select businessType" name="update_slctTypeBusiness" required id="update_slctTypeBusiness">
@@ -107,7 +107,7 @@ $dataBusines = $data['sesion_posbusiness_active'];
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label" for="update_email">Correo Electrónico</label>
+                                    <label class="form-label" for="update_email">Correo Electrónico <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-envelope"></i></span>
                                         <input type="email" class="form-control" name="update_email" id="update_email" required placeholder="admin@negocio.com" value="<?= $dataBusines['email']; ?>">
@@ -119,14 +119,14 @@ $dataBusines = $data['sesion_posbusiness_active'];
                             <div class="section-header">Ubicación y Contacto</div>
                             <div class="row g-3">
                                 <div class="col-12 col-md-6">
-                                    <label class="form-label" for="update_country">País</label>
+                                    <label class="form-label" for="update_country">País <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-globe-americas"></i></span>
-                                        <input type="text" class="form-control" name="update_country" id="update_country" placeholder="Perú" value="<?= $dataBusines['country']; ?>">
+                                        <input type="text" class="form-control" name="update_country" id="update_country" placeholder="Perú" value="<?= $dataBusines['country']; ?>" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label" for="update_telephone">Teléfono</label>
+                                    <label class="form-label" for="update_telephone">Teléfono <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-telephone"></i></span>
                                         <input type="text" class="form-control text-center bg-white" name="update_telephone_prefix" id="update_telephonePrefix" value="<?= $dataBusines['telephone_prefix']; ?>" style="max-width: 65px;" required>
@@ -153,14 +153,14 @@ $dataBusines = $data['sesion_posbusiness_active'];
                             <div class="section-header">Configuración Fiscal</div>
                             <div class="row g-3 align-items-end">
                                 <div class="col-6 col-md-6">
-                                    <label class="form-label" for="update_taxname">Nombre Impuesto</label>
+                                    <label class="form-label" for="update_taxname">Nombre Impuesto <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-tag"></i></span>
                                         <input type="text" class="form-control text-uppercase" name="update_taxname" id="update_taxname" value="<?= $dataBusines['taxname']; ?>" required>
                                     </div>
                                 </div>
                                 <div class="col-6 col-md-6">
-                                    <label class="form-label" for="update_tax">Tasa (%)</label>
+                                    <label class="form-label" for="update_tax">Tasa (%) <span class="text-danger">*</span></label>
                                     <div class="input-group">
                                         <span class="input-group-text"><i class="bi bi-percent"></i></span>
                                         <input type="number" class="form-control text-end fw-bold" name="update_tax" id="update_tax" value="<?= $dataBusines['tax']; ?>" step="0.01" required>
