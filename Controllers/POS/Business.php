@@ -114,7 +114,7 @@ class Business extends Controllers
     public function create(): void
     {
         //VALIDACION DE PERMISOS
-        //(!validate_permission_app(8, "c", false)['status']) ? toJson(validate_permission_app(8, "c", false)) : '';
+        //(!validate_permission_app(8, "c", false)['status']) ? toJson(validate_permission_app(8, "c", false)) : ''; #se comento esto por motivo que si el usuario no tiene ningun negocio creado le permita crear uno
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
