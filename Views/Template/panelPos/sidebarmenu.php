@@ -30,6 +30,11 @@ $data_menu_employee = function (int $interface): array {
     })));
 };
 $linkestadointerfaz = base_url() . '/pos/Errors/estado_plan_interfaz';
+if (empty($_SESSION[$nameVarBusiness]['logo'])) {
+    $logoBusiness = GENERAR_PERFIL . htmlspecialchars($_SESSION[$nameVarBusiness]['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8');
+} else {
+    $logoBusiness = base_url() . '/Loadfile/iconbusiness?f=' . $_SESSION[$nameVarBusiness]['logo'];
+}
 ?>
 <!-- Sidebar menu-->
 <div class="app-sidebar__overlay" data-toggle="sidebar"></div>
@@ -47,7 +52,7 @@ $linkestadointerfaz = base_url() . '/pos/Errors/estado_plan_interfaz';
             <div class="card-body">
                 <div class="d-flex align-items-center gap-1">
                     <!-- Avatar -->
-                    <img class="app-sidebar__user-avatar p-0 m-0" id="currentBusinessAvatar" src="<?= GENERAR_PERFIL ?><?= htmlspecialchars($_SESSION[$nameVarBusiness]['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8'); ?>" alt="User Image">
+                    <img class="app-sidebar__user-avatar p-0 m-0" id="currentBusinessAvatar" src="<?= $logoBusiness ?>" alt="User Image">
                     <!-- Nombre y rol -->
                     <div class="flex-grow-1">
                         <div class="fw-semibold" id="currentBusinessName"><?= htmlspecialchars($_SESSION[$nameVarBusiness]['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8'); ?></div>
@@ -69,7 +74,7 @@ $linkestadointerfaz = base_url() . '/pos/Errors/estado_plan_interfaz';
                 <!-- Opciones -->
                 <div class="list-group list-group-flush">
                     <?php
-                    if ($data_menu(11) && $data_menu(11)['read'] === '1'):
+                    if ($data_menu(8) && $data_menu(8)['update'] === '1'):
                     ?>
                         <a href="<?= base_url() ?>/pos/business/configuration" class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0">
                             <i class="bi bi-gear"></i>

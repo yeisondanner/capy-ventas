@@ -13,7 +13,10 @@ class BusinessModel extends Mysql
     private string $country;
     private string $telephonePrefix;
     private string $email;
-
+    private string $taxName;
+    private float $tax;
+    private string $openBox;
+    private string $logo;
     /**
      * Obtiene todos los negocios asociados a un usuario específico.
      *
@@ -39,6 +42,12 @@ class BusinessModel extends Mysql
         $request = $this->select_all($sql, [$this->userId]);
         return $request ?? [];
     }
+    /**
+     * Obtiene todos los negocios asociados a un usuario específico.
+     *
+     * @param int $userId Identificador del usuario propietario.
+     * @return array Lista de negocios.
+     */
     public function selectBusinessesByUserEmployee(int $userId): array
     {
         $this->userId = $userId;
@@ -80,7 +89,8 @@ class BusinessModel extends Mysql
                 b.`name` AS business,
                 b.document_number,
                 b.status,
-                bt.`name` AS category
+                bt.`name` AS category,
+                b.logo
             FROM business AS b
             INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
             WHERE b.idBusiness = ? AND b.userapp_id = ?
@@ -107,7 +117,8 @@ class BusinessModel extends Mysql
                     b.`name` AS business,
                     b.document_number,
                     b.status,
-                    bt.`name` AS category
+                    bt.`name` AS category,
+                    b.logo
                 FROM
                     user_app AS ua
                     INNER JOIN employee AS e ON e.userapp_id = ua.idUserApp
@@ -249,5 +260,87 @@ class BusinessModel extends Mysql
         }
 
         return $request;
+    }
+    /**
+     * Seleccionamos la informacion del negocio
+     * por su id
+     * @param int $idbusiness
+     * @return array
+     */
+    public function select_info_business(int $idbusiness): array
+    {
+        $this->businessId = $idbusiness;
+        $sql = <<<SQL
+            SELECT
+                *,
+                b.`name` AS 'business',
+                bt.`name` AS 'businesstype'
+            FROM business AS b
+            INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
+            WHERE b.idBusiness = ?
+            LIMIT 1;
+        SQL;
+
+        $request = $this->select($sql, [$this->businessId]);
+        return $request ?: null;
+    }
+    /**
+     * Metodo que se encarga de actualizar la informacion del negocio
+     * @param array $data
+     * @return int
+     */
+    public function updateBusiness(array $data)
+    {
+        $this->businessId = $data['idBusiness'] ?? 0;
+        $this->typebusinessId = $data['typebusiness_id'] ?? 0;
+        $this->name = $data['name'] ?? '';
+        $this->direction = $data['direction'] ?? null;
+        $this->city = $data['city'] ?? null;
+        $this->documentNumber = $data['document_number'] ?? '';
+        $this->phoneNumber = $data['phone_number'] ?? '';
+        $this->country = $data['country'] ?? null;
+        $this->telephonePrefix = $data['telephone_prefix'] ?? '';
+        $this->email = $data['email'] ?? '';
+        $this->taxName = $data['taxname'] ?? '';
+        $this->tax = $data['tax'] ?? 0;
+        $this->openBox = $data['openBox'] ?? '';
+        $this->logo = $data['logo'] ?? '';
+        $sql = <<<SQL
+            UPDATE 
+                `business` 
+                SET 
+                    `typebusiness_id`=?, 
+                    `name`=?, 
+                    `direction`=?, 
+                    `city`=?, 
+                    `document_number`=?, 
+                    `phone_number`=?, 
+                    `country`=?, 
+                    `telephone_prefix`=?, 
+                    `email`=?, 
+                    `taxname`=?, 
+                    `tax`=?, 
+                    `openBox`=?, 
+                    `logo`=? 
+            WHERE  
+            `idBusiness`=?;
+        SQL;
+        $params = [
+            $this->typebusinessId,
+            $this->name,
+            $this->direction,
+            $this->city,
+            $this->documentNumber,
+            $this->phoneNumber,
+            $this->country,
+            $this->telephonePrefix,
+            $this->email,
+            $this->taxName,
+            $this->tax,
+            $this->openBox,
+            $this->logo,
+            $this->businessId,
+        ];
+        return $this->update($sql, $params);
     }
 }
