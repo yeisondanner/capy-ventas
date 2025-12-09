@@ -1506,7 +1506,7 @@ function get_option_and_permission_app()
             unset($_SESSION[$nameVarWidgetAlert]);
         }
         //creamos una alerta indicando que faltan 3 dias para que el plan expire
-        if ((int)$data_vencimiento['total_dias'] <= 29) {
+        if ((int)$data_vencimiento['total_dias'] <= 3) {
             //creamos una variable de sesion que contenga  el widget de alerta
             $_SESSION[$nameVarWidgetAlert] = [
                 // Configuración base
