@@ -1,0 +1,73 @@
+/* --- ANIMACIÓN DE ENTRADA --- */
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- ESTILOS DE LA TARJETA --- */
+.alert-expiration {
+  border: none;
+  background-color: white;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.05);
+  animation: slideInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Botón de cerrar más sutil */
+.alert-expiration .btn-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 5;
+  background-size: 0.8em;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+.alert-expiration .btn-close:hover {
+  opacity: 1;
+}
+
+/* Contenedor del icono: Colores cálidos y amigables */
+.icon-container {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+  color: #9c6500;
+  height: 100%;
+  min-height: 140px; /* Un poco más alto para respirar */
+}
+
+/* Botón principal */
+.btn-renew {
+  background-color: #212529;
+  color: white;
+  border: none;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+.btn-renew:hover {
+  background-color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Borde lateral de acento */
+.accent-border {
+  width: 6px;
+  background-color: #ffc107;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+}
+
+/* Caja de información inferior */
+.info-box {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+}

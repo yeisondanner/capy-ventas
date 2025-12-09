@@ -15,6 +15,7 @@ class Dashboard extends Controllers
 	 * @var string
 	 */
 	protected string $nameVarLoginInfo;
+	protected string $nameVarWidgetAlert;
 	public function __construct()
 	{
 		isSession(1);
@@ -22,6 +23,7 @@ class Dashboard extends Controllers
 		$sessionName = config_sesion(1)['name'] ?? '';
 		$this->nameVarBusiness = $sessionName . 'business_active';
 		$this->nameVarLoginInfo = $sessionName . 'login_info';
+		$this->nameVarWidgetAlert =  $sessionName . 'widget_alert';
 	}
 
 	public function dashboard()
@@ -36,6 +38,7 @@ class Dashboard extends Controllers
 			'page_vars'        => [
 				$this->nameVarBusiness,
 				$this->nameVarLoginInfo,
+				$this->nameVarWidgetAlert,
 			],
 		];
 		$this->views->getView($this, "dashboard", $data, "POS");

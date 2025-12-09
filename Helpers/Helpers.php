@@ -1467,6 +1467,7 @@ function get_option_and_permission_app()
     $nameVarLoginInfo = $sessionName . 'login_info';
     $nameVarPermission = $sessionName . 'menu_permission';
     $nameVarPermissionEmployee = $sessionName . 'menu_employee_permission';
+    $nameVarWidgetAlert = $sessionName . 'widget_alert';
     //variables de negocio activo
     $idUser = $_SESSION[$nameVarLoginInfo]['idUser'];
     $idBusiness = ($_SESSION[$nameVarBusiness]['idBusiness']);
@@ -1500,6 +1501,32 @@ function get_option_and_permission_app()
             die();
         }
     } else {
+        //si en caso existiera una alerta previa la eliminamos
+        if (isset($_SESSION[$nameVarWidgetAlert])) {
+            unset($_SESSION[$nameVarWidgetAlert]);
+        }
+        //creamos una alerta indicando que faltan 3 dias para que el plan expire
+        if ((int)$data_vencimiento['total_dias'] <= 29) {
+            //creamos una variable de sesion que contenga  el widget de alerta
+            $_SESSION[$nameVarWidgetAlert] = [
+                // Configuración base
+                'type'   => 'expiration',      // Para identificar que se debe cargar este diseño específico
+                'status' => true,
+                'icon'   => 'bi-calendar-check', // Clase del icono de Bootstrap Icons
+
+                // Contenido Principal
+                'title'          => '¡Tu plan está por vencer!',
+                'days_remaining' => $data_vencimiento['total_dias'], // Ej: 5
+
+                // Textos descriptivos
+                'message_main'   => 'Te quedan <strong class="text-dark fs-6">' . $data_vencimiento['total_dias'] . '</strong> de servicio completo. Aprovecha para renovar y mantén tu negocio funcionando sin pausas.',
+                'message_note'   => 'Si no renuevas, tu cuenta pasará automáticamente al <strong>Plan Gratuito</strong>.',
+
+                // Botón de Acción
+                'btn_text' => 'Mantener mi plan',
+                'url'      => base_url() . '/pos/errors/plan_vencido',
+            ];
+        }
         /**
          * validamos si el usuario es dueño o 
          * no del negocio activo, si fuere dueño, 

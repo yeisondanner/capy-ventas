@@ -44,12 +44,12 @@
                 </p>
 
                 <div class="d-grid gap-2">
-                    <div class="d-inline-flex gap-2">
-                        <a href="<?= base_url() ?>/pos/LogOut" class="btn btn-danger btn-lg rounded-pill">
-                            <i class="bi bi-box-arrow-right"></i> Cerrar sesión
-                        </a>
+                    <div class="d-inline-flex justify-content-between gap-2">
                         <a href="<?= base_url() ?>/pos/dashboard" class="btn btn-primary btn-lg rounded-pill">
                             <i class="bi bi-box-arrow-left"></i> Volver al inicio
+                        </a>
+                        <a href="<?= base_url() ?>/pos/LogOut" class="btn btn-danger btn-lg rounded-pill">
+                            <i class="bi bi-box-arrow-right"></i>
                         </a>
                     </div>
                     <a href="#" class="btn btn-link text-decoration-none text-muted btn-sm mt-2">
