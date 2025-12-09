@@ -1526,6 +1526,8 @@ function get_option_and_permission_app()
                 // Botón de Acción
                 'btn_text' => 'Mantener mi plan',
                 'url'      => base_url() . '/pos/errors/plan_vencido',
+                'btn_icon' => 'bi bi-arrow-right',
+                'btn_class' => 'btn btn-warning'
             ];
         }
         /**

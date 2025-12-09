@@ -52,8 +52,8 @@ $widget_alert = $data['page_vars'][2];
                         </div>
 
                         <!-- Botón de Acción (Call to Action) -->
-                        <a href="<?= $alert['url'] ?>" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold text-nowrap flex-shrink-0 shadow-sm align-self-start align-self-sm-center">
-                            <?= $alert['btn_text'] ?>
+                        <a href="<?= $alert['url'] ?>" class="<?= $alert['btn_class'] ?> rounded-pill px-4 py-2 fw-semibold text-nowrap flex-shrink-0 shadow-sm align-self-start align-self-sm-center">
+                            <i class="<?= $alert['btn_icon'] ?>"></i> <?= $alert['btn_text'] ?>
                         </a>
                     </div>
 
