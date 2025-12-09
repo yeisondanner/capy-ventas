@@ -1513,6 +1513,7 @@ function get_option_and_permission_app()
                 'type'   => 'expiration',      // Para identificar que se debe cargar este diseño específico
                 'status' => true,
                 'icon'   => 'bi-calendar-check', // Clase del icono de Bootstrap Icons
+                'color'  => 'warning',
 
                 // Contenido Principal
                 'title'          => '¡Tu plan está por vencer!',

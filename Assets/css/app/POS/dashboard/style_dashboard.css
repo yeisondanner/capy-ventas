@@ -35,8 +35,6 @@
 
 /* Contenedor del icono: Colores cálidos y amigables */
 .icon-container {
-  background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
-  color: #9c6500;
   height: 100%;
   min-height: 140px; /* Un poco más alto para respirar */
 }

@@ -17,18 +17,15 @@ $widget_alert = $data['page_vars'][2];
     if (isset($_SESSION[$widget_alert])):
         $alert = $_SESSION[$widget_alert];
     ?>
-        <div class="alert alert-expiration alert-dismissible fade show p-0 rounded-4 overflow-hidden position-relative" role="alert">
-            <div class="accent-border"></div>
-
+        <div class="alert alert-<?= $alert['type'] ?> alert-dismissible fade show p-0 rounded-4 overflow-hidden position-relative" role="alert">
             <div class="row g-0">
                 <!-- COLUMNA 1: ICONO GRANDE 
                  Usamos un calendario para indicar "fecha" de forma visual rápida -->
-                <div class="col-12 col-sm-auto ps-1">
-                    <div class="icon-container d-flex align-items-center justify-content-center p-4 w-100">
+                <div class="col-12 col-sm-auto">
+                    <div class="icon-container bg-<?= $alert['color'] ?> d-flex align-items-center justify-content-center p-4 w-100">
                         <i class="bi <?= $alert['icon'] ?> display-4"></i>
                     </div>
                 </div>
-
                 <!-- COLUMNA 2: TEXTO Y ACCIÓN -->
                 <div class="col p-4 d-flex flex-column justify-content-center">
 
