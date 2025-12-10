@@ -1520,7 +1520,7 @@ function get_option_and_permission_app()
                 'days_remaining' => $data_vencimiento['total_dias'], // Ej: 5
 
                 // Textos descriptivos
-                'message_main'   => 'Te quedan <strong class="text-dark fs-6">' . $data_vencimiento['total_dias'] . '</strong> de servicio completo. Aprovecha para renovar y mantén tu negocio funcionando sin pausas.',
+                'message_main'   => 'Te quedan <strong class="text-dark fs-6">' . $data_vencimiento['total_dias'] . ' días</strong> de servicio completo. Aprovecha para renovar y mantén tu negocio funcionando sin pausas.',
                 'message_note'   => 'Si no renuevas, tu cuenta pasará automáticamente al <strong>Plan Gratuito</strong>.',
 
                 // Botón de Acción
