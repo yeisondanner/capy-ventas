@@ -35,18 +35,27 @@ class Account extends Controllers
 		$email    = strClean($data['email']);
 
 		// * Valimos que llegue el correo electronico
-		if(!$email || empty($email)){
+		if (!$email || empty($email)) {
 			$this->responseError("El correo electronico es requerido.");
 		}
-		
-		// * Validamos que sea un email
-		// TODO: falta
-		
-		// * Habilitar cuando se consuma el endopoint
-		if(!$accept_terms){
+
+		// * Validación de formato de email
+		if (verifyData("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", $email)) {
+			$this->responseError("El campo 'Correo electrónico' no tiene un formato válido.");
+		}
+
+		// * Verificamos que no exista un usuario con este email
+		$is_exists_user = $this->model->isExistsUser(encryption($email));
+		if ($is_exists_user) {
+			$this->responseError("Ya existe un usuario registrado con este correo electrónico.");
+		}
+
+		// * Verificamos que acepte los terminos y condiciones
+		if (!$accept_terms) {
 			$this->responseError("Acepte los terminos de referencia.");
 		}
 
+		// * Configuracion para correo electronico
 		$config = [
 			'smtp' => [
 				'host' => decryption(getHost()),
@@ -60,10 +69,10 @@ class Account extends Controllers
 				'name' => decryption(getRemitente())
 			]
 		];
-		// TODO: Generamos el codigo de 6 digitos
+		// * Generamos el codigo de 6 digitos
 		$code = generateVerificationCode(6);
 
-		// TODO: Creamos las sessiones
+		// * Creamos las sessiones
 		saveSessionVerification(encryption($email), encryption($code));
 		//cargamos la plantilla de recuperación de contraseña               
 		$data = [
@@ -72,8 +81,9 @@ class Account extends Controllers
 			'descripcion' => "Gracias por unirte a nosotros. Estás a un solo paso de gestionar tus ventas de manera más eficiente. \nPor favor, usa el siguiente código de verificación para confirmar tu correo electrónico y activar tu cuenta:",
 			'codigo'      => $code
 		];
-		// Cargar plantilla HTML externa
+		// * Cargar plantilla HTML externa
 		$plantillaHTML = renderTemplate('./Views/Template/email/notification_sendcode.php', $data);
+		// * Envialos los parámetros
 		$params = [
 			// 'to' => [decryption($email)], // o string
 			'to' => $email, // o string
@@ -81,11 +91,12 @@ class Account extends Controllers
 			'body' => $plantillaHTML,
 			'attachments' => [] // opcional
 		];
-		//enviamos el correo
+		// * Enviamos el correo
 		if (!sendEmail($config, $params)) {
 			$this->responseError("No se pudo enviar el correo de notificacion al usuario {$email}");
 		}
 
+		// * Respuesta correcta
 		return toJson([
 			'title'   => 'Revisa tu correo',
 			'message' => "Se ha enviado un código de 6 dígitos a $email. Tienes 10 minutos para usarlo.",
@@ -101,15 +112,130 @@ class Account extends Controllers
 			$this->responseError('Método de solicitud no permitido.');
 		}
 
+		$raw = file_get_contents('php://input');
+		$data = json_decode($raw, true);
+
+		$code    = strClean($data['code'] ?? '');
+		// TODO: Validamos que no este vacio el codigo y que tenga seis caracteres
+		if (empty($code) || strlen($code) !== 6) {
+			toJson([
+				'status' => false,
+				'message' => 'El código es incorrecto, ingrese nuevamente un código válido.',
+				'title'   => 'Verificación de código.',
+				'type'    => 'error',
+				'icon'    => 'error',
+			]);
+		}
+
+		$response = validateVerificationCode($code);
+		toJson($response);
+	}
+
+	public function setAccount()
+	{
+		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+			$this->responseError('Método de solicitud no permitido.');
+		}
+
 		// $raw = file_get_contents('php://input');
 		// $data = json_decode($raw, true);
 
-		// toJson($data);
+		// * Validamos que el codigo recibido sea el correcto
+		$code = strClean($_POST["code"]);
+		validateVerificationCode($code);
 
-		$code    = strClean($_POST['code']);
-		$response = validateVerificationCode($code);
+		// * Validamos que existan las variables requeridas
+		validateFields(["names", "lastname", "email", "date_of_birth", "country", "telephone_prefix", "phone_number", "password", "confirm_password"]);
+		// * Limpiamos las variables
+		$names = strClean($_POST["names"]);
+		$lastname = strClean($_POST["lastname"]);
+		$email = strClean($_POST["email"]);
+		$date_of_birth = strClean($_POST["date_of_birth"]);
+		$country = strClean($_POST["country"]);
+		$telephone_prefix = strClean($_POST["telephone_prefix"]);
+		$phone_number = strClean($_POST["phone_number"]);
+		$password = strClean($_POST["password"]);
+		$confirm_password = strClean($_POST["confirm_password"]);
+		// * Validamos que no esten vacias
+		validateFieldsEmpty(array(
+			"NOMBRE COMPLETO" => $names,
+			"APELLIDO COMPLETO" => $lastname,
+			"CORREO SECUNDARIO" => $email,
+			"FECHA DE CUMPLEAÑOS" => $date_of_birth,
+			"CIUDAD" => $country,
+			"PREFIJO DE TELEFONO" => $telephone_prefix,
+			"NUMERO DE TELEFONO" => $phone_number,
+			"CONTRASEÑA" => $password,
+			"CONFIRMAR CONTRASEÑA" => $confirm_password,
+		));
 
-		toJson($response);
+		// * Prefijo por defaul
+		// ? Validar luego esto
+		$telephone_prefix = "+51";
+
+		// * Validación de formato de nombre
+		if (verifyData("[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\s\-_.,()]+", $names)) {
+			$this->responseError("El campo 'Nombres' no cumple con el formato requerido.");
+		}
+
+		// * Validación de formato de apellidos
+		if (verifyData("[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\s\-_.,()]+", $lastname)) {
+			$this->responseError("El campo 'Apellidos' no cumple con el formato requerido.");
+		}
+
+		// * Validación de formato de email
+		if (verifyData("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", $email)) {
+			$this->responseError("El campo 'Correo electrónico' no tiene un formato válido.");
+		}
+
+		// * Validación de formato de ciudad
+		if (verifyData("[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\s\-_.,()]+", $country)) {
+			$this->responseError("El campo 'Ciudad' no cumple con el formato requerido.");
+		}
+
+		// * Validación de formato de número de teléfono (solo números)
+		if (!preg_match('/^\d+$/', $phone_number)) {
+			$this->responseError("El campo 'Número de teléfono' debe contener solo números.");
+		}
+
+		// * Validación de password
+		if (strlen($password) < 8) {
+			$this->responseError("El campo 'Contraseña' debe contener mínimo 8 caracteres.");
+		}
+
+		// * Validamos que el confirm_passord sea igual que password
+		if (!hash_equals($password, $confirm_password)) {
+			$this->responseError("El campo 'Contraseña' y 'Confirmar Contraseña' no coinciden.");
+		}
+
+		// * Verificamos que no exista un usuario con este correo
+		// $is_exists_user = $this->model->isExistsUser(encryption($email));
+		// if ($is_exists_user) {
+		//     toJson([
+		//         "title" => "Ocurrió un error inesperado",
+		//         "message" => "Ya existe un usuario registrado con este correo electrónico",
+		//         "type" => "error",
+		//         'icon'    => 'error',
+		//         "status" => false
+		//     ]);
+		// }
+		// * Primero creamos la persona con los datos
+		$people = $this->model->createPeople($names, $lastname, $email, $date_of_birth, $country, $telephone_prefix, $phone_number);
+		if ($people > 0) {
+			$this->responseError("No se pudo registrar tus datos personales. Por favor intente nuevamente.");
+		}
+		// * Creamos la cuenta de usuario
+		$userApp = $this->model->createUserApp($_SESSION["verificacion_correo"], $password, $people);
+		if ($userApp > 0) {
+			toJson([
+				'title'  => 'Cuenta creada correctamente',
+				'message' => 'Bienvenido a la familia CapyVentas, tu cuenta fue creada correctamente. Inicia sesión con tu correo y contraseña.',
+				'type'   => 'success',
+				'icon'   => 'success',
+				'status' => true,
+			]);
+		}
+		$this->responseError("No se pudo crear tu cuenta :(. Comunicate con el Capy Administrador.");
 	}
 
 	private function responseError(string $message): void
