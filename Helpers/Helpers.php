@@ -1822,7 +1822,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         ];
     }
     /**
-     * validamos que el usuario tengo permisos de acceso 
+     * validamos que el usuario tenga permisos de acceso 
      * a la seccion segun el plan
      */
     $result = $objPermission->get_permission_interface_owner($iduser, $idinterface);
@@ -1843,7 +1843,11 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 'message' => 'La interfaz no se encuentra activa.',
                 'icon'   => 'error',
                 'url' => $no_permisos,
-                'ia_status' => $result['ia_status']
+                'ia_status' => $result['ia_status'] ?? 'Inactivo',
+                'create' => 0,
+                'read' => 0,
+                'update' => 0,
+                'delete' => 0
             ];
         }
     }
@@ -1864,7 +1868,11 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 'message' => 'La interfaz no se encuentra activa.',
                 'icon'   => 'error',
                 'url' => $no_permisos,
-                'ia_status' => $result['ia_status']
+                'ia_status' => $result['ia_status'] ?? 'Inactivo',
+                'create' => 0,
+                'read' => 0,
+                'update' => 0,
+                'delete' => 0
             ];
         }
     }
@@ -1885,7 +1893,11 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 'message' => 'La interfaz no se encuentra activa.',
                 'icon'   => 'error',
                 'url' => $no_permisos,
-                'ia_status' => $result['ia_status']
+                'ia_status' => $result['ia_status'] ?? 'Inactivo',
+                'create' => 0,
+                'read' => 0,
+                'update' => 0,
+                'delete' => 0
             ];
         }
     }

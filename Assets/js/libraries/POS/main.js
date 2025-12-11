@@ -13,7 +13,10 @@
   $('[data-toggle="sidebar"]').click(function (event) {
     event.preventDefault();
     $(".app").toggleClass("sidenav-toggled");
-    document.getElementById("cardBusiness").classList.toggle("d-none");
+    // Condición: Solo ejecutar si el ancho de la ventana es mayor a 768px (Modo PC/Tablet)
+    if (window.innerWidth >= 768) {
+      document.getElementById("cardBusiness").classList.toggle("d-none");
+    }
   });
 
   // Activate sidebar treeview toggle
