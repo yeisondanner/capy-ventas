@@ -1,29 +1,30 @@
 <?php
 class AccountModel extends Mysql
 {
-        /**
-         * Encapsulamos la informacion
-         */
-        protected string $user;
-        protected string $password;
-        protected int $iduser;
+    /**
+     * Encapsulamos la informacion
+     */
+    protected string $user;
+    protected string $password;
+    protected int $iduser;
+    protected string $email;
 
-        public function __construct()
-        {
-                parent::__construct();
-        }
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
-        /**
-         * Método que obtiene los datos del usuario en base al identificador recibido.
-         *
-         * @param string $user Identificador de usuario o correo electrónico.
-         *
-         * @return array|null Regresa la información del usuario cuando existe o null si no se encontró.
-         */
-        public function selectUserLogin(string $user)
-        {
-                $this->user = $user;
-                $sql = <<<SQL
+    /**
+     * Método que obtiene los datos del usuario en base al identificador recibido.
+     *
+     * @param string $user Identificador de usuario o correo electrónico.
+     *
+     * @return array|null Regresa la información del usuario cuando existe o null si no se encontró.
+     */
+    public function selectUserLogin(string $user)
+    {
+        $this->user = $user;
+        $sql = <<<SQL
                         SELECT
                                 up.idUserApp,
                                 up.user,
@@ -43,48 +44,48 @@ class AccountModel extends Mysql
                         LIMIT
                                 1;
                 SQL;
-                return $this->select($sql, [$this->user, $this->user]);
-        }
-        /**
-         * Metodo que que obtiene los negocios asociados al usuario que inicio sesion
-         * @param int $id 
-         * @return array
-         */
-        public function select_business_owner(int $id)
-        {
-                $this->iduser = $id;
-                $sql = <<<SQL
-                                                                SELECT
-                                                                        b.idBusiness,
-                                                                        b.`name` AS 'business',
-                                                                        bt.`name` AS 'category',
-                                                                        b.direction,
-                                                                        b.city,
-                                                                        b.country,
-                                                                        b.email,
-                                                                        b.document_number
-                                                                FROM
-                                                                        business AS b
-                                                                        INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
-                                                                WHERE
-                                                                        b.`status` = 'Activo' AND b.userapp_id = ?
-                                                                ORDER BY
-                                                                        b.idBusiness ASC
-                                                                LIMIT 1;
+        return $this->select($sql, [$this->user, $this->user]);
+    }
+    /**
+     * Metodo que que obtiene los negocios asociados al usuario que inicio sesion
+     * @param int $id 
+     * @return array
+     */
+    public function select_business_owner(int $id)
+    {
+        $this->iduser = $id;
+        $sql = <<<SQL
+                SELECT
+                        b.idBusiness,
+                        b.`name` AS 'business',
+                        bt.`name` AS 'category',
+                        b.direction,
+                        b.city,
+                        b.country,
+                        b.email,
+                        b.document_number
+                FROM
+                        business AS b
+                        INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
+                WHERE
+                        b.`status` = 'Activo' AND b.userapp_id = ?
+                ORDER BY
+                        b.idBusiness ASC
+                LIMIT 1;
                 SQL;
-                $request = $this->select($sql, [$this->iduser]);
-                return $request ?? [];
-        }
-        /**
-         * Obtenemos el negocio donde el usuario es empleado
-         * obtenemos uno nada mas
-         * @param int $id
-         * @return array
-         */
-        public function select_business_employee(int $id)
-        {
-                $this->iduser = $id;
-                $sql = <<<SQL
+        $request = $this->select($sql, [$this->iduser]);
+        return $request ?? [];
+    }
+    /**
+     * Obtenemos el negocio donde el usuario es empleado
+     * obtenemos uno nada mas
+     * @param int $id
+     * @return array
+     */
+    public function select_business_employee(int $id)
+    {
+        $this->iduser = $id;
+        $sql = <<<SQL
                         SELECT
                                 b.idBusiness,
                                 b.`name` AS 'business',
@@ -104,7 +105,59 @@ class AccountModel extends Mysql
                         LIMIT
                                 1;
                 SQL;
-                $request = $this->select($sql, [$this->iduser]);
-                return $request ?? [];
-        }
+        $request = $this->select($sql, [$this->iduser]);
+        return $request ?? [];
+    }
+
+    public function isExistsUser(string $email_hash)
+    {
+        $this->email = $email_hash;
+        $sql = <<<SQL
+            SELECT * FROM user_app
+            WHERE user = ?
+            LIMIT 1;
+            SQL;
+        $request = $this->select($sql, [$this->email]);
+        return $request ?? [];
+    }
+
+    public function createPeople(string $names, string $lastname, string $email, string $date_of_birth, string $country, string $telephone_prefix, string $phone_number)
+    {
+        $sql = <<<SQL
+            INSERT INTO people
+                (`names`, lastname, `email`, `date_of_birth`, `country`, `telephone_prefix`, `phone_number`)
+            VALUES
+                (?, ?, ?, ?, ?, ?, ?);
+        SQL;
+
+        $params = [
+            $names,
+            $lastname,
+            $email,
+            $date_of_birth,
+            $country,
+            $telephone_prefix,
+            $phone_number
+        ];
+
+        return (int) $this->insert($sql, $params);
+    }
+
+    public function createUserApp(string $email, string $password, string $people_id)
+    {
+        $sql = <<<SQL
+            INSERT INTO user_app
+                (`user`, `password`, `people_id`)
+            VALUES
+                (?, ?, ?);
+        SQL;
+
+        $params = [
+            $email,
+            $password,
+            $people_id
+        ];
+
+        return (int) $this->insert($sql, $params);
+    }
 }
