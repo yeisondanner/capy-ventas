@@ -120,4 +120,44 @@ class AccountModel extends Mysql
         $request = $this->select($sql, [$this->email]);
         return $request ?? [];
     }
+
+    public function createPeople(string $names, string $lastname, string $email, string $date_of_birth, string $country, string $telephone_prefix, string $phone_number)
+    {
+        $sql = <<<SQL
+            INSERT INTO people
+                (`names`, lastname, `email`, `date_of_birth`, `country`, `telephone_prefix`, `phone_number`)
+            VALUES
+                (?, ?, ?, ?, ?, ?, ?);
+        SQL;
+
+        $params = [
+            $names,
+            $lastname,
+            $email,
+            $date_of_birth,
+            $country,
+            $telephone_prefix,
+            $phone_number
+        ];
+
+        return (int) $this->insert($sql, $params);
+    }
+
+    public function createUserApp(string $email, string $password, string $people_id)
+    {
+        $sql = <<<SQL
+            INSERT INTO user_app
+                (`user`, `password`, `people_id`)
+            VALUES
+                (?, ?, ?);
+        SQL;
+
+        $params = [
+            $email,
+            $password,
+            $people_id
+        ];
+
+        return (int) $this->insert($sql, $params);
+    }
 }
