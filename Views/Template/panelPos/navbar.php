@@ -1,5 +1,10 @@
 <?php
 $validationCreateBox = (validate_permission_app(11, "c", false)) ? (int) validate_permission_app(11, "c", false)['create'] : 0;
+if (empty($_SESSION[$nameVarBusiness]['logo'])) {
+    $logoBusiness = GENERAR_PERFIL . htmlspecialchars($_SESSION[$nameVarBusiness]['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8');
+} else {
+    $logoBusiness = base_url() . '/Loadfile/iconbusiness?f=' . $_SESSION[$nameVarBusiness]['logo'];
+}
 ?>
 <!-- Navbar-->
 <header class="app-header">
@@ -10,7 +15,12 @@ $validationCreateBox = (validate_permission_app(11, "c", false)) ? (int) validat
     <ul class="app-nav gap-2">
         <?php if ($validationCreateBox === 1):
         ?>
-            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#openRegisterModal"><i class="bi bi-cash"></i>Caja</button>
+            <div class="d-flex justify-content-center align-items-center">
+                <button id="btnOpenModalBox" class="btn btn-warning rounded-5 px-3 d-flex align-items-center gap-2 font-weight-bold">
+                    <img style="width: 22px;" src="<?= media()  ?>/icons/POS/open-box.png" alt="">
+                    <span class="fw-bold">Caja</span>
+                </button>
+            </div>
         <?php endif;
         ?>
         <!--Notification Menu-->
@@ -73,60 +83,61 @@ $validationCreateBox = (validate_permission_app(11, "c", false)) ? (int) validat
         </li>
     </ul>
 </header>
-<!-- ========================================== -->
-<!-- MODAL 1: APERTURA (Estilo Puro Bootstrap) -->
-<!-- ========================================== -->
-<div class="modal fade" id="openRegisterModal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+
+<!-- Modal: Add Box -->
+<div class="modal fade" id="modalAddBox" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-            <!-- Header: bg-success para verde, bg-gradient para degradado sutil -->
-            <div class="modal-header bg-success bg-gradient text-white px-4 py-2">
-                <div>
-                    <h4 class="modal-title fw-bold mb-0">Apertura de Caja</h4>
-                    <small class="opacity-75">Turno #2459 - Mañana</small>
+            <div class="modal-body d-flex flex-column p-4 gap-3">
+                <div class="d-flex justify-content-between align-items-start w-100">
+                    <div>
+                        <h3 class="fw-bold mb-1">Apertura de Caja</h3>
+                        <p class="text-muted mb-0 small">Configure los detalles para iniciar turno</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <i class="bi bi-shop-window display-6 opacity-50"></i>
-            </div>
-            <div class="modal-body p-4 p-lg-5">
-                <form id="openRegisterForm">
-                    <div class="row mb-4 g-3">
-                        <div class="col-md-6">
-                            <div class="p-3 rounded-3 border bg-body-tertiary d-flex align-items-center h-100">
-                                <div class="bg-white rounded-circle p-2 text-success border me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                    <i class="bi bi-person-fill h4 mb-0"></i>
-                                </div>
-                                <div>
-                                    <div class="text-secondary small text-uppercase fw-bold">Cajero Asignado</div>
-                                    <div class="fw-bold fs-5 text-dark"><?= $_SESSION[$nameVarLoginInfo]['fullName'] ?></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="p-3 rounded-3 border bg-body-tertiary d-flex align-items-center h-100">
-                                <div class="bg-white rounded-circle p-2 text-primary border me-3 shadow-sm d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
-                                    <i class="bi bi-pc-display-horizontal h4 mb-0"></i>
-                                </div>
-                                <div>
-                                    <div class="text-secondary small text-uppercase fw-bold">Terminal / Caja</div>
-                                    <div class="fw-bold fs-5 text-primary">CAJA PRINCIPAL 01</div>
-                                </div>
-                            </div>
+                <div class="item-box d-flex align-items-center gap-3 border rounded-5 p-2" style="background-color: var(--input-bg)">
+                    <div class="avatar-wrapper flex-shrink-0">
+                        <img src="<?= $logoBusiness ?>" style="width: 3rem;" alt="User" alt="User Image" class="rounded-circle">
+                        <span class="status-dot position-absolute rounded-circle"></span>
+                    </div>
+                    <div class="flex-fill overflow-hidden">
+                        <h6 class="mb-0 fw-bold"><?= $_SESSION[$nameVarLoginInfo]['name']." ".$_SESSION[$nameVarLoginInfo]['lastname'] ?></h6>
+                        <div class="text-secondary small text-muted">
+                            ID: 4829 - Cajero
                         </div>
                     </div>
-                    <div class="mb-4">
-                        <label class="form-label fw-bold text-dark">Monto Inicial (Base)</label>
-                        <div class="input-group input-group-lg shadow-sm">
-                            <span class="input-group-text bg-light text-muted fw-bold border-end-0"><?= getCurrency() ?></span>
-                            <input type="number" class="form-control fw-bold fs-2 text-center text-success border-start-0"
-                                id="initialAmount" value="150.00" required min="0" step="0.01">
-                        </div>
+                    <div class="icon-action px-2">
+                        <i class="bi bi-person-vcard-fill"></i>
                     </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-success btn-lg py-3 fw-bold shadow">
-                            <i class="bi bi-unlock-fill me-2"></i>CONFIRMAR APERTURA
-                        </button>
+
+                </div>
+                <div class="flex-fill item-box">
+                    <label class="form-label" for="select_box">Seleccionar Caja <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-wallet-fill"></i></span>
+                        <select class="form-select" name="select_box" required="" id="select_box">
+                            <option value="" disabled="" selected="">Selecciona caja disponible</option>
+                            <option value="1">Caja 01 - Principal</option>
+                            <option value="2">Caja 03 - Secundaria</option>
+                        </select>
                     </div>
-                </form>
+                </div>
+                <div class="flex-fill item-box">
+                    <label class="form-label" for="update_documentNumber">Monto Inicial de Efectivo <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-currency-exchange"></i></span>
+                        <input type="number" class="form-control fs-4" name="update_documentNumber" id="update_documentNumber" required="" placeholder="0.00" step="0.01" min="0">
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-2 w-100">
+                    <button type="button" class="btn btn-lg btn-light border flex-grow-1 text-muted fw-bold rounded-5" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-lg btn-primary flex-grow-1 fw-bold rounded-5">
+                        <i class="bi bi-unlock2-fill"></i> Confirmar y Abrir
+                    </button>
+                </div>
             </div>
         </div>
     </div>

@@ -47,6 +47,9 @@ if (is_array($pageJsFile)) {
     echo "<script type='module' src='" . media() . "/js/app/POS/" . $pageJsFolder . "/" . $pageJsFile . "'></script>";
 }
 ?>
+<!-- Servicios para caja -->
+<script type="module" src="<?= media() ?>/js/app/POS/box/functions_box_api.js"></script>
+<script type="module" src="<?= media() ?>/js/app/POS/box/functions_box.js"></script>
 
 </body>
 
