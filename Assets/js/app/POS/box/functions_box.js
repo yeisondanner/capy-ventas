@@ -7,12 +7,14 @@ export class Box {
 
   // TODO: Seleccionamos los botones
   #btnOpenModalBox = $("#btnOpenModalBox");
+  #btnOpenModalGestionBox = $("#btnOpenModalGestionBox");
   #btnAddRole = $("#btnAddRole");
   #btnUpdateRole = $("#btnUpdateRole");
   #btnDeleteRole = $("#btnDeleteRole");
 
   // TODO: Seleccionamos los modals
   #modalAddBox = $("#modalAddBox");
+  #modalGestionBox = $("#modalGestionBox");
   #modalUpdateRole = $("#modalUpdateRole");
   #modalDeleteRole = $("#modalDeleteRole");
   #modalReportRole = $("#modalReportRole");
@@ -26,11 +28,27 @@ export class Box {
     this.apiBox = new ApiBox(base_url);
     // this.#initTable();
     this.#openModal();
+    this.#mostrarHoraEnVivo();
+    setInterval(this.#mostrarHoraEnVivo, 1000);
     // this.#selectedPermision();
     // this.#setRole();
     // this.#updateRole();
     // this.#deleteRole();
   }
+
+  // TODO: Funcion para mostrar la hora dinamica
+  #mostrarHoraEnVivo = () => {
+    const reloj = document.getElementById("reloj");
+    const ahora = new Date();
+    const horaTexto = ahora.toLocaleTimeString("es-PE", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+
+    reloj.innerText = horaTexto;
+  };
 
   // TODO: Funcion para mostrar los roles
   #initTable = () => {
@@ -110,12 +128,19 @@ export class Box {
     });
   };
 
+  // TODO: Funcion para cargar los roles asociados
+
   // TODO: Funcion para abrir todos los modals
   #openModal = () => {
     // * Open moda add role
     $(this.#btnOpenModalBox).click(() => {
       // this.#cleanForm();
       this.#modalAddBox.modal("show");
+    });
+
+    $(this.#btnOpenModalGestionBox).click(() => {
+      // this.#cleanForm();
+      this.#modalGestionBox.modal("show");
     });
 
     // * Open modal update role
