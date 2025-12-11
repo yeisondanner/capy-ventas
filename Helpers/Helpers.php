@@ -1997,6 +1997,7 @@ function validateVerificationCode($codigoInput)
             'title'   => 'Verificación.',
             'type'    => 'success',
             'icon'    => 'success',
+            'code' => $codigoInput,
         ];
     }
 

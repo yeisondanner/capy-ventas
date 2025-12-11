@@ -124,7 +124,6 @@ class Account extends Controllers
 				'title' => 'Verificación de código.',
 				'type' => 'error',
 				'icon' => 'error',
-				'code' => $code,
 			]);
 		}
 
