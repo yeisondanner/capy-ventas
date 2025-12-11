@@ -121,9 +121,10 @@ class Account extends Controllers
 			toJson([
 				'status' => false,
 				'message' => 'El código es incorrecto, ingrese nuevamente un código válido.',
-				'title'   => 'Verificación de código.',
-				'type'    => 'error',
-				'icon'    => 'error',
+				'title' => 'Verificación de código.',
+				'type' => 'error',
+				'icon' => 'error',
+				'code' => $code,
 			]);
 		}
 
@@ -137,25 +138,25 @@ class Account extends Controllers
 			$this->responseError('Método de solicitud no permitido.');
 		}
 
-		// $raw = file_get_contents('php://input');
-		// $data = json_decode($raw, true);
+		$raw = file_get_contents('php://input');
+		$data = json_decode($raw, true);
 
 		// * Validamos que el codigo recibido sea el correcto
-		$code = strClean($_POST["code"]);
+		$code = strClean($data["code"]);
 		validateVerificationCode($code);
 
 		// * Validamos que existan las variables requeridas
 		validateFields(["names", "lastname", "email", "date_of_birth", "country", "telephone_prefix", "phone_number", "password", "confirm_password"]);
 		// * Limpiamos las variables
-		$names = strClean($_POST["names"]);
-		$lastname = strClean($_POST["lastname"]);
-		$email = strClean($_POST["email"]);
-		$date_of_birth = strClean($_POST["date_of_birth"]);
-		$country = strClean($_POST["country"]);
-		$telephone_prefix = strClean($_POST["telephone_prefix"]);
-		$phone_number = strClean($_POST["phone_number"]);
-		$password = strClean($_POST["password"]);
-		$confirm_password = strClean($_POST["confirm_password"]);
+		$names = strClean($data["names"]);
+		$lastname = strClean($data["lastname"]);
+		$email = strClean($data["email"]);
+		$date_of_birth = strClean($data["date_of_birth"]);
+		$country = strClean($data["country"]);
+		$telephone_prefix = strClean($data["telephone_prefix"]);
+		$phone_number = strClean($data["phone_number"]);
+		$password = strClean($data["password"]);
+		$confirm_password = strClean($data["confirm_password"]);
 		// * Validamos que no esten vacias
 		validateFieldsEmpty(array(
 			"NOMBRE COMPLETO" => $names,
@@ -209,24 +210,28 @@ class Account extends Controllers
 		}
 
 		// * Verificamos que no exista un usuario con este correo
-		// $is_exists_user = $this->model->isExistsUser(encryption($email));
-		// if ($is_exists_user) {
-		//     toJson([
-		//         "title" => "Ocurrió un error inesperado",
-		//         "message" => "Ya existe un usuario registrado con este correo electrónico",
-		//         "type" => "error",
-		//         'icon'    => 'error',
-		//         "status" => false
-		//     ]);
-		// }
+		$is_exists_user = $this->model->isExistsUser(encryption($email));
+		if ($is_exists_user) {
+			toJson([
+				"title" => "Ocurrió un error inesperado",
+				"message" => "Ya existe un usuario registrado con este correo electrónico",
+				"type" => "error",
+				'icon'    => 'error',
+				"status" => false
+			]);
+		}
+
 		// * Primero creamos la persona con los datos
-		$people = $this->model->createPeople($names, $lastname, $email, $date_of_birth, $country, $telephone_prefix, $phone_number);
-		if ($people > 0) {
+		$people = $this->model->createPeople($names, $lastname, encryption($email), $date_of_birth, $country, $telephone_prefix, $phone_number);
+		if ($people <= 0) {
 			$this->responseError("No se pudo registrar tus datos personales. Por favor intente nuevamente.");
 		}
 		// * Creamos la cuenta de usuario
-		$userApp = $this->model->createUserApp($_SESSION["verificacion_correo"], $password, $people);
+		$userApp = $this->model->createUserApp(encryption("svelallanos@gmail.com"), encryption($password), $people);
 		if ($userApp > 0) {
+			// * Eliminamos la sesiones
+			$this->limpiarSesionVerificacion();
+			// * respuesta
 			toJson([
 				'title'  => 'Cuenta creada correctamente',
 				'message' => 'Bienvenido a la familia CapyVentas, tu cuenta fue creada correctamente. Inicia sesión con tu correo y contraseña.',
@@ -249,5 +254,17 @@ class Account extends Controllers
 		];
 
 		toJson($data);
+	}
+
+	private function limpiarSesionVerificacion(): void
+	{
+		if (session_status() === PHP_SESSION_NONE) {
+			session_start();
+		}
+
+		// Eliminamos solo las variables específicas de este proceso
+		unset($_SESSION['verificacion_correo']);
+		unset($_SESSION['verificacion_codigo']);
+		unset($_SESSION['verificacion_tiempo']);
 	}
 }
