@@ -121,9 +121,10 @@ class Account extends Controllers
 			toJson([
 				'status' => false,
 				'message' => 'El código es incorrecto, ingrese nuevamente un código válido.',
-				'title'   => 'Verificación de código.',
-				'type'    => 'error',
-				'icon'    => 'error',
+				'title' => 'Verificación de código.',
+				'type' => 'error',
+				'icon' => 'error',
+				'code' => $code,
 			]);
 		}
 
