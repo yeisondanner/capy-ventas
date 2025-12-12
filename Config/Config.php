@@ -58,7 +58,7 @@ const SPD = ".";
 const SPM = ",";
 
 //Simbolo de moneda
-const SMONEY = "S/.";
+const SMONEY = "S/";
 
 //Datos envio de correo
 const MAIL_HOST = "mail.shaday-pe.com";

@@ -1,0 +1,59 @@
+/* Estilos específicos para el módulo de roles POS */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playwrite+HU:wght@100..400&display=swap');
+:root {
+  --input-bg: #f9fafb;
+  --input-border: #d1d5db;
+}
+
+body {
+  font-family: 'Inter';
+}
+
+/* Form Controls */
+.item-box .form-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.item-box .form-control,
+.item-box .form-select {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-left: none;
+  border-radius: 1.2rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Ajuste para que los bordes se vean bien con input-group */
+.item-box .input-group .input-group-text {
+  border-top-left-radius: 1.2rem;
+  border-bottom-left-radius: 1.2rem;
+}
+.item-box .input-group .form-control,
+.item-box .input-group .form-select {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.item-box .form-control:focus,
+.item-box .form-select:focus {
+  background-color: #fff;
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+  z-index: 3;
+}
+
+.item-box .input-group-text {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: #6b7280;
+  padding-left: 1rem;
+}
+
+.item-box .icon-action {
+  color: #6b7280;
+}

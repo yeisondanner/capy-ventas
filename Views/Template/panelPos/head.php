@@ -53,6 +53,8 @@ get_option_and_permission_app();
         echo "<link rel='stylesheet' type='text/css' href='" . media() . "/css/app/POS/" . $pageCssFolder . "/" . $pageCssFile . "'>";
     }
     ?>
+    <!-- Css: para caja -->
+    <link rel="stylesheet" href="<?= media() ?>/css/app/POS/box/style_box.css?<?= versionSystem() ?>">
     <?php require_once "./Views/App/POS/" . $pageContainer . "/Libraries/head.php"; ?>
     <script type="text/javascript">
         // TODO: Base url
