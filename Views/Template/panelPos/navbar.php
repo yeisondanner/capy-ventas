@@ -112,7 +112,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             <?= ucwords(strtolower($_SESSION[$nameVarLoginInfo]['name'] . " " . $_SESSION[$nameVarLoginInfo]['lastname'])) ?>
                         </h6>
                         <small class="text-muted" style="font-size: 0.85rem;">
-                            ID: 4829 <span class="mx-1">•</span> <span class="text-primary fw-medium">Cajero</span>
+                            ID: <?= $_SESSION[$nameVarLoginInfo]['idUser'] ?> <span class="mx-1">•</span> <span class="text-primary fw-medium">Cajero</span>
                         </small>
                     </div>
                     <div class="text-opacity-75 opacity-50 px-2">
@@ -129,14 +129,11 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 <i class="bi bi-shop-window"></i>
                             </span>
                             <select class="form-select border-start-0 py-2 fw-medium" name="selectBox" id="selectBox" required>
-                                <option value="" disabled selected>Seleccione una caja...</option>
-                                <option value="1">Caja 01 - Principal</option>
-                                <option value="2">Caja 03 - Secundaria</option>
                             </select>
                         </div>
                     </div>
                     <div class="item-box">
-                        <label class="form-label fw-bold small text-muted text-uppercase" for="update_documentNumber">
+                        <label class="form-label fw-bold small text-muted text-uppercase" for="cash_opening_amount">
                             Efectivo Inicial <span class="text-danger">*</span>
                         </label>
                         <div class="input-group input-group-lg">
@@ -145,8 +142,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             </span>
                             <input type="number"
                                 class="form-control border-start-0 text-center fw-bold fs-3 text-dark"
-                                name="update_documentNumber"
-                                id="update_documentNumber"
+                                name="cash_opening_amount"
+                                id="cash_opening_amount"
                                 value="0"
                                 placeholder="0.00"
                                 step="0.01"
@@ -159,7 +156,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <button type="button" class="btn btn-lg btn-light border flex-grow-1 text-muted fw-bold rounded-pill" data-bs-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="button" class="btn btn-lg btn-primary flex-grow-1 fw-bold rounded-pill shadow-sm">
+                    <button id="btnOpenBox" type="button" class="btn btn-lg btn-primary flex-grow-1 fw-bold rounded-pill shadow-sm">
                         <i class="bi bi-unlock-fill me-2"></i> Abrir Turno
                     </button>
                 </div>

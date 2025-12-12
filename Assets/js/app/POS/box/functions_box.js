@@ -9,7 +9,7 @@ export class Box {
   #btnOpenModalBox = $("#btnOpenModalBox");
   #btnOpenModalGestionBox = $("#btnOpenModalGestionBox");
   #btnOpenModalArqueoBox = $("#btnOpenModalArqueoBox");
-  #btnAddRole = $("#btnAddRole");
+  #btnOpenBox = $("#btnOpenBox");
   #btnUpdateRole = $("#btnUpdateRole");
   #btnDeleteRole = $("#btnDeleteRole");
 
@@ -21,9 +21,9 @@ export class Box {
   #modalDeleteRole = $("#modalDeleteRole");
   #modalReportRole = $("#modalReportRole");
 
-  // TODO: Seleccionamos los html
+  // TODO: Seleccionamos los html y valores
   #selectBox = $("#selectBox");
-
+  #cashOpeningAmount = $("#cash_opening_amount");
 
   constructor(base_url) {
     this.apiBox = new ApiBox(base_url);
@@ -31,6 +31,8 @@ export class Box {
     this.#openModal();
     this.#mostrarHoraEnVivo();
     setInterval(this.#mostrarHoraEnVivo, 1000);
+
+    this.#openBox();
   }
 
   // TODO: Funcion para mostrar la hora dinamica
@@ -50,22 +52,48 @@ export class Box {
   };
 
   // TODO: Funcion para traer todas las cajas asociadas al negocio
-  #getBoxs = () => {
-    this.apiBox.get("getBoxs").then((response) => {
-      if(!response.status){
-        showAlert({
-          icon: response.type,
-          title: response.title,
-          message: response.message,
-        });
+  #getBoxs = async () => {
+    const response = await this.apiBox.get("getBoxs");
+    if (!response.status) {
+      showAlert({
+        icon: response.type,
+        title: response.title,
+        message: response.message,
+      });
+    }
+    return response;
+  };
 
-        return false;
+  // TODO: Funcion para aperturar caja
+  #openBox = () => {
+    this.#btnOpenBox.click(async () => {
+      // ? Validamos la seleccion de caja
+      if (!this.#selectBox.val()) {
+        return showAlert({
+          icon: "warning",
+          title: "Validación de campos",
+          message: "Seleccione una caja para iniciar turno.",
+        });
       }
 
-      return true;
+      // ? Validamos si ingresa el monto inicial de caja
+      if (!this.#cashOpeningAmount.val() || this.#cashOpeningAmount.val() < 0) {
+        return showAlert({
+          icon: "warning",
+          title: "Validación de campos",
+          message: "El monto ingresado debe ser igual o mayor que 0",
+        });
+      }
+
+      // ? Registramos la apertura de caja
+      const response = await this.apiBox.post("setOpenBox", {
+        box_id: this.#selectBox.val(),
+        cash_opening_amount: this.#cashOpeningAmount.val(),
+      });
+
+      console.log(response);
       
     });
-    console.log('todo correcto.');
   };
 
   // TODO: Funcion para cargar los roles asociados
@@ -73,10 +101,31 @@ export class Box {
   // TODO: Funcion para abrir todos los modals
   #openModal = () => {
     // * Open Modal Box
-    $(this.#btnOpenModalBox).click(() => {
-      console.log(this.#getBoxs());
-      ;
-      if(this.#getBoxs()){
+    $(this.#btnOpenModalBox).click(async () => {
+      const boxs = await this.#getBoxs();
+      if (boxs && boxs.status) {
+        let html =
+          '<option value="" disabled selected>Seleccione una caja...</option>';
+        boxs.data.forEach((box, index) => {
+          if (box.session === "Activo") {
+            html += `<option value="${box.idBox}">Caja ${index + 1} - ${
+              box.name
+            }</option>`;
+          } else if (box.session === "Inactivo") {
+            html += `<option class="text-danger fw-bold" disabled value="">Caja ${
+              index + 1
+            } - ${box.name} (Desabilitado)</option>`;
+          } else if (box.session === "Abierta") {
+            html += `<option class="text-primary fw-bold" disabled value="">Caja ${
+              index + 1
+            } - ${box.name} (En uso)</option>`;
+          } else {
+            html += `<option class="text-warning fw-bold" disabled value="">Caja ${
+              index + 1
+            } - ${box.name} (En Arqueo)</option>`;
+          }
+        });
+        this.#selectBox.html(html);
         this.#modalAddBox.modal("show");
       }
     });
