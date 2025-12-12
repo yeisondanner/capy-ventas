@@ -22,9 +22,8 @@ export class Box {
   #modalReportRole = $("#modalReportRole");
 
   // TODO: Seleccionamos los html
-  #permissionsHtml = $("#cardPermissions");
-  #permissionsUpdateHtml = $("#cardPermissionsUpdate");
-  #permissionsReportHtml = $("#cardPermissionsReport");
+  #selectBox = $("#selectBox");
+
 
   constructor(base_url) {
     this.apiBox = new ApiBox(base_url);
@@ -50,13 +49,36 @@ export class Box {
     reloj2.innerText = horaTexto;
   };
 
+  // TODO: Funcion para traer todas las cajas asociadas al negocio
+  #getBoxs = () => {
+    this.apiBox.get("getBoxs").then((response) => {
+      if(!response.status){
+        showAlert({
+          icon: response.type,
+          title: response.title,
+          message: response.message,
+        });
+
+        return false;
+      }
+
+      return true;
+      
+    });
+    console.log('todo correcto.');
+  };
+
   // TODO: Funcion para cargar los roles asociados
 
   // TODO: Funcion para abrir todos los modals
   #openModal = () => {
     // * Open Modal Box
     $(this.#btnOpenModalBox).click(() => {
-      this.#modalAddBox.modal("show");
+      console.log(this.#getBoxs());
+      ;
+      if(this.#getBoxs()){
+        this.#modalAddBox.modal("show");
+      }
     });
 
     // * Open Modal Gestión Box
@@ -67,7 +89,7 @@ export class Box {
     // * Open Modal Arqueo Box
     $(this.#btnOpenModalArqueoBox).click(() => {
       this.#modalArqueoBox.modal("show");
-    });;
+    });
   };
 }
 

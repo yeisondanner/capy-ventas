@@ -128,7 +128,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             <span class="input-group-text border-end-0 ps-3">
                                 <i class="bi bi-shop-window"></i>
                             </span>
-                            <select class="form-select border-start-0 py-2 fw-medium" name="select_box" id="select_box" required>
+                            <select class="form-select border-start-0 py-2 fw-medium" name="selectBox" id="selectBox" required>
                                 <option value="" disabled selected>Seleccione una caja...</option>
                                 <option value="1">Caja 01 - Principal</option>
                                 <option value="2">Caja 03 - Secundaria</option>
@@ -147,7 +147,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 class="form-control border-start-0 text-center fw-bold fs-3 text-dark"
                                 name="update_documentNumber"
                                 id="update_documentNumber"
-                                value="0.00"
+                                value="0"
                                 placeholder="0.00"
                                 step="0.01"
                                 min="0"
