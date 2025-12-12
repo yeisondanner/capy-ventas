@@ -46,7 +46,7 @@
                                     <th>Stock (Unidad)</th>
                                     <th>Precio venta</th>
                                     <th>Precio compra</th>
-                                    <th>Estado</th>
+                                    <th>Ganancia</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

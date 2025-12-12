@@ -265,10 +265,6 @@ class Business extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-        isCsrf("", 1);
-        if (!isset($_FILES['update_logoInput'])) {
-            $this->responseError('No se encontró el archivo del logo.');
-        }
         $openBoxSwitch = 'No';
         if (isset($_POST['update_openBoxSwitch'])) {
             $openBoxSwitch = 'Si';
@@ -310,10 +306,6 @@ class Business extends Controllers
             'NOMBRE DEL IMPUESTO' => $taxName,
             'IMPUESTO' => $tax,
         ]);
-        //validamos si el archivo es un archivo valido
-        if (isFile('image', $logo, ['png', 'jpg', 'jpeg'])) {
-            $this->responseError('El archivo debe ser una imagen.');
-        }
         //validamos que el nombre del negocio no sea mayor de 255 caracteres
         if (strlen($name) > 255) {
             $this->responseError('El nombre del negocio no puede tener más de 255 caracteres.');
@@ -353,6 +345,10 @@ class Business extends Controllers
             //eliminamos el logo anterior
             if ($businessActually['logo'] != '') {
                 delFolder($urlFile, $businessActually['logo'], false);
+            }
+            //validamos si el archivo es un archivo valido
+            if (isFile('image', $logo, ['png', 'jpg', 'jpeg'])) {
+                $this->responseError('El archivo debe ser una imagen.');
             }
             //obtenemos la extension del archivo
             $extension = pathinfo($logo['name'], PATHINFO_EXTENSION);
