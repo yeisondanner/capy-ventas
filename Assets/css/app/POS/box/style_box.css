@@ -22,7 +22,7 @@ body {
   background-color: var(--input-bg);
   border: 1px solid var(--input-border);
   border-left: none;
-  border-radius: 1.3rem;
+  border-radius: 1.2rem;
   padding: 0.625rem 0.875rem;
   font-size: 0.95rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -30,8 +30,8 @@ body {
 
 /* Ajuste para que los bordes se vean bien con input-group */
 .item-box .input-group .input-group-text {
-  border-top-left-radius: 1.3rem;
-  border-bottom-left-radius: 1.3rem;
+  border-top-left-radius: 1.2rem;
+  border-bottom-left-radius: 1.2rem;
 }
 .item-box .input-group .form-control,
 .item-box .input-group .form-select {
