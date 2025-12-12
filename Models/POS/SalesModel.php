@@ -37,7 +37,8 @@ class SalesModel extends Mysql
                         INNER JOIN supplier AS s ON s.idSupplier = p.supplier_id
                     WHERE
                         c.business_id = ?
-                        AND s.business_id = ?;
+                        AND s.business_id = ?
+                        AND p.status = 'Activo';
         SQL;
         $result = $this->select_all($sql, [$this->idBusiness, $this->idBusiness]);
         return $result;

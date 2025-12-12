@@ -36,6 +36,7 @@ class InventoryModel extends Mysql
             INNER JOIN supplier AS s ON s.idSupplier = p.supplier_id
             WHERE c.business_id = ?
               AND s.business_id = ?
+              AND p.status = 'Activo'
             ORDER BY p.idProduct DESC;
         SQL;
 
@@ -481,5 +482,39 @@ class InventoryModel extends Mysql
         $result = $this->select($sql, [$businessId, $name]);
 
         return is_array($result) ? $result : [];
+    }
+    /**
+     * Metodo que consulta si el producto
+     * no esta relacionado a alguna venta
+     * @param int $idproduct
+     * @return array
+     */
+    public function selectSaleProduct(int $idproduct): array
+    {
+        $sql = <<<SQL
+            SELECT*FROM voucher_detail AS vd WHERE vd.product_id=?;
+        SQL;
+
+        $result = $this->select($sql, [$idproduct]);
+
+        return is_array($result) ? $result : [];
+    }
+    /**
+     * Metodo que actualiza el estado de un producto
+     * @param int $idproduct
+     * @param string $status
+     * @return bool
+     */
+    public function updateProductStatus(int $idproduct, string $status): bool
+    {
+        $sql = <<<SQL
+            UPDATE product
+            SET status = ?
+            WHERE idProduct = ?;
+        SQL;
+
+        $result = $this->update($sql, [$status, $idproduct]);
+
+        return $result;
     }
 }

@@ -859,7 +859,7 @@
         { data: "stock" },
         { data: "sales_price" },
         { data: "purchase_price" },
-        { data: "status", orderable: false },
+        { data: "gain" },
       ],
       dom: "lBfrtip",
       buttons: [
@@ -897,7 +897,6 @@
         { targets: 0, className: "text-center" },
         { targets: 1, className: "text-center" },
         { targets: [5, 6, 7], className: "text-end" },
-        { targets: 8, className: "text-center" },
       ],
       responsive: true,
       destroy: true,

@@ -66,8 +66,10 @@ class Inventory extends Controllers
             $categoryName = htmlspecialchars($product['category'], ENT_QUOTES, 'UTF-8');
             $measurementName = htmlspecialchars($product['measurement'], ENT_QUOTES, 'UTF-8');
             $supplierName = htmlspecialchars($product['supplier'], ENT_QUOTES, 'UTF-8');
-
             $formattedStock = number_format((float) $product['stock'], 2, SPD, SPM);
+            $gain = formatMoney((float) $product['sales_price'] - $product['purchase_price']);
+            //agregamos un icono de una flechita arriba si la ganacia es mayor a 0 de color verde y una flechita abajo si la ganacia es menor a 0 de color rojo
+            $gainIcon = $gain > 0 ? '<i class="bi bi-arrow-up text-success"></i>' : '<i class="bi bi-arrow-down text-danger"></i>';
 
             $products[$key]['cont']        = $counter;
             $products[$key]['name']        = $productName;
@@ -77,6 +79,7 @@ class Inventory extends Controllers
             $products[$key]['stock']       = $formattedStock . ' ' . $measurementName;
             $products[$key]['purchase_price'] = $currency . ' ' . formatMoney((float) $product['purchase_price']);
             $products[$key]['sales_price']    = $currency . ' ' . formatMoney((float) $product['sales_price']);
+            $products[$key]['gain']         =  $gainIcon . $currency . ' ' . $gain;
             $products[$key]['status']         = $product['status'] === 'Activo'
                 ? '<span class="badge badge-success bg-success"><i class="bi bi-check-circle"></i> Activo</span>'
                 : '<span class="badge badge-secondary bg-secondary"><i class="bi bi-slash-circle"></i> Inactivo</span>';
@@ -383,8 +386,15 @@ class Inventory extends Controllers
         if (empty($product)) {
             $this->responseError('El producto seleccionado no existe o no pertenece a tu negocio.');
         }
+        //consultamos si el producto no esta relacionado con una venta
+        $sale = $this->model->selectSaleProduct($productId);
+        if (!empty($sale)) {
+            $deleted = $this->model->updateProductStatus($productId, 'Inactivo');
+        } else {
+            $deleted = $this->model->deleteProduct($productId);
+        }
 
-        $deleted = $this->model->deleteProduct($productId);
+
         if (!$deleted) {
             $this->responseError('No fue posible eliminar el producto, inténtalo nuevamente.');
         }
