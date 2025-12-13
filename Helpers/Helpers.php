@@ -1500,117 +1500,117 @@ function get_option_and_permission_app()
             header("Location: " . base_url() . "/pos/dashboard");
             die();
         }
-    } else {
-        //si en caso existiera una alerta previa la eliminamos
-        if (isset($_SESSION[$nameVarWidgetAlert])) {
-            unset($_SESSION[$nameVarWidgetAlert]);
-        }
-        //creamos una alerta indicando que faltan 3 dias para que el plan expire
-        if ((int)$data_vencimiento['total_dias'] <= 3) {
-            //creamos una variable de sesion que contenga  el widget de alerta
-            $_SESSION[$nameVarWidgetAlert] = [
-                // Configuración base
-                'type'   => 'expiration',      // Para identificar que se debe cargar este diseño específico
-                'status' => true,
-                'icon'   => 'bi-calendar-check', // Clase del icono de Bootstrap Icons
-                'color'  => 'warning',
-
-                // Contenido Principal
-                'title'          => '¡Tu plan está por vencer!',
-                'days_remaining' => $data_vencimiento['total_dias'], // Ej: 5
-
-                // Textos descriptivos
-                'message_main'   => 'Te quedan <strong class="text-dark fs-6">' . $data_vencimiento['total_dias'] . ' días</strong> de servicio completo. Aprovecha para renovar y mantén tu negocio funcionando sin pausas.',
-                'message_note'   => 'Si no renuevas, tu cuenta pasará automáticamente al <strong>Plan Gratuito</strong>.',
-
-                // Botón de Acción
-                'btn_text' => 'Mantener mi plan',
-                'url'      => base_url() . '/pos/errors/plan_vencido',
-                'btn_icon' => 'bi bi-arrow-right',
-                'btn_class' => 'btn btn-warning'
-            ];
-        }
-        /**
-         * validamos si el usuario es dueño o 
-         * no del negocio activo, si fuere dueño, 
-         * tiene acceso a todos los permisos que el plan permite, 
-         * caso contrario responde a un rol de usuario el cual esta limitado a permisos
-         */
-        $dataOwnerBusiness = $objPermission->get_bussiness_owner($idUser, $idBusiness);
-        if (!empty($dataOwnerBusiness)) {
-            //Ahora consultamos los permisos del plan, que vistas y funciones tiene permitida
-            $arrPermissionsFunctions = $objPermission->get_permissions_functions((int)$arrDataPlans['idPlan']);
-            if (isset($_SESSION[$nameVarPermission])) {
-                unset($_SESSION[$nameVarPermission]);
-            }
-            if (isset($_SESSION[$nameVarPermissionEmployee])) {
-                unset($_SESSION[$nameVarPermissionEmployee]);
-            }
-            //preparamos un array con el menu permitido                
-            $_SESSION[$nameVarPermission] = $arrPermissionsFunctions;
-        } else {
-            //primero validamos que el plan del negocio no este vencido y no sea el plan free
-            $dataBusinessEmployee = $objPermission->get_business_employee($idBusiness);
-            if (empty($dataBusinessEmployee)) {
-                $plan_vencido = base_url() . "/pos/errors/plan_vencido";
-                echo <<<HTML
-                    <script>
-                        window.location.href = "{$plan_vencido}";
-                    </script>
-                HTML;
-                die();
-            }
-            //validamos que el plan del negocio no este vencido
-            $fecha_vencimiento = $dataBusinessEmployee['plan_expiration_date']; #obtener la fecha de vencimiento del plan
-            $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
-            $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento);
-            if ((int)$data_vencimiento['total_dias'] <= 0) {
-                $plan_vencido = base_url() . "/pos/errors/plan_vencido";
-                echo <<<HTML
-                    <script>
-                        window.location.href = "{$plan_vencido}";
-                    </script>
-                HTML;
-                die();
-            }
-            //obtenemos el rol que tiene el usuario en el negocio
-            $dataInformationUser = $objPermission->get_information_user($idUser, $idBusiness);
-            //validamos que el usuario tenga un rol
-            if (empty($dataInformationUser)) {
-                $no_permisos = base_url() . "/pos/errors/no_permisos";
-                echo <<<HTML
-                    <script>
-                        window.location.href = "{$no_permisos}";
-                    </script>
-                HTML;
-                die();
-            }
-            $roleUser = $dataInformationUser['rolapp_id'];
-            /**
-             *si el usuario no es dueño del negocio obtenemos los permisos que tiene el usuario en este negocio
-             *Primero consultamos la informacion del negocio
-             *Luego consultamos los permisos del usuario en este negocio y del plan asociado                   
-             */
-            $permissionUser = $objPermission->get_permssion_user_employes($idUser, $idBusiness, $roleUser);
-            //validamos que el usuario tenga permisos
-            if (empty($permissionUser)) {
-                $no_permisos = base_url() . "/pos/errors/no_permisos";
-                echo <<<HTML
-                    <script>
-                        window.location.href = "{$no_permisos}";
-                    </script>
-                HTML;
-                die();
-            }
-            if (isset($_SESSION[$nameVarPermissionEmployee])) {
-                unset($_SESSION[$nameVarPermissionEmployee]);
-            }
-            if (isset($_SESSION[$nameVarPermission])) {
-                unset($_SESSION[$nameVarPermission]);
-            }
-            $_SESSION[$nameVarPermissionEmployee] = $permissionUser;
-        }
     }
+    //si en caso existiera una alerta previa la eliminamos
+    if (isset($_SESSION[$nameVarWidgetAlert])) {
+        unset($_SESSION[$nameVarWidgetAlert]);
+    }
+    //creamos una alerta indicando que faltan 3 dias para que el plan expire
+    if ((int)$data_vencimiento['total_dias'] <= 3) {
+        //creamos una variable de sesion que contenga  el widget de alerta
+        $_SESSION[$nameVarWidgetAlert] = [
+            // Configuración base
+            'type'   => 'expiration',      // Para identificar que se debe cargar este diseño específico
+            'status' => true,
+            'icon'   => 'bi-calendar-check', // Clase del icono de Bootstrap Icons
+            'color'  => 'warning',
+
+            // Contenido Principal
+            'title'          => '¡Tu plan está por vencer!',
+            'days_remaining' => $data_vencimiento['total_dias'], // Ej: 5
+
+            // Textos descriptivos
+            'message_main'   => 'Te quedan <strong class="text-dark fs-6">' . $data_vencimiento['total_dias'] . ' días</strong> de servicio completo. Aprovecha para renovar y mantén tu negocio funcionando sin pausas.',
+            'message_note'   => 'Si no renuevas, tu cuenta pasará automáticamente al <strong>Plan Gratuito</strong>.',
+
+            // Botón de Acción
+            'btn_text' => 'Mantener mi plan',
+            'url'      => base_url() . '/pos/errors/plan_vencido',
+            'btn_icon' => 'bi bi-arrow-right',
+            'btn_class' => 'btn btn-warning'
+        ];
+    }
+    /**
+     * validamos si el usuario es dueño o 
+     * no del negocio activo, si fuere dueño, 
+     * tiene acceso a todos los permisos que el plan permite, 
+     * caso contrario responde a un rol de usuario el cual esta limitado a permisos
+     */
+    $dataOwnerBusiness = $objPermission->get_bussiness_owner($idUser, $idBusiness);
+    if (!empty($dataOwnerBusiness)) {
+        //Ahora consultamos los permisos del plan, que vistas y funciones tiene permitida
+        $arrPermissionsFunctions = $objPermission->get_permissions_functions((int)$arrDataPlans['idPlan']);
+        if (isset($_SESSION[$nameVarPermission])) {
+            unset($_SESSION[$nameVarPermission]);
+        }
+        if (isset($_SESSION[$nameVarPermissionEmployee])) {
+            unset($_SESSION[$nameVarPermissionEmployee]);
+        }
+        //preparamos un array con el menu permitido                
+        $_SESSION[$nameVarPermission] = $arrPermissionsFunctions;
+    } else {
+        //primero validamos que el plan del negocio no este vencido y no sea el plan free
+        $dataBusinessEmployee = $objPermission->get_business_employee($idBusiness);
+        if (empty($dataBusinessEmployee)) {
+            $plan_vencido = base_url() . "/pos/errors/plan_vencido";
+            echo <<<HTML
+                    <script>
+                        window.location.href = "{$plan_vencido}";
+                    </script>
+                HTML;
+            die();
+        }
+        //validamos que el plan del negocio no este vencido
+        $fecha_vencimiento = $dataBusinessEmployee['plan_expiration_date']; #obtener la fecha de vencimiento del plan
+        $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
+        $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento);
+        if ((int)$data_vencimiento['total_dias'] <= 0) {
+            $plan_vencido = base_url() . "/pos/errors/plan_vencido";
+            echo <<<HTML
+                    <script>
+                        window.location.href = "{$plan_vencido}";
+                    </script>
+                HTML;
+            die();
+        }
+        //obtenemos el rol que tiene el usuario en el negocio
+        $dataInformationUser = $objPermission->get_information_user($idUser, $idBusiness);
+        //validamos que el usuario tenga un rol
+        if (empty($dataInformationUser)) {
+            $no_permisos = base_url() . "/pos/errors/no_permisos";
+            echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+            die();
+        }
+        $roleUser = $dataInformationUser['rolapp_id'];
+        /**
+         *si el usuario no es dueño del negocio obtenemos los permisos que tiene el usuario en este negocio
+         *Primero consultamos la informacion del negocio
+         *Luego consultamos los permisos del usuario en este negocio y del plan asociado                   
+         */
+        $permissionUser = $objPermission->get_permssion_user_employes($idUser, $idBusiness, $roleUser);
+        //validamos que el usuario tenga permisos
+        if (empty($permissionUser)) {
+            $no_permisos = base_url() . "/pos/errors/no_permisos";
+            echo <<<HTML
+                    <script>
+                        window.location.href = "{$no_permisos}";
+                    </script>
+                HTML;
+            die();
+        }
+        if (isset($_SESSION[$nameVarPermissionEmployee])) {
+            unset($_SESSION[$nameVarPermissionEmployee]);
+        }
+        if (isset($_SESSION[$nameVarPermission])) {
+            unset($_SESSION[$nameVarPermission]);
+        }
+        $_SESSION[$nameVarPermissionEmployee] = $permissionUser;
+    }
+
 
     unset($objPermission);
 }

@@ -69,3 +69,120 @@
   background-color: #f8f9fa;
   border: 1px solid #e9ecef;
 }
+
+
+
+
+
+
+
+
+/* Estilos personalizados para el Tablón */
+.changelog-card {
+  border: none;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  background: white;
+}
+
+.changelog-header {
+  /* Un gradiente verdoso/azulado que evoca crecimiento y ventas */
+  background: linear-gradient(135deg, #198754 0%, #0d6efd 100%);
+  color: white;
+  padding: 2.5rem;
+  position: relative;
+}
+
+.brand-icon {
+  font-size: 2.5rem;
+  margin-right: 15px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 5px 15px;
+}
+
+.version-badge {
+  background-color: #fff;
+  color: #198754;
+  padding: 0.5rem 1.2rem;
+  border-radius: 50px;
+  font-weight: 700;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Icon Box Styles */
+.icon-box {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.change-item {
+  border-bottom: 1px solid #f0f0f0;
+  padding: 1.5rem 2rem;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.change-item:hover {
+  background-color: #f8fff9;
+}
+
+.change-item:hover .icon-box {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Variaciones de tipo de cambio */
+.type-new .icon-box {
+  background-color: #d1e7dd;
+  color: #146c43;
+}
+
+.type-improvement .icon-box {
+  background-color: #cfe2ff;
+  color: #0a58ca;
+}
+
+.type-beta .icon-box {
+  background-color: #e2e3e5;
+  color: #41464b;
+}
+
+/* Badge pequeño para el tipo */
+.type-badge {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  font-weight: 700;
+  padding: 0.35em 0.8em;
+}
+
+.roadmap-section {
+  background-color: #f8f9fa;
+  border-top: 1px dashed #dee2e6;
+  padding: 2rem;
+}
+
+.roadmap-item {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.roadmap-item i {
+  color: #ffc107; /* Amarillo construcción */
+  font-size: 1.2rem;
+}
