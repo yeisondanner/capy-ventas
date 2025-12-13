@@ -91,8 +91,22 @@ export class Box {
         cash_opening_amount: this.#cashOpeningAmount.val(),
       });
 
-      console.log(response);
-      
+      if (response) {
+        showAlert({
+          title: response.title,
+          icon: response.icon,
+          message: response.message,
+        });
+
+        // ? Si es correcto cerramos el modal
+        if (response.status) {
+          this.#modalAddBox.modal("hide");
+        }
+
+        // ? Limpiamos el forulario de registro
+        // this.#selectBox.val();
+        this.#cashOpeningAmount.val(0);
+      }
     });
   };
 

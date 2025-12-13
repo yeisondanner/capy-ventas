@@ -96,17 +96,38 @@ class Box extends Controllers
 
         // * validamos que caja pertenesca al negocio
         $exisBox = $this->model->getBoxByIdAndBusinessId($box_id, $businessId);
-        if(!$exisBox){
+        if (!$exisBox) {
             $this->responseError('Esta caja no pertenece al negocio.');
         }
 
         // * Validamos que la caja no este aperturada o en arqueo
         $boxChecked = $this->model->getBoxByStatusAndBoxId("Cerrada", $exisBox["idBox"]);
-        if($boxChecked){
-            $this->responseError(`Esta caja se encuentra $fd`);
+        if ($boxChecked) {
+            $this->responseError(`Esta caja se encuentra Abierta o en Arqueo.`);
         }
 
-        toJson($boxChecked);
+        // * Consultamos el ID del usuario
+        $userId = $this->getUserId();
+
+        // * Validamos que el usuario no haya aperturado su caja
+        $exisUserOpenBox = $this->model->getBoxByUserId($exisBox["idBox"], $userId);
+        if ($exisUserOpenBox) {
+            $this->responseError(`Ya cuentas con una caja aperturada.`);
+        }
+
+        // * Aperturamos la caja
+        $boxSessions = $this->model->insertBoxSessions($exisBox["idBox"], $userId, $cash_opening_amount);
+        if ($boxSessions > 0) {
+            toJson([
+                'title'   => 'Apertura de Caja',
+                'message' => 'Caja '.$boxSessions.' aperturada correctamente.',
+                'type'    => 'success',
+                'icon'    => 'success',
+                'status'  => true,
+            ]);
+        }
+
+        $this->responseError(`Error al aperturar su caja. Comunicate con el administrador de la Capy Tienda.`);
     }
 
     private function getBusinessId(): int
@@ -116,6 +137,15 @@ class Box extends Controllers
         }
 
         return (int) $_SESSION[$this->nameVarBusiness]['idBusiness'];
+    }
+
+    private function getUserId(): int
+    {
+        if (!isset($_SESSION[$this->nameVarLoginInfo]['idUser'])) {
+            $this->responseError('No se encontró el usuario activo en la sesión.');
+        }
+
+        return (int) $_SESSION[$this->nameVarLoginInfo]['idUser'];
     }
 
     private function responseError(string $message): array

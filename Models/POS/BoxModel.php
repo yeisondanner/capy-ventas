@@ -4,6 +4,9 @@ class BoxModel extends Mysql
     protected int $businessId;
     protected int $boxId;
     protected string $status;
+    protected int $userId;
+    protected float $initialAmount = 0;
+
     // ? Funciones get
     public function getUsingBox(int $boxId)
     {
@@ -49,6 +52,21 @@ class BoxModel extends Mysql
         return $this->select($sql, [$this->status, $this->boxId]);
     }
 
+    public function getBoxByUserId(int $boxId, int $userId)
+    {
+        $this->boxId = $boxId;
+        $this->userId = $userId;
+        $sql = <<<SQL
+            SELECT
+                *
+            FROM box_sessions
+            WHERE box_id != ? AND userapp_id = ?
+            ORDER BY box_id ASC;
+        SQL;
+
+        return $this->select($sql, [$this->boxId, $this->userId]);
+    }
+
     // ? Funciones getAll
     public function getBoxs(int $businessId)
     {
@@ -67,6 +85,20 @@ class BoxModel extends Mysql
     }
 
     // ? Funciones insert
+    public function insertBoxSessions(int $boxId, int $userId, float $initialAmount)
+    {
+        $this->boxId = $boxId;
+        $this->userId = $userId;
+        $this->initialAmount = $initialAmount;
+        $sql = <<<SQL
+            INSERT INTO box_sessions
+                (box_id, userapp_id, initial_amount)
+            VALUES
+                (?, ?, ?);
+        SQL;
+        return (int) $this->insert($sql, [$this->boxId, $this->userId, $this->initialAmount]);
+    }
+
     // ? Funciones update
     // ? Funciones delete
 }
