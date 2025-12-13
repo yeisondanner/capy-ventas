@@ -77,7 +77,7 @@ $widget_alert = $data['page_vars'][2];
                 </div>
             </div>
             <div class="text-end">
-                <span class="version-badge">v<?= versionSystem() ?> (Beta)</span>
+                <span class="version-badge"><?= versionSystem() ?> (Beta)</span>
             </div>
         </div>
 
