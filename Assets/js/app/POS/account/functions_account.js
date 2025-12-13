@@ -35,6 +35,8 @@ export class Account {
         });
       }
 
+      showAlert({message: "Enviando código de verificación."}, 'loading');
+
       this.apiAccount
         .post("sendCodeVerification", {
           email: email,
@@ -55,7 +57,7 @@ export class Account {
   };
 
   #sendVerificationCode = () => {
-    $("#btnVerifyCode").on('click', () => {
+    $("#btnVerifyCode").on("click", () => {
       // ? Validamos que se envie el correo electronico
       let code = $("#code").val();
 
@@ -66,6 +68,8 @@ export class Account {
           message: "El código es requerido",
         });
       }
+
+      showAlert({message: "Verificando código."}, 'loading');
 
       this.apiAccount
         .post("validateVerificationCode", {
@@ -86,10 +90,8 @@ export class Account {
     });
   };
 
-    #setAccount = () => {
-    $("#btnCreateAccount").on('click', () => {
-      
-      
+  #setAccount = () => {
+    $("#btnCreateAccount").on("click", () => {
       let names = $("#names").val();
       let lastname = $("#lastname").val();
       let email = $("#email").val();
@@ -100,15 +102,24 @@ export class Account {
       let password = $("#password").val();
       let confirm_password = $("#confirm_password").val();
 
-      if (names === "" || lastname === "" || email === "" || date_of_birth === "" || country === "" || telephone_prefix === "" || 
-          phone_number === "" || password === "" || confirm_password === ""){
+      if (
+        names === "" ||
+        lastname === "" ||
+        email === "" ||
+        date_of_birth === "" ||
+        country === "" ||
+        telephone_prefix === "" ||
+        phone_number === "" ||
+        password === "" ||
+        confirm_password === ""
+      ) {
         return showAlert({
           icon: "warning",
           title: "Validacion de datos",
           message: "Los campos son obligatorios",
         });
       }
-      
+
       if (password !== confirm_password) {
         return showAlert({
           icon: "warning",
@@ -116,6 +127,8 @@ export class Account {
           message: "Las contraseñas no coinciden",
         });
       }
+
+      showAlert({message: "Creando cuenta, espere."}, 'loading');
 
       this.apiAccount
         .post("setAccount", {
@@ -132,7 +145,9 @@ export class Account {
         })
         .then((response) => {
           if (response.status) {
-            window.location.href = "./login";
+            setTimeout(() => {
+              window.location.href = "./login";
+            }, 3000);
           }
           showAlert({
             icon: response.type,

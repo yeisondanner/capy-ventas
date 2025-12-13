@@ -140,12 +140,15 @@ class Account extends Controllers
 		$raw = file_get_contents('php://input');
 		$data = json_decode($raw, true);
 
+		
 		// * Validamos que el codigo recibido sea el correcto
 		$code = strClean($data["code"]);
 		validateVerificationCode($code);
-
+		
 		// * Validamos que existan las variables requeridas
-		validateFields(["names", "lastname", "email", "date_of_birth", "country", "telephone_prefix", "phone_number", "password", "confirm_password"]);
+		if(!$data["names"] || !$data["lastname"] || !$data["email"] || !$data["date_of_birth"] || !$data["country"] || !$data["telephone_prefix"] || !$data["phone_number"] || !$data["password"] || !$data["confirm_password"]){
+			$this->responseError("Ingrese los campos requeridos.");
+		}
 		// * Limpiamos las variables
 		$names = strClean($data["names"]);
 		$lastname = strClean($data["lastname"]);
@@ -168,7 +171,6 @@ class Account extends Controllers
 			"CONTRASEÑA" => $password,
 			"CONFIRMAR CONTRASEÑA" => $confirm_password,
 		));
-
 		// * Prefijo por defaul
 		// ? Validar luego esto
 		$telephone_prefix = "+51";
