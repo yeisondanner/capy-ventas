@@ -15,17 +15,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     <ul class="app-nav gap-2">
         <?php if ($validationCreateBox === 1):
         ?>
-            <div class="d-flex justify-content-center align-items-center">
-                <button id="btnOpenModalGestionBox" class="btn btn-warning rounded-5 px-3 d-flex align-items-center gap-2 font-weight-bold">
-                    <img style="width: 22px;" src="<?= media()  ?>/icons/POS/open-box.png" alt="">
-                    <span class="fw-bold">Movimientos y Gestión de Caja</span>
-                </button>
-            </div>
-            <div class="d-flex justify-content-center align-items-center">
-                <button id="btnOpenModalBox" class="btn btn-warning rounded-5 px-3 d-flex align-items-center gap-2 font-weight-bold">
-                    <img style="width: 22px;" src="<?= media()  ?>/icons/POS/open-box.png" alt="">
-                    <span class="fw-bold">Caja</span>
-                </button>
+            <div class="d-flex gap-2" id="divOpenBox">
             </div>
         <?php endif;
         ?>

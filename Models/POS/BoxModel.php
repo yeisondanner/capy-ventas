@@ -52,19 +52,18 @@ class BoxModel extends Mysql
         return $this->select($sql, [$this->status, $this->boxId]);
     }
 
-    public function getBoxByUserId(int $boxId, int $userId)
+    public function getBoxByUserId(int $userId)
     {
-        $this->boxId = $boxId;
         $this->userId = $userId;
         $sql = <<<SQL
             SELECT
                 *
             FROM box_sessions
-            WHERE box_id != ? AND userapp_id = ?
+            WHERE userapp_id = ? AND `status` != "Cerrada"
             ORDER BY box_id ASC;
         SQL;
 
-        return $this->select($sql, [$this->boxId, $this->userId]);
+        return $this->select($sql, [$this->userId]);
     }
 
     // ? Funciones getAll

@@ -6,7 +6,6 @@ export class Box {
   #permissions = new Map();
 
   // TODO: Seleccionamos los botones
-  #btnOpenModalBox = $("#btnOpenModalBox");
   #btnOpenModalGestionBox = $("#btnOpenModalGestionBox");
   #btnOpenModalArqueoBox = $("#btnOpenModalArqueoBox");
   #btnOpenBox = $("#btnOpenBox");
@@ -22,18 +21,47 @@ export class Box {
   #modalReportRole = $("#modalReportRole");
 
   // TODO: Seleccionamos los html y valores
+  #divOpenBox = $("#divOpenBox");
   #selectBox = $("#selectBox");
   #cashOpeningAmount = $("#cash_opening_amount");
 
   constructor(base_url) {
     this.apiBox = new ApiBox(base_url);
+    this.#init();
     // this.#initTable();
-    this.#openModal();
     this.#mostrarHoraEnVivo();
     setInterval(this.#mostrarHoraEnVivo, 1000);
 
     this.#openBox();
   }
+
+  // TODO: Funcion que se usa al cargar la vista
+  #init = async () => {
+    // ? Verificamos que el usuario no tenga aperturada una caja
+    const response = await this.apiBox.get("getuserCheckedBox");
+    if (response.status) {
+      // * Agregamos el boton de apertura de caja
+      this.#divOpenBox.html(`
+          <div class="d-flex justify-content-center align-items-center">
+                      <button id="btnOpenModalBox" class="btn btn-warning rounded-5 px-3 d-flex align-items-center gap-2 font-weight-bold">
+                          <img style="width: 22px;" src="${media_url}/icons/POS/open-box.png" alt="">
+                          <span class="fw-bold">Caja</span>
+                      </button>
+                  </div>
+          `);
+    } else {
+      // * Agregamos el boton de movimientos y gestion de caja
+      this.#divOpenBox.html(`
+        <div class="d-flex justify-content-center align-items-center">
+                    <button id="btnOpenModalGestionBox" class="btn btn-warning rounded-5 px-3 d-flex align-items-center gap-2 font-weight-bold">
+                        <img style="width: 22px;" src="${media_url}/icons/POS/open-box.png" alt="">
+                        <span class="fw-bold">Movimientos y Gestión de Caja</span>
+                    </button>
+                </div>
+        `);
+    }
+    this.#openModal();
+  };
 
   // TODO: Funcion para mostrar la hora dinamica
   #mostrarHoraEnVivo = () => {
@@ -101,11 +129,14 @@ export class Box {
         // ? Si es correcto cerramos el modal
         if (response.status) {
           this.#modalAddBox.modal("hide");
-        }
+          
+          // ? Limpiamos el forulario de registro
+          // this.#selectBox.val();
+          this.#cashOpeningAmount.val(0);
 
-        // ? Limpiamos el forulario de registro
-        // this.#selectBox.val();
-        this.#cashOpeningAmount.val(0);
+          // ? Verificamos nuevamente si ya tiene aperturado su caja
+          this.#init();
+        }
       }
     });
   };
@@ -115,7 +146,7 @@ export class Box {
   // TODO: Funcion para abrir todos los modals
   #openModal = () => {
     // * Open Modal Box
-    $(this.#btnOpenModalBox).click(async () => {
+    $("#btnOpenModalBox").on("click", async () => {
       const boxs = await this.#getBoxs();
       if (boxs && boxs.status) {
         let html =

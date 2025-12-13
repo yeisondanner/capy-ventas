@@ -59,6 +59,8 @@ get_option_and_permission_app();
     <script type="text/javascript">
         // TODO: Base url
         const base_url = "<?= base_url(); ?>";
+        // TODO: Base para las imagenes
+        const media_url = "<?= media(); ?>";
         // TODO: Moneda
         const getcurrency = "<?= getCurrency(); ?>";
         //TODO: Generar perfil
