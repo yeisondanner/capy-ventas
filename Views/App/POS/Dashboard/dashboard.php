@@ -61,5 +61,144 @@ $widget_alert = $data['page_vars'][2];
             </div>
         </div>
     <?php endif; ?>
+
+    <!-- Inicio del Componente Tablón -->
+    <div class="card changelog-card mb-5">
+
+        <!-- Encabezado del Tablón -->
+        <div class="changelog-header d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <div class="d-flex align-items-center">
+                <div class="brand-icon">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+                <div>
+                    <h2 class="mb-1 fw-bold">Actualización Beta</h2>
+                    <p class="mb-0 opacity-90">Lanzada el 13 de Diciembre, 2025</p>
+                </div>
+            </div>
+            <div class="text-end">
+                <span class="version-badge">v<?= versionSystem() ?> (Beta)</span>
+            </div>
+        </div>
+
+        <!-- Cuerpo del Tablón: Lista de Cambios -->
+        <div class="card-body p-0">
+
+            <!-- Feature 1: Cuentas y Negocios -->
+            <div class="change-item d-flex align-items-start gap-4 type-new">
+                <div class="icon-box shadow-sm">
+                    <i class="bi bi-person-workspace"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge rounded-pill bg-success text-white type-badge">¡NUEVO!</span>
+                        <small class="text-muted">Administración</small>
+                    </div>
+                    <h5 class="fw-bold mb-2">Gestión de Cuentas y Negocios</h5>
+                    <p class="text-muted mb-0">Ahora puedes crear tu propia cuenta de usuario para acceder al sistema de forma segura. Además, hemos añadido la capacidad de registrar nuevos negocios y actualizar la información de los existentes fácilmente.</p>
+                </div>
+            </div>
+
+            <!-- Feature 2: Roles y Empleados -->
+            <div class="change-item d-flex align-items-start gap-4 type-new">
+                <div class="icon-box shadow-sm">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge rounded-pill bg-success text-white type-badge">¡NUEVO!</span>
+                        <small class="text-muted">Seguridad</small>
+                    </div>
+                    <h5 class="fw-bold mb-2">Roles y Permisos Avanzados</h5>
+                    <p class="text-muted mb-0">Control total sobre tu personal. Crea roles personalizados y administra a tus empleados asignándoles permisos específicos según su función en el negocio.</p>
+                </div>
+            </div>
+
+            <!-- Feature 3: Inventario Ganancia -->
+            <div class="change-item d-flex align-items-start gap-4 type-improvement">
+                <div class="icon-box shadow-sm">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary type-badge">Mejora</span>
+                        <small class="text-muted">Inventario</small>
+                    </div>
+                    <h5 class="fw-bold mb-2">Visualización de Ganancias</h5>
+                    <p class="text-muted mb-0">El módulo de inventarios ha sido actualizado. Ahora puedes ver claramente el margen de ganancia estimado por cada producto directamente en la lista.</p>
+                </div>
+            </div>
+
+            <!-- Feature 4: Comprobante Imagen -->
+            <div class="change-item d-flex align-items-start gap-4 type-new">
+                <div class="icon-box shadow-sm">
+                    <i class="bi bi-file-earmark-image"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge rounded-pill bg-success text-white type-badge">¡NUEVO!</span>
+                        <small class="text-muted">Ventas</small>
+                    </div>
+                    <h5 class="fw-bold mb-2">Comprobantes Listos para Compartir</h5>
+                    <p class="text-muted mb-0">Al realizar una venta, el sistema genera automáticamente el comprobante en formato de imagen. Ideal para enviarlo rápidamente por WhatsApp o redes sociales a tus clientes.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Sección En Construcción (Próximamente) -->
+        <div class="roadmap-section">
+            <h6 class="fw-bold text-muted text-uppercase mb-3 d-flex align-items-center">
+                <i class="bi bi-cone-striped me-2"></i> Próximamente en Capy Ventas
+            </h6>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="roadmap-item shadow-sm">
+                        <i class="bi bi-cash-stack"></i>
+                        <div>
+                            <div class="fw-bold small">Gestión de Caja</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">Control de apertura y cierre</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="roadmap-item shadow-sm">
+                        <i class="bi bi-receipt"></i>
+                        <div>
+                            <div class="fw-bold small">Gestión de Gastos</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">Registro de salidas de dinero</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="roadmap-item shadow-sm">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        <div>
+                            <div class="fw-bold small">Estadísticas Avanzadas</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">Reportes detallados del negocio</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="roadmap-item shadow-sm">
+                        <i class="bi bi-clock-history"></i>
+                        <div>
+                            <div class="fw-bold small">Sesiones e Historial</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">Auditoría completa de cajas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer del Tablón -->
+        <div class="card-footer-custom text-center border-top py-2">
+            <!-- <p class="mb-3 text-muted small">Gracias por probar nuestra versión Beta.</p>
+            <button class="btn btn-outline-primary rounded-pill px-4 fw-medium btn-sm">
+                <i class="bi bi-bug-fill me-2"></i> Reportar un problema
+            </button>-->
+        </div>
+    </div>
+    <!-- Fin del Componente -->
 </main>
 <?= footerPos($data) ?>
