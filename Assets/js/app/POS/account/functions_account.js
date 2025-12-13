@@ -24,6 +24,15 @@ export class Account {
         });
       }
 
+      const formatEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,150}$/;
+      if (!formatEmail.test(email)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Correo electrónico inválido.",
+        });
+      }
+
       // TODO: Validar el formato de correo electronico
       let accept_terms = $("#accept_terms").is(":checked");
 
@@ -35,7 +44,7 @@ export class Account {
         });
       }
 
-      showAlert({message: "Enviando código de verificación."}, 'loading');
+      showAlert({ message: "Enviando código de verificación." }, "loading");
 
       this.apiAccount
         .post("sendCodeVerification", {
@@ -69,7 +78,15 @@ export class Account {
         });
       }
 
-      showAlert({message: "Verificando código."}, 'loading');
+      if (code.length < 6) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "El código debe tener mínimo 6 caracteres.",
+        });
+      }
+
+      showAlert({ message: "Verificando código." }, "loading");
 
       this.apiAccount
         .post("validateVerificationCode", {
@@ -120,6 +137,109 @@ export class Account {
         });
       }
 
+      //VALIDACION PARA NOMBRES Y APELLIDOS
+      const formatText = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' .-]{2,80}$/;
+      if (!formatText.test(names)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message:
+            "Nombres inválidos (Solo letras y espacios, mínimo 2 caracteres y máximo 80).",
+        });
+      }
+
+      if (!formatText.test(lastname)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message:
+            "Apellidos inválidos (Solo letras y espacios, mínimo 2 caracteres y máximo 80).",
+        });
+      }
+
+      //VALIDACION PARA EMAIL
+      const formatEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,150}$/;
+      if (!formatEmail.test(email)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Correo electrónico inválido.",
+        });
+      }
+
+      //VALIDACION PARA FECHA DE NACIMIENTO. PD. ESTO SI LO HICE CON CHATGPT, NO SABIA JAJJAA
+      const dob = new Date(date_of_birth);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (Number.isNaN(dob.getTime())) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Fecha de nacimiento inválida.",
+        });
+      }
+
+      let age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+
+      if (age < 18) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Debes tener al menos 18 años para registrarte.",
+        });
+      }
+
+      //VALIDACION PARA PAIS
+      if (!formatText.test(country)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message:
+            "País inválido (Solo letras y espacios, mínimo 2 caracteres).",
+        });
+      }
+
+      //VALIDACION PARA PREFIJO TELEFONICO
+      const formatPrefiij = /^\+?[1-9]\d{3}$/;
+      if (!formatPrefiij.test(telephone_prefix)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Prefijo telefónico inválido (Ejemplo: +51).",
+        });
+      }
+
+      //VALIDACION PARA NUMERO DE TELEFONO
+      const phoneRegex = /^\d{9}$/;
+      if (!phoneRegex.test(phone_number)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Número de teléfono inválido, debe tener 9 dígitos.",
+        });
+      }
+
+      //VALIDACION PARA CONTRASEÑA
+      if (password.length < 6) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "La contraseña debe tener mínimo 6 caracteres.",
+        });
+      }
+
+      //VALIDACION PARA CONFIRMAR CONTRASEÑA
+      if (confirm_password.length < 6) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "La contraseña debe tener mínimo 6 caracteres.",
+        });
+      }
+
       if (password !== confirm_password) {
         return showAlert({
           icon: "warning",
@@ -128,7 +248,7 @@ export class Account {
         });
       }
 
-      showAlert({message: "Creando cuenta, espere."}, 'loading');
+      showAlert({ message: "Creando cuenta, espere." }, "loading");
 
       this.apiAccount
         .post("setAccount", {
