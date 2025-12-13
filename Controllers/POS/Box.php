@@ -98,7 +98,7 @@ class Box extends Controllers
         $userId = $this->getUserId();
 
         // * Validamos que el usuario no haya aperturado una caja
-        $exisUserOpenBox = $this->model->getBoxByUserId($userId);
+        $exisUserOpenBox = $this->model->getBoxSessionsByUserId($userId);
         if ($exisUserOpenBox) {
             $this->responseError("Ya cuentas con una caja aperturada.");
         }
@@ -154,7 +154,7 @@ class Box extends Controllers
         $userId = $this->getUserId();
 
         // * Validamos que el usuario no haya aperturado una caja
-        $exisUserOpenBox = $this->model->getBoxByUserId($userId);
+        $exisUserOpenBox = $this->model->getBoxSessionsByUserId($userId);
         if (!$exisUserOpenBox) {
             toJson([
                 'title'   => 'Apertura de Caja',
@@ -166,6 +166,62 @@ class Box extends Controllers
         }
 
         $this->responseError("Ya cuentas con una caja aperturada.");
+    }
+
+    // TODO: Mostramos los movimientos y gestion de caja
+    public function getManagementBox()
+    {
+        // * Validamos que llegue el metodo GET
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        // * Consultamos el ID del usuario
+        $userId = $this->getUserId();
+
+        // * Consultamos si el usuario tiene un caja aperturada
+        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
+        if (!$boxSessions) {
+            $this->responseError('No tienes ninguna caja aperturada. Por favor apertura tu turno.');
+        }
+
+        // * Consultamos los metodos de pagos disponibles por la app
+        $paymentMethod = $this->model->getPaymentMethods();
+
+        // * Consultamos todos los movimientos asociados a la caja aperturada
+        $boxMovements = $this->model->getBoxMovements($boxSessions["idBoxSessions"]);
+
+        // * Consultamos los ultimos 4 movimientos asociados a la caja aperturada
+        $boxMovements_limit = $this->model->getBoxMovementsByLimit($boxSessions["idBoxSessions"], 4);
+
+        $arrayPaymentMethod = array();
+        $totalGeneral = 0;
+        foreach ($boxMovements as $key => $value) {
+            $amount = (float) $value["amount"];
+
+            // ? Calculamos el total general de ingreso incluyendo bancos
+            if ($value["type_movement"] !== "Egreso") {
+                $totalGeneral += $amount;
+
+                // ? Calculamos los totales por metodo de pago
+                if (isset($arrayPaymentMethod[$value["payment_method"]])) {
+                    $arrayPaymentMethod[$value["payment_method"]] += $amount;
+                } else {
+                    $arrayPaymentMethod[$value["payment_method"]] = $amount;
+                }
+            }
+        }
+
+        // * Devolvemos la respuesta formateada
+        $arrayResponse = [
+            "status" => true,
+            "amount_base" => (float) $boxSessions["initial_amount"],
+            "total_general" => $totalGeneral,
+            "payment_method" => $paymentMethod,
+            "total_payment_method" => $arrayPaymentMethod,
+            "movements_limit" => $boxMovements_limit,
+        ];
+        toJson($arrayResponse);
     }
 
     private function getBusinessId(): int

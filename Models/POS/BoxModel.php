@@ -10,6 +10,7 @@ class BoxModel extends Mysql
     protected string $typeMovement;
     protected string $concept;
     protected string $paymentMethod;
+    protected int $limit;
 
     // ? Funciones get
     public function getUsingBox(int $boxId)
@@ -56,7 +57,7 @@ class BoxModel extends Mysql
         return $this->select($sql, [$this->status, $this->boxId]);
     }
 
-    public function getBoxByUserId(int $userId)
+    public function getBoxSessionsByUserId(int $userId)
     {
         $this->userId = $userId;
         $sql = <<<SQL
@@ -85,6 +86,57 @@ class BoxModel extends Mysql
         SQL;
 
         return $this->select_all($sql, [$this->businessId]);
+    }
+
+    public function getBoxMovements(int $boxSessionsId)
+    {
+        $this->boxSessionsId = $boxSessionsId;
+        $sql = <<<SQL
+            SELECT
+                type_movement,
+                concept,
+                amount,
+                payment_method,
+                movement_date
+            FROM box_movements
+            WHERE boxSessions_id = ?
+            ORDER BY type_movement ASC;
+        SQL;
+
+        return $this->select_all($sql, [$this->boxSessionsId]);
+    }
+
+    public function getBoxMovementsByLimit(int $boxSessionsId, int $limit)
+    {
+        $this->boxSessionsId = $boxSessionsId;
+        $this->limit = $limit;
+        $sql = <<<SQL
+            SELECT
+                type_movement,
+                concept,
+                amount,
+                payment_method,
+                movement_date
+            FROM box_movements
+            WHERE boxSessions_id = ?
+            ORDER BY type_movement DESC
+            LIMIT $this->limit;
+        SQL;
+
+        return $this->select_all($sql, [$this->boxSessionsId]);
+    }
+
+    public function getPaymentMethods()
+    {
+        $sql = <<<SQL
+            SELECT
+                icon,
+                `name`
+            FROM payment_method
+            ORDER BY idPaymentMethod ASC;
+        SQL;
+
+        return $this->select_all($sql, []);
     }
 
     // ? Funciones insert
