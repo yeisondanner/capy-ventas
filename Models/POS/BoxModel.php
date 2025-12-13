@@ -5,7 +5,11 @@ class BoxModel extends Mysql
     protected int $boxId;
     protected string $status;
     protected int $userId;
-    protected float $initialAmount = 0;
+    protected float $initialAmount;
+    protected int $boxSessionsId;
+    protected string $typeMovement;
+    protected string $concept;
+    protected string $paymentMethod;
 
     // ? Funciones get
     public function getUsingBox(int $boxId)
@@ -97,6 +101,23 @@ class BoxModel extends Mysql
         SQL;
         return (int) $this->insert($sql, [$this->boxId, $this->userId, $this->initialAmount]);
     }
+
+    public function insertBoxMovements(int $boxSessionsId, string $typeMovement, string $concept, float $initialAmount, string $paymentMethod)
+    {
+        $this->boxSessionsId = $boxSessionsId;
+        $this->typeMovement = $typeMovement;
+        $this->concept = $concept;
+        $this->initialAmount = $initialAmount;
+        $this->paymentMethod = $paymentMethod;
+        $sql = <<<SQL
+            INSERT INTO box_movements
+                (boxSessions_id, type_movement, concept, amount, payment_method)
+            VALUES
+                (?, ?, ?, ?, ?);
+        SQL;
+        return (int) $this->insert($sql, [$this->boxSessionsId, $this->typeMovement, $this->concept, $this->initialAmount, $this->paymentMethod]);
+    }
+
 
     // ? Funciones update
     // ? Funciones delete

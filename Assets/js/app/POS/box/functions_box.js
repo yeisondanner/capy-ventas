@@ -6,8 +6,6 @@ export class Box {
   #permissions = new Map();
 
   // TODO: Seleccionamos los botones
-  #btnOpenModalGestionBox = $("#btnOpenModalGestionBox");
-  #btnOpenModalArqueoBox = $("#btnOpenModalArqueoBox");
   #btnOpenBox = $("#btnOpenBox");
   #btnUpdateRole = $("#btnUpdateRole");
   #btnDeleteRole = $("#btnDeleteRole");
@@ -129,7 +127,7 @@ export class Box {
         // ? Si es correcto cerramos el modal
         if (response.status) {
           this.#modalAddBox.modal("hide");
-          
+
           // ? Limpiamos el forulario de registro
           // this.#selectBox.val();
           this.#cashOpeningAmount.val(0);
@@ -176,12 +174,14 @@ export class Box {
     });
 
     // * Open Modal Gestión Box
-    $(this.#btnOpenModalGestionBox).click(() => {
+    $("#btnOpenModalGestionBox").on("click", () => {
+      // ? Traemos los datos necesarios para mostrar en la vista
+      
       this.#modalGestionBox.modal("show");
     });
 
     // * Open Modal Arqueo Box
-    $(this.#btnOpenModalArqueoBox).click(() => {
+    $("#btnOpenModalArqueoBox").on("click", () => {
       this.#modalArqueoBox.modal("show");
     });
   };

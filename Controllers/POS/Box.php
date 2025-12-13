@@ -117,17 +117,29 @@ class Box extends Controllers
 
         // * Aperturamos la caja
         $boxSessions = $this->model->insertBoxSessions($exisBox["idBox"], $userId, $cash_opening_amount);
-        if ($boxSessions > 0) {
+        if ($boxSessions <= 0) {
+            $this->responseError("Error al aperturar su caja. Comunicate con el administrador de la Capy Tienda.");
+        }
+
+        // * Registramos en movimientos para mejar el historial por caja
+        $boxMovements = $this->model->insertBoxMovements($boxSessions, "Inicio", "Apertura de caja", $cash_opening_amount, "Efectivo");
+        if ($boxMovements > 0) {
             toJson([
                 'title'   => 'Apertura de Caja',
-                'message' => 'Caja '.$boxSessions.' aperturada correctamente.',
+                'message' => 'Caja ' . $boxSessions . ' aperturada correctamente.',
                 'type'    => 'success',
                 'icon'    => 'success',
                 'status'  => true,
             ]);
         }
 
-        $this->responseError("Error al aperturar su caja. Comunicate con el administrador de la Capy Tienda.");
+        toJson([
+            'title'   => 'Apertura de Caja',
+            'message' => 'Se aperturo la caja ' . $boxSessions . ', pero no se registro como primer movimiento correctamente.',
+            'type'    => 'success',
+            'icon'    => 'success',
+            'status'  => true,
+        ]);
     }
 
     // TODO: Funcion que devuelve si el usuario tiene aperturado un caja
@@ -152,7 +164,7 @@ class Box extends Controllers
                 'status'  => true,
             ]);
         }
-        
+
         $this->responseError("Ya cuentas con una caja aperturada.");
     }
 
