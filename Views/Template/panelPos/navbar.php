@@ -15,17 +15,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     <ul class="app-nav gap-2">
         <?php if ($validationCreateBox === 1):
         ?>
-            <div class="d-flex justify-content-center align-items-center">
-                <button id="btnOpenModalGestionBox" class="btn btn-warning rounded-5 px-3 d-flex align-items-center gap-2 font-weight-bold">
-                    <img style="width: 22px;" src="<?= media()  ?>/icons/POS/open-box.png" alt="">
-                    <span class="fw-bold">Movimientos y Gestión de Caja</span>
-                </button>
-            </div>
-            <div class="d-flex justify-content-center align-items-center">
-                <button id="btnOpenModalBox" class="btn btn-warning rounded-5 px-3 d-flex align-items-center gap-2 font-weight-bold">
-                    <img style="width: 22px;" src="<?= media()  ?>/icons/POS/open-box.png" alt="">
-                    <span class="fw-bold">Caja</span>
-                </button>
+            <div class="d-flex gap-2" id="divOpenBox">
             </div>
         <?php endif;
         ?>
@@ -112,7 +102,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             <?= ucwords(strtolower($_SESSION[$nameVarLoginInfo]['name'] . " " . $_SESSION[$nameVarLoginInfo]['lastname'])) ?>
                         </h6>
                         <small class="text-muted" style="font-size: 0.85rem;">
-                            ID: 4829 <span class="mx-1">•</span> <span class="text-primary fw-medium">Cajero</span>
+                            ID: <?= $_SESSION[$nameVarLoginInfo]['idUser'] ?> <span class="mx-1">•</span> <span class="text-primary fw-medium">Cajero</span>
                         </small>
                     </div>
                     <div class="text-opacity-75 opacity-50 px-2">
@@ -128,15 +118,12 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             <span class="input-group-text border-end-0 ps-3">
                                 <i class="bi bi-shop-window"></i>
                             </span>
-                            <select class="form-select border-start-0 py-2 fw-medium" name="select_box" id="select_box" required>
-                                <option value="" disabled selected>Seleccione una caja...</option>
-                                <option value="1">Caja 01 - Principal</option>
-                                <option value="2">Caja 03 - Secundaria</option>
+                            <select class="form-select border-start-0 py-2 fw-medium" name="selectBox" id="selectBox" required>
                             </select>
                         </div>
                     </div>
                     <div class="item-box">
-                        <label class="form-label fw-bold small text-muted text-uppercase" for="update_documentNumber">
+                        <label class="form-label fw-bold small text-muted text-uppercase" for="cash_opening_amount">
                             Efectivo Inicial <span class="text-danger">*</span>
                         </label>
                         <div class="input-group input-group-lg">
@@ -145,9 +132,9 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             </span>
                             <input type="number"
                                 class="form-control border-start-0 text-center fw-bold fs-3 text-dark"
-                                name="update_documentNumber"
-                                id="update_documentNumber"
-                                value="0.00"
+                                name="cash_opening_amount"
+                                id="cash_opening_amount"
+                                value="0"
                                 placeholder="0.00"
                                 step="0.01"
                                 min="0"
@@ -159,7 +146,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <button type="button" class="btn btn-lg btn-light border flex-grow-1 text-muted fw-bold rounded-pill" data-bs-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="button" class="btn btn-lg btn-primary flex-grow-1 fw-bold rounded-pill shadow-sm">
+                    <button id="btnOpenBox" type="button" class="btn btn-lg btn-primary flex-grow-1 fw-bold rounded-pill shadow-sm">
                         <i class="bi bi-unlock-fill me-2"></i> Abrir Turno
                     </button>
                 </div>
@@ -194,53 +181,20 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
                                         <h6 class="text-success fw-bold text-uppercase mb-2" style="font-size: 0.75rem; letter-spacing: 1px;">Total en Caja</h6>
-                                        <h2 class="display-6 fw-bold text-dark mb-0">
-                                            <?= getCurrency(); ?>2,500.00
+                                        <h2 id="quick_access_total_general" class="display-6 fw-bold text-dark mb-0">
+                                            <!-- Aqui carga el total general -->
                                         </h2>
                                     </div>
                                     <div class="text-end">
                                         <span class="fs-6 badge border border-success text-success bg-white rounded-pill px-3 py-2">
                                             <i class="bi bi-graph-up-arrow me-1"></i>
-                                            Base: <?= getCurrency(); ?>100.00
+                                            <small id="quick_access_base_amount"><!-- Aqui carga el monto inicial de apertura --></small>
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row g-3">
-                            <div class="col-4">
-                                <div class="card border rounded-4 h-100 bg-body-tertiary">
-                                    <div class="card-body p-3 text-center">
-                                        <span class="d-inline-flex align-items-center justify-content-center border bg-white rounded-circle mb-2" style="width: 35px; height: 35px;">
-                                            <i class="bi bi-cash-stack text-primary"></i>
-                                        </span>
-                                        <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Efectivo</div>
-                                        <h6 class="fw-bold mb-0 text-dark"><?= getCurrency(); ?>200.00</h6>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="card border rounded-4 h-100 bg-body-tertiary">
-                                    <div class="card-body p-3 text-center">
-                                        <span class="d-inline-flex align-items-center justify-content-center border bg-white rounded-circle mb-2" style="width: 35px; height: 35px;">
-                                            <i class="bi bi-credit-card-fill text-warning"></i>
-                                        </span>
-                                        <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Tarjeta</div>
-                                        <h6 class="fw-bold mb-0 text-dark"><?= getCurrency(); ?>280.00</h6>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-4">
-                                <div class="card border rounded-4 h-100 bg-body-tertiary">
-                                    <div class="card-body p-3 text-center">
-                                        <span class="d-inline-flex align-items-center justify-content-center border bg-white rounded-circle mb-2" style="width: 35px; height: 35px;">
-                                            <i class="bi bi-qr-code-scan text-info"></i>
-                                        </span>
-                                        <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">Digital (QR)</div>
-                                        <h6 class="fw-bold mb-0 text-dark"><?= getCurrency(); ?>280.00</h6>
-                                    </div>
-                                </div>
-                            </div>
+                        <div id="quick_access_card_payment_method" class="row g-3">
                         </div>
                         <div class="card border rounded-4 flex-fill">
                             <div class="card-body d-flex align-items-center justify-content-center text-muted p-4" style="min-height: 140px;">
@@ -262,7 +216,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                     <?= ucwords(strtolower($_SESSION[$nameVarLoginInfo]['name'] . " " . $_SESSION[$nameVarLoginInfo]['lastname'])) ?>
                                 </h6>
                                 <small class="text-muted" style="font-size: 0.85rem;">
-                                    ID: 4829 <span class="mx-1">•</span> <span class="text-primary fw-medium">Cajero</span>
+                                    ID: <?= $_SESSION[$nameVarLoginInfo]['idUser'] ?> <span class="mx-1">•</span> <span class="text-primary fw-medium">Cajero</span>
                                 </small>
                             </div>
                             <div class="text-opacity-75 opacity-50 px-2">
@@ -292,10 +246,10 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         </div>
                         <div class="card border rounded-4 flex-fill">
                             <div class="card-header bg-transparent border-bottom pt-3 pb-2 d-flex justify-content-between align-items-center">
-                                <h6 class="fw-bold mb-0">Últimos Movimientos</h6>
+                                <h6 id="quick_access_title_list_movements" class="fw-bold mb-0">Últimos Movimientos</h6>
                                 <a href="#" class="text-decoration-none small fw-bold">Ver todos</a>
                             </div>
-                            <div class="list-group list-group-flush rounded-bottom-4">
+                            <div id="quick_access_card_list_movements" class="list-group list-group-flush rounded-bottom-4">
                                 <div class="list-group-item px-3 py-3 border-bottom-0">
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
@@ -345,7 +299,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </div>
                 </div>
                 <div class="d-flex justify-content-end gap-2 mt-2 w-100">
-                    <button type="button" class="btn btn-light border text-muted fw-bold rounded-5" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-light border text-muted fw-bold rounded-4" data-bs-dismiss="modal">
                         Cancelar
                     </button>
                 </div>
