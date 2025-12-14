@@ -137,7 +137,7 @@ export class Account {
         });
       }
 
-      //VALIDACION PARA NOMBRES Y APELLIDOS
+      // * VALIDACION PARA NOMBRES Y APELLIDOS
       const formatText = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' .-]{2,80}$/;
       if (!formatText.test(names)) {
         return showAlert({
@@ -157,7 +157,7 @@ export class Account {
         });
       }
 
-      //VALIDACION PARA EMAIL
+      // * VALIDACION PARA EMAIL
       const formatEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,150}$/;
       if (!formatEmail.test(email)) {
         return showAlert({
@@ -167,7 +167,7 @@ export class Account {
         });
       }
 
-      //VALIDACION PARA FECHA DE NACIMIENTO. PD. ESTO SI LO HICE CON CHATGPT, NO SABIA JAJJAA
+      // * VALIDACION PARA FECHA DE NACIMIENTO. PD. ESTO SI LO HICE CON CHATGPT, NO SABIA JAJJAA
       const dob = new Date(date_of_birth);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -224,15 +224,6 @@ export class Account {
 
       //VALIDACION PARA CONTRASEÑA
       if (password.length < 6) {
-        return showAlert({
-          icon: "warning",
-          title: "Validacion de datos",
-          message: "La contraseña debe tener mínimo 6 caracteres.",
-        });
-      }
-
-      //VALIDACION PARA CONFIRMAR CONTRASEÑA
-      if (confirm_password.length < 6) {
         return showAlert({
           icon: "warning",
           title: "Validacion de datos",
