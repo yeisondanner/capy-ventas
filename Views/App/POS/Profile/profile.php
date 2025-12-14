@@ -73,19 +73,19 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                         <p class="mb-0 fw-semibold"><?= formatDateProfile($user['birthDate'] ?? null, false); ?></p>
                     </div>
 
-                     <div class="d-flex justify-content-end mt-3">
-    <button type="button"
-            class="btn btn-sm btn-outline-primary"
-            data-bs-toggle="modal"
-            data-bs-target="#modalEditProfile">
-        <i class="bi bi-pencil-square"></i> Editar Perfil
-    </button>
-</div>
+                    <div class="d-flex justify-content-end mt-3">
+                        <button type="button"
+                            class="btn btn-sm btn-outline-primary"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalEditProfile">
+                            <i class="bi bi-pencil-square"></i> Editar Perfil
+                        </button>
+                    </div>
 
                 </div>
             </div>
         </div>
-        
+
         <div class="col-lg-8">
             <div class="tile h-100">
                 <div class="tile-title-w-btn d-flex align-items-center">
@@ -261,10 +261,10 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
-    <form id="formEditProfile"
-      method="post"
-      action="<?= base_url() ?>/pos/profile/updateProfile"
-      autocomplete="off">
+            <form id="formEditProfile"
+                method="post"
+                action="<?= base_url() ?>/pos/profile/updateProfile"
+                autocomplete="off">
 
                 <div class="modal-body">
                     <div class="row g-3">
@@ -272,64 +272,64 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                         <div class="col-md-8">
                             <label for="fullname" class="form-label fw-semibold">Nombre completo</label>
                             <input type="text"
-                                   class="form-control"
-                                   id="fullname"
-                                   name="fullname"
-                                   value="<?= htmlspecialchars($user['fullname'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                class="form-control"
+                                id="fullname"
+                                name="fullname"
+                                value="<?= htmlspecialchars($user['fullname'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                         </div>
 
                         <div class="col-md-4">
                             <label for="username" class="form-label fw-semibold">Usuario</label>
                             <input type="text"
-                                   class="form-control"
-                                   id="username"
-                                   name="username"
-                                   value="<?= htmlspecialchars($user['user'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                class="form-control"
+                                id="username"
+                                name="username"
+                                value="<?= htmlspecialchars($user['user'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                         </div>
 
                         <div class="col-md-6">
                             <label for="email" class="form-label fw-semibold">Correo electrónico</label>
                             <input type="email"
-                                   class="form-control"
-                                   id="email"
-                                   name="email"
-                                   value="<?= htmlspecialchars($user['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                class="form-control"
+                                id="email"
+                                name="email"
+                                value="<?= htmlspecialchars($user['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                         </div>
 
                         <div class="col-md-6">
                             <label for="phone" class="form-label fw-semibold">Teléfono</label>
                             <input type="text"
-                                   class="form-control"
-                                   id="phone"
-                                   name="phone"
-                                   value="<?= htmlspecialchars($user['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                class="form-control"
+                                id="phone"
+                                name="phone"
+                                value="<?= htmlspecialchars($user['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                         </div>
 
                         <div class="col-md-6">
                             <label for="country" class="form-label fw-semibold">País</label>
                             <input type="text"
-                                   class="form-control"
-                                   id="country"
-                                   name="country"
-                                   value="<?= htmlspecialchars($user['country'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                class="form-control"
+                                id="country"
+                                name="country"
+                                value="<?= htmlspecialchars($user['country'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                         </div>
 
                         <div class="col-md-6">
                             <label for="birthDate" class="form-label fw-semibold">Fecha de nacimiento</label>
                             <input type="date"
-                                   class="form-control"
-                                   id="birthDate"
-                                   name="birthDate"
-                                   value="<?= !empty($user['birthDate']) ? date('Y-m-d', strtotime($user['birthDate'])) : ''; ?>">
+                                class="form-control"
+                                id="birthDate"
+                                name="birthDate"
+                                value="<?= !empty($user['birthDate']) ? date('Y-m-d', strtotime($user['birthDate'])) : ''; ?>">
                         </div>
-                </div>
+                    </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">
-                        Guardar cambios
-                    </button>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            Guardar cambios
+                        </button>
+                    </div>
             </form>
         </div>
     </div>

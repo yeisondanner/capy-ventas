@@ -252,6 +252,9 @@ class BusinessModel extends Mysql
                 VALUES
                 ('Sin cliente', 1, 'Sin cliente', '999999999', 'sincliente@capyventas.com', 'Sin cliente', ?);
             SQL,
+            <<<SQL
+                INSERT INTO `box` (`name`, `business_id`) VALUES ('Caja Principal', ?);
+            SQL
         ];
 
         $request = [];

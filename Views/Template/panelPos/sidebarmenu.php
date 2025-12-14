@@ -102,6 +102,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
             <li><a class="app-menu__item <?= $data['page_id'] === 0 ? 'active' : '' ?>" href="<?= base_url() ?>/pos/dashboard"><i class="app-menu__icon bi bi-house-door"></i><span class="app-menu__label">Inicio</span></a></li>
             <li><a class="app-menu__item <?= $data['page_id'] === 1 ? 'active' : '' ?>" href=" <?= $data_menu(1) ? base_url() . '/pos/sales' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-cart"></i><span class="app-menu__label"><?= $data_menu(1) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(1) ? $data_menu(1)['Interface'] : 'Vender' ?></span></a></li>
             <li><a class="app-menu__item <?= $data['page_id'] === 2 ? 'active' : '' ?>" href="<?= $data_menu(2) ? base_url() . '/pos/movements' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-pc-display-horizontal"></i><span class="app-menu__label"><?= $data_menu(2) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(2) ? $data_menu(2)['Interface'] : 'Movimientos' ?></span></a></li>
+            <li><a class="app-menu__item <?= $data['page_id'] === 9 ? 'active' : '' ?>" href="<?= $data_menu(9) ? base_url() . '/pos/movements' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-bar-chart-line"></i><span class="app-menu__label"><?= $data_menu(9) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(9) ? $data_menu(9)['Interface'] : 'Estadisticas' ?></span></a></li>
             <li><a class="app-menu__item <?= $data['page_id'] === 3 ? 'active' : '' ?>" href="<?= $data_menu(3) ? base_url() . '/pos/inventory' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-box-seam"></i><span class="app-menu__label"><?= $data_menu(3) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(3) ? $data_menu(3)['Interface'] : 'Inventario' ?></span></a></li>
             <li><a class="app-menu__item <?= $data['page_id'] === 4 ? 'active' : '' ?>" href="<?= $data_menu(4) ? base_url() . '/pos/customers' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-person-lines-fill"></i><span class="app-menu__label"><?= $data_menu(4) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(4) ? $data_menu(4)['Interface'] : 'Clientes' ?></span></a></li>
             <li><a class="app-menu__item <?= $data['page_id'] === 7 ? 'active' : '' ?>" href="<?= $data_menu(7) ? base_url() . '/pos/suppliers' : $linkestadointerfaz ?>"><i class="app-menu__icon bi bi-people"></i><span class="app-menu__label"><?= $data_menu(7) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?> <?= $data_menu(7) ? $data_menu(7)['Interface'] : 'Proveedores' ?></span></a></li>
@@ -127,6 +128,14 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <a <?= $data_menu_employee(2) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 2 ? 'active' : '' ?>" href="<?= $data_menu_employee(2) ? base_url() . '/pos/movements' : base_url() . '/pos/Errors/no_permisos' ?>">
                         <i class="app-menu__icon bi bi-pc-display-horizontal"></i>
                         <span class="app-menu__label"><?= $data_menu_employee(2) ? $data_menu_employee(2)['Interface'] : 'Movimientos' ?></span>
+                    </a>
+                </li>
+            <?php endif; ?>
+            <?php if ($data_menu_employee(9)) : ?>
+                <li>
+                    <a <?= $data_menu_employee(9) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 9 ? 'active' : '' ?>" href="<?= $data_menu_employee(9) ? base_url() . '/pos/movements' : base_url() . '/pos/Errors/no_permisos' ?>">
+                        <i class="app-menu__icon bi bi-bar-chart-line"></i>
+                        <span class="app-menu__label"><?= $data_menu_employee(9) ? $data_menu_employee(9)['Interface'] : 'Estadisticas' ?></span>
                     </a>
                 </li>
             <?php endif; ?>
