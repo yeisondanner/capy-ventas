@@ -1,6 +1,7 @@
 import { ApiAccount } from "./functions_account_api.js";
 export class Account {
   #cardAccount = $("#cardAccount");
+  #verificationCode = null;
 
   constructor() {
     this.apiAccount = new ApiAccount(base_url);
@@ -23,6 +24,15 @@ export class Account {
         });
       }
 
+      const formatEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,150}$/;
+      if (!formatEmail.test(email)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Correo electrónico inválido.",
+        });
+      }
+
       // TODO: Validar el formato de correo electronico
       let accept_terms = $("#accept_terms").is(":checked");
 
@@ -33,6 +43,8 @@ export class Account {
           message: "Debes aceptar los términos y condiciones",
         });
       }
+
+      showAlert({ message: "Enviando código de verificación." }, "loading");
 
       this.apiAccount
         .post("sendCodeVerification", {
@@ -54,7 +66,7 @@ export class Account {
   };
 
   #sendVerificationCode = () => {
-    $("#btnVerifyCode").on('click', () => {
+    $("#btnVerifyCode").on("click", () => {
       // ? Validamos que se envie el correo electronico
       let code = $("#code").val();
 
@@ -66,13 +78,187 @@ export class Account {
         });
       }
 
+      if (code.length < 6) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "El código debe tener mínimo 6 caracteres.",
+        });
+      }
+
+      showAlert({ message: "Verificando código." }, "loading");
+
       this.apiAccount
         .post("validateVerificationCode", {
           code: code,
         })
         .then((response) => {
           if (response.status) {
+            this.#verificationCode = code;
             this.#cardAccount.html(this.#viewCardTheree());
+            this.#setAccount();
+          }
+          showAlert({
+            icon: response.type,
+            title: response.title,
+            message: response.message,
+          });
+        });
+    });
+  };
+
+  #setAccount = () => {
+    $("#btnCreateAccount").on("click", () => {
+      let names = $("#names").val();
+      let lastname = $("#lastname").val();
+      let email = $("#email").val();
+      let date_of_birth = $("#date_of_birth").val();
+      let country = $("#country").val();
+      let telephone_prefix = $("#telephone_prefix").val();
+      let phone_number = $("#phone_number").val();
+      let password = $("#password").val();
+      let confirm_password = $("#confirm_password").val();
+
+      if (
+        names === "" ||
+        lastname === "" ||
+        email === "" ||
+        date_of_birth === "" ||
+        country === "" ||
+        telephone_prefix === "" ||
+        phone_number === "" ||
+        password === "" ||
+        confirm_password === ""
+      ) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Los campos son obligatorios",
+        });
+      }
+
+      // * VALIDACION PARA NOMBRES Y APELLIDOS
+      const formatText = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' .-]{2,80}$/;
+      if (!formatText.test(names)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message:
+            "Nombres inválidos (Solo letras y espacios, mínimo 2 caracteres y máximo 80).",
+        });
+      }
+
+      if (!formatText.test(lastname)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message:
+            "Apellidos inválidos (Solo letras y espacios, mínimo 2 caracteres y máximo 80).",
+        });
+      }
+
+      // * VALIDACION PARA EMAIL
+      const formatEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,150}$/;
+      if (!formatEmail.test(email)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Correo electrónico inválido.",
+        });
+      }
+
+      // * VALIDACION PARA FECHA DE NACIMIENTO. PD. ESTO SI LO HICE CON CHATGPT, NO SABIA JAJJAA
+      const dob = new Date(date_of_birth);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (Number.isNaN(dob.getTime())) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Fecha de nacimiento inválida.",
+        });
+      }
+
+      let age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+
+      if (age < 18) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Debes tener al menos 18 años para registrarte.",
+        });
+      }
+
+      //VALIDACION PARA PAIS
+      if (!formatText.test(country)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message:
+            "País inválido (Solo letras y espacios, mínimo 2 caracteres).",
+        });
+      }
+
+      //VALIDACION PARA PREFIJO TELEFONICO
+      const formatPrefiij = /^\+?[1-9]\d{3}$/;
+      if (!formatPrefiij.test(telephone_prefix)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Prefijo telefónico inválido (Ejemplo: +51).",
+        });
+      }
+
+      //VALIDACION PARA NUMERO DE TELEFONO
+      const phoneRegex = /^\d{9}$/;
+      if (!phoneRegex.test(phone_number)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Número de teléfono inválido, debe tener 9 dígitos.",
+        });
+      }
+
+      //VALIDACION PARA CONTRASEÑA
+      if (password.length < 6) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "La contraseña debe tener mínimo 6 caracteres.",
+        });
+      }
+
+      if (password !== confirm_password) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message: "Las contraseñas no coinciden",
+        });
+      }
+
+      showAlert({ message: "Creando cuenta, espere." }, "loading");
+
+      this.apiAccount
+        .post("setAccount", {
+          code: this.#verificationCode,
+          names: names,
+          lastname: lastname,
+          email: email,
+          date_of_birth: date_of_birth,
+          country: country,
+          telephone_prefix: telephone_prefix,
+          phone_number: phone_number,
+          password: password,
+          confirm_password: confirm_password,
+        })
+        .then((response) => {
+          if (response.status) {
+            setTimeout(() => {
+              window.location.href = "./login";
+            }, 3000);
           }
           showAlert({
             icon: response.type,
@@ -336,7 +522,7 @@ export class Account {
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-person-fill"></i>
                                         </span>
-                                        <input type="input" class="form-control" placeholder="Escriba sus nombres">
+                                        <input id="names" type="input" class="form-control" placeholder="Escriba sus nombres">
                                     </div>
                                 </div>
                             </div>
@@ -349,7 +535,7 @@ export class Account {
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-person-fill"></i>
                                         </span>
-                                        <input type="input" class="form-control" placeholder="Escriba sus apellidos">
+                                        <input id="lastname" type="input" class="form-control" placeholder="Escriba sus apellidos">
                                     </div>
                                 </div>
 
@@ -368,7 +554,7 @@ export class Account {
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-envelope-fill"></i>
                                         </span>
-                                        <input type="email" class="form-control" placeholder="Escriba su correo electrónico">
+                                        <input id="email" type="email" class="form-control" placeholder="Escriba su correo electrónico">
                                     </div>
                                 </div>
                             </div>
@@ -385,7 +571,7 @@ export class Account {
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-calendar-event-fill"></i>
                                         </span>
-                                        <input type="date" class="form-control" placeholder="Escriba sus apellidos">
+                                        <input id="date_of_birth" type="date" class="form-control" placeholder="Escriba sus apellidos">
                                     </div>
                                 </div>
 
@@ -399,7 +585,7 @@ export class Account {
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-globe-americas-fill"></i>
                                         </span>
-                                        <input type="input" class="form-control" placeholder="Escriba su país">
+                                        <input id="country" type="input" class="form-control" placeholder="Escriba su país">
                                     </div>
                                 </div>
 
@@ -416,7 +602,7 @@ export class Account {
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-telephone-fill"></i>
                                         </span>
-                                        <input type="input" class="form-control" placeholder="+51">
+                                        <input id="telephone_prefix" type="input" class="form-control" placeholder="+51">
                                     </div>
                                 </div>
 
@@ -430,7 +616,7 @@ export class Account {
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-phone-fill"></i>
                                         </span>
-                                        <input type="number" class="form-control" placeholder="987654321">
+                                        <input id="phone_number" type="number" class="form-control" placeholder="987654321">
                                     </div>
                                 </div>
 
@@ -443,13 +629,13 @@ export class Account {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Usuario: </label>
+                                    <label class="form-label fw-bold">Contraseña: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
-                                            <i class="bi bi-person-badge-fill"></i>
+                                            <i class="bi bi-file-lock2-fill"></i>
                                         </span>
-                                        <input type="input" class="form-control" placeholder="Ingrese su usuario">
+                                        <input id="password" type="password" class="form-control" placeholder="Ingrese su contraseña">
                                     </div>
                                 </div>
 
@@ -457,13 +643,13 @@ export class Account {
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Contraseña: </label>
+                                    <label class="form-label fw-bold">Repita la Contraseña: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-file-lock2-fill"></i>
                                         </span>
-                                        <input type="password" class="form-control" placeholder="Ingrese su contraseña">
+                                        <input id="confirm_password" type="password" class="form-control" placeholder="Ingrese su contraseña">
                                     </div>
                                 </div>
 
