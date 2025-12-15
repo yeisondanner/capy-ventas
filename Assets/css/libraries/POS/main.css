@@ -103,12 +103,13 @@
     Roboto, "Helvetica Neue", Arial, sans-serif;
   --bs-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
+    --bs-font-inter:"Inter", system-ui, -apple-system, sans-serif;
   --bs-gradient: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.15),
     rgba(255, 255, 255, 0)
   );
-  --bs-body-font-family: var(--bs-font-sans-serif);
+  --bs-body-font-family: var(--bs-font-inter);
   --bs-body-font-size: 0.875rem;
   --bs-body-font-weight: 400;
   --bs-body-line-height: 1.5;
@@ -2457,8 +2458,8 @@ progress {
 .form-control {
   display: block;
   width: 100%;
-  padding: 0.375rem 0.75rem;
-  font-size: 0.875rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.95rem;
   font-weight: 400;
   line-height: 1.5;
   color: var(--bs-body-color);
@@ -2468,7 +2469,7 @@ progress {
   background-color: var(--bs-body-bg);
   background-clip: padding-box;
   border: 2px solid var(--bs-border-color);
-  border-radius: 4px;
+  border-radius: 1rem;
   -webkit-transition: border-color 0.15s ease-in-out,
     -webkit-box-shadow 0.15s ease-in-out;
   transition: border-color 0.15s ease-in-out,
@@ -2652,8 +2653,8 @@ textarea.form-control-lg {
   --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
   display: block;
   width: 100%;
-  padding: 0.375rem 2.25rem 0.375rem 0.75rem;
-  font-size: 0.875rem;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.95rem;
   font-weight: 400;
   line-height: 1.5;
   color: var(--bs-body-color);
@@ -2667,7 +2668,7 @@ textarea.form-control-lg {
   background-position: right 0.75rem center;
   background-size: 16px 12px;
   border: 2px solid var(--bs-border-color);
-  border-radius: 4px;
+  border-radius: 1rem;
   -webkit-transition: border-color 0.15s ease-in-out,
     -webkit-box-shadow 0.15s ease-in-out;
   transition: border-color 0.15s ease-in-out,
@@ -3164,8 +3165,9 @@ textarea.form-control-lg {
   text-align: center;
   white-space: nowrap;
   background-color: var(--bs-tertiary-bg);
-  border: 2px solid var(--bs-border-color);
-  border-radius: 4px;
+  border: 1px solid var(--bs-border-color);
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
 }
 
 .input-group-lg > .form-control,
@@ -3450,8 +3452,8 @@ textarea.form-control.is-invalid {
 }
 
 .btn {
-  --bs-btn-padding-x: 0.75rem;
-  --bs-btn-padding-y: 0.375rem;
+  --bs-btn-padding-x: 0.725rem;
+  --bs-btn-padding-y: 0.625rem;
   --bs-btn-font-family: ;
   --bs-btn-font-size: 0.875rem;
   --bs-btn-font-weight: 700;
@@ -3460,7 +3462,7 @@ textarea.form-control.is-invalid {
   --bs-btn-bg: transparent;
   --bs-btn-border-width: 2px;
   --bs-btn-border-color: transparent;
-  --bs-btn-border-radius: 3px;
+  --bs-btn-border-radius: 1.25rem; /*ajusta el radio de los botones*/
   --bs-btn-hover-border-color: transparent;
   --bs-btn-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15),
     0 1px 1px rgba(0, 0, 0, 0.075);

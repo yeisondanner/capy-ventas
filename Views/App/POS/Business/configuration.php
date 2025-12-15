@@ -51,8 +51,8 @@ $validationDelete = (validate_permission_app(8, "d", false)) ? (int) validate_pe
                                     <label class="form-check-label fw-semibold text-dark d-block" for="update_openBoxSwitch"><i class="bi bi-cash-coin me-1"></i> Apertura de Caja</label>
                                     <small class="text-muted" style="font-size: 0.8rem;">Requerir inicio de turno</small>
                                 </div>
-                                <div class="form-check form-switch m-0">
-                                    <input class="form-check-input" type="checkbox" id="update_openBoxSwitch" name="update_openBoxSwitch" <?= $dataBusines['openBox'] == 'Si' ? 'checked'  : ''; ?>>
+                                <div class="form-check form-switch m-0 ">
+                                    <input class="form-check-input custom-switch" type="checkbox" id="update_openBoxSwitch" name="update_openBoxSwitch" <?= $dataBusines['openBox'] == 'Si' ? 'checked'  : ''; ?>>
                                 </div>
                             </div>
 

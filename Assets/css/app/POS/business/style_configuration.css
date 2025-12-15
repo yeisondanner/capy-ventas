@@ -1,16 +1,3 @@
-:root {
-  --bs-body-bg: #f3f4f6;
-  --card-border-color: #e5e7eb;
-  --input-bg: #f9fafb;
-  --input-border: #d1d5db;
-}
-
-body {
-  background-color: var(--bs-body-bg);
-  font-family: "Inter", system-ui, -apple-system, sans-serif;
-  color: #1f2937;
-}
-
 /* Top Bar Simulation (POS Header) */
 .pos-header {
   background: #ffffff;
@@ -54,49 +41,6 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-/* Form Controls */
-.form-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
-  margin-bottom: 0.5rem;
-}
-
-.form-control,
-.form-select {
-  background-color: var(--input-bg);
-  border: 1px solid var(--input-border);
-  border-radius: 0.5rem;
-  padding: 0.625rem 0.875rem;
-  font-size: 0.95rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-}
-
-/* Ajuste para que los bordes se vean bien con input-group */
-.input-group .input-group-text {
-  border-top-left-radius: 0.5rem;
-  border-bottom-left-radius: 0.5rem;
-}
-.input-group .form-control,
-.input-group .form-select {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.form-control:focus,
-.form-select:focus {
-  background-color: #fff;
-  border-color: var(--bs-primary);
-  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
-  z-index: 3;
-}
-
-.input-group-text {
-  background-color: #f3f4f6;
-  border: 1px solid var(--input-border);
-  color: #6b7280;
 }
 
 /* Section dividers */
@@ -147,18 +91,6 @@ body {
 }
 
 /* Buttons */
-.btn-primary {
-  background-color: var(--bs-primary);
-  border-color: var(--bs-primary);
-  padding: 0.625rem 1.25rem;
-  font-weight: 500;
-}
-
-.btn-primary:hover {
-  background-color: #4338ca;
-  border-color: #4338ca;
-}
-
 .btn-secondary-pos {
   background-color: white;
   border: 1px solid #d1d5db;
@@ -173,12 +105,12 @@ body {
 }
 
 /* Switch custom styling */
-.form-switch .form-check-input {
+.form-switch .custom-switch {
   width: 3rem;
   height: 1.5rem;
   cursor: pointer;
 }
-.form-switch .form-check-label {
+.form-switch .custom-switch {
   margin-left: 0.5rem;
   line-height: 1.5rem;
 }
@@ -189,8 +121,4 @@ body {
   border: 1px solid #fed7d7;
   border-radius: 0.5rem;
   padding: 1rem;
-}
-.btn-outline-danger:hover {
-  background-color: #dc3545;
-  color: white;
 }
