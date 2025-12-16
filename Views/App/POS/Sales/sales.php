@@ -293,11 +293,11 @@
                 </div>
 
                 <hr class="my-2">
-                <p class="small text-muted mb-2">Opciones de comprobante / voucher</p>
+                <!--<p class="small text-muted mb-2">Opciones de comprobante / voucher</p>-->
 
                 <!-- Acciones posibles luego de finalizar la venta -->
                 <div class="d-flex flex-wrap gap-2 justify-content-center">
-                    <button type="button" class="btn btn-outline-secondary btn-sm">
+                    <!--<button type="button" class="btn btn-outline-secondary btn-sm">
                         <i class="bi bi-printer me-1"></i> Imprimir
                     </button>
                     <button type="button" class="btn btn-outline-secondary btn-sm">
@@ -308,7 +308,7 @@
                     </button>
                     <button type="button" class="btn btn-outline-primary btn-sm">
                         <i class="bi bi-envelope me-1"></i> Correo
-                    </button>
+                    </button>-->
                 </div>
             </div>
             <div class="modal-footer">
