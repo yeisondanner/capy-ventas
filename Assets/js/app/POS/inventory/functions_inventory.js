@@ -1359,6 +1359,25 @@
       }
     });
   }
+  /**
+   * Carga la imagen seleccionada en el input de tipo file
+   * @returns void
+   */
+  function loadPreviewImage() {
+    if (!document.getElementById("logoInput")) return;
+    const logoInput = document.getElementById("logoInput");
+    // Preview de imagen
+    logoInput.addEventListener("change", function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("logoPreview").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
 
   window.addEventListener("DOMContentLoaded", async () => {
     initModals();
@@ -1369,7 +1388,7 @@
     handleUpdate();
     handleCreateCategory();
     registerCategoryActions();
-
+    loadPreviewImage();
     const openButton = document.getElementById("btnOpenProductModal");
     if (openButton) {
       openButton.addEventListener("click", openCreateModal);
