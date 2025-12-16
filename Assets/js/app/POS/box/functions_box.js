@@ -5,6 +5,7 @@ export class Box {
   #arrayMovements = [];
   #arrayCountEfectivo = new Map();
   #countEfectivoTotal = 0;
+  #sisEfectivoTotal = 0;
 
   // TODO: Seleccionamos los botones
   #btnOpenBox = $("#btnOpenBox");
@@ -43,6 +44,7 @@ export class Box {
   );
   #quick_access_arqueo_message = $("#quick_access_arqueo_message");
   #quick_access_arqueo_diference = $("#quick_access_arqueo_diference");
+  #quick_access_desgloce_efectivo = $("#quick_access_desgloce_efectivo");
 
   constructor(base_url) {
     this.apiBox = new ApiBox(base_url);
@@ -356,6 +358,9 @@ export class Box {
       // ? 3. Procesar y Renderizar las denominaciones (Billetes/Monedas)
       this.#procesarDenominaciones(response.data);
 
+      // ? 4. Limpiamos los datos del formulario
+      this.#clearForm();
+
       // ? 4. Mostrar el modal
       this.#modalArqueoBox.modal("show");
     });
@@ -382,54 +387,127 @@ export class Box {
             total_amount: nuevoTotal,
           });
 
-          // ? 2. Calculamos el TOTAL GENERAL CONTADO
-          const totalGeneralContado = this.#calcularTotalContado();
+          // ? 2. Calculamos totales y diferencias
+          this.#sisEfectivoTotal = this.#calcularTotalContado();
+          const diferencia = this.#countEfectivoTotal - this.#sisEfectivoTotal; // ? Sistema - Real
+
+          // ? 3. Actualizamos el display del total contado
           this.#quick_access_arqueo_count_efectivo.html(
-            this.#convertirASoles(totalGeneralContado)
+            this.#convertirASoles(this.#sisEfectivoTotal)
           );
 
-          // ? calculamos el cuadre general
-          let cuadre_caja_total =
-            this.#countEfectivoTotal - totalGeneralContado;
+          // ? 4. Definimos el estado de la UI (Tema, Icono, Mensaje)
+          let ui = {
+            theme: "body",
+            icon: "",
+            msg: "",
+            showMsg: false,
+            amount: 0,
+          };
 
-          // ? mostramos los mensajes
-          if (totalGeneralContado == 0) {
-            this.#quick_access_arqueo_message.html("");
-            this.#quick_access_arqueo_diference.html(this.#convertirASoles(0));
-          } else if (cuadre_caja_total == 0) {
-            this.#quick_access_arqueo_message
-              .html(`<div class="alert alert-success d-flex align-items-center gap-2 p-2 rounded-4 mb-0" role="alert">
-                                    <i class="bi bi-exclamation-triangle-fill"></i>
-                                    <strong>Cuadre perfecto</strong>
-                                </div>`);
-            this.#quick_access_arqueo_diference.html(
-              this.#convertirASoles(cuadre_caja_total)
-            );
-          } else if (cuadre_caja_total < 0) {
-            this.#quick_access_arqueo_message
-              .html(`<div class="alert alert-primary d-flex align-items-center gap-2 p-2 rounded-4 mb-0" role="alert">
-                                    <i class="bi bi-exclamation-triangle-fill"></i>
-                                    <strong>Monto sobrante a favor</strong>
-                                </div>`);
-            this.#quick_access_arqueo_diference.html(
-              this.#convertirASoles(cuadre_caja_total8 * -1)
-            );
+          if (this.#sisEfectivoTotal === 0) {
+            // ? Estado: Inicio / Vacío
+            ui.theme = "body";
+            ui.amount = 0;
+          } else if (diferencia === 0) {
+            // ? Estado: Cuadre Perfecto
+            ui = {
+              theme: "success",
+              icon: "bi-check2-circle",
+              msg: "Cuadre perfecto",
+              showMsg: true,
+              amount: 0,
+            };
+          } else if (diferencia < 0) {
+            // ? Estado: Sobrante (Azul)
+            ui = {
+              theme: "primary",
+              icon: "bi-plus-circle-dotted",
+              msg: "Monto sobrante a favor",
+              showMsg: true,
+              amount: Math.abs(diferencia),
+            };
           } else {
-            this.#quick_access_arqueo_message
-              .html(`<div class="alert alert-danger d-flex align-items-center gap-2 p-2 rounded-4 mb-0" role="alert">
-                                    <i class="bi bi-exclamation-triangle-fill"></i>
-                                    <strong>Descuadre detectado</strong>
-                                </div>`);
-            this.#quick_access_arqueo_diference.html(
-              this.#convertirASoles(cuadre_caja_total)
-            );
+            // ? Estado: Faltante (Rojo)
+            ui = {
+              theme: "danger",
+              icon: "bi-exclamation-triangle-fill",
+              msg: "Descuadre detectado",
+              showMsg: true,
+              amount: diferencia,
+            };
           }
 
-          // Puedes descomentar esto para verificar en consola
-          // console.log("Map actualizado:", this.#arrayCountEfectivo);
+          // ? 5. Renderizamos Mensaje (Alerta)
+          const alertHtml = ui.showMsg
+            ? `<div class="alert alert-${ui.theme} d-flex align-items-center gap-2 p-2 rounded-4 mb-0" role="alert">
+            <i class="bi ${ui.icon}"></i>
+            <strong>${ui.msg}</strong>
+          </div>`
+            : "";
+          this.#quick_access_arqueo_message.html(alertHtml);
+
+          // ? 6. Renderizamos Diferencia (Card)
+          // ? Nota: Usamos las variables ui.theme para cambiar los colores dinámicamente
+          const diffHtml = `
+            <p class="mb-0 fw-bold small text-muted">Diferencia:</p>
+            <div class="card rounded-4 border-${ui.theme} bg-${
+            ui.theme
+          }-subtle">
+              <h5 class="mb-0 px-3 py-1 text-${ui.theme} fw-bold">
+                ${this.#convertirASoles(ui.amount)}
+              </h5>
+            </div>
+          `;
+          this.#quick_access_arqueo_diference.html(diffHtml);
+
+          // ? 7. Mostramos los datos de billetes y monedas
+          const resultados = this.#getDesgloseEfectivo();
+          let html_desgloce = "";
+          Object.entries(resultados).forEach(([tipo, datos]) => {
+            html_desgloce += `<div class="text-center w-50 border-end">
+                                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.8rem;">${tipo}</small>
+                                        <div class="fw-bold text-dark">${this.#convertirASoles(
+                                          datos.total
+                                        )}</div>
+                                    </div>`;
+          });
+          this.#quick_access_desgloce_efectivo.html(html_desgloce);
         }
       }
     );
+  };
+
+  // TODO: Funcion para limpiar datos
+  #clearForm = () => {
+    // ? 1. Cargamos por default el mensaje si existe diferencia
+    this.#quick_access_arqueo_diference
+      .html(`<p class="mb-0 fw-bold small text-muted">Diferencia:</p>
+            <div class="card rounded-4 border-body bg-body-subtle">
+                <h5 id="" class="mb-0 px-3 py-1 text-body fw-bold">${this.#convertirASoles(
+                  0
+                )}</h5>
+            </div>`);
+
+    // ? 2. Mensaje por default
+    this.#quick_access_arqueo_message.html("");
+
+    // ? 3. Efectivo total del sistema
+    this.#sisEfectivoTotal = 0;
+
+    // ? 4. Desplazamos el total de display contado
+    this.#quick_access_arqueo_count_efectivo.html(
+      this.#convertirASoles(this.#sisEfectivoTotal)
+    );
+
+    // ? 5. Resetamos el map del dinero
+    this.#arrayCountEfectivo.forEach((data) => {
+      data.cantidad = 0;
+      data.total_amount = 0;
+    });
+
+    // ? 6. Limpiamos el desgloce del efectivo
+    this.#quick_access_desgloce_efectivo.html("");
   };
 
   // TODO: Calcular el total de efectivo contado en tiempo real
@@ -503,7 +581,9 @@ export class Box {
     denominaciones.forEach((el) => {
       // ? Lógica original: Guardar en el Map de conteo
       this.#arrayCountEfectivo.set(el.idDenomination, {
+        type: el.type,
         value_currency: parseFloat(el.value),
+        cantidad: 0,
         total_amount: 0,
       });
 
@@ -559,6 +639,31 @@ export class Box {
 
     this.#quick_access_arqueo_currency_denominations.html(htmlFinal);
   }
+
+  // TODO: Obtener totales separados por Billetes y Monedas
+  #getDesgloseEfectivo = () => {
+    let desglose = {
+      billetes: { total: 0, cantidad_fisica: 0 },
+      monedas: { total: 0, cantidad_fisica: 0 },
+      otros: { total: 0, cantidad_fisica: 0 },
+    };
+
+    this.#arrayCountEfectivo.forEach((data) => {
+      // ? Sumamos según el tipo guardado
+      if (data.type === "Billete") {
+        desglose.billetes.total += data.total_amount;
+        desglose.billetes.cantidad_fisica += data.cantidad;
+      } else if (data.type === "Moneda") {
+        desglose.monedas.total += data.total_amount;
+        desglose.monedas.cantidad_fisica += data.cantidad;
+      } else {
+        desglose.otros.total += data.total_amount;
+        desglose.otros.cantidad_fisica += data.cantidad;
+      }
+    });
+
+    return desglose;
+  };
 
   // TODO: Funcion para convertira a moneda un numero
   #convertirASoles = (valor) => {

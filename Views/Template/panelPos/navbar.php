@@ -362,11 +362,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             <div class="d-flex flex-column px-3 pb-3">
                                 <h1 id="quick_access_arqueo_count_efectivo" class="text-center w-100 mb-2 fw-bold text-primary"><?= getCurrency(); ?>0.00</h1>
                                 <div class="d-flex flex-wrap align-items-center w-100 gap-2">
-                                    <div class="d-flex gap-2 align-items-center p-1">
-                                        <p class="mb-0 fw-bold small text-muted">Diferencia:</p>
-                                        <div class="card rounded-4 border-danger bg-danger-subtle">
-                                            <h5 id="quick_access_arqueo_diference" class="mb-0 px-3 py-1 text-danger fw-bold"><?= getCurrency() ?>0.00</h5>
-                                        </div>
+                                    <div id="quick_access_arqueo_diference" class="d-flex gap-2 align-items-center p-1">
+                                        <!-- Aqui va la diferencia -->
                                     </div>
                                     <div class="flex-fill">
                                         <div class="form-floating">
@@ -388,7 +385,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 <div id="quick_access_arqueo_currency_denominations">
                                     <!-- Denominaciones de monedas -->
                                 </div>
-                                <div class="d-flex justify-content-between pt-3 border-top bg-light rounded-3 p-2">
+                                <div id="quick_access_desgloce_efectivo" class="d-flex justify-content-between pt-3 border bg-light rounded-4 p-2">
                                     <div class="text-center w-50 border-end">
                                         <small class="text-muted text-uppercase fw-bold" style="font-size: 0.8rem;">Billetes</small>
                                         <div class="fw-bold text-dark"><?= getCurrency() ?>1,280.00</div>
