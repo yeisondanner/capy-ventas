@@ -3858,7 +3858,7 @@ fieldset:disabled .btn {
   --bs-btn-padding-y: 0.5rem;
   --bs-btn-padding-x: 1rem;
   --bs-btn-font-size: 1.09375rem;
-  --bs-btn-border-radius: 3px;
+  --bs-btn-border-radius: 1.25rem;
 }
 
 .btn-sm,
@@ -3866,7 +3866,7 @@ fieldset:disabled .btn {
   --bs-btn-padding-y: 0.25rem;
   --bs-btn-padding-x: 0.5rem;
   --bs-btn-font-size: 0.765625rem;
-  --bs-btn-border-radius: 3px;
+  --bs-btn-border-radius: 1.25rem;
 }
 
 .fade {
