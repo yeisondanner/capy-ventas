@@ -139,6 +139,20 @@ class BoxModel extends Mysql
         return $this->select_all($sql, []);
     }
 
+    public function getCurrencyDenominations(string $status = "Activo")
+    {
+        $this->status = $status;
+        $sql = <<<SQL
+            SELECT
+                *
+            FROM currency_denominations
+            WHERE `status` = ?
+            ORDER BY type ASC, value DESC;
+        SQL;
+
+        return $this->select_all($sql, [$this->status]);
+    }
+
     // ? Funciones insert
     public function insertBoxSessions(int $boxId, int $userId, float $initialAmount)
     {

@@ -46,7 +46,6 @@
   background-color: var(--input-bg);
   border: 1px solid var(--input-border);
   color: #6b7280;
-  padding-left: 1rem;
 }
 
 .item-box .icon-action {

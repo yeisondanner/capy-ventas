@@ -340,22 +340,15 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 <div class="d-flex justify-content-between align-items-end mb-3">
                                     <div>
                                         <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem;">Efectivo Total</small>
-                                        <h3 class="fw-bold text-dark mb-0"><?= getCurrency(); ?>950.00</h3>
+                                        <h3 id="quick_access_arqueo_efectivo_total" class="fw-bold text-dark mb-0"><?= getCurrency(); ?>950.00</h3>
                                     </div>
                                     <div class="text-end">
                                         <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem;">Ventas Totales</small>
-                                        <h6 class="mb-0 text-muted"><?= getCurrency(); ?>12,540.00</h6>
+                                        <h6 id="quick_access_arqueo_total_general" class="mb-0 text-muted"><?= getCurrency(); ?>12,540.00</h6>
                                     </div>
                                 </div>
-                                <div class="d-flex gap-2">
-                                    <div class="flex-fill p-2 rounded-4 bg-body-tertiary border text-center">
-                                        <small class="d-block text-muted fw-bold mb-1" style="font-size: 0.7rem;">TARJETA</small>
-                                        <span class="fw-bold text-dark"><?= getCurrency() ?>200.00</span>
-                                    </div>
-                                    <div class="flex-fill p-2 rounded-4 bg-body-tertiary border text-center">
-                                        <small class="d-block text-muted fw-bold mb-1" style="font-size: 0.7rem;">DIGITAL (QR)</small>
-                                        <span class="fw-bold text-dark"><?= getCurrency() ?>120.00</span>
-                                    </div>
+                                <div class="d-flex gap-2" id="quick_access_arqueo_total_payment_method">
+                                    <!-- Aqui los demas card de las targetas -->
                                 </div>
                             </div>
                         </div>
@@ -369,12 +362,12 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             </div>
                             <h6 class="px-3 text-muted text-center mt-2 mb-0 small text-uppercase fw-bold">Total contado</h6>
                             <div class="d-flex flex-column px-3 pb-3">
-                                <h1 class="text-center w-100 mb-2 fw-bold text-primary"><?= getCurrency(); ?>950.00</h1>
+                                <h1 class="text-center w-100 mb-2 fw-bold text-primary"><?= getCurrency(); ?>0.00</h1>
                                 <div class="d-flex flex-wrap align-items-center w-100 gap-2">
                                     <div class="d-flex gap-2 align-items-center p-1">
                                         <p class="mb-0 fw-bold small text-muted">Diferencia:</p>
                                         <div class="card rounded-4 border-danger bg-danger-subtle">
-                                            <h5 class="mb-0 px-3 py-1 text-danger fw-bold"><?= getCurrency() ?>22.80</h5>
+                                            <h5 class="mb-0 px-3 py-1 text-danger fw-bold"><?= getCurrency() ?>0.00</h5>
                                         </div>
                                     </div>
                                     <div class="flex-fill">
@@ -394,39 +387,41 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 <button class="btn btn-sm btn-light border rounded-pill px-3">Limpiar</button>
                             </div>
                             <div class="card-body p-4">
-                                <div class="d-flex align-items-center mb-3">
-                                    <h6 class="fw-bold text-success mb-0 me-3" style="min-width: 80px;"><i class="bi bi-cash"></i> BILLETES</h6>
-                                    <div class="flex-grow-1 border-bottom"></div>
-                                </div>
-                                <div class="row g-2 mb-4">
-                                    <?php
-                                    $billetes = [200, 100, 50, 20, 10];
-                                    foreach ($billetes as $val): ?>
-                                        <div class="col-6 item-box">
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-success-subtle text-success fw-bold border-end-0" style="width: 65px;"><?= getCurrency() . $val ?></span>
-                                                <input type="number" class="form-control border-start-0 bg-light" placeholder="0" min="0">
+                                <div id="quick_access_arqueo_currency_denominations">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <h6 class="fw-bold text-success mb-0 me-3" style="min-width: 80px;"><i class="bi bi-cash"></i> BILLETES</h6>
+                                        <div class="flex-grow-1 border-bottom"></div>
+                                    </div>
+                                    <div class="row g-2 mb-4">
+                                        <?php
+                                        $billetes = [200, 100, 50, 20, 10];
+                                        foreach ($billetes as $val): ?>
+                                            <div class="col-6 item-box">
+                                                <div class="input-group">
+                                                    <span class="input-group-text bg-success-subtle text-success fw-bold border-end-0" style="width: 65px;"><?= getCurrency() . $val ?></span>
+                                                    <input type="number" class="form-control border-start-0 bg-light" placeholder="0" min="0">
+                                                </div>
                                             </div>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                                <div class="d-flex align-items-center mb-3">
-                                    <h6 class="fw-bold text-warning mb-0 me-3" style="min-width: 80px;"><i class="bi bi-coin"></i> MONEDAS</h6>
-                                    <div class="flex-grow-1 border-bottom"></div>
-                                </div>
-                                <div class="row g-2">
-                                    <?php
-                                    $monedas = [5, 2, 1, 0.50, 0.20, 0.10];
-                                    foreach ($monedas as $val): ?>
-                                        <div class="col-4 item-box">
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text bg-warning-subtle text-warning fw-bold border-end-0"><?= $val < 1 ? $val : getCurrency() . $val ?></span>
-                                                <input type="number" class="form-control border-start-0 bg-light" placeholder="0">
+                                        <?php endforeach; ?>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <h6 class="fw-bold text-warning mb-0 me-3" style="min-width: 80px;"><i class="bi bi-coin"></i> MONEDAS</h6>
+                                        <div class="flex-grow-1 border-bottom"></div>
+                                    </div>
+                                    <div class="row g-2 mb-4">
+                                        <?php
+                                        $monedas = [5, 2, 1, 0.50, 0.20, 0.10];
+                                        foreach ($monedas as $val): ?>
+                                            <div class="col-4 item-box">
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-text bg-warning-subtle text-warning fw-bold border-end-0"><?= $val < 1 ? $val : getCurrency() . $val ?></span>
+                                                    <input type="number" class="form-control border-start-0 bg-light" placeholder="0">
+                                                </div>
                                             </div>
-                                        </div>
-                                    <?php endforeach; ?>
+                                        <?php endforeach; ?>
+                                    </div>
                                 </div>
-                                <div class="d-flex justify-content-between mt-4 pt-3 border-top bg-light rounded-3 p-2">
+                                <div class="d-flex justify-content-between pt-3 border-top bg-light rounded-3 p-2">
                                     <div class="text-center w-50 border-end">
                                         <small class="text-muted text-uppercase fw-bold" style="font-size: 0.8rem;">Billetes</small>
                                         <div class="fw-bold text-dark"><?= getCurrency() ?>1,280.00</div>

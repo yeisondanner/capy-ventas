@@ -199,16 +199,18 @@ class Box extends Controllers
         foreach ($boxMovements as $key => $value) {
             $amount = (float) $value["amount"];
 
+            // ? Calculamos los totales por metodo de pago
+            if (!isset($arrayPaymentMethod[$value["payment_method"]])) {
+                $arrayPaymentMethod[$value["payment_method"]] = 0;
+            }
+
             // ? Calculamos el total general de ingreso incluyendo bancos
             if ($value["type_movement"] !== "Egreso") {
                 $totalGeneral += $amount;
-
-                // ? Calculamos los totales por metodo de pago
-                if (isset($arrayPaymentMethod[$value["payment_method"]])) {
-                    $arrayPaymentMethod[$value["payment_method"]] += $amount;
-                } else {
-                    $arrayPaymentMethod[$value["payment_method"]] = $amount;
-                }
+                $arrayPaymentMethod[$value["payment_method"]] += $amount;
+            } else {
+                $totalGeneral -= $amount;
+                $arrayPaymentMethod[$value["payment_method"]] -= $amount;
             }
         }
 
@@ -224,6 +226,25 @@ class Box extends Controllers
         toJson($arrayResponse);
     }
 
+    // TODO: Funcion que devuelve los las denominaciones de la moneda
+    public function getCurrencyDenominations()
+    {
+        $currencyDenominations = $this->model->getCurrencyDenominations();
+        if (!$currencyDenominations) {
+            $this->responseError('Ninguna moneda preconfigurada, solicita a tu Capy Adminstrador que configure las denominaciones de las monedas.');
+        }
+
+        toJson([
+            'status'  => true,
+            'title'   => 'Denominaciones de monedas',
+            'message' => 'Lista de denominaciones de monedas de tu negocio.',
+            'type'    => 'success',
+            'icon'    => 'success',
+            'data' => $currencyDenominations
+        ]);
+    }
+
+    // TODO: Consultamos el ID de negocio
     private function getBusinessId(): int
     {
         if (!isset($_SESSION[$this->nameVarBusiness]['idBusiness'])) {
@@ -233,6 +254,7 @@ class Box extends Controllers
         return (int) $_SESSION[$this->nameVarBusiness]['idBusiness'];
     }
 
+    // TODO: Consultamos el ID del usuario
     private function getUserId(): int
     {
         if (!isset($_SESSION[$this->nameVarLoginInfo]['idUser'])) {
@@ -242,6 +264,7 @@ class Box extends Controllers
         return (int) $_SESSION[$this->nameVarLoginInfo]['idUser'];
     }
 
+    // TODO: Mensaje de respuesta
     private function responseError(string $message): array
     {
         $data = [

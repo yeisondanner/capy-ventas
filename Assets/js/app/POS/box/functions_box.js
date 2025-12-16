@@ -1,6 +1,10 @@
 import { ApiBox } from "./functions_box_api.js";
 
 export class Box {
+  // TODO: Informacion de movements de BOX
+  #arrayMovements = [];
+  #arrayCountEfectivo = new Map();
+
   // TODO: Seleccionamos los botones
   #btnOpenBox = $("#btnOpenBox");
   #btnUpdateRole = $("#btnUpdateRole");
@@ -23,6 +27,18 @@ export class Box {
   #quick_access_card_payment_method = $("#quick_access_card_payment_method");
   #quick_access_card_list_movements = $("#quick_access_card_list_movements");
   #quick_access_title_list_movements = $("#quick_access_title_list_movements");
+
+  // TODO: Captura de elementos para arqueo
+  #quick_access_arqueo_efectivo_total = $(
+    "#quick_access_arqueo_efectivo_total"
+  );
+  #quick_access_arqueo_total_general = $("#quick_access_arqueo_total_general");
+  #quick_access_arqueo_total_payment_method = $(
+    "#quick_access_arqueo_total_payment_method"
+  );
+  #quick_access_arqueo_currency_denominations = $(
+    "#quick_access_arqueo_currency_denominations"
+  );
 
   constructor(base_url) {
     this.apiBox = new ApiBox(base_url);
@@ -185,17 +201,27 @@ export class Box {
         });
       }
 
+      // ? Cargamos los datos de movimientos de caja
+      this.#arrayMovements = {
+        amount_base: response.amount_base,
+        total_general: response.total_general,
+        movements_limit: response.movements_limit,
+        payment_method: response.payment_method,
+        total_payment_method: response.total_payment_method,
+      };
+
       // ? Mostramos los datos de gestion
       this.#quick_access_total_general.html(
-        this.#convertirASoles(response.total_general)
+        this.#convertirASoles(this.#arrayMovements.total_general)
       );
       this.#quick_access_base_amount.html(
-        `Base: ${this.#convertirASoles(response.amount_base)}`
+        `Base: ${this.#convertirASoles(this.#arrayMovements.amount_base)}`
       );
       let html = "";
-      response.payment_method.forEach((element) => {
+      this.#arrayMovements.payment_method.forEach((element) => {
         if (
-          typeof response.total_payment_method[element.name] !== "undefined"
+          typeof this.#arrayMovements.total_payment_method[element.name] !==
+          "undefined"
         ) {
           html += `<div class="col-4">
                       <div class="card border rounded-4 h-100 bg-body-tertiary">
@@ -207,7 +233,9 @@ export class Box {
                                 element.name
                               }</div>
                               <h6 class="fw-bold mb-0 text-dark">${this.#convertirASoles(
-                                response.total_payment_method[element.name]
+                                this.#arrayMovements.total_payment_method[
+                                  element.name
+                                ]
                               )}</h6>
                           </div>
                       </div>
@@ -217,11 +245,15 @@ export class Box {
       this.#quick_access_card_payment_method.html(html);
 
       // ? Renombramos el titulo de los ultimos movimientos
-      this.#quick_access_title_list_movements.html(`Últimos <span class="text-primary">${response.movements_limit.length}</span> Movimientos`);
+      this.#quick_access_title_list_movements.html(
+        `Últimos <span class="text-primary">${
+          this.#arrayMovements.movements_limit.length
+        }</span> Movimientos`
+      );
 
       // ? Mostramos los datos de movimientos
       let card_html = "";
-      response.movements_limit.forEach((element) => {
+      this.#arrayMovements.movements_limit.forEach((element) => {
         if (element.type_movement === "Inicio") {
           card_html += `<div class="list-group-item px-3 py-3 border-bottom-0">
                             <div class="d-flex align-items-center gap-3">
@@ -229,44 +261,68 @@ export class Box {
                                     <i class="bi bi-key-fill"></i>
                                 </div>
                                 <div class="flex-fill lh-1">
-                                    <h6 class="mb-1 text-dark fw-bold">${element.concept}</h6>
-                                    <small class="text-muted">${this.#timeAgoModerno(element.movement_date)}</small>
+                                    <h6 class="mb-1 text-dark fw-bold">${
+                                      element.concept
+                                    }</h6>
+                                    <small class="text-muted">${this.#timeAgoModerno(
+                                      element.movement_date
+                                    )}</small>
                                 </div>
                                 <div class="text-end lh-1">
-                                    <span class="d-block text-success fw-bold">+${this.#convertirASoles(element.amount)}</span>
-                                    <small class="text-muted" style="font-size: 0.75rem;">${element.payment_method}</small>
+                                    <span class="d-block text-success fw-bold">+${this.#convertirASoles(
+                                      element.amount
+                                    )}</span>
+                                    <small class="text-muted" style="font-size: 0.75rem;">${
+                                      element.payment_method
+                                    }</small>
                                 </div>
                             </div>
                         </div>`;
-        }else if(element.type_movement === "Ingreso"){
+        } else if (element.type_movement === "Ingreso") {
           card_html += `<div class="list-group-item px-3 py-3 border-bottom-0">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
                                     <i class="bi bi-cart-fill"></i>
                                 </div>
                                 <div class="flex-fill lh-1">
-                                    <h6 class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">${element.concept}</h6>
-                                    <small class="text-muted" style="font-size: 0.75rem;">${this.#timeAgoModerno(element.movement_date)}</small>
+                                    <h6 class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">${
+                                      element.concept
+                                    }</h6>
+                                    <small class="text-muted" style="font-size: 0.75rem;">${this.#timeAgoModerno(
+                                      element.movement_date
+                                    )}</small>
                                 </div>
                                 <div class="text-end lh-1">
-                                    <span class="d-block fw-bold text-success">+${this.#convertirASoles(element.amount)}</span>
-                                    <small class="text-muted" style="font-size: 0.75rem;">${element.payment_method}</small>
+                                    <span class="d-block fw-bold text-success">+${this.#convertirASoles(
+                                      element.amount
+                                    )}</span>
+                                    <small class="text-muted" style="font-size: 0.75rem;">${
+                                      element.payment_method
+                                    }</small>
                                 </div>
                             </div>
                         </div>`;
-        }else{
+        } else {
           card_html += `<div class="list-group-item px-3 py-3 border-bottom-0">
                             <div class="d-flex align-items-center gap-3">
                                 <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
                                     <i class="bi bi-arrow-up-right"></i>
                                 </div>
                                 <div class="flex-fill lh-1">
-                                    <h6 class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">${element.concept}</h6>
-                                    <small class="text-muted" style="font-size: 0.75rem;">${this.#timeAgoModerno(element.movement_date)}</small>
+                                    <h6 class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">${
+                                      element.concept
+                                    }</h6>
+                                    <small class="text-muted" style="font-size: 0.75rem;">${this.#timeAgoModerno(
+                                      element.movement_date
+                                    )}</small>
                                 </div>
                                 <div class="text-end lh-1">
-                                    <span class="d-block fw-bold text-danger">-${this.#convertirASoles(element.amount)}</span>
-                                    <small class="text-muted" style="font-size: 0.75rem;">${element.payment_method}</small>
+                                    <span class="d-block fw-bold text-danger">-${this.#convertirASoles(
+                                      element.amount
+                                    )}</span>
+                                    <small class="text-muted" style="font-size: 0.75rem;">${
+                                      element.payment_method
+                                    }</small>
                                 </div>
                             </div>
                         </div>`;
@@ -274,11 +330,116 @@ export class Box {
       });
       this.#quick_access_card_list_movements.html(card_html);
 
+      this.#arrayMovements = this.#arrayMovements;
+
       this.#modalGestionBox.modal("show");
     });
 
     // * Open Modal Arqueo Box
-    $("#btnOpenModalArqueoBox").on("click", () => {
+    $("#btnOpenModalArqueoBox").on("click", async () => {
+      // ? Guardamos la informacion en una variable
+      const data = this.#arrayMovements;
+
+      // ? Mostramos el total efectivo
+      this.#quick_access_arqueo_efectivo_total.html(
+        this.#convertirASoles(data.total_payment_method.Efectivo)
+      );
+      // ? Mostramos el total general
+      this.#quick_access_arqueo_total_general.html(
+        this.#convertirASoles(data.total_general)
+      );
+      // ? Mostramos los demas datos de la targeta
+      let html = "";
+      data.payment_method.forEach((element) => {
+        if (
+          element.name !== "Efectivo" &&
+          typeof data.total_payment_method[element.name] !== "undefined"
+        ) {
+          html += `<div class="flex-fill p-2 rounded-4 bg-body-tertiary border text-center">
+                      <small class="d-block text-muted fw-bold mb-1" style="font-size: 0.7rem;">${
+                        element.name
+                      }</small>
+                      <span class="fw-bold text-dark">${this.#convertirASoles(
+                        data.total_payment_method[element.name]
+                      )}</span>
+                  </div>`;
+        }
+      });
+      this.#quick_access_arqueo_total_payment_method.html(html);
+
+      // ? Traemos currency denominations para mostrar en la vista
+      const response = await this.apiBox.get("getCurrencyDenominations");
+      if (!response.status) {
+        return showAlert({
+          title: response.title,
+          icon: response.icon,
+          message: response.message,
+        });
+      }
+
+      let card_currency = "";
+      let textCurrency = "text-success";
+      let bgCurrency = "bg-success-subtle";
+      let valTypeCurrency = "hDSDF34";
+      response.data.forEach((element, index) => {
+        this.#arrayCountEfectivo.set(element.idDenomination, {
+          value_currency: parseFloat(element.value),
+          total_amount: 0
+        });
+
+
+
+        if (element.type === "Billete" && element.type !== valTypeCurrency) {
+          valTypeCurrency = element.type;
+          card_currency += `<div class="d-flex align-items-center mb-3">
+                                <h6 class="fw-bold ${textCurrency} mb-0 me-3" style="min-width: 65px;"><i class="bi bi-cash me-2"></i>${element.type}</h6>
+                                <div class="flex-grow-1 border-bottom"></div>
+                            </div>
+                            <div class="row g-2 mb-4">`;
+        }
+
+        if(element.type === "Moneda" && element.type !== valTypeCurrency){
+          valTypeCurrency = element.type;
+          textCurrency = "text-warning";
+          bgCurrency = "bg-warning-subtle";
+          card_currency += `<div class="d-flex align-items-center mb-3">
+                                <h6 class="fw-bold ${textCurrency} mb-0 me-3" style="min-width: 65px;"><i class="bi bi-coin me-2"></i>${element.type}</h6>
+                                <div class="flex-grow-1 border-bottom"></div>
+                            </div>
+                            <div class="row g-2 mb-4">`;
+        }
+
+        if(element.type === "Otros" && element.type !== valTypeCurrency){
+          valTypeCurrency = element.type;
+          textCurrency = "text-body";
+          bgCurrency = "bg-body-subtle";
+          card_currency += `<div class="d-flex align-items-center mb-3">
+                                <h6 class="fw-bold ${textCurrency} mb-0 me-3" style="min-width: 65px;"><i class="bi bi-coin me-2"></i>${element.type}</h6>
+                                <div class="flex-grow-1 border-bottom"></div>
+                            </div>
+                            <div class="row g-2 mb-4">`;
+        }
+
+        card_currency += `<div class="col-6 item-box">
+                              <div class="input-group">
+                                  <span class="input-group-text ${textCurrency} ${bgCurrency} fw-bold border-end-0" style="width: 85px;">${this.#convertirASoles(element.value)}</span>
+                                  <input id="currency_${element.idDenomination}" type="number" class="form-control border-start-0 bg-light" placeholder="0" min="0">
+                              </div>
+                          </div>`;
+        
+        if(typeof response.data[index + 1] === "undefined"){
+          card_currency += `</div>`;
+        }
+      });
+
+      console.log(this.#arrayCountEfectivo);
+      
+
+      console.log(response.data);
+      this.#quick_access_arqueo_currency_denominations.html(card_currency);
+
+      // Recorremos la respuesta 
+
       this.#modalArqueoBox.modal("show");
     });
   };
