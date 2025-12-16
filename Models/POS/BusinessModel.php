@@ -17,6 +17,7 @@ class BusinessModel extends Mysql
     private float $tax;
     private string $openBox;
     private string $logo;
+    private string $extension;
     /**
      * Obtiene todos los negocios asociados a un usuario específico.
      *
@@ -384,4 +385,5 @@ class BusinessModel extends Mysql
         $params = [$this->businessId];
         return $this->update($sql, $params);
     }
+   
 }

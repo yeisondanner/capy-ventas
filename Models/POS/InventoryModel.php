@@ -517,4 +517,27 @@ class InventoryModel extends Mysql
 
         return $result;
     }
+    /**
+     * Metodo que se encarga insertar nueva foto
+     * del producto
+     * @param array $data
+     * @return 
+     */
+    public function insert_product_file(array $data)
+    {
+        $sql = <<<SQL
+            INSERT INTO 
+            `product_file` 
+            (`product_id`, `name`, `extension`, `size`) 
+            VALUES 
+            (?, ?, ?, ?);
+        SQL;
+        $insert = $this->insert($sql, [
+            $data['product_id'],
+            $data['name'],
+            $data['extension'],
+            $data['size']
+        ]);
+        return $insert;
+    }
 }

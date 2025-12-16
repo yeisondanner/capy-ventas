@@ -1254,7 +1254,6 @@
       document.getElementById(
         "update_txtProductMeasurement"
       ).value = `${product.measurement_id}`;
-      document.getElementById("update_txtProductStatus").value = product.status;
       document.getElementById("update_txtProductStock").value = product.stock;
       document.getElementById("update_txtProductPurchasePrice").value =
         product.purchase_price;
@@ -1364,8 +1363,8 @@
    * @returns void
    */
   function loadPreviewImage() {
-    if (!document.getElementById("logoInput")) return;
-    const logoInput = document.getElementById("logoInput");
+    if (!document.getElementById("flInput")) return;
+    const logoInput = document.getElementById("flInput");
     // Preview de imagen
     logoInput.addEventListener("change", function (event) {
       const file = event.target.files[0];

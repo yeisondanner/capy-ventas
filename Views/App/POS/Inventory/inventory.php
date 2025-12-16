@@ -72,30 +72,39 @@
                 <div class="row g-3">
                     <div class="col-md-12 d-flex justify-content-center">
                         <div class="card-body p-4">
-                            <div class="logo-upload-area mb-3" onclick="document.getElementById('logoInput').click()">
+                            <div class="logo-upload-area mb-3" onclick="document.getElementById('flInput').click()">
                                 <img src="<?= base_url(); ?>/Loadfile/iconproducts?f=product.png" id="logoPreview" class="logo-preview-img mb-2" alt="Logo">
                                 <div class="text-primary fw-medium small"><i class="bi bi-cloud-upload me-1"></i> Cambiar Logo</div>
                                 <div class="text-muted small mt-1" style="font-size: 0.75rem;">Click para subir (Max 2MB)</div>
                             </div>
-                            <input type="file" class="d-none" id="logoInput" name="logoInput" accept="image/*">
+                            <input type="file" class="d-none" id="flInput" name="flInput" accept="image/*">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <label for="txtProductName" class="form-label">Nombre <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="txtProductName" name="txtProductName" maxlength="255"
-                            required placeholder="Ej. Café molido premium">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-box-seam"></i></span>
+                            <input type="text" class="form-control" id="txtProductName" name="txtProductName" maxlength="255"
+                                required placeholder="Ej. Café molido premium">
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="txtProductCategory" class="form-label">Categoría <span class="text-danger">*</span></label>
-                        <select class="form-select" id="txtProductCategory" name="txtProductCategory" required>
-                            <option value="" selected disabled>Selecciona una categoría</option>
-                        </select>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-collection"></i> </span>
+                            <select class="form-select" id="txtProductCategory" name="txtProductCategory" required>
+                                <option value="" selected disabled>Selecciona una categoría</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="txtProductSupplier" class="form-label">Proveedor <span class="text-danger">*</span></label>
-                        <select class="form-select" id="txtProductSupplier" name="txtProductSupplier" required>
-                            <option value="" selected disabled>Selecciona un proveedor</option>
-                        </select>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-people"></i></span>
+                            <select class="form-select" id="txtProductSupplier" name="txtProductSupplier" required>
+                                <option value="" selected disabled>Selecciona un proveedor</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="txtProductMeasurement" class="form-label">Unidad de medida <span class="text-danger">*</span></label>
@@ -241,25 +250,18 @@
                             <option value="" selected disabled>Selecciona una unidad</option>
                         </select>
                     </div>
-                    <div class="col-md-6">
-                        <label for="update_txtProductStatus" class="form-label">Estado <span class="text-danger">*</span></label>
-                        <select class="form-select" id="update_txtProductStatus" name="update_txtProductStatus" required>
-                            <option value="Activo">Activo</option>
-                            <option value="Inactivo">Inactivo</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="update_txtProductStock" class="form-label">Stock (opcional)</label>
                         <input type="number" step="0.01" min="0" class="form-control" id="update_txtProductStock"
                             name="update_txtProductStock">
                     </div>
                     <div class="col-md-4">
-                        <label for="update_txtProductPurchasePrice" class="form-label">Precio compra <span class="text-danger">*</span></label>
+                        <label for="update_txtProductPurchasePrice" class="form-label">Precio compra <?= getCurrency() ?> <span class="text-danger">*</span></label>
                         <input type="number" step="0.01" min="0" class="form-control" id="update_txtProductPurchasePrice"
                             name="update_txtProductPurchasePrice" required>
                     </div>
                     <div class="col-md-4">
-                        <label for="update_txtProductSalesPrice" class="form-label">Precio venta <span class="text-danger">*</span></label>
+                        <label for="update_txtProductSalesPrice" class="form-label">Precio venta <?= getCurrency() ?><span class="text-danger">*</span></label>
                         <input type="number" step="0.01" min="0" class="form-control" id="update_txtProductSalesPrice"
                             name="update_txtProductSalesPrice" required>
                     </div>

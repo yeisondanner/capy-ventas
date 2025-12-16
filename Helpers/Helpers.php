@@ -788,12 +788,12 @@ function resizeAndCompressImage($sourcePath, $destinationPath, $maxSizeMB = 2, $
     list($width, $height, $type) = getimagesize($sourcePath);
     // Verifica que GD esté habilitada
     if (!extension_loaded('gd')) {
-        registerLog(
+        /*registerLog(
             "Extensión GD no disponible",
             "No se pudo cargar la extensión GD. Actívela en el servidor.",
             1,
             $_SESSION['login_info']['idUser']
-        );
+        );*/
 
         $data = array(
             "title" => "Error al procesar imagen",

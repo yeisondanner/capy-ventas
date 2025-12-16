@@ -125,7 +125,7 @@ class Inventory extends Controllers
             'txtProductMeasurement',
             'txtProductSupplier',
             'txtProductPurchasePrice',
-            'txtProductSalesPrice',
+            'txtProductSalesPrice'
         ];
         validateFields($requiredFields);
         $businessId    = $this->getBusinessId();
@@ -138,7 +138,7 @@ class Inventory extends Controllers
         $sales         = $this->sanitizeDecimal($_POST['txtProductSalesPrice'] ?? '0', 'precio de venta');
         $status        = 'Activo';
         $description   = strClean($_POST['txtProductDescription'] ?? '');
-
+        $flInput       = $_FILES['flInput'];
         if ($name === '') {
             $this->responseError('El nombre del producto es obligatorio.');
         }
@@ -153,6 +153,13 @@ class Inventory extends Controllers
 
         if ($supplierId <= 0) {
             $this->responseError('Debes seleccionar un proveedor válido.');
+        }
+        //validamos que el campo no este vacio
+        if (!empty($flInput['name'])) {
+            //validamos si el archivo es valido de acuerdo al tipo de archivo
+            if (isFile('image', $flInput, ['png', 'jpg', 'jpeg'])) {
+                $this->responseError('El archivo debe ser una imagen.');
+            }
         }
 
         $this->ensureCategoryBelongsToBusiness($categoryId, $businessId);
@@ -179,6 +186,32 @@ class Inventory extends Controllers
         $productId = $this->model->insertProduct($payload);
         if ($productId <= 0) {
             $this->responseError('No fue posible registrar el producto, inténtalo nuevamente.');
+        }
+        //validamos que el campo no este vacio
+        if (!empty($flInput['name'])) {
+            //preparamos la ruta de almacenamiento del logo
+            $urlFile = getRoute();
+            verifyFolder($urlFile);
+            $urlFile .= '/Products';
+            verifyFolder($urlFile);
+            $urlFile .= '/logo';
+            verifyFolder($urlFile);
+            $extension = pathinfo($flInput['name'], PATHINFO_EXTENSION);
+            $productname = $productId . '-' . time() . '.' . $extension;
+            $sizefile = valConvert($flInput['size'])['MB'];
+            $urlFile .= '/' . $productname;
+            if ($sizefile > 2) {
+                resizeAndCompressImage($flInput['tmp_name'], $urlFile, 2);
+            } else {
+                move_uploaded_file($flInput['tmp_name'], $urlFile);
+            }
+            $arrValues = [
+                'product_id' => $productId,
+                'name' => $productname,
+                'extension' => $extension,
+                'size' => $flInput['size']
+            ];
+            $this->model->insert_product_file($arrValues);
         }
 
         $data = [
@@ -272,8 +305,7 @@ class Inventory extends Controllers
             'update_txtProductSupplier',
             'update_txtProductStock',
             'update_txtProductPurchasePrice',
-            'update_txtProductSalesPrice',
-            'update_txtProductStatus',
+            'update_txtProductSalesPrice'
         ];
 
         foreach ($requiredFields as $field) {
@@ -291,7 +323,7 @@ class Inventory extends Controllers
         $stock         = $this->resolveOptionalStock($_POST['update_txtProductStock'] ?? null);
         $purchase      = $this->sanitizeDecimal($_POST['update_txtProductPurchasePrice'] ?? '0', 'precio de compra');
         $sales         = $this->sanitizeDecimal($_POST['update_txtProductSalesPrice'] ?? '0', 'precio de venta');
-        $status        = $_POST['update_txtProductStatus'] === 'Inactivo' ? 'Inactivo' : 'Activo';
+        $status        =  'Activo';
         $description   = strClean($_POST['update_txtProductDescription'] ?? '');
 
         if ($productId <= 0) {
