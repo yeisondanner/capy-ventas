@@ -1,12 +1,7 @@
 /* Estilos específicos para el módulo de roles POS */
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Playwrite+HU:wght@100..400&display=swap');
 :root {
   --input-bg: #f9fafb;
   --input-border: #d1d5db;
-}
-
-body {
-  font-family: 'Inter';
 }
 
 /* Form Controls */
