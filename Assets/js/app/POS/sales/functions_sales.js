@@ -456,8 +456,9 @@
             if (inputNombreVenta) {
               inputNombreVenta.value = voucherNameResponse;
             }
-
+            //cargamos la canasta y los productos
             getCart();
+            getProducts();
             refreshVoucherNameButtonState();
           }
           if (data.url) {
@@ -1124,6 +1125,7 @@
     btnMinus.innerHTML = `<i class="bi bi-dash"></i>`;
     btnPlus.innerHTML = `<i class="bi bi-plus"></i>`;
     inputQty.type = "number";
+    inputQty.id = `quantity${product.idproduct}`;
     inputQty.value = quantity;
     inputQty.min = "1";
     inputQty.readOnly = false;
@@ -1194,7 +1196,7 @@
       }
     });
   }
-  //Guncion que se encarga de dar la accion cuando se agrega un producto al carrito o canasta
+  //Funcion que se encarga de dar la accion cuando se agrega un producto al carrito o canasta
   function addCart() {
     if (document.querySelectorAll(".product-card").length === 0) return;
     // --- Indicador de cantidad seleccionada en las tarjetas de producto ---
@@ -1464,14 +1466,13 @@
       });
       return;
     }
-
-    console.table(context);
     const rawValue = parseInt(input.value, 10);
+    //Si el valor es NaN, se mantiene la cantidad actual
     if (Number.isNaN(rawValue)) {
       input.value = context.quantity;
       return;
     }
-
+    //Si el valor es menor o igual a 0, se elimina el producto de la canasta
     if (rawValue <= 0) {
       removeCartItem(context.idproduct);
       return;
@@ -1532,6 +1533,11 @@
       });
       if (data.status) {
         getCart();
+        setTimeout(() => {
+          //ponemos el focus en el input de cantidad
+          const inputQty = document.getElementById(`quantity${idproduct}`);
+          inputQty.focus();
+        }, 200);
       }
     } catch (error) {
       showAlert({

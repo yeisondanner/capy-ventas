@@ -464,7 +464,12 @@ class Sales extends Controllers
         if (!isset($_SESSION[$this->nameVarCart])) {
             return [];
         }
-
+        //valida que el stock no sea menor o igual a cero
+        foreach ($_SESSION[$this->nameVarCart] as $item) {
+            if ($item['stock'] <= 0) {
+                $this->responseError('El stock del producto ' . $item['name'] . ' no es suficiente.');
+            }
+        }
         return array_values($_SESSION[$this->nameVarCart]);
     }
 
