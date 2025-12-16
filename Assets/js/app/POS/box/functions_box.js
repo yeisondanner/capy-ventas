@@ -41,7 +41,7 @@ export class Box {
       // * Agregamos el boton de apertura de caja
       this.#divOpenBox.html(`
           <div class="d-flex justify-content-center align-items-center">
-                      <button id="btnOpenModalBox" class="btn btn-warning rounded-4 px-2 d-flex align-items-center gap-2 fw-bold">
+                      <button id="btnOpenModalBox" class="btn btn-warning px-2 py-1 d-flex align-items-center gap-2 fw-bold">
                           <img style="width: 22px;" src="${media_url}/icons/POS/open-box.png" alt="">
                           <span class="fw-semibold">Abrir Caja</span>
                       </button>
@@ -51,7 +51,7 @@ export class Box {
       // * Agregamos el boton de movimientos y gestion de caja
       this.#divOpenBox.html(`
         <div class="d-flex justify-content-center align-items-center">
-                    <button id="btnOpenModalGestionBox" class="btn btn-warning rounded-4 px-2 d-flex align-items-center gap-2 fw-bold">
+                    <button id="btnOpenModalGestionBox" class="btn btn-warning px-2 py-1 d-flex align-items-center gap-2 fw-bold">
                         <img style="width: 22px;" src="${media_url}/icons/POS/open-box.png" alt="">
                         <span class="fw-semibold">Gestión de Caja</span>
                     </button>

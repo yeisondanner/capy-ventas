@@ -10,6 +10,28 @@
  * Copyright 2011-2023 The Bootstrap Authors
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+
+ /* --- 1. Configuración de INTER (Variable) --- */
+@font-face {
+    font-family: 'Inter';
+    /* Ajusta la ruta 'assets/fonts/...' según donde guardaste el archivo */
+    src: url('../../../fonts/POS/inter/Inter-VariableFont_opsz,wght.ttf') format('truetype-variations');
+    /* Esto le dice al navegador que este archivo sirve para cualquier grosor del 100 al 900 */
+    font-weight: 100 900; 
+    font-style: normal;
+}
+
+@font-face {
+  font-family: "Playwrite HU";
+  /* Ajusta la ruta 'assets/fonts/...' según donde guardaste el archivo */
+  src: url("../../../fonts/POS/playwritehu/PlaywriteHU-VariableFont_wght.ttf")
+    format("truetype-variations");
+  /* Esta fuente tiene un rango menor, de 100 a 400 */
+  font-weight: 100 400;
+  font-style: normal;
+}
+
+
 :root,
 [data-bs-theme="light"] {
   --bs-blue: #0d6efd;
