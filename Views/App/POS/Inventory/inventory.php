@@ -238,7 +238,7 @@
                             <option value="Inactivo">Inactivo</option>
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label for="update_txtProductStock" class="form-label">Stock (opcional)</label>
                         <input type="number" step="0.01" min="0" class="form-control" id="update_txtProductStock"
                             name="update_txtProductStock">
