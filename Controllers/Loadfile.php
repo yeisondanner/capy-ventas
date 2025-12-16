@@ -232,4 +232,30 @@ class Loadfile extends Controllers
             readfile(getRoute() . "Business/logo/business.png");
         }
     }
+    /**
+     * Funcion que carga el icono del producto
+     * @return void
+     */
+    public function iconproducts()
+    {
+        if (isset($_GET['f'])) {
+            $nameFile = $_GET['f'];
+            $path = getRoute();
+            $filePath = $path . "Products/logo/" . basename($nameFile);
+            $fileType = pathinfo($filePath, PATHINFO_EXTENSION);
+            if (file_exists($filePath) && in_array($fileType, ["jpg", "jpeg", "png", "JPG", "JPEG", "PNG"])) {
+                header("Content-Type: image/$fileType");
+                readfile($filePath);
+                exit;
+            } else {
+                //cargamos una imagen por defecto
+                header("Content-Type: image/png");
+                readfile(getRoute() . "Products/product.png");
+            }
+        } else {
+            //cargamos una imagen por defecto
+            header("Content-Type: image/png");
+            readfile(getRoute() . "Products/product.png");
+        }
+    }
 }

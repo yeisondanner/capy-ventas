@@ -70,6 +70,16 @@
             <div class="modal-body">
                 <?= csrf(); ?>
                 <div class="row g-3">
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <div class="card-body p-4">
+                            <div class="logo-upload-area mb-3" onclick="document.getElementById('logoInput').click()">
+                                <img src="<?= base_url(); ?>/Loadfile/iconproducts?f=product.png" id="logoPreview" class="logo-preview-img mb-2" alt="Logo">
+                                <div class="text-primary fw-medium small"><i class="bi bi-cloud-upload me-1"></i> Cambiar Logo</div>
+                                <div class="text-muted small mt-1" style="font-size: 0.75rem;">Click para subir (Max 2MB)</div>
+                            </div>
+                            <input type="file" class="d-none" id="logoInput" name="logoInput" accept="image/*">
+                        </div>
+                    </div>
                     <div class="col-md-6">
                         <label for="txtProductName" class="form-label">Nombre <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="txtProductName" name="txtProductName" maxlength="255"
@@ -238,7 +248,7 @@
                             <option value="Inactivo">Inactivo</option>
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label for="update_txtProductStock" class="form-label">Stock (opcional)</label>
                         <input type="number" step="0.01" min="0" class="form-control" id="update_txtProductStock"
                             name="update_txtProductStock">

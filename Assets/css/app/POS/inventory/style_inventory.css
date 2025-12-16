@@ -1,11 +1,38 @@
 .table#table tbody td {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 .modal .form-label {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .modal .btn-close {
-    box-shadow: none;
+  box-shadow: none;
+}
+/*
+Logo Upload Area
+*/
+.logo-upload-area {
+  background-color: #f9fafb;
+  border: 2px dashed #d1d5db;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.logo-upload-area:hover {
+  border-color: var(--bs-primary);
+  background-color: #eff6ff;
+}
+
+.logo-preview-img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 0.5rem;
+  background: white;
+  padding: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }

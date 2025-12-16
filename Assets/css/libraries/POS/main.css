@@ -2491,7 +2491,7 @@ progress {
   background-color: var(--bs-body-bg);
   background-clip: padding-box;
   border: 2px solid var(--bs-border-color);
-  border-radius: 1rem;
+  border-radius: 1.25rem;
   -webkit-transition: border-color 0.15s ease-in-out,
     -webkit-box-shadow 0.15s ease-in-out;
   transition: border-color 0.15s ease-in-out,
@@ -3188,8 +3188,8 @@ textarea.form-control-lg {
   white-space: nowrap;
   background-color: var(--bs-tertiary-bg);
   border: 1px solid var(--bs-border-color);
-  border-top-left-radius: 0.5rem;
-  border-bottom-left-radius: 0.5rem;
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
 }
 
 .input-group-lg > .form-control,
@@ -3207,7 +3207,7 @@ textarea.form-control-lg {
 .input-group-sm > .btn {
   padding: 0.25rem 0.5rem;
   font-size: 0.765625rem;
-  border-radius: 4px;
+  border-radius: 1.25rem;
 }
 
 .input-group-lg > .form-select,
