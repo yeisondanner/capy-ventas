@@ -70,17 +70,10 @@
   border: 1px solid #e9ecef;
 }
 
-
-
-
-
-
-
-
 /* Estilos personalizados para el Tablón */
 .changelog-card {
   border: none;
-  border-radius: 16px;
+  border-radius: 1.5rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   background: white;
@@ -90,7 +83,7 @@
   /* Un gradiente verdoso/azulado que evoca crecimiento y ventas */
   background: linear-gradient(135deg, #198754 0%, #0d6efd 100%);
   color: white;
-  padding: 2.5rem;
+  padding: 1.25rem;
   position: relative;
 }
 
