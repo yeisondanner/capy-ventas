@@ -72,7 +72,7 @@ class Profile extends Controllers
                 'email'         => $sessionData['email'] ?? '',
                 'user'          => $sessionData['user'] ?? '',
                 'status'        => $sessionData['status'] ?? '',
-                'planExpiresAt' => null,
+                'planExpiresAt' => $sessionData['plan_expiration_date'] ?? '',
                 'phone'         => null,
                 'country'       => null,
                 'registeredAt'  => null,

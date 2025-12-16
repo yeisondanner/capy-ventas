@@ -138,7 +138,7 @@ class ProfileModel extends Mysql
         $request = $this->select_all($sql, [$userAppId]);
         return $request ?? [];
     }
-        /**
+    /**
      * Actualiza solo los datos básicos del perfil (6 campos del formulario).
      *
      * @param int   $userAppId ID del usuario en user_app.
@@ -208,5 +208,4 @@ class ProfileModel extends Mysql
         $result = $this->update($sql, $params);
         return $result > 0;
     }
-
 }

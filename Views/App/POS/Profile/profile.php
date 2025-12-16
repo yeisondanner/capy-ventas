@@ -16,6 +16,7 @@ function formatDateProfile(?string $value, bool $withTime = true): string
 }
 
 $user         = $data['user'] ?? [];
+
 $subscription = $data['subscription'] ?? [];
 $invoices     = $data['invoices'] ?? [];
 $businesses   = $data['businesses'] ?? [];
@@ -60,19 +61,22 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                 </div>
                 <hr>
                 <div class="row g-3">
-                    <div class="col-12">
-                        <p class="mb-1 text-muted">Teléfono</p>
-                        <p class="mb-0 fw-semibold"><?= htmlspecialchars($user['phone'] ?? 'Sin teléfono', ENT_QUOTES, 'UTF-8'); ?></p>
-                    </div>
                     <div class="col-6">
                         <p class="mb-1 text-muted">País</p>
                         <p class="mb-0 fw-semibold"><?= htmlspecialchars($user['country'] ?? 'Sin país', ENT_QUOTES, 'UTF-8'); ?></p>
                     </div>
                     <div class="col-6">
+                        <p class="mb-1 text-muted">Teléfono</p>
+                        <p class="mb-0 fw-semibold"><?= htmlspecialchars($user['phone'] ?? 'Sin teléfono', ENT_QUOTES, 'UTF-8'); ?></p>
+                    </div>
+                    <div class="col-6">
                         <p class="mb-1 text-muted">Nacimiento</p>
                         <p class="mb-0 fw-semibold"><?= formatDateProfile($user['birthDate'] ?? null, false); ?></p>
                     </div>
-
+                    <div class="col-6">
+                        <p class="mb-1 text-muted">Fecha de expiración plan</p>
+                        <p class="mb-0 fw-semibold"><?= formatDateProfile($user['planExpiresAt'] ?? null, false); ?></p>
+                    </div>
                     <div class="d-flex justify-content-end mt-3">
                         <button type="button"
                             class="btn btn-sm btn-outline-primary"
