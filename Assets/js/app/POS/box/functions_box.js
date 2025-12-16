@@ -4,11 +4,10 @@ export class Box {
   // TODO: Informacion de movements de BOX
   #arrayMovements = [];
   #arrayCountEfectivo = new Map();
+  #countEfectivoTotal = 0;
 
   // TODO: Seleccionamos los botones
   #btnOpenBox = $("#btnOpenBox");
-  #btnUpdateRole = $("#btnUpdateRole");
-  #btnDeleteRole = $("#btnDeleteRole");
 
   // TODO: Seleccionamos los modals
   #modalAddBox = $("#modalAddBox");
@@ -29,8 +28,8 @@ export class Box {
   #quick_access_title_list_movements = $("#quick_access_title_list_movements");
 
   // TODO: Captura de elementos para arqueo
-  #quick_access_arqueo_efectivo_total = $(
-    "#quick_access_arqueo_efectivo_total"
+  #quick_access_arqueo_total_efectivo = $(
+    "#quick_access_arqueo_total_efectivo"
   );
   #quick_access_arqueo_total_general = $("#quick_access_arqueo_total_general");
   #quick_access_arqueo_total_payment_method = $(
@@ -39,6 +38,11 @@ export class Box {
   #quick_access_arqueo_currency_denominations = $(
     "#quick_access_arqueo_currency_denominations"
   );
+  #quick_access_arqueo_count_efectivo = $(
+    "#quick_access_arqueo_count_efectivo"
+  );
+  #quick_access_arqueo_message = $("#quick_access_arqueo_message");
+  #quick_access_arqueo_diference = $("#quick_access_arqueo_diference");
 
   constructor(base_url) {
     this.apiBox = new ApiBox(base_url);
@@ -155,9 +159,7 @@ export class Box {
     });
   };
 
-  // TODO: Funcion para cargar los roles asociados
-
-  // TODO: Funcion para abrir todos los modals
+  // TODO: Funcion para abrir todos los modals (Y Configurar eventos)
   #openModal = () => {
     // * Open Modal Box
     $("#btnOpenModalBox").on("click", async () => {
@@ -337,38 +339,12 @@ export class Box {
 
     // * Open Modal Arqueo Box
     $("#btnOpenModalArqueoBox").on("click", async () => {
-      // ? Guardamos la informacion en una variable
-      const data = this.#arrayMovements;
+      // ? 1. Cargar datos del resumen (Totales y Tarjetas)
+      this.#renderResumenArqueo();
 
-      // ? Mostramos el total efectivo
-      this.#quick_access_arqueo_efectivo_total.html(
-        this.#convertirASoles(data.total_payment_method.Efectivo)
-      );
-      // ? Mostramos el total general
-      this.#quick_access_arqueo_total_general.html(
-        this.#convertirASoles(data.total_general)
-      );
-      // ? Mostramos los demas datos de la targeta
-      let html = "";
-      data.payment_method.forEach((element) => {
-        if (
-          element.name !== "Efectivo" &&
-          typeof data.total_payment_method[element.name] !== "undefined"
-        ) {
-          html += `<div class="flex-fill p-2 rounded-4 bg-body-tertiary border text-center">
-                      <small class="d-block text-muted fw-bold mb-1" style="font-size: 0.7rem;">${
-                        element.name
-                      }</small>
-                      <span class="fw-bold text-dark">${this.#convertirASoles(
-                        data.total_payment_method[element.name]
-                      )}</span>
-                  </div>`;
-        }
-      });
-      this.#quick_access_arqueo_total_payment_method.html(html);
-
-      // ? Traemos currency denominations para mostrar en la vista
+      // ? 2. Obtener denominaciones del servidor
       const response = await this.apiBox.get("getCurrencyDenominations");
+
       if (!response.status) {
         return showAlert({
           title: response.title,
@@ -377,72 +353,212 @@ export class Box {
         });
       }
 
-      let card_currency = "";
-      let textCurrency = "text-success";
-      let bgCurrency = "bg-success-subtle";
-      let valTypeCurrency = "hDSDF34";
-      response.data.forEach((element, index) => {
-        this.#arrayCountEfectivo.set(element.idDenomination, {
-          value_currency: parseFloat(element.value),
-          total_amount: 0
-        });
+      // ? 3. Procesar y Renderizar las denominaciones (Billetes/Monedas)
+      this.#procesarDenominaciones(response.data);
 
-
-
-        if (element.type === "Billete" && element.type !== valTypeCurrency) {
-          valTypeCurrency = element.type;
-          card_currency += `<div class="d-flex align-items-center mb-3">
-                                <h6 class="fw-bold ${textCurrency} mb-0 me-3" style="min-width: 65px;"><i class="bi bi-cash me-2"></i>${element.type}</h6>
-                                <div class="flex-grow-1 border-bottom"></div>
-                            </div>
-                            <div class="row g-2 mb-4">`;
-        }
-
-        if(element.type === "Moneda" && element.type !== valTypeCurrency){
-          valTypeCurrency = element.type;
-          textCurrency = "text-warning";
-          bgCurrency = "bg-warning-subtle";
-          card_currency += `<div class="d-flex align-items-center mb-3">
-                                <h6 class="fw-bold ${textCurrency} mb-0 me-3" style="min-width: 65px;"><i class="bi bi-coin me-2"></i>${element.type}</h6>
-                                <div class="flex-grow-1 border-bottom"></div>
-                            </div>
-                            <div class="row g-2 mb-4">`;
-        }
-
-        if(element.type === "Otros" && element.type !== valTypeCurrency){
-          valTypeCurrency = element.type;
-          textCurrency = "text-body";
-          bgCurrency = "bg-body-subtle";
-          card_currency += `<div class="d-flex align-items-center mb-3">
-                                <h6 class="fw-bold ${textCurrency} mb-0 me-3" style="min-width: 65px;"><i class="bi bi-coin me-2"></i>${element.type}</h6>
-                                <div class="flex-grow-1 border-bottom"></div>
-                            </div>
-                            <div class="row g-2 mb-4">`;
-        }
-
-        card_currency += `<div class="col-6 item-box">
-                              <div class="input-group">
-                                  <span class="input-group-text ${textCurrency} ${bgCurrency} fw-bold border-end-0" style="width: 85px;">${this.#convertirASoles(element.value)}</span>
-                                  <input id="currency_${element.idDenomination}" type="number" class="form-control border-start-0 bg-light" placeholder="0" min="0">
-                              </div>
-                          </div>`;
-        
-        if(typeof response.data[index + 1] === "undefined"){
-          card_currency += `</div>`;
-        }
-      });
-
-      console.log(this.#arrayCountEfectivo);
-      
-
-      console.log(response.data);
-      this.#quick_access_arqueo_currency_denominations.html(card_currency);
-
-      // Recorremos la respuesta 
-
+      // ? 4. Mostrar el modal
       this.#modalArqueoBox.modal("show");
     });
+
+    // ! ================================================================
+    // ! LÓGICA AGREGADA: EVENTO DELEGADO PARA ACTUALIZAR MAP
+    // ! ================================================================
+    this.#quick_access_arqueo_currency_denominations.on(
+      "input",
+      "input[type='number']",
+      (e) => {
+        const input = $(e.currentTarget);
+        const cantidad = parseFloat(input.val()) || 0;
+        const idDenomination = input.data("id");
+
+        if (this.#arrayCountEfectivo.has(idDenomination)) {
+          const data = this.#arrayCountEfectivo.get(idDenomination);
+          const nuevoTotal = cantidad * data.value_currency;
+
+          // ? 1. Actualizamos el Map
+          this.#arrayCountEfectivo.set(idDenomination, {
+            ...data,
+            cantidad: cantidad,
+            total_amount: nuevoTotal,
+          });
+
+          // ? 2. Calculamos el TOTAL GENERAL CONTADO
+          const totalGeneralContado = this.#calcularTotalContado();
+          this.#quick_access_arqueo_count_efectivo.html(
+            this.#convertirASoles(totalGeneralContado)
+          );
+
+          // ? calculamos el cuadre general
+          let cuadre_caja_total =
+            this.#countEfectivoTotal - totalGeneralContado;
+
+          // ? mostramos los mensajes
+          if (totalGeneralContado == 0) {
+            this.#quick_access_arqueo_message.html("");
+            this.#quick_access_arqueo_diference.html(this.#convertirASoles(0));
+          } else if (cuadre_caja_total == 0) {
+            this.#quick_access_arqueo_message
+              .html(`<div class="alert alert-success d-flex align-items-center gap-2 p-2 rounded-4 mb-0" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill"></i>
+                                    <strong>Cuadre perfecto</strong>
+                                </div>`);
+            this.#quick_access_arqueo_diference.html(
+              this.#convertirASoles(cuadre_caja_total)
+            );
+          } else if (cuadre_caja_total < 0) {
+            this.#quick_access_arqueo_message
+              .html(`<div class="alert alert-primary d-flex align-items-center gap-2 p-2 rounded-4 mb-0" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill"></i>
+                                    <strong>Monto sobrante a favor</strong>
+                                </div>`);
+            this.#quick_access_arqueo_diference.html(
+              this.#convertirASoles(cuadre_caja_total8 * -1)
+            );
+          } else {
+            this.#quick_access_arqueo_message
+              .html(`<div class="alert alert-danger d-flex align-items-center gap-2 p-2 rounded-4 mb-0" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill"></i>
+                                    <strong>Descuadre detectado</strong>
+                                </div>`);
+            this.#quick_access_arqueo_diference.html(
+              this.#convertirASoles(cuadre_caja_total)
+            );
+          }
+
+          // Puedes descomentar esto para verificar en consola
+          // console.log("Map actualizado:", this.#arrayCountEfectivo);
+        }
+      }
+    );
   };
+
+  // TODO: Calcular el total de efectivo contado en tiempo real
+  #calcularTotalContado = () => {
+    let total = 0;
+    this.#arrayCountEfectivo.forEach((data) => {
+      total += data.total_amount;
+    });
+    return total;
+  };
+
+  // TODO: Renderizacion de resumen de arqueo
+  #renderResumenArqueo() {
+    const data = this.#arrayMovements;
+
+    // ? Renderizar Totales Simples
+    this.#quick_access_arqueo_total_efectivo.html(
+      this.#convertirASoles(data.total_payment_method.Efectivo)
+    );
+    this.#quick_access_arqueo_total_general.html(
+      this.#convertirASoles(data.total_general)
+    );
+
+    // ? Guardamos el efectivo en un variable
+    this.#countEfectivoTotal = data.total_payment_method.Efectivo;
+
+    // ? Renderizar Métodos de Pago (Visa, Yape, etc.)
+    const tarjetasHtml = data.payment_method
+      .filter(
+        (el) =>
+          el.name !== "Efectivo" &&
+          data.total_payment_method[el.name] !== undefined
+      )
+      .map(
+        (el) => `
+      <div class="flex-fill p-2 rounded-4 bg-body-tertiary border text-center">
+        <small class="d-block text-muted fw-bold mb-1" style="font-size: 0.7rem;">${
+          el.name
+        }</small>
+        <span class="fw-bold text-dark">${this.#convertirASoles(
+          data.total_payment_method[el.name]
+        )}</span>
+      </div>
+    `
+      )
+      .join("");
+
+    this.#quick_access_arqueo_total_payment_method.html(tarjetasHtml);
+  }
+
+  // TODO: Procesar denominaciones de dinero
+  #procesarDenominaciones(denominaciones) {
+    // ? Configuración de estilos por tipo
+    const styleConfig = {
+      Billete: {
+        icon: "bi-cash",
+        text: "text-success",
+        bg: "bg-success-subtle",
+      },
+      Moneda: {
+        icon: "bi-coin",
+        text: "text-warning",
+        bg: "bg-warning-subtle",
+      },
+      default: { icon: "bi-coin", text: "text-body", bg: "bg-body-subtle" }, // ? Para "Otros"
+    };
+
+    // ? Agrupamos los datos por Tipo para renderizar ordenadamente
+    const grupos = {};
+
+    denominaciones.forEach((el) => {
+      // ? Lógica original: Guardar en el Map de conteo
+      this.#arrayCountEfectivo.set(el.idDenomination, {
+        value_currency: parseFloat(el.value),
+        total_amount: 0,
+      });
+
+      // Agrupar
+      if (!grupos[el.type]) grupos[el.type] = [];
+      grupos[el.type].push(el);
+    });
+
+    // Generar HTML
+    let htmlFinal = "";
+
+    Object.keys(grupos).forEach((tipo) => {
+      const config = styleConfig[tipo] || styleConfig["default"];
+      const items = grupos[tipo];
+
+      // Header del grupo
+      htmlFinal += `
+      <div class="d-flex align-items-center mb-3">
+        <h6 class="fw-bold ${config.text} mb-0 me-3" style="min-width: 65px;">
+          <i class="bi ${config.icon} me-2"></i>${tipo}
+        </h6>
+        <div class="flex-grow-1 border-bottom"></div>
+      </div>
+      <div class="row g-2 mb-4">
+    `;
+
+      // Items del grupo
+      const itemsHtml = items
+        .map(
+          (el) => `
+      <div class="col-6 item-box">
+        <div class="input-group">
+          <span class="input-group-text ${config.text} ${
+            config.bg
+          } fw-bold border-end-0" style="width: 85px;">
+            ${this.#convertirASoles(el.value)}
+          </span>
+          <input 
+            id="currency_${el.idDenomination}" 
+            data-id="${el.idDenomination}" 
+            type="number" 
+            class="form-control border-start-0 bg-light" 
+            placeholder="0" 
+            min="0">
+        </div>
+      </div>
+    `
+        )
+        .join("");
+
+      htmlFinal += itemsHtml + `</div>`; // Cierre del row
+    });
+
+    this.#quick_access_arqueo_currency_denominations.html(htmlFinal);
+  }
 
   // TODO: Funcion para convertira a moneda un numero
   #convertirASoles = (valor) => {
