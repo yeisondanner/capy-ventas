@@ -1041,7 +1041,7 @@
     buttonProduct.dataset.measurement = product.measurement;
     //asignacion de valores
     spanCounter.textContent = "0";
-    divImg.innerHTML = `<img class="emoji" src="${base_url}/Storage/Products/product.png" alt="${product.product}">`;
+    divImg.innerHTML = `<img class="emoji" src="${base_url}/Loadfile/iconproducts?f=${product.photo}" alt="${product.product}">`;
     spanPrice.textContent = getcurrency + product.price;
     spanName.textContent = product.product;
     spanStock.dataset.stock = stock;
