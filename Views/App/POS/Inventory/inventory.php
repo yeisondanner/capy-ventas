@@ -159,35 +159,112 @@
 
 <!-- Modal: Reporte de producto -->
 <div class="modal fade" id="modalProductReport" tabindex="-1" aria-labelledby="modalProductReportLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow border-0">
+
+            <!-- Encabezado -->
             <div class="modal-header bg-secondary text-white">
-                <h5 class="modal-title" id="modalProductReportLabel">Reporte del producto</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <h5 class="modal-title d-flex align-items-center" id="modalProductReportLabel">
+                    <i class="bi bi-file-earmark-text me-2"></i> Reporte del producto
+                </h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body">
-                <div class="mb-3">
-                    <h4 class="mb-0" id="reportProductName">Nombre del producto</h4>
-                    <small class="text-muted" id="reportProductStatus">Estado</small>
+
+            <div class="modal-body bg-light p-4">
+                <div class="row g-3">
+
+                    <!-- Columna Izquierda: Imagen y Datos Básicos -->
+                    <div class="col-md-5">
+                        <div class="bg-white p-3 border rounded shadow-sm h-100">
+                            <!-- Contenedor con proporción fija 4:3 para la imagen principal -->
+                            <div class="ratio ratio-4x3 mb-3">
+                                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop"
+                                    class="rounded border object-fit-cover"
+                                    alt="Producto Principal">
+                            </div>
+
+                            <div class="mb-3 border-bottom pb-2">
+                                <h4 class="fw-bold mb-0 text-dark" id="reportProductName">Nombre del producto</h4>
+                                <span class="badge bg-info text-dark mt-1" id="reportProductStatus">Estado</span>
+                            </div>
+
+                            <div class="small">
+                                <div class="mb-2">
+                                    <label class="text-muted fw-bold d-block text-uppercase small" style="font-size: 0.7rem;">Categoría</label>
+                                    <span id="reportProductCategory">-</span>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="text-muted fw-bold d-block text-uppercase small" style="font-size: 0.7rem;">Proveedor</label>
+                                    <span id="reportProductSupplier">-</span>
+                                </div>
+                                <div class="mb-0">
+                                    <label class="text-muted fw-bold d-block text-uppercase small" style="font-size: 0.7rem;">Unidad de medida</label>
+                                    <span id="reportProductMeasurement">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Columna Derecha: Métricas, Galería y Descripción -->
+                    <div class="col-md-7">
+                        <!-- Métricas -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <div class="p-2 border rounded bg-white text-center">
+                                    <small class="text-muted d-block fw-bold text-uppercase" style="font-size: 0.65rem;">Stock</small>
+                                    <span class="h6 mb-0 fw-bold text-primary" id="reportProductStock">0</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 border rounded bg-white text-center">
+                                    <small class="text-muted d-block fw-bold text-uppercase" style="font-size: 0.65rem;">Compra</small>
+                                    <span class="h6 mb-0 fw-bold text-dark" id="reportProductPurchase">$0.00</span>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 border rounded bg-white text-center">
+                                    <small class="text-muted d-block fw-bold text-uppercase" style="font-size: 0.65rem;">Venta</small>
+                                    <span class="h6 mb-0 fw-bold text-success" id="reportProductSale">$0.00</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Galería Visual con Proporción 1:1 (Cuadrada) -->
+                        <div class="bg-white p-3 border rounded shadow-sm mb-3">
+                            <label class="text-muted fw-bold d-block text-uppercase small mb-2" style="font-size: 0.7rem;">Galería de Fotos</label>
+                            <div class="row g-2">
+                                <div class="col-4">
+                                    <div class="ratio ratio-1x1">
+                                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=200&auto=format&fit=crop"
+                                            class="rounded border object-fit-cover" alt="Vista 1">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="ratio ratio-1x1">
+                                        <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=200&auto=format&fit=crop"
+                                            class="rounded border object-fit-cover" alt="Vista 2">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="ratio ratio-1x1">
+                                        <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=200&auto=format&fit=crop"
+                                            class="rounded border object-fit-cover" alt="Vista 3">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="bg-white p-3 border rounded shadow-sm">
+                            <label class="text-muted fw-bold d-block text-uppercase small mb-1 border-bottom pb-1" style="font-size: 0.7rem;">Descripción</label>
+                            <p class="mb-0 small text-secondary" id="reportProductDescription">Sin descripción registrada.</p>
+                        </div>
+                    </div>
+
                 </div>
-                <dl class="row mb-0">
-                    <dt class="col-sm-4">Categoría</dt>
-                    <dd class="col-sm-8" id="reportProductCategory">-</dd>
-                    <dt class="col-sm-4">Proveedor</dt>
-                    <dd class="col-sm-8" id="reportProductSupplier">-</dd>
-                    <dt class="col-sm-4">Unidad de medida</dt>
-                    <dd class="col-sm-8" id="reportProductMeasurement">-</dd>
-                    <dt class="col-sm-4">Stock disponible</dt>
-                    <dd class="col-sm-8" id="reportProductStock">-</dd>
-                    <dt class="col-sm-4">Precio de compra</dt>
-                    <dd class="col-sm-8" id="reportProductPurchase">-</dd>
-                    <dt class="col-sm-4">Precio de venta</dt>
-                    <dd class="col-sm-8" id="reportProductSale">-</dd>
-                    <dt class="col-sm-4">Descripción</dt>
-                    <dd class="col-sm-8" id="reportProductDescription">Sin descripción registrada.</dd>
-                </dl>
             </div>
-            <div class="modal-footer">
+
+            <div class="modal-footer bg-white border-top-0">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
