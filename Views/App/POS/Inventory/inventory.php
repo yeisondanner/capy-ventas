@@ -277,7 +277,7 @@
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
                 <h5 class="modal-title" id="modalCategoryLabel">Categorías</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
@@ -313,7 +313,7 @@
         <form class="modal-content" id="formUpdateProduct" autocomplete="off">
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title" id="modalUpdateProductLabel">Actualizar producto</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <?= csrf(); ?>
