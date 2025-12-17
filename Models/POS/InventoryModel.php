@@ -540,4 +540,20 @@ class InventoryModel extends Mysql
         ]);
         return $insert;
     }
+    /**
+     * Metodo que se encarga de obtener 
+     * todas las imagenes que estan activas
+     * @param int $idproduct
+     * @return array
+     */
+    public function selectProductFile(int $idproduct): array
+    {
+        $sql = <<<SQL
+            SELECT*FROM product_file AS pf WHERE pf.product_id=? AND pf.`status`='Activo';
+        SQL;
+
+        $result = $this->select_all($sql, [$idproduct]);
+
+        return $result;
+    }
 }

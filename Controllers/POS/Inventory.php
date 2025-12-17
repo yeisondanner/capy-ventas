@@ -251,6 +251,7 @@ class Inventory extends Controllers
         }
 
         $currencySymbol = getCurrency();
+        $images         = $this->model->selectProductFile($productId);
 
         $data = [
             'status' => true,
@@ -275,6 +276,7 @@ class Inventory extends Controllers
                 'description'    => $product['description'] ?? '',
                 'status'         => $product['status'],
                 'currency_symbol' => $currencySymbol,
+                'images'         => $images ?? [],
             ],
         ];
 

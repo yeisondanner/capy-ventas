@@ -866,27 +866,27 @@
         {
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
-          className: "btn btn-secondary",
+          className: "btn btn-sm btn-outline-secondary my-2",
           exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
-          className: "btn btn-success",
+          className: "btn btn-sm btn-outline-success my-2",
           title: "Productos",
           exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
-          className: "btn btn-info text-white",
+          className: "btn btn-sm btn-outline-info my-2",
           title: "Productos",
           exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
         },
         {
           extend: "pdfHtml5",
           text: "<i class='bi bi-filetype-pdf'></i> PDF",
-          className: "btn btn-danger",
+          className: "btn btn-sm btn-outline-danger my-2",
           orientation: "portrait",
           pageSize: "A4",
           title: "Productos",
@@ -1261,6 +1261,18 @@
         product.sales_price;
       document.getElementById("update_txtProductDescription").value =
         product.description || "";
+      document.getElementById("listImagesContainer").innerHTML = "";
+      product.images.forEach((item) => {
+        const divcard = document.createElement("div");
+        divcard.classList.add("col-4", "p-2");
+        divcard.innerHTML = `
+                      <div class=" border rounded-3 bg-light position-relative">
+                          <img src="${base_url}/Loadfile/iconproducts?f=${item.name}" class="img-fluid" alt="">
+                          <button type="button" class="btn btn-secondary btn-sm position-absolute top-0 end-0 delete-img" data-id="${item.id}" data-name="${item.name}"><i class="bi bi-x-lg"></i></button>
+                      </div>
+        `;
+        document.getElementById("listImagesContainer").appendChild(divcard);
+      });
       showModal(modalUpdate);
     } catch (error) {
       console.error("Error obteniendo producto", error);
@@ -1372,6 +1384,19 @@
         const reader = new FileReader();
         reader.onload = function (e) {
           document.getElementById("logoPreview").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    if (!document.getElementById("update_flInput")) return;
+    const updateLogoInput = document.getElementById("update_flInput");
+    // Preview de imagen
+    updateLogoInput.addEventListener("change", function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("update_logoPreview").src = e.target.result;
         };
         reader.readAsDataURL(file);
       }
