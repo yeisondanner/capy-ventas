@@ -1263,7 +1263,14 @@
       document.getElementById("update_txtProductDescription").value =
         product.description || "";
       document.getElementById("listImagesContainer").innerHTML = "";
-      product.images.forEach((item) => {
+      document.getElementById(
+        "update_logoPreview"
+      ).src = `${base_url}/Loadfile/iconproducts?f=sinimagen`;
+      product.images.forEach((item, idx) => {
+        document.getElementById(
+          "update_logoPreview"
+        ).src = `${base_url}/Loadfile/iconproducts?f=${item.name}`;
+
         const divcard = document.createElement("div");
         divcard.classList.add("col-4", "p-2");
         divcard.id = `cardImg${item.idProduct_file}`;

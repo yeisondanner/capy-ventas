@@ -327,7 +327,7 @@ class Inventory extends Controllers
         $sales         = $this->sanitizeDecimal($_POST['update_txtProductSalesPrice'] ?? '0', 'precio de venta');
         $status        =  'Activo';
         $description   = strClean($_POST['update_txtProductDescription'] ?? '');
-
+        $flInput       = $_FILES['update_flInput'];
         if ($productId <= 0) {
             $this->responseError('Identificador de producto inválido.');
         }
@@ -347,7 +347,13 @@ class Inventory extends Controllers
         if ($supplierId <= 0) {
             $this->responseError('Debes seleccionar un proveedor válido.');
         }
-
+        //validamos que el campo no este vacio
+        if (!empty($flInput['name'])) {
+            //validamos si el archivo es valido de acuerdo al tipo de archivo
+            if (isFile('image', $flInput, ['png', 'jpg', 'jpeg'])) {
+                $this->responseError('El archivo debe ser una imagen.');
+            }
+        }
         $currentProduct = $this->model->selectProduct($productId, $businessId);
         if (empty($currentProduct)) {
             $this->responseError('El producto seleccionado no existe o no pertenece a tu negocio.');
@@ -380,6 +386,32 @@ class Inventory extends Controllers
             $this->responseError('No fue posible actualizar el producto, inténtalo nuevamente.');
         }
 
+        //validamos que el campo no este vacio
+        if (!empty($flInput['name'])) {
+            //preparamos la ruta de almacenamiento del logo
+            $urlFile = getRoute();
+            verifyFolder($urlFile);
+            $urlFile .= '/Products';
+            verifyFolder($urlFile);
+            $urlFile .= '/logo';
+            verifyFolder($urlFile);
+            $extension = pathinfo($flInput['name'], PATHINFO_EXTENSION);
+            $productname = $productId . '-' . time() . '.' . $extension;
+            $sizefile = valConvert($flInput['size'])['MB'];
+            $urlFile .= '/' . $productname;
+            if ($sizefile > 2) {
+                resizeAndCompressImage($flInput['tmp_name'], $urlFile, 2);
+            } else {
+                move_uploaded_file($flInput['tmp_name'], $urlFile);
+            }
+            $arrValues = [
+                'product_id' => $productId,
+                'name' => $productname,
+                'extension' => $extension,
+                'size' => $flInput['size']
+            ];
+            $this->model->insert_product_file($arrValues);
+        }
         $data = [
             'title'  => 'Actualización exitosa',
             'message' => 'La información del producto se actualizó correctamente.',
