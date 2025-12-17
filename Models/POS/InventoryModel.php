@@ -541,6 +541,20 @@ class InventoryModel extends Mysql
         return $insert;
     }
     /**
+     * Metodo que se encarga de desactivar la imagen
+     * @param int $id
+     * @param string $status
+     * @return void
+     */
+    public function update_status_product_file(int $id, string $status)
+    {
+        $sql = <<<SQL
+            UPDATE `product_file` SET `status`=? WHERE  `idProduct_file`=?;
+        SQL;
+        $request = $this->update($sql, [$status, $id]);
+        return $request;
+    }
+    /**
      * Metodo que se encarga de obtener 
      * todas las imagenes que estan activas
      * @param int $idproduct

@@ -1266,6 +1266,7 @@
       product.images.forEach((item) => {
         const divcard = document.createElement("div");
         divcard.classList.add("col-4", "p-2");
+        divcard.id = `cardImg${item.idProduct_file}`;
         divcard.innerHTML = `
                       <div class=" border rounded-3 bg-light position-relative shadow-sm">
                           <img src="${base_url}/Loadfile/iconproducts?f=${item.name}" class="img-fluid" alt="">
@@ -1273,12 +1274,11 @@
                       </div>
         `;
         document.getElementById("listImagesContainer").appendChild(divcard);
-        setTimeout(() => {
-          loadBtnDelete();
-        }, 500);
       });
       //carganmos las acciones de los botones
-      loadBtnDelete();
+      setTimeout(() => {
+        loadBtnDelete();
+      }, 150);
       showModal(modalUpdate);
     } catch (error) {
       console.error("Error obteniendo producto", error);
@@ -1289,6 +1289,7 @@
       });
     } finally {
       //cerramos la alerta de carga
+      loadBtnDelete();
       Swal.close();
     }
   }
@@ -1434,6 +1435,32 @@
           focusCancel: true,
         }).then(async (result) => {
           if (result.isConfirmed) {
+            //mostramos un mensaje
+            showAlert({ title: "Eliminando imagen..." }, "loading");
+            const formdata = new FormData();
+            formdata.append("id", id);
+            formdata.append("name", name);
+            const url = `${base_url}/pos/Inventory/deletePhotoImage`;
+            const config = {
+              method: "POST",
+              body: formdata,
+            };
+            try {
+              const reponse = await fetch(url, config);
+              const data = await reponse.json();
+              if (data.status) {
+                //eliminamos el card por su id
+                document.getElementById(`cardImg${id}`).remove();
+              }
+              showAlert(data);
+            } catch (error) {
+              console.table(error);
+              showAlert({
+                icon: "error",
+                title: "Ocurrió un error",
+                message: "No fue posible eliminar la imagen.",
+              });
+            }
             return;
           }
         });

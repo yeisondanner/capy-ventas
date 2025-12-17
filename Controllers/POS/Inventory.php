@@ -941,6 +941,41 @@ class Inventory extends Controllers
 
         return is_string($normalizedSpaces) ? $normalizedSpaces : '';
     }
+    /**
+     * Metodo que se encarga de eliminar la foto
+     * del producto
+     */
+    public function deletePhotoImage()
+    {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(3, "u", false)['status']) ? toJson(validate_permission_app(3, "u", false)) : '';
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+        validateFields(['id', 'name']);
+        $id = (int) strClean($_POST['id']);
+        $name = (string) strClean($_POST['name']);
+        validateFieldsEmpty([
+            'ID' => $id,
+            'NOMBRES' => $name
+        ]);
+        //Validamos el id de manera numerica
+        if (!is_numeric($id)) {
+            $this->responseError("El id debe ser numerico");
+        }
+        $updateStatus = $this->model->update_status_product_file($id, 'Inactivo');
+        if ($updateStatus) {
+            toJson([
+                'title'  => 'Imagen eliminada',
+                'message' => 'La imagen se elimino correctamente.',
+                'type'   => 'success',
+                'icon'   => 'success',
+                'status' => true,
+            ]);
+        } else {
+            $this->responseError('No fue posible eliminar la imagen, inténtalo nuevamente.');
+        }
+    }
 
     /**
      * Envía una respuesta de error estándar en formato JSON y finaliza la ejecución.
