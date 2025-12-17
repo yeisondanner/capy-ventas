@@ -1,10 +1,10 @@
-import { ApiAccount } from "./functions_account_api.js";
-export class Account {
+import { ApiResetpassword } from "./functions_resetpassword_api.js";
+export class Resetpassword {
   #cardAccount = $("#cardAccount");
   #verificationCode = null;
 
   constructor() {
-    this.apiAccount = new ApiAccount(base_url);
+    this.ApiResetpassword = new ApiResetpassword(base_url);
     this.init();
   }
 
@@ -295,13 +295,13 @@ export class Account {
                             <div class="d-flex align-items-center mb-2 position-relative">
                                 <div class="d-flex align-items-center gap-3 text-muted">
                                     <div class="step-circle border-0">3</div>
-                                    <span>Tu cuenta</span>
+                                    <span>Cambia tu contraseña</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="mt-5">
-                        <p class="fw-bold text-dark">Al registrarte en <span class="text-primary">Capy Ventas</span> podrás:</p>
+                        <p class="fw-bold text-dark">Al ser parte de <span class="text-primary">Capy Ventas</span> podrás:</p>
                         <ul class="list-unstyled">
                             <li class="mb-2 d-flex gap-2">
                                 <i class="bi bi-check-circle text-dark fs-5"></i>
@@ -324,7 +324,7 @@ export class Account {
                         <div class="login-head">
                             <img src="${media_url}/carpincho.png" alt="">
                         </div>
-                        <h2 class="fw-bold">Regístrate para comenzar</h2>
+                        <h2 class="fw-bold">Recuperar contraseña</h2>
                     </div>
                     <form id="formAccount" class="account-form">
                         <div class="mb-3">
@@ -387,7 +387,7 @@ export class Account {
                             <div class="d-flex align-items-center mb-2 position-relative">
                                 <div class="d-flex align-items-center gap-3 text-muted">
                                     <div class="step-circle border-0">3</div>
-                                    <span>Tu cuenta</span>
+                                    <span>Cambia tu contraseña</span>
                                 </div>
                             </div>
                         </div>
@@ -668,4 +668,4 @@ export class Account {
   };
 }
 
-new Account();
+new Resetpassword();

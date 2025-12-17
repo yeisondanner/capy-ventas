@@ -27,6 +27,7 @@
 
     <section class="d-flex justify-content-center align-items-center min-vh-100 p-3 pt-4 pt-md-3">
         <div id="cardAccount" class="card shadow-lg border-0 overflow-hidden w-100 rounded-3" style="max-width: 1000px;">
+
         </div>
     </section>
 
@@ -39,8 +40,8 @@
     <script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/SweerAlert2.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
-    <script type="module" src="<?= media() ?>/js/app/POS/account/functions_account_api.js?<?= versionSystem() ?>"></script>
-    <script type="module" src="<?= media() ?>/js/app/POS/account/functions_account.js?<?= versionSystem() ?>"></script>
+    <script type="module" src="<?= media() ?>/js/app/POS/resetpassword/functions_resetpassword_api.js?<?= versionSystem() ?>"></script>
+    <script type="module" src="<?= media() ?>/js/app/POS/resetpassword/functions_resetpassword.js?<?= versionSystem() ?>"></script>
     <script type="module" src="<?= media() ?>/js/app/POS/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
 </body>
 
