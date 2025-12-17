@@ -334,9 +334,10 @@ function showAlert(data = {}, type = "float") {
     // 3. Confirmación (devuelve promesa)
     case "confirm":
       return Swal.fire({
+        target: data.target ?? "",
         title: data.title ?? "¿Estás seguro?",
         text: data.message ?? "Esta acción no se puede deshacer",
-        html: data.html ?? "",
+        html: data.html ?? "Esta acción no se puede deshacer",
         icon: data.icon ?? "warning",
         showCancelButton: true,
         confirmButtonText: data.confirmText ?? "Sí",
@@ -357,7 +358,22 @@ function showAlert(data = {}, type = "float") {
         },
       });
       break;
-
+    case "loading-float":
+      Swal.fire({
+        icon: data.icon ?? "info",
+        title: data.title ?? "Cargando...",
+        html: data.message ?? "Por favor espera",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+        toast: true,
+        position: data.position ?? "top-end",
+        showConfirmButton: false,
+        timerProgressBar: true,
+      });
+      break;
     // 5. Snackbar abajo
     case "bottom":
       Swal.fire({

@@ -1200,6 +1200,7 @@
    * @param {number} productId
    */
   async function loadProductForEdition(productId) {
+    showAlert({ title: "Cargando producto..." }, "loading-float");
     try {
       const response = await fetch(
         `${base_url}/pos/Inventory/getProduct?id=${productId}`
@@ -1266,13 +1267,18 @@
         const divcard = document.createElement("div");
         divcard.classList.add("col-4", "p-2");
         divcard.innerHTML = `
-                      <div class=" border rounded-3 bg-light position-relative">
+                      <div class=" border rounded-3 bg-light position-relative shadow-sm">
                           <img src="${base_url}/Loadfile/iconproducts?f=${item.name}" class="img-fluid" alt="">
-                          <button type="button" class="btn btn-secondary btn-sm position-absolute top-0 end-0 delete-img" data-id="${item.id}" data-name="${item.name}"><i class="bi bi-x-lg"></i></button>
+                          <button type="button" class="btn btn-secondary btn-sm position-absolute top-0 end-0 delete-img" data-id="${item.idProduct_file}" data-name="${item.name}"><i class="bi bi-x-lg"></i></button>
                       </div>
         `;
         document.getElementById("listImagesContainer").appendChild(divcard);
+        setTimeout(() => {
+          loadBtnDelete();
+        }, 500);
       });
+      //carganmos las acciones de los botones
+      loadBtnDelete();
       showModal(modalUpdate);
     } catch (error) {
       console.error("Error obteniendo producto", error);
@@ -1281,6 +1287,9 @@
         title: "Ocurrió un error",
         message: "No fue posible cargar la información del producto.",
       });
+    } finally {
+      //cerramos la alerta de carga
+      Swal.close();
     }
   }
   /**
@@ -1400,6 +1409,35 @@
         };
         reader.readAsDataURL(file);
       }
+    });
+  }
+  /**
+   * Metodo que se encarga de cargar los botones de eliminar para las imagenes
+   *
+   */
+  function loadBtnDelete() {
+    if (!document.querySelectorAll(".delete-img")) return;
+    const bntDeleteImg = document.querySelectorAll(".delete-img");
+    bntDeleteImg.forEach((item) => {
+      item.addEventListener("click", (event) => {
+        //capturamos los atributos
+        const id = event.target.getAttribute("data-id");
+        const name = event.target.getAttribute("data-name");
+        Swal.fire({
+          target: document.getElementById("modalUpdateProduct"),
+          title: "¿Eliminar imagen?",
+          html: `Se eliminará definitivamente la imagen <strong>${name}</strong>. Esta acción no se puede deshacer.`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Si, hazlo!",
+          cancelButtonText: "Cancelar",
+          focusCancel: true,
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            return;
+          }
+        });
+      });
     });
   }
 
