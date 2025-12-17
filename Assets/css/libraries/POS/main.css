@@ -3187,7 +3187,7 @@ textarea.form-control-lg {
   text-align: center;
   white-space: nowrap;
   background-color: var(--bs-tertiary-bg);
-  border: 1px solid var(--bs-border-color);
+  border: 2px solid var(--bs-border-color);
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
 }
