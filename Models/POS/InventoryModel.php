@@ -65,7 +65,7 @@ class InventoryModel extends Mysql
                 INNER JOIN category AS c ON c.idCategory = p.category_id
                 INNER JOIN measurement AS m ON m.idMeasurement = p.measurement_id
                 INNER JOIN supplier AS s ON s.idSupplier = p.supplier_id
-                INNER JOIN product_file AS pf ON pf.product_id = p.idProduct
+                LEFT JOIN product_file AS pf ON pf.product_id = p.idProduct
             WHERE
                 p.idProduct = ?
                 AND c.business_id = ?
