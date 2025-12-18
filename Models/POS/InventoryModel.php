@@ -58,15 +58,22 @@ class InventoryModel extends Mysql
                 p.*,
                 c.name AS category_name,
                 m.name AS measurement_name,
-                s.company_name AS supplier_name
-            FROM product AS p
-            INNER JOIN category AS c ON c.idCategory = p.category_id
-            INNER JOIN measurement AS m ON m.idMeasurement = p.measurement_id
-            INNER JOIN supplier AS s ON s.idSupplier = p.supplier_id
-            WHERE p.idProduct = ?
-              AND c.business_id = ?
-              AND s.business_id = ?
-            LIMIT 1;
+                s.company_name AS supplier_name,
+                pf.`name` as 'image_main'
+            FROM
+                product AS p
+                INNER JOIN category AS c ON c.idCategory = p.category_id
+                INNER JOIN measurement AS m ON m.idMeasurement = p.measurement_id
+                INNER JOIN supplier AS s ON s.idSupplier = p.supplier_id
+                INNER JOIN product_file AS pf ON pf.product_id = p.idProduct
+            WHERE
+                p.idProduct = ?
+                AND c.business_id = ?
+                AND s.business_id = ?
+            GROUP BY
+                p.idProduct
+            LIMIT
+                1;
         SQL;
 
         $result = $this->select($sql, [$productId, $businessId, $businessId]);

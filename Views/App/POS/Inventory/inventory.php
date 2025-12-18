@@ -179,7 +179,7 @@
                             <!-- Contenedor con proporción fija 4:3 para la imagen principal -->
                             <div class="ratio ratio-4x3 mb-3">
                                 <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop"
-                                    class="rounded border object-fit-cover"
+                                    class="rounded border object-fit-cover" id="reportImageMain" loading="lazy"
                                     alt="Producto Principal">
                             </div>
 
@@ -232,25 +232,8 @@
                         <!-- Galería Visual con Proporción 1:1 (Cuadrada) -->
                         <div class="bg-white p-3 border rounded shadow-sm mb-3">
                             <label class="text-muted fw-bold d-block text-uppercase small mb-2" style="font-size: 0.7rem;">Galería de Fotos</label>
-                            <div class="row g-2">
-                                <div class="col-4">
-                                    <div class="ratio ratio-1x1">
-                                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=200&auto=format&fit=crop"
-                                            class="rounded border object-fit-cover" alt="Vista 1">
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="ratio ratio-1x1">
-                                        <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=200&auto=format&fit=crop"
-                                            class="rounded border object-fit-cover" alt="Vista 2">
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="ratio ratio-1x1">
-                                        <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?q=80&w=200&auto=format&fit=crop"
-                                            class="rounded border object-fit-cover" alt="Vista 3">
-                                    </div>
-                                </div>
+                            <div class="row g-2 overflow-y-auto" style="max-height: 200px;" id="listReportImages">
+                                --
                             </div>
                         </div>
 
@@ -342,7 +325,7 @@
                                         <div class="row" id="listImagesContainer">
                                             <div class="col-4 p-2">
                                                 <div class=" border rounded-3 bg-light position-relative">
-                                                    <img src="<?= base_url(); ?>/Loadfile/iconproducts?f=product.png" class="img-fluid" alt="">
+                                                    <img src="<?= base_url(); ?>/Loadfile/iconproducts?f=product.png" class="img-fluid" alt="" loading="lazy">
                                                     <button type="button" class="btn btn-secondary btn-sm position-absolute top-0 end-0"><i class="bi bi-x-lg"></i></button>
                                                 </div>
                                             </div>

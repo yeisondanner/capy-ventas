@@ -277,6 +277,7 @@ class Inventory extends Controllers
                 'status'         => $product['status'],
                 'currency_symbol' => $currencySymbol,
                 'images'         => $images ?? [],
+                'image_main'     => $product['image_main'] ?? ''
             ],
         ];
 

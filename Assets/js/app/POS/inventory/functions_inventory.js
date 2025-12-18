@@ -94,10 +94,14 @@
    * @param {string} elementId Identificador del elemento a actualizar.
    * @param {string} value Texto que se mostrará.
    */
-  function setReportField(elementId, value) {
+  function setReportField(elementId, value, val = 1) {
     const element = document.getElementById(elementId);
     if (!element) return;
-    element.textContent = value;
+    if (val === 1) {
+      element.textContent = value;
+    } else if (val === 2) {
+      element.src = value;
+    }
   }
 
   /**
@@ -164,16 +168,29 @@
         product.sales_price || 0
       ).toFixed(2)}`;
 
-    setReportField("reportProductStock", stockText);
-    setReportField("reportProductPurchase", purchaseText);
-    setReportField("reportProductSale", saleText);
-
     const description =
       typeof product.description === "string" && product.description.trim()
         ? product.description
         : "Sin descripción registrada.";
+    const img_main =
+      base_url + "/Loadfile/iconproducts?f=" + product.image_main;
+    const images = product.images;
     setReportField("reportProductDescription", description);
-
+    setReportField("reportProductStock", stockText);
+    setReportField("reportProductPurchase", purchaseText);
+    setReportField("reportProductSale", saleText);
+    setReportField("reportImageMain", img_main, 2);
+    const listReportImages = document.getElementById("listReportImages");
+    listReportImages.innerHTML = "";
+    //recorremos todas las imagenes para mostrar
+    images.forEach((item) => {
+      const divcard = document.createElement("div");
+      divcard.classList.add("col-4");
+      divcard.innerHTML = `<div class="ratio ratio-1x1">
+                             <img src="${base_url}/Loadfile/iconproducts?f=${item.name}" class="rounded border object-fit-cover" alt="Vista 1">
+                          </div>`;
+      listReportImages.appendChild(divcard);
+    });
     renderReportStatus(product.status || "");
   }
 
@@ -1276,7 +1293,7 @@
         divcard.id = `cardImg${item.idProduct_file}`;
         divcard.innerHTML = `
                       <div class=" border rounded-3 bg-light position-relative shadow-sm">
-                          <img src="${base_url}/Loadfile/iconproducts?f=${item.name}" class="img-fluid" alt="">
+                          <img src="${base_url}/Loadfile/iconproducts?f=${item.name}" class="img-fluid" alt="" loading="lazy">
                           <button type="button" class="btn btn-secondary btn-sm position-absolute top-0 end-0 delete-img" data-id="${item.idProduct_file}" data-name="${item.name}"><i class="bi bi-x-lg"></i></button>
                       </div>
         `;
