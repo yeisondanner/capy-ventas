@@ -97,8 +97,15 @@ export class Box {
     // Evento: Clic en "Arqueo de Caja" (Dentro de Gestión)
     $("#btnOpenModalArqueoBox").on("click", this.#handleClickAbrirModalArqueo);
 
+    $("#btnLimpiarArqueo").on("click", () => {
+      this.#limpiarArqueo();
+    });
+
     // Configurar lógica del formulario de apertura
     this.#setupFormularioApertura();
+
+    // Lógica para guadar arqueo de caja
+    this.#handleClickRegistrarArqueoCaja();
   };
 
   // ==========================================
@@ -207,6 +214,44 @@ export class Box {
         this.#inputMontoApertura.val(0);
         this.#verificarEstadoCaja(); // Reiniciar vista
       }
+    });
+  };
+
+  // Registrar un arqueo de caja
+  #handleClickRegistrarArqueoCaja = () => {
+    $("#setArqueoCaja").on("click", async () => {
+      // Validamos que haya almenos un efectivo insertado
+      if (this.#totalEfectivoContado === 0) {
+        return showAlert({
+          title: "Validación",
+          icon: "warning",
+          message: "Por favor seleccione almenos un efectivo.",
+        });
+      }
+
+      // Convertimos el Map a un Array legible para el enpoint
+      const detallesArray = [];
+      this.#mapaConteoEfectivo.forEach((data, key) => {
+        if (data.cantidad > 0) {
+          detallesArray.push({
+            denomination_id: key,
+            cantidad: data.cantidad,
+            total: data.total_amount,
+          });
+        }
+      });
+
+      // validamos si existe alguna justificacion
+      const notes = $("#quick_access_arqueo_justificacion").val() || null;
+
+      const params = {
+        conteo_efectivo: detallesArray,
+        notes: notes,
+        type: "Auditoria",
+      };
+
+      const response = await this.apiBox.post("setBoxCashCount", params);
+      console.log(response);
     });
   };
 
@@ -629,6 +674,27 @@ export class Box {
             </div>
         </div>
     </div>`;
+  };
+
+  // TODO: Limpiar todo el proceso de arqueo (Reset Total)
+  #limpiarArqueo = () => {
+    // 1. Resetear variables de estado (Lógica)
+    this.#totalEfectivoContado = 0;
+
+    // Recorremos el mapa y reiniciamos los valores, pero MANTENEMOS la configuración (precio/tipo)
+    this.#mapaConteoEfectivo.forEach((data) => {
+      data.cantidad = 0;
+      data.total_amount = 0;
+    });
+
+    // 2. Limpiar Inputs Visuales (DOM)
+    // Buscamos todos los inputs dentro del contenedor y los dejamos vacíos
+    this.#containerArqueoInputsDinero.find("input[type='number']").val("");
+
+    // 3. Refrescar la UI
+    // Llamamos a tu función existente para que recalcule totales (que serán 0)
+    // y limpie las alertas de diferencia automáticamente.
+    this.#actualizarUIArqueo();
   };
 }
 

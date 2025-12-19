@@ -88,7 +88,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="modal-body d-flex flex-column p-4 gap-4">
-                <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex justify-content-between">
                     <div>
                         <h3 class="fw-bold mb-1">Apertura de Caja</h3>
                         <p class="text-muted mb-0 small">Configure los detalles para iniciar turno</p>
@@ -163,7 +163,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="modal-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex justify-content-between mb-4">
                     <div>
                         <h4 class="fw-bold mb-1">Movimientos y Gestión</h4>
                         <div class="d-flex align-items-center gap-2 small text-muted">
@@ -316,7 +316,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="modal-body p-4 bg-light">
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex justify-content-between mb-4">
                     <div>
                         <h4 class="fw-bold mb-1">Arqueo de Caja</h4>
                         <div class="d-flex align-items-center gap-2 small text-muted">
@@ -367,8 +367,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                     </div>
                                     <div class="flex-fill">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control rounded-4 border-opacity-75" id="txtJustification" placeholder="Motivo">
-                                            <label for="txtJustification" class="text-muted"><i class="bi bi-pencil-square me-1"></i>Justificación</label>
+                                            <input type="text" class="form-control rounded-4 border-opacity-75" id="quick_access_arqueo_justificacion" placeholder="Motivo">
+                                            <label for="quick_access_arqueo_justificacion" class="text-muted"><i class="bi bi-pencil-square me-1"></i>Justificación</label>
                                         </div>
                                     </div>
                                 </div>
@@ -379,7 +379,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         <div class="card border rounded-4 h-100 bg-white shadow-sm">
                             <div class="card-header bg-transparent border-bottom pt-3 pb-2 d-flex justify-content-between align-items-center">
                                 <h6 class="fw-bold text-muted mb-0"><i class="bi bi-cash-stack me-2 text-primary"></i>Conteo de Efectivo</h6>
-                                <button class="btn btn-sm btn-light border rounded-pill px-3">Limpiar</button>
+                                <button id="btnLimpiarArqueo" class="btn btn-sm btn-light border rounded-pill px-3">Limpiar</button>
                             </div>
                             <div class="card-body p-4">
                                 <div id="quick_access_arqueo_currency_denominations">
@@ -403,7 +403,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <button type="button" class="btn btn-light border fw-bold rounded-pill px-4 text-muted" data-bs-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="button" class="btn btn-primary fw-bold rounded-pill px-4 shadow-sm">
+                    <button id="setArqueoCaja" type="button" class="btn btn-primary fw-bold rounded-pill px-4 shadow-sm">
                         <i class="bi bi-check2-circle me-2"></i> Confirmar Arqueo
                     </button>
                 </div>
