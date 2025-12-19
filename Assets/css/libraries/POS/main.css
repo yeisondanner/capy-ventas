@@ -3,8 +3,8 @@
  * Vali Admin
  * Author: Pratik Borsadiya
  * ================================*/
-@import url(https://fonts.googleapis.com/css?family=Lato:300,400,400i,700);
-@import url(https://fonts.googleapis.com/css?family=Niconne);
+/* @import url(https://fonts.googleapis.com/css?family=Lato:300,400,400i,700);
+@import url(https://fonts.googleapis.com/css?family=Niconne); */
 /*!
  * Bootstrap  v5.3.2 (https://getbootstrap.com/)
  * Copyright 2011-2023 The Bootstrap Authors
@@ -14,19 +14,15 @@
  /* --- 1. Configuración de INTER (Variable) --- */
 @font-face {
     font-family: 'Inter';
-    /* Ajusta la ruta 'assets/fonts/...' según donde guardaste el archivo */
-    src: url('../../../fonts/POS/inter/Inter-VariableFont_opsz,wght.ttf') format('truetype-variations');
-    /* Esto le dice al navegador que este archivo sirve para cualquier grosor del 100 al 900 */
+    src: url('../../../fonts/POS/inter/Inter-VariableFont_opsz\,wght.ttf') format('truetype-variations');
     font-weight: 100 900; 
     font-style: normal;
 }
 
 @font-face {
   font-family: "Playwrite HU";
-  /* Ajusta la ruta 'assets/fonts/...' según donde guardaste el archivo */
   src: url("../../../fonts/POS/playwritehu/PlaywriteHU-VariableFont_wght.ttf")
     format("truetype-variations");
-  /* Esta fuente tiene un rango menor, de 100 a 400 */
   font-weight: 100 400;
   font-style: normal;
 }
@@ -3187,7 +3183,7 @@ textarea.form-control-lg {
   text-align: center;
   white-space: nowrap;
   background-color: var(--bs-tertiary-bg);
-  border: 1px solid var(--bs-border-color);
+  border: 2px solid var(--bs-border-color);
   border-top-left-radius: 1rem;
   border-bottom-left-radius: 1rem;
 }
@@ -14078,7 +14074,7 @@ fieldset:disabled .btn {
     margin-left: 0;
   }
   .app.sidenav-toggled .app-sidebar {
-    left: -230px;
+    left: -250px;
   }
   .app.sidenav-toggled .app-sidebar__overlay {
     visibility: hidden;
@@ -14089,7 +14085,7 @@ fieldset:disabled .btn {
     overflow-x: hidden;
   }
   .app .app-sidebar {
-    left: -230px;
+    left: -250px;
   }
   .app .app-sidebar__overlay {
     visibility: hidden;
@@ -14115,7 +14111,7 @@ fieldset:disabled .btn {
 }
 @media (min-width: 768px) {
   .app-content {
-    margin-left: 230px;
+    margin-left: 250px;
   }
 }
 @media (max-width: 767px) {
@@ -14181,10 +14177,10 @@ fieldset:disabled .btn {
   flex: 1 0 auto;
   color: #fff;
   text-align: center;
-  font-family: "Niconne";
+  font-family: "Playwrite HU", "Niconne";
   padding: 0 15px;
-  font-size: 26px;
-  font-weight: 400;
+  font-size: 1.2rem;
+  font-weight: 700;
   line-height: 50px;
   text-decoration: none;
 }
@@ -14194,7 +14190,7 @@ fieldset:disabled .btn {
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
     display: block;
-    width: 230px;
+    width: 250px;
     background-color: var(--bs-secondary);
   }
 }
@@ -14383,9 +14379,9 @@ fieldset:disabled .btn {
   bottom: 0;
   left: 0;
   padding-top: 70px;
-  width: 230px;
+  width: 250px;
   overflow: auto;
-  z-index: 10;
+  z-index: 100;
   background-color: #222d32;
   -webkit-box-shadow: 0px 8px 17px rgba(0, 0, 0, 0.2);
   box-shadow: 0px 8px 17px rgba(0, 0, 0, 0.2);

@@ -58,15 +58,22 @@ class InventoryModel extends Mysql
                 p.*,
                 c.name AS category_name,
                 m.name AS measurement_name,
-                s.company_name AS supplier_name
-            FROM product AS p
-            INNER JOIN category AS c ON c.idCategory = p.category_id
-            INNER JOIN measurement AS m ON m.idMeasurement = p.measurement_id
-            INNER JOIN supplier AS s ON s.idSupplier = p.supplier_id
-            WHERE p.idProduct = ?
-              AND c.business_id = ?
-              AND s.business_id = ?
-            LIMIT 1;
+                s.company_name AS supplier_name,
+                pf.`name` as 'image_main'
+            FROM
+                product AS p
+                INNER JOIN category AS c ON c.idCategory = p.category_id
+                INNER JOIN measurement AS m ON m.idMeasurement = p.measurement_id
+                INNER JOIN supplier AS s ON s.idSupplier = p.supplier_id
+                LEFT JOIN product_file AS pf ON pf.product_id = p.idProduct
+            WHERE
+                p.idProduct = ?
+                AND c.business_id = ?
+                AND s.business_id = ?
+            GROUP BY
+                p.idProduct
+            LIMIT
+                1;
         SQL;
 
         $result = $this->select($sql, [$productId, $businessId, $businessId]);
@@ -514,6 +521,59 @@ class InventoryModel extends Mysql
         SQL;
 
         $result = $this->update($sql, [$status, $idproduct]);
+
+        return $result;
+    }
+    /**
+     * Metodo que se encarga insertar nueva foto
+     * del producto
+     * @param array $data
+     * @return 
+     */
+    public function insert_product_file(array $data)
+    {
+        $sql = <<<SQL
+            INSERT INTO 
+            `product_file` 
+            (`product_id`, `name`, `extension`, `size`) 
+            VALUES 
+            (?, ?, ?, ?);
+        SQL;
+        $insert = $this->insert($sql, [
+            $data['product_id'],
+            $data['name'],
+            $data['extension'],
+            $data['size']
+        ]);
+        return $insert;
+    }
+    /**
+     * Metodo que se encarga de desactivar la imagen
+     * @param int $id
+     * @param string $status
+     * @return void
+     */
+    public function update_status_product_file(int $id, string $status)
+    {
+        $sql = <<<SQL
+            UPDATE `product_file` SET `status`=? WHERE  `idProduct_file`=?;
+        SQL;
+        $request = $this->update($sql, [$status, $id]);
+        return $request;
+    }
+    /**
+     * Metodo que se encarga de obtener 
+     * todas las imagenes que estan activas
+     * @param int $idproduct
+     * @return array
+     */
+    public function selectProductFile(int $idproduct): array
+    {
+        $sql = <<<SQL
+            SELECT*FROM product_file AS pf WHERE pf.product_id=? AND pf.`status`='Activo';
+        SQL;
+
+        $result = $this->select_all($sql, [$idproduct]);
 
         return $result;
     }

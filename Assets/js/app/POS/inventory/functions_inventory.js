@@ -94,10 +94,14 @@
    * @param {string} elementId Identificador del elemento a actualizar.
    * @param {string} value Texto que se mostrará.
    */
-  function setReportField(elementId, value) {
+  function setReportField(elementId, value, val = 1) {
     const element = document.getElementById(elementId);
     if (!element) return;
-    element.textContent = value;
+    if (val === 1) {
+      element.textContent = value;
+    } else if (val === 2) {
+      element.src = value;
+    }
   }
 
   /**
@@ -164,16 +168,29 @@
         product.sales_price || 0
       ).toFixed(2)}`;
 
-    setReportField("reportProductStock", stockText);
-    setReportField("reportProductPurchase", purchaseText);
-    setReportField("reportProductSale", saleText);
-
     const description =
       typeof product.description === "string" && product.description.trim()
         ? product.description
         : "Sin descripción registrada.";
+    const img_main =
+      base_url + "/Loadfile/iconproducts?f=" + product.image_main;
+    const images = product.images;
     setReportField("reportProductDescription", description);
-
+    setReportField("reportProductStock", stockText);
+    setReportField("reportProductPurchase", purchaseText);
+    setReportField("reportProductSale", saleText);
+    setReportField("reportImageMain", img_main, 2);
+    const listReportImages = document.getElementById("listReportImages");
+    listReportImages.innerHTML = "";
+    //recorremos todas las imagenes para mostrar
+    images.forEach((item) => {
+      const divcard = document.createElement("div");
+      divcard.classList.add("col-4");
+      divcard.innerHTML = `<div class="ratio ratio-1x1">
+                             <img src="${base_url}/Loadfile/iconproducts?f=${item.name}" class="rounded border object-fit-cover" alt="Vista 1">
+                          </div>`;
+      listReportImages.appendChild(divcard);
+    });
     renderReportStatus(product.status || "");
   }
 
@@ -866,27 +883,27 @@
         {
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
-          className: "btn btn-secondary",
+          className: "btn btn-sm btn-outline-secondary my-2",
           exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
-          className: "btn btn-success",
+          className: "btn btn-sm btn-outline-success my-2",
           title: "Productos",
           exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
-          className: "btn btn-info text-white",
+          className: "btn btn-sm btn-outline-info my-2",
           title: "Productos",
           exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
         },
         {
           extend: "pdfHtml5",
           text: "<i class='bi bi-filetype-pdf'></i> PDF",
-          className: "btn btn-danger",
+          className: "btn btn-sm btn-outline-danger my-2",
           orientation: "portrait",
           pageSize: "A4",
           title: "Productos",
@@ -1200,6 +1217,7 @@
    * @param {number} productId
    */
   async function loadProductForEdition(productId) {
+    showAlert({ title: "Cargando producto..." }, "loading-float");
     try {
       const response = await fetch(
         `${base_url}/pos/Inventory/getProduct?id=${productId}`
@@ -1254,7 +1272,6 @@
       document.getElementById(
         "update_txtProductMeasurement"
       ).value = `${product.measurement_id}`;
-      document.getElementById("update_txtProductStatus").value = product.status;
       document.getElementById("update_txtProductStock").value = product.stock;
       document.getElementById("update_txtProductPurchasePrice").value =
         product.purchase_price;
@@ -1262,6 +1279,30 @@
         product.sales_price;
       document.getElementById("update_txtProductDescription").value =
         product.description || "";
+      document.getElementById("listImagesContainer").innerHTML = "";
+      document.getElementById(
+        "update_logoPreview"
+      ).src = `${base_url}/Loadfile/iconproducts?f=sinimagen`;
+      product.images.forEach((item, idx) => {
+        document.getElementById(
+          "update_logoPreview"
+        ).src = `${base_url}/Loadfile/iconproducts?f=${item.name}`;
+
+        const divcard = document.createElement("div");
+        divcard.classList.add("col-4", "p-2");
+        divcard.id = `cardImg${item.idProduct_file}`;
+        divcard.innerHTML = `
+                      <div class=" border rounded-3 bg-light position-relative shadow-sm">
+                          <img src="${base_url}/Loadfile/iconproducts?f=${item.name}" class="img-fluid" alt="" loading="lazy">
+                          <button type="button" class="btn btn-secondary btn-sm position-absolute top-0 end-0 delete-img" data-id="${item.idProduct_file}" data-name="${item.name}"><i class="bi bi-x-lg"></i></button>
+                      </div>
+        `;
+        document.getElementById("listImagesContainer").appendChild(divcard);
+      });
+      //carganmos las acciones de los botones
+      setTimeout(() => {
+        loadBtnDelete();
+      }, 150);
       showModal(modalUpdate);
     } catch (error) {
       console.error("Error obteniendo producto", error);
@@ -1270,6 +1311,10 @@
         title: "Ocurrió un error",
         message: "No fue posible cargar la información del producto.",
       });
+    } finally {
+      //cerramos la alerta de carga
+      loadBtnDelete();
+      Swal.close();
     }
   }
   /**
@@ -1364,8 +1409,8 @@
    * @returns void
    */
   function loadPreviewImage() {
-    if (!document.getElementById("logoInput")) return;
-    const logoInput = document.getElementById("logoInput");
+    if (!document.getElementById("flInput")) return;
+    const logoInput = document.getElementById("flInput");
     // Preview de imagen
     logoInput.addEventListener("change", function (event) {
       const file = event.target.files[0];
@@ -1376,6 +1421,74 @@
         };
         reader.readAsDataURL(file);
       }
+    });
+    if (!document.getElementById("update_flInput")) return;
+    const updateLogoInput = document.getElementById("update_flInput");
+    // Preview de imagen
+    updateLogoInput.addEventListener("change", function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          document.getElementById("update_logoPreview").src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+  /**
+   * Metodo que se encarga de cargar los botones de eliminar para las imagenes
+   *
+   */
+  function loadBtnDelete() {
+    if (!document.querySelectorAll(".delete-img")) return;
+    const bntDeleteImg = document.querySelectorAll(".delete-img");
+    bntDeleteImg.forEach((item) => {
+      item.addEventListener("click", (event) => {
+        //capturamos los atributos
+        const id = event.target.getAttribute("data-id");
+        const name = event.target.getAttribute("data-name");
+        Swal.fire({
+          target: document.getElementById("modalUpdateProduct"),
+          title: "¿Eliminar imagen?",
+          html: `Se eliminará definitivamente la imagen <strong>${name}</strong>. Esta acción no se puede deshacer.`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Si, hazlo!",
+          cancelButtonText: "Cancelar",
+          focusCancel: true,
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            //mostramos un mensaje
+            showAlert({ title: "Eliminando imagen..." }, "loading");
+            const formdata = new FormData();
+            formdata.append("id", id);
+            formdata.append("name", name);
+            const url = `${base_url}/pos/Inventory/deletePhotoImage`;
+            const config = {
+              method: "POST",
+              body: formdata,
+            };
+            try {
+              const reponse = await fetch(url, config);
+              const data = await reponse.json();
+              if (data.status) {
+                //eliminamos el card por su id
+                document.getElementById(`cardImg${id}`).remove();
+              }
+              showAlert(data);
+            } catch (error) {
+              console.table(error);
+              showAlert({
+                icon: "error",
+                title: "Ocurrió un error",
+                message: "No fue posible eliminar la imagen.",
+              });
+            }
+            return;
+          }
+        });
+      });
     });
   }
 

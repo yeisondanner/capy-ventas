@@ -788,12 +788,12 @@ function resizeAndCompressImage($sourcePath, $destinationPath, $maxSizeMB = 2, $
     list($width, $height, $type) = getimagesize($sourcePath);
     // Verifica que GD esté habilitada
     if (!extension_loaded('gd')) {
-        registerLog(
+        /*registerLog(
             "Extensión GD no disponible",
             "No se pudo cargar la extensión GD. Actívela en el servidor.",
             1,
             $_SESSION['login_info']['idUser']
-        );
+        );*/
 
         $data = array(
             "title" => "Error al procesar imagen",
@@ -1326,18 +1326,23 @@ function dateDifference($fechaInicio, $fechaFin)
     // Calcular la diferencia entre las dos fechas
     $diferencia = $inicio->diff($fin);
 
-    // Retornar los valores individuales y acumulados
+    // Determinar el signo: si invert es 1, la fecha de inicio es mayor a la fin (negativo)
+    $signo = ($diferencia->invert === 1) ? -1 : 1;
+
+    // Retornar los valores individuales y acumulados multiplicados por el signo
     return [
-        'años' => $diferencia->y,
-        'meses' => $diferencia->m,
-        'días' => $diferencia->d,
-        'horas' => $diferencia->h,
-        'minutos' => $diferencia->i,
-        'segundos' => $diferencia->s,
-        'total_dias' => $diferencia->days,
-        'total_horas' => ($diferencia->days * 24) + $diferencia->h,
-        'total_minutos' => (($diferencia->days * 24) + $diferencia->h) * 60 + $diferencia->i,
-        'total_segundos' => (((($diferencia->days * 24) + $diferencia->h) * 60) + $diferencia->i) * 60 + $diferencia->s
+        'años'           => $diferencia->y * $signo,
+        'meses'          => $diferencia->m * $signo,
+        'días'           => $diferencia->d * $signo,
+        'horas'          => $diferencia->h * $signo,
+        'minutos'        => $diferencia->i * $signo,
+        'segundos'       => $diferencia->s * $signo,
+
+        // Totals (se calculan en absoluto y luego se aplica el signo al final)
+        'total_dias'     => $diferencia->days * $signo,
+        'total_horas'    => (($diferencia->days * 24) + $diferencia->h) * $signo,
+        'total_minutos'  => ((($diferencia->days * 24) + $diferencia->h) * 60 + $diferencia->i) * $signo,
+        'total_segundos' => ((((($diferencia->days * 24) + $diferencia->h) * 60) + $diferencia->i) * 60 + $diferencia->s) * $signo
     ];
 }
 /**

@@ -84,7 +84,6 @@ class Sales extends Controllers
         validate_permission_app(1, "r");
         $businessId = $this->getBusinessId();
         $categories = $this->model->selectPopularCategories($businessId, 5);
-
         if (!is_array($categories) || count($categories) === 0) {
             toJson([
                 'status'     => true,

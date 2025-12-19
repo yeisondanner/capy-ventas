@@ -29,16 +29,19 @@ class SalesModel extends Mysql
                         p.stock AS 'stock',
                         p.sales_price AS 'price',
                         c.`name` AS 'category',
-                        s.company_name AS 'supplier'
+                        s.company_name AS 'supplier',
+                        pf.`name` AS 'photo'
                     FROM
                         product AS p
                         INNER JOIN category AS c ON c.idCategory = p.category_id
                         INNER JOIN measurement AS m ON m.idMeasurement = p.measurement_id
                         INNER JOIN supplier AS s ON s.idSupplier = p.supplier_id
+                        LEFT JOIN product_file AS pf ON pf.product_id=p.idProduct
                     WHERE
                         c.business_id = ?
                         AND s.business_id = ?
-                        AND p.status = 'Activo';
+                        AND p.status = 'Activo'
+                    GROUP BY p.idProduct;
         SQL;
         $result = $this->select_all($sql, [$this->idBusiness, $this->idBusiness]);
         return $result;

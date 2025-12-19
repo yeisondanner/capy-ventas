@@ -125,7 +125,7 @@ class Inventory extends Controllers
             'txtProductMeasurement',
             'txtProductSupplier',
             'txtProductPurchasePrice',
-            'txtProductSalesPrice',
+            'txtProductSalesPrice'
         ];
         validateFields($requiredFields);
         $businessId    = $this->getBusinessId();
@@ -138,7 +138,7 @@ class Inventory extends Controllers
         $sales         = $this->sanitizeDecimal($_POST['txtProductSalesPrice'] ?? '0', 'precio de venta');
         $status        = 'Activo';
         $description   = strClean($_POST['txtProductDescription'] ?? '');
-
+        $flInput       = $_FILES['flInput'];
         if ($name === '') {
             $this->responseError('El nombre del producto es obligatorio.');
         }
@@ -153,6 +153,13 @@ class Inventory extends Controllers
 
         if ($supplierId <= 0) {
             $this->responseError('Debes seleccionar un proveedor válido.');
+        }
+        //validamos que el campo no este vacio
+        if (!empty($flInput['name'])) {
+            //validamos si el archivo es valido de acuerdo al tipo de archivo
+            if (isFile('image', $flInput, ['png', 'jpg', 'jpeg'])) {
+                $this->responseError('El archivo debe ser una imagen.');
+            }
         }
 
         $this->ensureCategoryBelongsToBusiness($categoryId, $businessId);
@@ -179,6 +186,32 @@ class Inventory extends Controllers
         $productId = $this->model->insertProduct($payload);
         if ($productId <= 0) {
             $this->responseError('No fue posible registrar el producto, inténtalo nuevamente.');
+        }
+        //validamos que el campo no este vacio
+        if (!empty($flInput['name'])) {
+            //preparamos la ruta de almacenamiento del logo
+            $urlFile = getRoute();
+            verifyFolder($urlFile);
+            $urlFile .= '/Products';
+            verifyFolder($urlFile);
+            $urlFile .= '/logo';
+            verifyFolder($urlFile);
+            $extension = pathinfo($flInput['name'], PATHINFO_EXTENSION);
+            $productname = $productId . '-' . time() . '.' . $extension;
+            $sizefile = valConvert($flInput['size'])['MB'];
+            $urlFile .= '/' . $productname;
+            if ($sizefile > 2) {
+                resizeAndCompressImage($flInput['tmp_name'], $urlFile, 2);
+            } else {
+                move_uploaded_file($flInput['tmp_name'], $urlFile);
+            }
+            $arrValues = [
+                'product_id' => $productId,
+                'name' => $productname,
+                'extension' => $extension,
+                'size' => $flInput['size']
+            ];
+            $this->model->insert_product_file($arrValues);
         }
 
         $data = [
@@ -218,6 +251,7 @@ class Inventory extends Controllers
         }
 
         $currencySymbol = getCurrency();
+        $images         = $this->model->selectProductFile($productId);
 
         $data = [
             'status' => true,
@@ -242,6 +276,8 @@ class Inventory extends Controllers
                 'description'    => $product['description'] ?? '',
                 'status'         => $product['status'],
                 'currency_symbol' => $currencySymbol,
+                'images'         => $images ?? [],
+                'image_main'     => $product['image_main'] ?? ''
             ],
         ];
 
@@ -272,8 +308,7 @@ class Inventory extends Controllers
             'update_txtProductSupplier',
             'update_txtProductStock',
             'update_txtProductPurchasePrice',
-            'update_txtProductSalesPrice',
-            'update_txtProductStatus',
+            'update_txtProductSalesPrice'
         ];
 
         foreach ($requiredFields as $field) {
@@ -291,9 +326,9 @@ class Inventory extends Controllers
         $stock         = $this->resolveOptionalStock($_POST['update_txtProductStock'] ?? null);
         $purchase      = $this->sanitizeDecimal($_POST['update_txtProductPurchasePrice'] ?? '0', 'precio de compra');
         $sales         = $this->sanitizeDecimal($_POST['update_txtProductSalesPrice'] ?? '0', 'precio de venta');
-        $status        = $_POST['update_txtProductStatus'] === 'Inactivo' ? 'Inactivo' : 'Activo';
+        $status        =  'Activo';
         $description   = strClean($_POST['update_txtProductDescription'] ?? '');
-
+        $flInput       = $_FILES['update_flInput'];
         if ($productId <= 0) {
             $this->responseError('Identificador de producto inválido.');
         }
@@ -313,7 +348,13 @@ class Inventory extends Controllers
         if ($supplierId <= 0) {
             $this->responseError('Debes seleccionar un proveedor válido.');
         }
-
+        //validamos que el campo no este vacio
+        if (!empty($flInput['name'])) {
+            //validamos si el archivo es valido de acuerdo al tipo de archivo
+            if (isFile('image', $flInput, ['png', 'jpg', 'jpeg'])) {
+                $this->responseError('El archivo debe ser una imagen.');
+            }
+        }
         $currentProduct = $this->model->selectProduct($productId, $businessId);
         if (empty($currentProduct)) {
             $this->responseError('El producto seleccionado no existe o no pertenece a tu negocio.');
@@ -346,6 +387,32 @@ class Inventory extends Controllers
             $this->responseError('No fue posible actualizar el producto, inténtalo nuevamente.');
         }
 
+        //validamos que el campo no este vacio
+        if (!empty($flInput['name'])) {
+            //preparamos la ruta de almacenamiento del logo
+            $urlFile = getRoute();
+            verifyFolder($urlFile);
+            $urlFile .= '/Products';
+            verifyFolder($urlFile);
+            $urlFile .= '/logo';
+            verifyFolder($urlFile);
+            $extension = pathinfo($flInput['name'], PATHINFO_EXTENSION);
+            $productname = $productId . '-' . time() . '.' . $extension;
+            $sizefile = valConvert($flInput['size'])['MB'];
+            $urlFile .= '/' . $productname;
+            if ($sizefile > 2) {
+                resizeAndCompressImage($flInput['tmp_name'], $urlFile, 2);
+            } else {
+                move_uploaded_file($flInput['tmp_name'], $urlFile);
+            }
+            $arrValues = [
+                'product_id' => $productId,
+                'name' => $productname,
+                'extension' => $extension,
+                'size' => $flInput['size']
+            ];
+            $this->model->insert_product_file($arrValues);
+        }
         $data = [
             'title'  => 'Actualización exitosa',
             'message' => 'La información del producto se actualizó correctamente.',
@@ -906,6 +973,41 @@ class Inventory extends Controllers
         $normalizedSpaces = preg_replace('/\s+/', ' ', $lower ?? '');
 
         return is_string($normalizedSpaces) ? $normalizedSpaces : '';
+    }
+    /**
+     * Metodo que se encarga de eliminar la foto
+     * del producto
+     */
+    public function deletePhotoImage()
+    {
+        //VALIDACION DE PERMISOS
+        (!validate_permission_app(3, "u", false)['status']) ? toJson(validate_permission_app(3, "u", false)) : '';
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+        validateFields(['id', 'name']);
+        $id = (int) strClean($_POST['id']);
+        $name = (string) strClean($_POST['name']);
+        validateFieldsEmpty([
+            'ID' => $id,
+            'NOMBRES' => $name
+        ]);
+        //Validamos el id de manera numerica
+        if (!is_numeric($id)) {
+            $this->responseError("El id debe ser numerico");
+        }
+        $updateStatus = $this->model->update_status_product_file($id, 'Inactivo');
+        if ($updateStatus) {
+            toJson([
+                'title'  => 'Imagen eliminada',
+                'message' => 'La imagen se elimino correctamente.',
+                'type'   => 'success',
+                'icon'   => 'success',
+                'status' => true,
+            ]);
+        } else {
+            $this->responseError('No fue posible eliminar la imagen, inténtalo nuevamente.');
+        }
     }
 
     /**

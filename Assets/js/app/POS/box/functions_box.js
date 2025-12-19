@@ -1,475 +1,634 @@
 import { ApiBox } from "./functions_box_api.js";
 
 export class Box {
-  // TODO: Informacion de movements de BOX
-  #arrayMovements = [];
-  #arrayCountEfectivo = new Map();
+  // ==========================================
+  // 1. ESTADO Y DATOS (State)
+  // ==========================================
+  #datosSesionCaja = []; // Antes: #arrayMovements
+  #mapaConteoEfectivo = new Map(); // Antes: #arrayCountEfectivo
+  #totalEfectivoSistema = 0; // Antes: #countEfectivoTotal (Lo que dice el sistema que debe haber)
+  #totalEfectivoContado = 0; // Antes: #sisEfectivoTotal (Lo que el usuario contó)
 
-  // TODO: Seleccionamos los botones
+  // ==========================================
+  // 2. ELEMENTOS DEL DOM (Selectores)
+  // ==========================================
+  // Botones
   #btnOpenBox = $("#btnOpenBox");
-  #btnUpdateRole = $("#btnUpdateRole");
-  #btnDeleteRole = $("#btnDeleteRole");
 
-  // TODO: Seleccionamos los modals
+  // Modales
   #modalAddBox = $("#modalAddBox");
   #modalGestionBox = $("#modalGestionBox");
   #modalArqueoBox = $("#modalArqueoBox");
-  #modalUpdateRole = $("#modalUpdateRole");
-  #modalDeleteRole = $("#modalDeleteRole");
-  #modalReportRole = $("#modalReportRole");
 
-  // TODO: Seleccionamos los html y valores
+  // Contenedores y Vistas
   #divOpenBox = $("#divOpenBox");
   #selectBox = $("#selectBox");
-  #cashOpeningAmount = $("#cash_opening_amount");
-  #quick_access_base_amount = $("#quick_access_base_amount");
-  #quick_access_total_general = $("#quick_access_total_general");
-  #quick_access_card_payment_method = $("#quick_access_card_payment_method");
-  #quick_access_card_list_movements = $("#quick_access_card_list_movements");
-  #quick_access_title_list_movements = $("#quick_access_title_list_movements");
+  #inputMontoApertura = $("#cash_opening_amount"); // Antes: #cashOpeningAmount
 
-  // TODO: Captura de elementos para arqueo
-  #quick_access_arqueo_efectivo_total = $(
-    "#quick_access_arqueo_efectivo_total"
-  );
-  #quick_access_arqueo_total_general = $("#quick_access_arqueo_total_general");
-  #quick_access_arqueo_total_payment_method = $(
-    "#quick_access_arqueo_total_payment_method"
-  );
-  #quick_access_arqueo_currency_denominations = $(
+  // Vista: Gestión de Caja
+  #lblBaseAmount = $("#quick_access_base_amount");
+  #lblTotalGeneral = $("#quick_access_total_general");
+  #containerMetodosPago = $("#quick_access_card_payment_method");
+  #containerListaMovimientos = $("#quick_access_card_list_movements");
+  #lblTituloMovimientos = $("#quick_access_title_list_movements");
+
+  // Vista: Arqueo (Conteo)
+  #lblArqueoTotalEfectivo = $("#quick_access_arqueo_total_efectivo");
+  #lblArqueoTotalGeneral = $("#quick_access_arqueo_total_general");
+  #containerArqueoTarjetas = $("#quick_access_arqueo_total_payment_method");
+  #containerArqueoInputsDinero = $(
     "#quick_access_arqueo_currency_denominations"
   );
+  #lblArqueoTotalContado = $("#quick_access_arqueo_count_efectivo");
+  #containerArqueoMensaje = $("#quick_access_arqueo_message");
+  #containerArqueoDiferencia = $("#quick_access_arqueo_diference");
+  #containerDesgloseFinal = $("#quick_access_desgloce_efectivo");
 
   constructor(base_url) {
     this.apiBox = new ApiBox(base_url);
-    this.#init();
-    this.#mostrarHoraEnVivo();
-    setInterval(this.#mostrarHoraEnVivo, 1000);
 
-    this.#openBox();
+    // Inicialización
+    this.#verificarEstadoCaja();
+    this.#iniciarReloj();
+    this.#configurarEventosGlobales();
   }
 
-  // TODO: Funcion que se usa al cargar la vista
-  #init = async () => {
-    // ? Verificamos que el usuario no tenga aperturada una caja
+  // ==========================================
+  // 3. INICIALIZACIÓN Y CONFIGURACIÓN
+  // ==========================================
+
+  // Verifica si hay caja abierta al cargar la página
+  #verificarEstadoCaja = async () => {
     const response = await this.apiBox.get("getuserCheckedBox");
-    if (response.status) {
-      // * Agregamos el boton de apertura de caja
-      this.#divOpenBox.html(`
-          <div class="d-flex justify-content-center align-items-center">
-                      <button id="btnOpenModalBox" class="btn btn-warning px-2 py-1 d-flex align-items-center gap-2 fw-bold">
-                          <img style="width: 22px;" src="${media_url}/icons/POS/open-box.png" alt="">
-                          <span class="fw-semibold">Abrir Caja</span>
-                      </button>
-                  </div>
-          `);
-    } else {
-      // * Agregamos el boton de movimientos y gestion de caja
-      this.#divOpenBox.html(`
-        <div class="d-flex justify-content-center align-items-center">
-                    <button id="btnOpenModalGestionBox" class="btn btn-warning px-2 py-1 d-flex align-items-center gap-2 fw-bold">
-                        <img style="width: 22px;" src="${media_url}/icons/POS/open-box.png" alt="">
-                        <span class="fw-semibold">Gestión de Caja</span>
-                    </button>
-                </div>
-        `);
+
+    // Renderiza el botón principal según el estado
+    const htmlBoton = response.status
+      ? this.#generarBotonAperturaHtml()
+      : this.#generarBotonGestionHtml();
+
+    this.#divOpenBox.html(htmlBoton);
+
+    // Una vez renderizado el botón, activamos sus listeners específicos
+    this.#activarListenersDinamicos();
+  };
+
+  #configurarEventosGlobales = () => {
+    // Aquí configuramos eventos que no dependen del botón dinámico
+    // (Por ahora todo depende del botón dinámico, así que delegamos a activarListenersDinamicos)
+
+    // Evento para el conteo de dinero en tiempo real (Delegación de eventos)
+    this.#containerArqueoInputsDinero.on(
+      "input",
+      "input[type='number']",
+      this.#handleInputConteoDinero
+    );
+  };
+
+  #activarListenersDinamicos = () => {
+    // Evento: Clic en "Abrir Caja"
+    $("#btnOpenModalBox").on("click", this.#handleClickAbrirModalSeleccion);
+
+    // Evento: Clic en "Gestión de Caja"
+    $("#btnOpenModalGestionBox").on(
+      "click",
+      this.#handleClickAbrirModalGestion
+    );
+
+    // Evento: Clic en "Arqueo de Caja" (Dentro de Gestión)
+    $("#btnOpenModalArqueoBox").on("click", this.#handleClickAbrirModalArqueo);
+
+    // Configurar lógica del formulario de apertura
+    this.#setupFormularioApertura();
+  };
+
+  // ==========================================
+  // 4. MANEJADORES DE EVENTOS (Handlers)
+  // ==========================================
+
+  // Abre el modal para seleccionar caja e iniciar turno
+  #handleClickAbrirModalSeleccion = async () => {
+    const boxs = await this.#getBoxs();
+    if (boxs && boxs.status) {
+      this.#renderOpcionesDeCaja(boxs.data);
+      this.#modalAddBox.modal("show");
     }
-    this.#openModal();
   };
 
-  // TODO: Funcion para mostrar la hora dinamica
-  #mostrarHoraEnVivo = () => {
-    const reloj = document.getElementById("reloj");
-    const reloj2 = document.getElementById("reloj_2");
-    const ahora = new Date();
-    const horaTexto = ahora.toLocaleTimeString("es-PE", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    });
-
-    reloj.innerText = horaTexto;
-    reloj2.innerText = horaTexto;
-  };
-
-  // TODO: Funcion para traer todas las cajas asociadas al negocio
-  #getBoxs = async () => {
-    const response = await this.apiBox.get("getBoxs");
+  // Abre el modal principal con los movimientos y totales
+  #handleClickAbrirModalGestion = async () => {
+    const response = await this.apiBox.get("getManagementBox");
     if (!response.status) {
-      showAlert({
-        icon: response.type,
-        title: response.title,
-        message: response.message,
-      });
+      return this.#mostrarAlerta(response);
     }
-    return response;
+
+    // Guardamos los datos de la sesión
+    this.#datosSesionCaja = {
+      amount_base: response.amount_base,
+      total_general: response.total_general,
+      movements_limit: response.movements_limit,
+      payment_method: response.payment_method,
+      total_payment_method: response.total_payment_method,
+    };
+
+    this.#renderVistaGestion();
+    this.#modalGestionBox.modal("show");
   };
 
-  // TODO: Funcion para aperturar caja
-  #openBox = () => {
-    this.#btnOpenBox.click(async () => {
-      // ? Validamos la seleccion de caja
-      if (!this.#selectBox.val()) {
-        return showAlert({
-          icon: "warning",
-          title: "Validación de campos",
-          message: "Seleccione una caja para iniciar turno.",
-        });
-      }
+  // Abre el modal de conteo de dinero (Arqueo)
+  #handleClickAbrirModalArqueo = async () => {
+    // 1. Renderizar resumen (Totales esperados)
+    this.#renderResumenEsperadoArqueo();
 
-      // ? Validamos si ingresa el monto inicial de caja
-      if (!this.#cashOpeningAmount.val() || this.#cashOpeningAmount.val() < 0) {
-        return showAlert({
-          icon: "warning",
-          title: "Validación de campos",
-          message: "El monto ingresado debe ser igual o mayor que 0",
-        });
-      }
+    // 2. Obtener billetes y monedas disponibles
+    const response = await this.apiBox.get("getCurrencyDenominations");
+    if (!response.status) return this.#mostrarAlerta(response);
 
-      // ? Registramos la apertura de caja
+    // 3. Inicializar el Map y renderizar inputs
+    this.#renderInputsDenominaciones(response.data);
+
+    // 4. Limpiar formulario para empezar de cero
+    this.#resetearFormularioArqueo();
+
+    // 5. Mostrar
+    this.#modalArqueoBox.modal("show");
+  };
+
+  // Lógica principal: Cuando el usuario escribe una cantidad en los inputs
+  #handleInputConteoDinero = (e) => {
+    const input = $(e.currentTarget);
+    const cantidad = parseFloat(input.val()) || 0;
+    const idDenomination = input.data("id");
+
+    if (this.#mapaConteoEfectivo.has(idDenomination)) {
+      const data = this.#mapaConteoEfectivo.get(idDenomination);
+
+      // 1. Actualizar Map
+      this.#mapaConteoEfectivo.set(idDenomination, {
+        ...data,
+        cantidad: cantidad,
+        total_amount: cantidad * data.value_currency,
+      });
+
+      // 2. Calcular Totales
+      this.#totalEfectivoContado = this.#calcularTotalUsuario();
+
+      // 3. Actualizar UI (Totales, Diferencias, Alertas)
+      this.#actualizarUIArqueo();
+    }
+  };
+
+  // Configura el botón de "Guardar Apertura"
+  #setupFormularioApertura = () => {
+    this.#btnOpenBox.off("click").on("click", async () => {
+      const boxId = this.#selectBox.val();
+      const monto = this.#inputMontoApertura.val();
+
+      if (!boxId)
+        return this.#mostrarAlerta({
+          icon: "warning",
+          title: "Validación",
+          message: "Seleccione una caja.",
+        });
+      if (!monto || monto < 0)
+        return this.#mostrarAlerta({
+          icon: "warning",
+          title: "Validación",
+          message: "Monto inválido.",
+        });
+
       const response = await this.apiBox.post("setOpenBox", {
-        box_id: this.#selectBox.val(),
-        cash_opening_amount: this.#cashOpeningAmount.val(),
+        box_id: boxId,
+        cash_opening_amount: monto,
       });
 
-      if (response) {
-        showAlert({
-          title: response.title,
-          icon: response.icon,
-          message: response.message,
-        });
-
-        // ? Si es correcto cerramos el modal
-        if (response.status) {
-          this.#modalAddBox.modal("hide");
-
-          // ? Limpiamos el forulario de registro
-          // this.#selectBox.val();
-          this.#cashOpeningAmount.val(0);
-
-          // ? Verificamos nuevamente si ya tiene aperturado su caja
-          this.#init();
-        }
+      this.#mostrarAlerta(response);
+      if (response.status) {
+        this.#modalAddBox.modal("hide");
+        this.#inputMontoApertura.val(0);
+        this.#verificarEstadoCaja(); // Reiniciar vista
       }
     });
   };
 
-  // TODO: Funcion para cargar los roles asociados
+  // ==========================================
+  // 5. LÓGICA DE RENDERIZADO (UI)
+  // ==========================================
 
-  // TODO: Funcion para abrir todos los modals
-  #openModal = () => {
-    // * Open Modal Box
-    $("#btnOpenModalBox").on("click", async () => {
-      const boxs = await this.#getBoxs();
-      if (boxs && boxs.status) {
-        let html =
-          '<option value="" disabled selected>Seleccione una caja...</option>';
-        boxs.data.forEach((box, index) => {
-          if (box.session === "Activo") {
-            html += `<option value="${box.idBox}">Caja ${index + 1} - ${
-              box.name
-            }</option>`;
-          } else if (box.session === "Inactivo") {
-            html += `<option class="text-danger fw-bold" disabled value="">Caja ${
-              index + 1
-            } - ${box.name} (Desabilitado)</option>`;
-          } else if (box.session === "Abierta") {
-            html += `<option class="text-primary fw-bold" disabled value="">Caja ${
-              index + 1
-            } - ${box.name} (En uso)</option>`;
-          } else {
-            html += `<option class="text-warning fw-bold" disabled value="">Caja ${
-              index + 1
-            } - ${box.name} (En Arqueo)</option>`;
-          }
-        });
-        this.#selectBox.html(html);
-        this.#modalAddBox.modal("show");
+  #renderOpcionesDeCaja = (listaCajas) => {
+    let html =
+      '<option value="" disabled selected>Seleccione una caja...</option>';
+    listaCajas.forEach((box, index) => {
+      const num = index + 1;
+      let clase = "";
+      let textoExtra = "";
+      let disabled = "disabled";
+
+      if (box.session === "Activo") {
+        clase = "";
+        disabled = "";
+      } else if (box.session === "Inactivo") {
+        clase = "text-danger fw-bold";
+        textoExtra = "(Deshabilitado)";
+      } else if (box.session === "Abierta") {
+        clase = "text-primary fw-bold";
+        textoExtra = "(En uso)";
+      } else {
+        clase = "text-warning fw-bold";
+        textoExtra = "(En Arqueo)";
+      }
+
+      html += `<option class="${clase}" ${disabled} value="${box.idBox}">Caja ${num} - ${box.name} ${textoExtra}</option>`;
+    });
+    this.#selectBox.html(html);
+  };
+
+  #renderVistaGestion = () => {
+    // Totales Cabecera
+    this.#lblTotalGeneral.html(
+      this.#formatoMoneda(this.#datosSesionCaja.total_general)
+    );
+    this.#lblBaseAmount.html(
+      `Base: ${this.#formatoMoneda(this.#datosSesionCaja.amount_base)}`
+    );
+
+    // Tarjetas Superiores (Metodos de pago)
+    let htmlMetodos = "";
+    this.#datosSesionCaja.payment_method.forEach((el) => {
+      if (this.#datosSesionCaja.total_payment_method[el.name] !== undefined) {
+        htmlMetodos += this.#crearCardMetodoPago(
+          el,
+          this.#datosSesionCaja.total_payment_method[el.name]
+        );
       }
     });
+    this.#containerMetodosPago.html(htmlMetodos);
 
-    // * Open Modal Gestión Box
-    $("#btnOpenModalGestionBox").on("click", async () => {
-      // ? Traemos los datos necesarios para mostrar en la vista
-      const response = await this.apiBox.get("getManagementBox");
-      if (!response.status) {
-        return showAlert({
-          title: response.title,
-          icon: response.icon,
-          message: response.message,
-        });
-      }
+    // Lista de Movimientos
+    this.#lblTituloMovimientos.html(
+      `Últimos <span class="text-primary">${
+        this.#datosSesionCaja.movements_limit.length
+      }</span> Movimientos`
+    );
 
-      // ? Cargamos los datos de movimientos de caja
-      this.#arrayMovements = {
-        amount_base: response.amount_base,
-        total_general: response.total_general,
-        movements_limit: response.movements_limit,
-        payment_method: response.payment_method,
-        total_payment_method: response.total_payment_method,
+    let htmlMovimientos = this.#datosSesionCaja.movements_limit
+      .map((mov) => this.#crearItemMovimiento(mov))
+      .join("");
+
+    this.#containerListaMovimientos.html(htmlMovimientos);
+  };
+
+  #renderResumenEsperadoArqueo() {
+    const data = this.#datosSesionCaja;
+
+    // Mostrar Totales del Sistema
+    this.#lblArqueoTotalEfectivo.html(
+      this.#formatoMoneda(data.total_payment_method.Efectivo)
+    );
+    this.#lblArqueoTotalGeneral.html(this.#formatoMoneda(data.total_general));
+
+    // Guardar referencia del total esperado en efectivo
+    this.#totalEfectivoSistema = data.total_payment_method.Efectivo;
+
+    // Renderizar tarjetas (Visa, Yape, etc.) para referencia visual
+    const htmlTarjetas = data.payment_method
+      .filter(
+        (el) =>
+          el.name !== "Efectivo" &&
+          data.total_payment_method[el.name] !== undefined
+      )
+      .map(
+        (el) => `
+          <div class="flex-fill p-2 rounded-4 bg-body-tertiary border text-center">
+            <small class="d-block text-muted fw-bold mb-1" style="font-size: 0.7rem;">${
+              el.name
+            }</small>
+            <span class="fw-bold text-dark">${this.#formatoMoneda(
+              data.total_payment_method[el.name]
+            )}</span>
+          </div>
+      `
+      )
+      .join("");
+
+    this.#containerArqueoTarjetas.html(htmlTarjetas);
+  }
+
+  #renderInputsDenominaciones(denominaciones) {
+    const styleConfig = {
+      Billete: {
+        icon: "bi-cash",
+        text: "text-success",
+        bg: "bg-success-subtle",
+      },
+      Moneda: {
+        icon: "bi-coin",
+        text: "text-warning",
+        bg: "bg-warning-subtle",
+      },
+      default: { icon: "bi-coin", text: "text-body", bg: "bg-body-subtle" },
+    };
+
+    const grupos = {};
+
+    // 1. Inicializar Mapa y Agrupar
+    denominaciones.forEach((el) => {
+      this.#mapaConteoEfectivo.set(el.idDenomination, {
+        type: el.type,
+        value_currency: parseFloat(el.value),
+        cantidad: 0,
+        total_amount: 0,
+      });
+
+      if (!grupos[el.type]) grupos[el.type] = [];
+      grupos[el.type].push(el);
+    });
+
+    // 2. Generar HTML
+    let htmlFinal = "";
+    Object.keys(grupos).forEach((tipo) => {
+      const config = styleConfig[tipo] || styleConfig["default"];
+
+      // Header
+      htmlFinal += `
+          <div class="d-flex align-items-center mb-3">
+            <h6 class="fw-bold ${config.text} mb-0 me-3" style="min-width: 65px;"><i class="bi ${config.icon} me-2"></i>${tipo}</h6>
+            <div class="flex-grow-1 border-bottom"></div>
+          </div>
+          <div class="row g-2 mb-4">`;
+
+      // Inputs
+      htmlFinal += grupos[tipo]
+        .map(
+          (el) => `
+          <div class="col-6 item-box">
+            <div class="input-group">
+              <span class="input-group-text ${config.text} ${
+            config.bg
+          } fw-bold border-end-0" style="width: 85px;">
+                ${this.#formatoMoneda(el.value)}
+              </span>
+              <input id="currency_${el.idDenomination}" data-id="${
+            el.idDenomination
+          }" type="number" class="form-control border-start-0 bg-light" placeholder="0" min="0">
+            </div>
+          </div>
+      `
+        )
+        .join("");
+
+      htmlFinal += `</div>`;
+    });
+
+    this.#containerArqueoInputsDinero.html(htmlFinal);
+  }
+
+  // Actualiza toda la parte derecha del modal de arqueo (Alertas, Totales, Desglose)
+  #actualizarUIArqueo() {
+    // A. Mostrar Total Contado
+    this.#lblArqueoTotalContado.html(
+      this.#formatoMoneda(this.#totalEfectivoContado)
+    );
+
+    // B. Calcular Estado (Sobra/Falta)
+    const diferencia = this.#totalEfectivoSistema - this.#totalEfectivoContado;
+    let uiState = this.#determinarEstadoArqueo(
+      this.#totalEfectivoContado,
+      diferencia
+    );
+
+    // C. Renderizar Alerta
+    const alertHtml = uiState.showMsg
+      ? `<div class="alert alert-${uiState.theme} d-flex align-items-center gap-2 p-2 rounded-4 mb-0" role="alert">
+            <i class="bi ${uiState.icon}"></i><strong>${uiState.msg}</strong>
+           </div>`
+      : "";
+    this.#containerArqueoMensaje.html(alertHtml);
+
+    // D. Renderizar Diferencia
+    const diffHtml = `
+        <p class="mb-0 fw-bold small text-muted">Diferencia:</p>
+        <div class="card rounded-4 border-${uiState.theme} bg-${
+      uiState.theme
+    }-subtle">
+            <h5 class="mb-0 px-3 py-1 text-${
+              uiState.theme
+            } fw-bold">${this.#formatoMoneda(uiState.amount)}</h5>
+        </div>`;
+    this.#containerArqueoDiferencia.html(diffHtml);
+
+    // E. Renderizar Desglose (Billetes vs Monedas)
+    const desglose = this.#calcularDesglosePorTipo();
+    let htmlDesglose = "";
+    Object.entries(desglose).forEach(([tipo, datos]) => {
+      htmlDesglose += `
+            <div class="text-center w-50 border-end">
+                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.8rem;">${tipo}</small>
+                <div class="fw-bold text-dark">${this.#formatoMoneda(
+                  datos.total
+                )}</div>
+            </div>`;
+    });
+    this.#containerDesgloseFinal.html(htmlDesglose);
+  }
+
+  // ==========================================
+  // 6. UTILIDADES Y CALCULOS (Helpers)
+  // ==========================================
+
+  #resetearFormularioArqueo = () => {
+    // Resetea valores visuales y de lógica
+    this.#totalEfectivoContado = 0;
+    this.#mapaConteoEfectivo.forEach((d) => {
+      d.cantidad = 0;
+      d.total_amount = 0;
+    });
+    this.#actualizarUIArqueo(); // Esto limpiará alertas y textos automáticamente
+  };
+
+  #calcularTotalUsuario = () => {
+    let total = 0;
+    this.#mapaConteoEfectivo.forEach((data) => (total += data.total_amount));
+    return total;
+  };
+
+  #determinarEstadoArqueo(totalContado, diferencia) {
+    if (totalContado === 0) return { theme: "body", amount: 0, showMsg: false };
+    if (diferencia === 0)
+      return {
+        theme: "success",
+        icon: "bi-check2-circle",
+        msg: "Cuadre perfecto",
+        showMsg: true,
+        amount: 0,
       };
+    if (diferencia < 0)
+      return {
+        theme: "primary",
+        icon: "bi-plus-circle-dotted",
+        msg: "Monto sobrante a favor",
+        showMsg: true,
+        amount: Math.abs(diferencia),
+      };
+    return {
+      theme: "danger",
+      icon: "bi-exclamation-triangle-fill",
+      msg: "Descuadre detectado",
+      showMsg: true,
+      amount: diferencia,
+    };
+  }
 
-      // ? Mostramos los datos de gestion
-      this.#quick_access_total_general.html(
-        this.#convertirASoles(this.#arrayMovements.total_general)
-      );
-      this.#quick_access_base_amount.html(
-        `Base: ${this.#convertirASoles(this.#arrayMovements.amount_base)}`
-      );
-      let html = "";
-      this.#arrayMovements.payment_method.forEach((element) => {
-        if (
-          typeof this.#arrayMovements.total_payment_method[element.name] !==
-          "undefined"
-        ) {
-          html += `<div class="col-4">
-                      <div class="card border rounded-4 h-100 bg-body-tertiary">
-                          <div class="card-body p-3 text-center">
-                              <span class="d-inline-flex align-items-center justify-content-center border bg-white rounded-circle mb-2" style="width: 35px; height: 35px;">
-                                  ${element.icon}
-                              </span>
-                              <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">${
-                                element.name
-                              }</div>
-                              <h6 class="fw-bold mb-0 text-dark">${this.#convertirASoles(
-                                this.#arrayMovements.total_payment_method[
-                                  element.name
-                                ]
-                              )}</h6>
-                          </div>
-                      </div>
-                  </div>`;
-        }
-      });
-      this.#quick_access_card_payment_method.html(html);
-
-      // ? Renombramos el titulo de los ultimos movimientos
-      this.#quick_access_title_list_movements.html(
-        `Últimos <span class="text-primary">${
-          this.#arrayMovements.movements_limit.length
-        }</span> Movimientos`
-      );
-
-      // ? Mostramos los datos de movimientos
-      let card_html = "";
-      this.#arrayMovements.movements_limit.forEach((element) => {
-        if (element.type_movement === "Inicio") {
-          card_html += `<div class="list-group-item px-3 py-3 border-bottom-0">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-                                    <i class="bi bi-key-fill"></i>
-                                </div>
-                                <div class="flex-fill lh-1">
-                                    <h6 class="mb-1 text-dark fw-bold">${
-                                      element.concept
-                                    }</h6>
-                                    <small class="text-muted">${this.#timeAgoModerno(
-                                      element.movement_date
-                                    )}</small>
-                                </div>
-                                <div class="text-end lh-1">
-                                    <span class="d-block text-success fw-bold">+${this.#convertirASoles(
-                                      element.amount
-                                    )}</span>
-                                    <small class="text-muted" style="font-size: 0.75rem;">${
-                                      element.payment_method
-                                    }</small>
-                                </div>
-                            </div>
-                        </div>`;
-        } else if (element.type_movement === "Ingreso") {
-          card_html += `<div class="list-group-item px-3 py-3 border-bottom-0">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-                                    <i class="bi bi-cart-fill"></i>
-                                </div>
-                                <div class="flex-fill lh-1">
-                                    <h6 class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">${
-                                      element.concept
-                                    }</h6>
-                                    <small class="text-muted" style="font-size: 0.75rem;">${this.#timeAgoModerno(
-                                      element.movement_date
-                                    )}</small>
-                                </div>
-                                <div class="text-end lh-1">
-                                    <span class="d-block fw-bold text-success">+${this.#convertirASoles(
-                                      element.amount
-                                    )}</span>
-                                    <small class="text-muted" style="font-size: 0.75rem;">${
-                                      element.payment_method
-                                    }</small>
-                                </div>
-                            </div>
-                        </div>`;
-        } else {
-          card_html += `<div class="list-group-item px-3 py-3 border-bottom-0">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-                                    <i class="bi bi-arrow-up-right"></i>
-                                </div>
-                                <div class="flex-fill lh-1">
-                                    <h6 class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">${
-                                      element.concept
-                                    }</h6>
-                                    <small class="text-muted" style="font-size: 0.75rem;">${this.#timeAgoModerno(
-                                      element.movement_date
-                                    )}</small>
-                                </div>
-                                <div class="text-end lh-1">
-                                    <span class="d-block fw-bold text-danger">-${this.#convertirASoles(
-                                      element.amount
-                                    )}</span>
-                                    <small class="text-muted" style="font-size: 0.75rem;">${
-                                      element.payment_method
-                                    }</small>
-                                </div>
-                            </div>
-                        </div>`;
-        }
-      });
-      this.#quick_access_card_list_movements.html(card_html);
-
-      this.#arrayMovements = this.#arrayMovements;
-
-      this.#modalGestionBox.modal("show");
+  #calcularDesglosePorTipo = () => {
+    let desglose = {
+      billetes: { total: 0 },
+      monedas: { total: 0 },
+      otros: { total: 0 },
+    };
+    this.#mapaConteoEfectivo.forEach((data) => {
+      const key =
+        data.type === "Billete"
+          ? "billetes"
+          : data.type === "Moneda"
+          ? "monedas"
+          : "otros";
+      desglose[key].total += data.total_amount;
     });
-
-    // * Open Modal Arqueo Box
-    $("#btnOpenModalArqueoBox").on("click", async () => {
-      // ? Guardamos la informacion en una variable
-      const data = this.#arrayMovements;
-
-      // ? Mostramos el total efectivo
-      this.#quick_access_arqueo_efectivo_total.html(
-        this.#convertirASoles(data.total_payment_method.Efectivo)
-      );
-      // ? Mostramos el total general
-      this.#quick_access_arqueo_total_general.html(
-        this.#convertirASoles(data.total_general)
-      );
-      // ? Mostramos los demas datos de la targeta
-      let html = "";
-      data.payment_method.forEach((element) => {
-        if (
-          element.name !== "Efectivo" &&
-          typeof data.total_payment_method[element.name] !== "undefined"
-        ) {
-          html += `<div class="flex-fill p-2 rounded-4 bg-body-tertiary border text-center">
-                      <small class="d-block text-muted fw-bold mb-1" style="font-size: 0.7rem;">${
-                        element.name
-                      }</small>
-                      <span class="fw-bold text-dark">${this.#convertirASoles(
-                        data.total_payment_method[element.name]
-                      )}</span>
-                  </div>`;
-        }
-      });
-      this.#quick_access_arqueo_total_payment_method.html(html);
-
-      // ? Traemos currency denominations para mostrar en la vista
-      const response = await this.apiBox.get("getCurrencyDenominations");
-      if (!response.status) {
-        return showAlert({
-          title: response.title,
-          icon: response.icon,
-          message: response.message,
-        });
-      }
-
-      let card_currency = "";
-      let textCurrency = "text-success";
-      let bgCurrency = "bg-success-subtle";
-      let valTypeCurrency = "hDSDF34";
-      response.data.forEach((element, index) => {
-        this.#arrayCountEfectivo.set(element.idDenomination, {
-          value_currency: parseFloat(element.value),
-          total_amount: 0
-        });
-
-
-
-        if (element.type === "Billete" && element.type !== valTypeCurrency) {
-          valTypeCurrency = element.type;
-          card_currency += `<div class="d-flex align-items-center mb-3">
-                                <h6 class="fw-bold ${textCurrency} mb-0 me-3" style="min-width: 65px;"><i class="bi bi-cash me-2"></i>${element.type}</h6>
-                                <div class="flex-grow-1 border-bottom"></div>
-                            </div>
-                            <div class="row g-2 mb-4">`;
-        }
-
-        if(element.type === "Moneda" && element.type !== valTypeCurrency){
-          valTypeCurrency = element.type;
-          textCurrency = "text-warning";
-          bgCurrency = "bg-warning-subtle";
-          card_currency += `<div class="d-flex align-items-center mb-3">
-                                <h6 class="fw-bold ${textCurrency} mb-0 me-3" style="min-width: 65px;"><i class="bi bi-coin me-2"></i>${element.type}</h6>
-                                <div class="flex-grow-1 border-bottom"></div>
-                            </div>
-                            <div class="row g-2 mb-4">`;
-        }
-
-        if(element.type === "Otros" && element.type !== valTypeCurrency){
-          valTypeCurrency = element.type;
-          textCurrency = "text-body";
-          bgCurrency = "bg-body-subtle";
-          card_currency += `<div class="d-flex align-items-center mb-3">
-                                <h6 class="fw-bold ${textCurrency} mb-0 me-3" style="min-width: 65px;"><i class="bi bi-coin me-2"></i>${element.type}</h6>
-                                <div class="flex-grow-1 border-bottom"></div>
-                            </div>
-                            <div class="row g-2 mb-4">`;
-        }
-
-        card_currency += `<div class="col-6 item-box">
-                              <div class="input-group">
-                                  <span class="input-group-text ${textCurrency} ${bgCurrency} fw-bold border-end-0" style="width: 85px;">${this.#convertirASoles(element.value)}</span>
-                                  <input id="currency_${element.idDenomination}" type="number" class="form-control border-start-0 bg-light" placeholder="0" min="0">
-                              </div>
-                          </div>`;
-        
-        if(typeof response.data[index + 1] === "undefined"){
-          card_currency += `</div>`;
-        }
-      });
-
-      console.log(this.#arrayCountEfectivo);
-      
-
-      console.log(response.data);
-      this.#quick_access_arqueo_currency_denominations.html(card_currency);
-
-      // Recorremos la respuesta 
-
-      this.#modalArqueoBox.modal("show");
-    });
+    return desglose;
   };
 
-  // TODO: Funcion para convertira a moneda un numero
-  #convertirASoles = (valor) => {
-    // * Convertimos a número por si viene como string "10.50"
-    const numero = Number(valor);
-
+  #formatoMoneda = (valor) => {
     return new Intl.NumberFormat("es-PE", {
       style: "currency",
       currency: "PEN",
       minimumFractionDigits: 2,
-    }).format(numero);
+    }).format(Number(valor));
   };
 
-  // TODO: Funcion para cargar el tiempo relativo de la fecha de registro
   #timeAgoModerno = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diff = (date - now) / 1000; // ? Diferencia en segundos (será negativo)
+    // (Tu lógica original de tiempo)
+    const diff = (new Date(dateString) - new Date()) / 1000;
     const rtf = new Intl.RelativeTimeFormat("es", { numeric: "auto" });
-
-    // ? Lógica rápida para seleccionar la unidad
     if (Math.abs(diff) < 60) return rtf.format(Math.round(diff), "second");
     if (Math.abs(diff) < 3600)
       return rtf.format(Math.round(diff / 60), "minute");
     if (Math.abs(diff) < 86400)
       return rtf.format(Math.round(diff / 3600), "hour");
     return rtf.format(Math.round(diff / 86400), "day");
+  };
+
+  #iniciarReloj = () => {
+    const tick = () => {
+      const t = new Date().toLocaleTimeString("es-PE", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      });
+      document.getElementById("reloj").innerText = t;
+      document.getElementById("reloj_2").innerText = t;
+    };
+    tick();
+    setInterval(tick, 1000);
+  };
+
+  #getBoxs = async () => {
+    const r = await this.apiBox.get("getBoxs");
+    if (!r.status) this.#mostrarAlerta(r);
+    return r;
+  };
+
+  #mostrarAlerta = ({ icon, title, message }) => {
+    // Asumo que tienes una función global showAlert o similar
+    if (typeof showAlert === "function") showAlert({ icon, title, message });
+    else console.warn("showAlert no está definido", message);
+  };
+
+  // HTML Helpers (Para mantener el código JS limpio de templates largos)
+  #generarBotonAperturaHtml = () => `
+    <div class="d-flex justify-content-center align-items-center">
+        <button id="btnOpenModalBox" class="btn btn-warning px-2 py-1 d-flex align-items-center gap-2 fw-bold">
+            <img style="width: 22px;" src="${media_url}/icons/POS/open-box.png" alt="">
+            <span class="fw-semibold">Abrir Caja</span>
+        </button>
+    </div>`;
+
+  #generarBotonGestionHtml = () => `
+    <div class="d-flex justify-content-center align-items-center">
+        <button id="btnOpenModalGestionBox" class="btn btn-warning px-2 py-1 d-flex align-items-center gap-2 fw-bold">
+            <img style="width: 22px;" src="${media_url}/icons/POS/open-box.png" alt="">
+            <span class="fw-semibold">Gestión de Caja</span>
+        </button>
+    </div>`;
+
+  #crearCardMetodoPago = (el, total) => `
+    <div class="col-4">
+        <div class="card border rounded-4 h-100 bg-body-tertiary">
+            <div class="card-body p-3 text-center">
+                <span class="d-inline-flex align-items-center justify-content-center border bg-white rounded-circle mb-2" style="width: 35px; height: 35px;">${
+                  el.icon
+                }</span>
+                <div class="small text-muted fw-bold text-uppercase" style="font-size: 0.7rem;">${
+                  el.name
+                }</div>
+                <h6 class="fw-bold mb-0 text-dark">${this.#formatoMoneda(
+                  total
+                )}</h6>
+            </div>
+        </div>
+    </div>`;
+
+  #crearItemMovimiento = (element) => {
+    let config = {
+      icon: "bi-arrow-up-right",
+      color: "danger",
+      sign: "-",
+      bg: "bg-danger-subtle",
+    }; // Default: Egreso
+    if (element.type_movement === "Inicio")
+      config = {
+        icon: "bi-key-fill",
+        color: "success",
+        sign: "+",
+        bg: "bg-info-subtle text-info",
+      };
+    else if (element.type_movement === "Ingreso")
+      config = {
+        icon: "bi-cart-fill",
+        color: "success",
+        sign: "+",
+        bg: "bg-success-subtle text-success",
+      };
+
+    // Ajuste fino para clases CSS si es Inicio (usa info en vez de success en icono)
+    const iconClass =
+      element.type_movement === "Inicio"
+        ? "bg-info-subtle text-info"
+        : element.type_movement === "Ingreso"
+        ? "bg-success-subtle text-success"
+        : "bg-danger-subtle text-danger";
+
+    return `
+    <div class="list-group-item px-3 py-3 border-bottom-0">
+        <div class="d-flex align-items-center gap-3">
+            <div class="${iconClass} rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                <i class="bi ${config.icon}"></i>
+            </div>
+            <div class="flex-fill lh-1">
+                <h6 class="mb-1 text-dark fw-bold">${element.concept}</h6>
+                <small class="text-muted">${this.#timeAgoModerno(
+                  element.movement_date
+                )}</small>
+            </div>
+            <div class="text-end lh-1">
+                <span class="d-block text-${config.color} fw-bold">${
+      config.sign
+    }${this.#formatoMoneda(element.amount)}</span>
+                <small class="text-muted" style="font-size: 0.75rem;">${
+                  element.payment_method
+                }</small>
+            </div>
+        </div>
+    </div>`;
   };
 }
 
