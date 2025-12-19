@@ -159,14 +159,10 @@ class Box extends Controllers
         $notes = strClean($data['notes']);
         $conteo_efectivo = $data['conteo_efectivo'];
 
-        toJson($data);
         // * Validamos que no este vacio los campos
         validateFieldsEmpty(array(
             "TIPO DE CAJA" => $type
         ));
-
-        // * Validamos que no este vacio la justificacion sino lo colocamos como null
-        (!empty($notes)) ?? $notes = null;
 
         // * Consultamos el ID del usuario
         $userId = $this->getUserId();
@@ -177,11 +173,34 @@ class Box extends Controllers
             $this->responseError('No tienes ninguna caja aperturada. Por favor apertura tu turno.');
         }
 
-        // * Consultamos los metodos de pagos disponibles por la app
-        $paymentMethod = $this->model->getPaymentMethods();
+        // * Consultamos las denominaciones de las monedas
+        $currencyDenominations = $this->model->getCurrencyDenominations();
+        if (!$currencyDenominations) {
+            $this->responseError('Ninguna moneda preconfigurada, solicita a tu Capy Adminstrador que configure las denominaciones de las monedas.');
+        }
+
+        // * Creamos un auxiliar para luego validar
+        $auxCurrencyDenominations = array();
+        foreach ($currencyDenominations as $key => $value) {
+            $auxCurrencyDenominations[$value["idDenomination"]] = true;
+        }
+
+        // * Validamos que las denominaciones recibidas existan en la BD
+        foreach ($conteo_efectivo as $key => $value) {
+            if(!isset($auxCurrencyDenominations[$value["denomination_id"]])){
+                $this->responseError('Las denominaciones del dinero enviadas no existen.');
+            }
+        }
+
+
+        toJson($auxCurrencyDenominations);
+
+        // * Validamos que no este vacio la justificacion sino lo colocamos como null
+        (!empty($notes)) ?? $notes = null;
+
     }
 
-    // TODO: Funcion que devuelve si el usuario tiene aperturado un caja
+    // TODO: Endpoint que devuelve si el usuario tiene aperturado un caja
     public function getuserCheckedBox()
     {
         // * Validamos que llegue el metodo GET
@@ -207,7 +226,7 @@ class Box extends Controllers
         $this->responseError("Ya cuentas con una caja aperturada.");
     }
 
-    // TODO: Mostramos los movimientos y gestion de caja
+    // TODO: Endopoint que devuelve los movimientos y gestion de caja
     public function getManagementBox()
     {
         // * Validamos que llegue el metodo GET
@@ -265,9 +284,10 @@ class Box extends Controllers
         toJson($arrayResponse);
     }
 
-    // TODO: Funcion que devuelve los las denominaciones de la moneda
+    // TODO: Endpoint que devuelve los las denominaciones de la moneda
     public function getCurrencyDenominations()
     {
+        // * Consultamos las denominaciones de las monedas
         $currencyDenominations = $this->model->getCurrencyDenominations();
         if (!$currencyDenominations) {
             $this->responseError('Ninguna moneda preconfigurada, solicita a tu Capy Adminstrador que configure las denominaciones de las monedas.');
