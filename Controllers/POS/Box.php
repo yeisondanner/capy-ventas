@@ -314,6 +314,7 @@ class Box extends Controllers
         $arrayPaymentMethod = array();
         $totalGeneral = 0;
         $totalTransacciones = 0;
+        $totalEfectivo_egreso = 0;
         foreach ($boxMovements as $key => $value) {
             $amount = (float) $value["amount"];
             $totalTransacciones++;
@@ -331,6 +332,11 @@ class Box extends Controllers
                 $totalGeneral -= $amount;
                 $arrayPaymentMethod[$value["payment_method"]] -= $amount;
             }
+
+            // ? Calculamos el total de efectivo que sale
+            if($value["type_movement"] === "Egreso" && $value["payment_method"] === "Efectivo"){
+                $totalEfectivo_egreso += $amount;
+            }
         }
 
         // * Devolvemos la respuesta formateada
@@ -341,6 +347,7 @@ class Box extends Controllers
             "payment_method" => $paymentMethod,
             "total_payment_method" => $arrayPaymentMethod,
             "total_transacciones" => $totalTransacciones,
+            "total_efectivo_egreso" => $totalEfectivo_egreso,
             "movements_limit" => $boxMovements_limit,
         ];
         toJson($arrayResponse);

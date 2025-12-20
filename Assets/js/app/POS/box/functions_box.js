@@ -48,9 +48,7 @@ export class Box {
   // Vista: Cierre de Caja (Dashboard Final)
   #lblCloseBoxTotalSales = $("#close_box_total_sales");
   #lblCloseBoxTotalTransactions = $("#close_box_total_transactions");
-  #lblCloseBoxBreakdownCash = $("#close_box_breakdown_cash");
-  #lblCloseBoxBreakdownDigital = $("#close_box_breakdown_digital");
-  #lblCloseBoxBreakdownOther = $("#close_box_breakdown_other");
+  #lblCloseBoxTotalPaymentMethod = $("#close_box_total_payment_method");
 
   #lblCloseBoxBase = $("#close_box_base");
   #lblCloseBoxIncome = $("#close_box_income");
@@ -128,7 +126,7 @@ export class Box {
 
     // Evento: Clic en "Cerrar Caja" (Abre el Dashboard Final)
     // Asegúrate de que este ID exista en tu botón de Gestión de Caja
-    $("#btnOpenModalCloseBox").on("click", this.#handleClickAbrirModalCierre);
+    this.#btnOpenModalCloseBox.on("click", this.#handleClickAbrirModalCierre);
 
     // Configurar el botón rojo "Finalizar Cierre"
     this.#setupEventoCierreDefinitivo();
@@ -162,6 +160,7 @@ export class Box {
       payment_method: response.payment_method,
       total_payment_method: response.total_payment_method,
       total_transacciones: response.total_transacciones,
+      total_efectivo_egreso: response.total_efectivo_egreso,
     };
 
     this.#renderVistaGestion();
@@ -291,13 +290,16 @@ export class Box {
 
   // TODO: Abrir Modal de Cierre Definitivo (Dashboard)
   #handleClickAbrirModalCierre = async () => {
+
+    // consultamos el ultimo arqueo de caja realizado
+    const response = await this.apiBox.get("");
+
+
     const data = this.#datosSesionCaja;
-    console.log(data);
-    
 
     // --- 1. CÁLCULOS MATEMÁTICOS ---
     const totalVentas = parseFloat(data.total_general) || 0;
-    const totalTransacciones = data.total_transacciones
+    const totalTransacciones = data.total_transacciones;
 
     // Desglose Ventas
     const efectivoVentas = parseFloat(data.total_payment_method.Efectivo) || 0;
@@ -309,7 +311,7 @@ export class Box {
     // Ingresos a Caja (Base + Ventas Efectivo) - Egresos
     // *Si tienes retiros de caja, réstalos aquí*
     const ingresosCaja = efectivoVentas;
-    const egresosCaja = 0;
+    const egresosCaja = parseFloat(data.total_efectivo_egreso) || 0 ;
     const totalEsperadoSistema = baseInicial + ingresosCaja - egresosCaja;
 
     // Comparación con el ÚLTIMO ARQUEO REALIZADO
@@ -322,9 +324,20 @@ export class Box {
     this.#lblCloseBoxTotalSales.html(this.#formatoMoneda(totalVentas));
     this.#lblCloseBoxTotalTransactions.html(totalTransacciones);
 
-    this.#lblCloseBoxBreakdownCash.html(this.#formatoMoneda(efectivoVentas));
-    this.#lblCloseBoxBreakdownDigital.html(this.#formatoMoneda(digitalVentas));
-    this.#lblCloseBoxBreakdownOther.html(this.#formatoMoneda(0)); // Ajustar si aplica
+    let htmlPaymentMethod = "";
+    Object.entries(data.total_payment_method).forEach(([tipo, datos]) => {
+      htmlPaymentMethod += `<div class="d-flex justify-content-between align-items-center small">
+                                        <span class="${
+                                          tipo === "Efectivo"
+                                            ? "text-success"
+                                            : "text-muted"
+                                        } fw-bold"><i class="bi bi-circle-fill me-2" style="font-size: 0.5rem;"></i>${tipo}</span>
+                                        <span class="fw-bold" id="close_box_breakdown_cash">${this.#formatoMoneda(
+                                          datos
+                                        )}</span>
+                                    </div>`;
+    });
+    this.#lblCloseBoxTotalPaymentMethod.html(htmlPaymentMethod);
 
     // B. Balance Efectivo
     this.#lblCloseBoxBase.html(this.#formatoMoneda(baseInicial));

@@ -448,7 +448,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                         <span class="fs-5 fw-bold text-dark" id="close_box_total_transactions">0</span>
                                     </div>
                                 </div>
-                                <div class="d-flex flex-column gap-2 border-top pt-3">
+                                <div id="close_box_total_payment_method" class="d-flex flex-column gap-2 border-top pt-3">
                                     <div class="d-flex justify-content-between align-items-center small">
                                         <span class="text-success fw-bold"><i class="bi bi-circle-fill me-2" style="font-size: 0.5rem;"></i>Efectivo</span>
                                         <span class="fw-bold" id="close_box_breakdown_cash">S/ 0.00</span>
