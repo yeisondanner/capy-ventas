@@ -45,7 +45,7 @@ class Resetpassword extends Controllers
 		}
 
 		// * Verificamos que no exista un usuario con este email
-		$is_exists_user = $this->model->isExistsUser(encryption($email));
+		$is_exists_user = $this->model->isExistsPeople(encryption($email));
 		if (!$is_exists_user) {
 			$this->responseError("No existe usuario con este correo electrónico, créese su cuenta por favor.");
 		}
