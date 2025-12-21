@@ -5,8 +5,8 @@ class Resetpassword extends Controllers
 	public function __construct()
 	{
 		//inicializacmos la sesion pasamos el param 1 para inicializar la sesion de la app
-		// session_start(config_sesion(1));
-		// existLogin(1);
+		session_start(config_sesion(1));
+		existLogin(1);
 		parent::__construct("POS");
 	}
 
@@ -24,115 +24,115 @@ class Resetpassword extends Controllers
 	// TODO: Funcion para enviar codigo de verificacion
 	public function sendCodeVerification()
 	{
-	// 	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-	// 		$this->responseError('Método de solicitud no permitido.');
-	// 	}
+		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+			$this->responseError('Método de solicitud no permitido.');
+		}
 
-	// 	$raw = file_get_contents('php://input');
-	// 	$data = json_decode($raw, true);
+		$raw = file_get_contents('php://input');
+		$data = json_decode($raw, true);
 
-	// 	$accept_terms = strClean($data['accept_terms']);
-	// 	$email    = strClean($data['email']);
+		$accept_terms = strClean($data['accept_terms']);
+		$email    = strClean($data['email']);
 
-	// 	// * Valimos que llegue el correo electronico
-	// 	if (!$email || empty($email)) {
-	// 		$this->responseError("El correo electronico es requerido.");
-	// 	}
+		// * Valimos que llegue el correo electronico
+		if (!$email || empty($email)) {
+			$this->responseError("El correo electronico es requerido.");
+		}
 
-	// 	// * Validación de formato de email
-	// 	if (verifyData("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", $email)) {
-	// 		$this->responseError("El campo 'Correo electrónico' no tiene un formato válido.");
-	// 	}
+		// * Validación de formato de email
+		if (verifyData("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", $email)) {
+			$this->responseError("El campo 'Correo electrónico' no tiene un formato válido.");
+		}
 
-	// 	// * Verificamos que no exista un usuario con este email
-	// 	$is_exists_user = $this->model->isExistsUser(encryption($email));
-	// 	if ($is_exists_user) {
-	// 		$this->responseError("Ya existe un usuario registrado con este correo electrónico.");
-	// 	}
+		// * Verificamos que no exista un usuario con este email
+		$is_exists_user = $this->model->isExistsUser(encryption($email));
+		if (!$is_exists_user) {
+			$this->responseError("No existe usuario con este correo electrónico, créese su cuenta por favor.");
+		}
 
-	// 	// * Verificamos que acepte los terminos y condiciones
-	// 	if (!$accept_terms) {
-	// 		$this->responseError("Acepte los terminos de referencia.");
-	// 	}
+		// * Verificamos que acepte los terminos y condiciones
+		if (!$accept_terms) {
+			$this->responseError("Acepte los terminos de referencia.");
+		}
 
-	// 	// * Configuracion para correo electronico
-	// 	$config = [
-	// 		'smtp' => [
-	// 			'host' => decryption(getHost()),
-	// 			'username' => decryption(getUser()),
-	// 			'password' => decryption(getPassword()),
-	// 			'port' => (getPort()),
-	// 			'encryption' => getEncryption() // ssl o tls
-	// 		],
-	// 		'from' => [
-	// 			'email' => decryption(getFrom()),
-	// 			'name' => decryption(getRemitente())
-	// 		]
-	// 	];
-	// 	// * Generamos el codigo de 6 digitos
-	// 	$code = generateVerificationCode(6);
+		// * Configuracion para correo electronico
+		$config = [
+			'smtp' => [
+				'host' => decryption(getHost()),
+				'username' => decryption(getUser()),
+				'password' => decryption(getPassword()),
+				'port' => (getPort()),
+				'encryption' => getEncryption() // ssl o tls
+			],
+			'from' => [
+				'email' => decryption(getFrom()),
+				'name' => decryption(getRemitente())
+			]
+		];
+		// * Generamos el codigo de 6 digitos
+		$code = generateVerificationCode(6);
 
-	// 	// * Creamos las sessiones
-	// 	saveSessionVerification(encryption($email), encryption($code));
-	// 	//cargamos la plantilla de recuperación de contraseña               
-	// 	$data = [
-	// 		'nombres'     => "Capy Amigo",
-	// 		'titulo'      => "Bienvenido a CapyVentas",
-	// 		'descripcion' => "Gracias por unirte a nosotros. Estás a un solo paso de gestionar tus ventas de manera más eficiente. \nPor favor, usa el siguiente código de verificación para confirmar tu correo electrónico y activar tu cuenta:",
-	// 		'codigo'      => $code
-	// 	];
-	// 	// * Cargar plantilla HTML externa
-	// 	$plantillaHTML = renderTemplate('./Views/Template/email/notification_sendcode.php', $data);
-	// 	// * Envialos los parámetros
-	// 	$params = [
-	// 		// 'to' => [decryption($email)], // o string
-	// 		'to' => $email, // o string
-	// 		'subject' => 'NOTIFICACION [ ' . "hola" . ' ]- ' . getCompanyName(),
-	// 		'body' => $plantillaHTML,
-	// 		'attachments' => [] // opcional
-	// 	];
-	// 	// * Enviamos el correo
-	// 	if (!sendEmail($config, $params)) {
-	// 		$this->responseError("No se pudo enviar el correo de notificacion al usuario {$email}");
-	// 	}
+		// * Creamos las sessiones
+		saveSessionVerification(encryption($email), encryption($code));
+		//cargamos la plantilla de recuperación de contraseña               
+		$data = [
+			'nombres'     => "Capy Amigo",
+			'titulo'      => "Bienvenido a CapyVentas",
+			'descripcion' => "Gracias por ser parte de nosotros. Estás a un solo paso de poder recuperar tu contraseña. \nPor favor, usa el siguiente código de verificación para poder recuperar tu contraseña:",
+			'codigo'      => $code
+		];
+		// * Cargar plantilla HTML externa
+		$plantillaHTML = renderTemplate('./Views/Template/email/notification_sendcode.php', $data);
+		// * Envialos los parámetros
+		$params = [
+			// 'to' => [decryption($email)], // o string
+			'to' => $email, // o string
+			'subject' => 'NOTIFICACION [ ' . "hola" . ' ]- ' . getCompanyName(),
+			'body' => $plantillaHTML,
+			'attachments' => [] // opcional
+		];
+		// * Enviamos el correo
+		if (!sendEmail($config, $params)) {
+			$this->responseError("No se pudo enviar el correo de notificacion al usuario {$email}");
+		}
 
-	// 	// * Respuesta correcta
-	// 	return toJson([
-	// 		'title'   => 'Revisa tu correo',
-	// 		'message' => "Se ha enviado un código de 6 dígitos a $email. Tienes 10 minutos para usarlo.",
-	// 		'type'    => 'success',
-	// 		'icon'    => 'success',
-	// 		'status'  => true,
-	// 	]);
+		// * Respuesta correcta
+		return toJson([
+			'title'   => 'Revisa tu correo',
+			'message' => "Se ha enviado un código de 6 dígitos a $email. Tienes 10 minutos para usarlo.",
+			'type'    => 'success',
+			'icon'    => 'success',
+			'status'  => true,
+		]);
 	}
 
 	public function validateVerificationCode()
 	{
-		// if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-		// 	$this->responseError('Método de solicitud no permitido.');
-		// }
+		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+			$this->responseError('Método de solicitud no permitido.');
+		}
 
-		// $raw = file_get_contents('php://input');
-		// $data = json_decode($raw, true);
+		$raw = file_get_contents('php://input');
+		$data = json_decode($raw, true);
 
-		// $code    = strClean($data['code'] ?? '');
-		// // TODO: Validamos que no este vacio el codigo y que tenga seis caracteres
-		// if (empty($code) || strlen($code) !== 6) {
-		// 	toJson([
-		// 		'status' => false,
-		// 		'message' => 'El código es incorrecto, ingrese nuevamente un código válido.',
-		// 		'title' => 'Verificación de código.',
-		// 		'type' => 'error',
-		// 		'icon' => 'error',
-		// 	]);
-		// }
+		$code    = strClean($data['code'] ?? '');
+		// TODO: Validamos que no este vacio el codigo y que tenga seis caracteres
+		if (empty($code) || strlen($code) !== 6) {
+			toJson([
+				'status' => false,
+				'message' => 'El código es incorrecto, ingrese nuevamente un código válido.',
+				'title' => 'Verificación de código.',
+				'type' => 'error',
+				'icon' => 'error',
+			]);
+		}
 
-		// $response = validateVerificationCode($code);
-		// toJson($response);
+		$response = validateVerificationCode($code);
+		toJson($response);
 	}
 
-	public function setAccount()
-	{
+	// public function setAccount()
+	// {
 	// 	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 	// 		$this->responseError('Método de solicitud no permitido.');
 	// 	}
@@ -244,28 +244,28 @@ class Resetpassword extends Controllers
 	// 	$this->responseError("No se pudo crear tu cuenta :(. Comunicate con el Capy Administrador.");
 	// }
 
-	// private function responseError(string $message): void
-	// {
-	// 	$data = [
-	// 		'title'  => 'Ocurrió un error',
-	// 		'message' => $message,
-	// 		'type'   => 'error',
-	// 		'icon'   => 'error',
-	// 		'status' => false,
-	// 	];
+	private function responseError(string $message): void
+	{
+		$data = [
+			'title'  => 'Ocurrió un error',
+			'message' => $message,
+			'type'   => 'error',
+			'icon'   => 'error',
+			'status' => false,
+		];
 
-	// 	toJson($data);
+		toJson($data);
 	}
 
-	// private function limpiarSesionVerificacion(): void
-	// {
-	// 	if (session_status() === PHP_SESSION_NONE) {
-	// 		session_start();
-	// 	}
+	private function limpiarSesionVerificacion(): void
+	{
+		if (session_status() === PHP_SESSION_NONE) {
+			session_start();
+		}
 
-	// 	// Eliminamos solo las variables específicas de este proceso
-	// 	unset($_SESSION['verificacion_correo']);
-	// 	unset($_SESSION['verificacion_codigo']);
-	// 	unset($_SESSION['verificacion_tiempo']);
-	// }
+		// Eliminamos solo las variables específicas de este proceso
+		unset($_SESSION['verificacion_correo']);
+		unset($_SESSION['verificacion_codigo']);
+		unset($_SESSION['verificacion_tiempo']);
+	}
 }

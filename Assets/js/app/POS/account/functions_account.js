@@ -203,7 +203,7 @@ export class Account {
       }
 
       //VALIDACION PARA PREFIJO TELEFONICO
-      const formatPrefiij = /^\+?[1-9]\d{3}$/;
+      const formatPrefiij = /^\+?[1-9]\d{1,3}$/;
       if (!formatPrefiij.test(telephone_prefix)) {
         return showAlert({
           icon: "warning",
