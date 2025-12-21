@@ -159,14 +159,16 @@ class Box extends Controllers
         $notes = strClean($data['notes']);
         $conteo_efectivo = $data['conteo_efectivo'];
 
-        toJson($data);
         // * Validamos que no este vacio los campos
         validateFieldsEmpty(array(
             "TIPO DE CAJA" => $type
         ));
 
-        // * Validamos que no este vacio la justificacion sino lo colocamos como null
-        (!empty($notes)) ?? $notes = null;
+        // * Validar TYPE (Debe ser uno de los valores permitidos en tu ENUM)
+        $allowed_types = ['Cierre', 'Auditoria']; // Los valores de tu base de datos
+        if (!in_array($type, $allowed_types)) {
+            $this->responseError("El tipo de arqueo es inválido. Debe ser 'Cierre' o 'Auditoria'.");
+        }
 
         // * Consultamos el ID del usuario
         $userId = $this->getUserId();
@@ -177,11 +179,87 @@ class Box extends Controllers
             $this->responseError('No tienes ninguna caja aperturada. Por favor apertura tu turno.');
         }
 
-        // * Consultamos los metodos de pagos disponibles por la app
-        $paymentMethod = $this->model->getPaymentMethods();
+        // * Consultamos las denominaciones de las monedas
+        $currencyDenominations = $this->model->getCurrencyDenominations();
+        if (!$currencyDenominations) {
+            $this->responseError('Ninguna moneda preconfigurada, solicita a tu Capy Adminstrador que configure las denominaciones de las monedas.');
+        }
+
+        // * Creamos un auxiliar para luego validar
+        $auxCurrencyDenominations = array();
+        foreach ($currencyDenominations as $key => $value) {
+            $auxCurrencyDenominations[$value["idDenomination"]] = (float) $value["value"];
+        }
+
+        // * Validamos que las denominaciones recibidas si existan en la BD
+        $total_efectivo_contado = 0;
+        foreach ($conteo_efectivo as $key => $value) {
+            if (!isset($auxCurrencyDenominations[$value["denomination_id"]])) {
+                $this->responseError('Las denominaciones del dinero enviadas no existen.');
+            }
+            $conteo_efectivo[$key]["total_real"] = $auxCurrencyDenominations[$value["denomination_id"]] * ((int) $value["cantidad"]);
+            $total_efectivo_contado += $conteo_efectivo[$key]["total_real"];
+        }
+
+        // * (Opcional) Si esta el total efectivo esta en 0 lo obligamos al usuario a seleccionar almenos uno
+        // if($total_efectivo_contado === 0){
+        //     $this->responseError('Por favor seleccione almenos un efectivo.');
+        // }
+
+        // * Consultamos todos los movimientos asociados a la caja aperturada para calcular el total del sistema
+        $boxMovements = $this->model->getBoxMovements($boxSessions["idBoxSessions"]);
+        $total_efectivo_sistema = 0;
+        foreach ($boxMovements as $key => $value) {
+            $amount = (float) $value["amount"];
+            // ? Calculamos el total efectivo del sistema
+            if ($value["payment_method"] === "Efectivo") {
+                if ($value["type_movement"] !== "Egreso") {
+                    $total_efectivo_sistema += $amount;
+                } else {
+                    $total_efectivo_sistema -= $amount;
+                }
+            }
+        }
+
+        // ? Calculamos la diferencia
+        $difference = $total_efectivo_sistema - $total_efectivo_contado;
+
+        // ? Si no hay un mensaje, lo agregamos por default
+        if (is_null($notes) || empty($notes)) {
+            if ($difference === 0) {
+                $notes = "Cuadre perfecto";
+            } else if ($difference < 0) {
+                $notes = "Monto sobrante a favor";
+            } else {
+                $notes = "Descuadre detectado";
+            }
+        }
+
+        // ? Sacamos el valor absoluto
+        $difference = abs($difference);
+
+        // * Registramos el arqueo o cierre de caja
+        $insertArqueoBox = $this->model->insertBoxCashCount($boxSessions["idBoxSessions"], $type, $total_efectivo_sistema, $total_efectivo_contado, $difference, $notes);
+
+        if ($insertArqueoBox <= 0) {
+            $this->responseError('Error al registrar ' . $type . ' de caja.');
+        }
+
+        // * Registramos los detalles de caja
+        foreach ($conteo_efectivo as $key => $value) {
+            $this->model->insertBoxCashCountDetails($insertArqueoBox, $value["denomination_id"], $value["cantidad"], $value["total_real"]);
+        }
+
+        toJson([
+            'title'   => 'Gestión de Caja',
+            'message' => $type . ' de caja registrado correctamente.',
+            'type'    => 'success',
+            'icon'    => 'success',
+            'status'  => true,
+        ]);
     }
 
-    // TODO: Funcion que devuelve si el usuario tiene aperturado un caja
+    // TODO: Endpoint que devuelve si el usuario tiene aperturado un caja
     public function getuserCheckedBox()
     {
         // * Validamos que llegue el metodo GET
@@ -207,7 +285,7 @@ class Box extends Controllers
         $this->responseError("Ya cuentas con una caja aperturada.");
     }
 
-    // TODO: Mostramos los movimientos y gestion de caja
+    // TODO: Endopoint que devuelve los movimientos y gestion de caja
     public function getManagementBox()
     {
         // * Validamos que llegue el metodo GET
@@ -235,8 +313,11 @@ class Box extends Controllers
 
         $arrayPaymentMethod = array();
         $totalGeneral = 0;
+        $totalTransacciones = 0;
+        $totalEfectivo_egreso = 0;
         foreach ($boxMovements as $key => $value) {
             $amount = (float) $value["amount"];
+            $totalTransacciones++;
 
             // ? Calculamos los totales por metodo de pago
             if (!isset($arrayPaymentMethod[$value["payment_method"]])) {
@@ -251,6 +332,11 @@ class Box extends Controllers
                 $totalGeneral -= $amount;
                 $arrayPaymentMethod[$value["payment_method"]] -= $amount;
             }
+
+            // ? Calculamos el total de efectivo que sale
+            if($value["type_movement"] === "Egreso" && $value["payment_method"] === "Efectivo"){
+                $totalEfectivo_egreso += $amount;
+            }
         }
 
         // * Devolvemos la respuesta formateada
@@ -260,14 +346,17 @@ class Box extends Controllers
             "total_general" => $totalGeneral,
             "payment_method" => $paymentMethod,
             "total_payment_method" => $arrayPaymentMethod,
+            "total_transacciones" => $totalTransacciones,
+            "total_efectivo_egreso" => $totalEfectivo_egreso,
             "movements_limit" => $boxMovements_limit,
         ];
         toJson($arrayResponse);
     }
 
-    // TODO: Funcion que devuelve los las denominaciones de la moneda
+    // TODO: Endpoint que devuelve los las denominaciones de la moneda
     public function getCurrencyDenominations()
     {
+        // * Consultamos las denominaciones de las monedas
         $currencyDenominations = $this->model->getCurrencyDenominations();
         if (!$currencyDenominations) {
             $this->responseError('Ninguna moneda preconfigurada, solicita a tu Capy Adminstrador que configure las denominaciones de las monedas.');
