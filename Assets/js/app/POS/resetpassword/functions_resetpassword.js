@@ -1,10 +1,10 @@
-import { ApiAccount } from "./functions_account_api.js";
-export class Account {
+import { ApiResetpassword } from "./functions_resetpassword_api.js";
+export class Resetpassword {
   #cardAccount = $("#cardAccount");
   #verificationCode = null;
 
   constructor() {
-    this.apiAccount = new ApiAccount(base_url);
+    this.ApiResetpassword = new ApiResetpassword(base_url);
     this.init();
   }
 
@@ -46,7 +46,7 @@ export class Account {
 
       showAlert({ message: "Enviando código de verificación." }, "loading");
 
-      this.apiAccount
+      this.ApiResetpassword
         .post("sendCodeVerification", {
           email: email,
           accept_terms: accept_terms,
@@ -88,7 +88,7 @@ export class Account {
 
       showAlert({ message: "Verificando código." }, "loading");
 
-      this.apiAccount
+      this.ApiResetpassword
         .post("validateVerificationCode", {
           code: code,
         })
@@ -203,7 +203,7 @@ export class Account {
       }
 
       //VALIDACION PARA PREFIJO TELEFONICO
-      const formatPrefiij = /^\+?[1-9]\d{1,3}$/;
+      const formatPrefiij = /^\+?[1-9]\d{3}$/;
       if (!formatPrefiij.test(telephone_prefix)) {
         return showAlert({
           icon: "warning",
@@ -295,13 +295,13 @@ export class Account {
                             <div class="d-flex align-items-center mb-2 position-relative">
                                 <div class="d-flex align-items-center gap-3 text-muted">
                                     <div class="step-circle border-0">3</div>
-                                    <span>Tu cuenta</span>
+                                    <span>Cambia tu contraseña</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="mt-5">
-                        <p class="fw-bold text-dark">Al registrarte en <span class="text-primary">Capy Ventas</span> podrás:</p>
+                        <p class="fw-bold text-dark">Al ser parte de <span class="text-primary">Capy Ventas</span> podrás:</p>
                         <ul class="list-unstyled">
                             <li class="mb-2 d-flex gap-2">
                                 <i class="bi bi-check-circle text-dark fs-5"></i>
@@ -324,7 +324,7 @@ export class Account {
                         <div class="login-head">
                             <img src="${media_url}/carpincho.png" alt="">
                         </div>
-                        <h2 class="fw-bold">Regístrate para comenzar</h2>
+                        <h2 class="fw-bold">Recuperar contraseña</h2>
                     </div>
                     <form id="formAccount" class="account-form">
                         <div class="mb-3">
@@ -387,13 +387,13 @@ export class Account {
                             <div class="d-flex align-items-center mb-2 position-relative">
                                 <div class="d-flex align-items-center gap-3 text-muted">
                                     <div class="step-circle border-0">3</div>
-                                    <span>Tu cuenta</span>
+                                    <span>Cambia tu contraseña</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="mt-5">
-                        <p class="fw-bold text-dark">Al registrarte en <span class="text-primary">Capy Ventas</span> podrás:</p>
+                        <p class="fw-bold text-dark">Al ser parte de <span class="text-primary">Capy Ventas</span> podrás:</p>
                         <ul class="list-unstyled">
                             <li class="mb-2 d-flex gap-2">
                                 <i class="bi bi-check-circle text-dark fs-5"></i>
@@ -477,13 +477,13 @@ export class Account {
                             <div class="d-flex align-items-center mb-2 position-relative">
                                 <div class="step-active d-flex align-items-center gap-3">
                                     <div class="step-circle">3</div>
-                                    <span>Tu cuenta</span>
+                                    <span>Cambia tu contraseña</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="mt-5">
-                        <p class="fw-bold text-dark">Al registrarte en <span class="text-primary">Capy Ventas</span> podrás:</p>
+                        <p class="fw-bold text-dark">Al ser parte de <span class="text-primary">Capy Ventas</span> podrás:</p>
                         <ul class="list-unstyled">
                             <li class="mb-2 d-flex gap-2">
                                 <i class="bi bi-check-circle text-dark fs-5"></i>
@@ -502,158 +502,45 @@ export class Account {
 
                 </div>
                 <div class="col-md-7 bg-white p-4">
-                    <!-- <div class="text-center mb-2 mt-lg-2">
+                    <div class="text-center mb-2 mt-lg-2">
                         <div class="login-head">
                             <img src="${media_url}/carpincho.png" alt="">
                         </div>
-                        <h2 class="fw-bold">Tu cuenta</h2>
-                    </div> -->
+                        <h2 class="fw-bold">Cambia tu contraseña</h2>
+                    </div>
 
                     <form class="account-form">
-                        <h2 class="fw-bold text-center mb-3">Tu cuenta</h2>
-                        <!-- nombres y apellidos -->
-                        <div class="row">
-
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Nombres: </label>
-
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text text-muted">
-                                            <i class="bi bi-person-fill"></i>
-                                        </span>
-                                        <input id="names" type="input" class="form-control" placeholder="Escriba sus nombres">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Apellidos: </label>
-
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text text-muted">
-                                            <i class="bi bi-person-fill"></i>
-                                        </span>
-                                        <input id="lastname" type="input" class="form-control" placeholder="Escriba sus apellidos">
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        <!-- email -->
+                       
+                        <!-- Contraseña -->
                         <div class="row">
 
                             <div class="col-md-12">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Correo Electrónico: </label>
-
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text text-muted">
-                                            <i class="bi bi-envelope-fill"></i>
-                                        </span>
-                                        <input id="email" type="email" class="form-control" placeholder="Escriba su correo electrónico">
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <!-- fecha de nacimiento y pais -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Fecha de Nacimiento: </label>
-
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text text-muted">
-                                            <i class="bi bi-calendar-event-fill"></i>
-                                        </span>
-                                        <input id="date_of_birth" type="date" class="form-control" placeholder="Escriba sus apellidos">
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">País: </label>
-
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text text-muted">
-                                            <i class="bi bi-globe-americas-fill"></i>
-                                        </span>
-                                        <input id="country" type="input" class="form-control" placeholder="Escriba su país">
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <!-- prefijo y numero de telefono -->
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Prefijo Tel.: </label>
-
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text text-muted">
-                                            <i class="bi bi-telephone-fill"></i>
-                                        </span>
-                                        <input id="telephone_prefix" type="input" class="form-control" placeholder="+51">
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="col-md-8">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Número de Teléfono: </label>
-
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text text-muted">
-                                            <i class="bi bi-phone-fill"></i>
-                                        </span>
-                                        <input id="phone_number" type="number" class="form-control" placeholder="987654321">
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <!-- prefijo y numero de telefono -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Contraseña: </label>
+                                <div class="mb-12">
+                                    <label class="form-label fw-bold">Nueva contraseña: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-file-lock2-fill"></i>
                                         </span>
-                                        <input id="password" type="password" class="form-control" placeholder="Ingrese su contraseña">
+                                        <input id="password" type="password" class="form-control" placeholder="Escribe tu contraseña">
                                     </div>
                                 </div>
-
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Repita la Contraseña: </label>
+                            <div class="col-md-12">
+                                <div class="mb-12">
+                                    <label class="form-label fw-bold">Repite contraseña: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-file-lock2-fill"></i>
                                         </span>
-                                        <input id="confirm_password" type="password" class="form-control" placeholder="Ingrese su contraseña">
+                                        <input id="confirmPassword" type="password" class="form-control" placeholder="Escribe tu contraseña">
                                     </div>
                                 </div>
 
                             </div>
+
                         </div>
 
 
@@ -668,4 +555,4 @@ export class Account {
   };
 }
 
-new Account();
+new Resetpassword();
