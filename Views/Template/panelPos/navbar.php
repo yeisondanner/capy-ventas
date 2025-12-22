@@ -170,7 +170,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             <span class="badge border border-success text-success bg-success-subtle rounded-pill">
                                 <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> Activa
                             </span>
-                            <span>Caja 01 - Principal</span>
+                            <span id="gestion_box_name">Caja 01 - Principal</span>
                             <span>•</span>
                             <span id="reloj" class="text-dark fw-bold"><?= date('H:i:s A'); ?></span>
                         </div>
@@ -323,7 +323,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             <span class="badge border border-success text-success bg-success-subtle rounded-pill">
                                 <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> Activa
                             </span>
-                            <span>Caja 01 - Principal</span>
+                            <span id="arqueo_box_name">Caja 01 - Principal</span>
                             <span>•</span>
                             <span id="reloj_2" class="fw-bold text-dark"><?= date('H:i:s A'); ?></span>
                         </div>
@@ -423,7 +423,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         <span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2">
                             <i class="bi bi-circle-fill" style="font-size: 0.5rem;"></i> Por Cerrar
                         </span>
-                        <span>Caja Principal</span>
+                        <span id="close_box_name">Caja Principal</span>
                         <span>•</span>
                         <span id="reloj_3" class="fw-bold text-dark"><?= date('H:i:s A'); ?></span>
                     </div>

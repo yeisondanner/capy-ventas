@@ -346,6 +346,9 @@ class Box extends Controllers
             $this->responseError('No tienes ninguna caja aperturada. Por favor apertura tu turno.');
         }
 
+        // * cosultamos el nombre de la caja
+        $box = $this->model->getBox($boxSessions["box_id"]);
+
         // * Consultamos los metodos de pagos disponibles por la app
         $paymentMethod = $this->model->getPaymentMethods();
 
@@ -388,6 +391,7 @@ class Box extends Controllers
         // * Devolvemos la respuesta formateada
         $arrayResponse = [
             "status" => true,
+            "name_box" => $box["name"],
             "amount_base" => (float) $boxSessions["initial_amount"],
             "total_general" => $totalGeneral,
             "payment_method" => $paymentMethod,

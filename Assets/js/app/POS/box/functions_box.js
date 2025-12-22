@@ -33,6 +33,7 @@ export class Box {
   #containerMetodosPago = $("#quick_access_card_payment_method");
   #containerListaMovimientos = $("#quick_access_card_list_movements");
   #lblTituloMovimientos = $("#quick_access_title_list_movements");
+  #lblTituloGestionBoxName = $("#gestion_box_name");
 
   // Vista: Arqueo (Conteo Físico)
   #lblArqueoTotalEfectivo = $("#quick_access_arqueo_total_efectivo");
@@ -45,6 +46,7 @@ export class Box {
   #containerArqueoMensaje = $("#quick_access_arqueo_message");
   #containerArqueoDiferencia = $("#quick_access_arqueo_diference");
   #containerDesgloseFinal = $("#quick_access_desgloce_efectivo");
+  #lblTituloArqueoBoxName = $("#arqueo_box_name");
 
   // Vista: Cierre de Caja (Dashboard Final)
   #lblCloseBoxTotalSales = $("#close_box_total_sales");
@@ -55,6 +57,7 @@ export class Box {
   #lblCloseBoxIncome = $("#close_box_income");
   #lblCloseBoxExpenses = $("#close_box_expenses");
   #lblCloseBoxExpected = $("#close_box_expected");
+  #lblTituloCloseBoxName = $("#close_box_name");
 
   // Balance Sistema vs Arqueo
   #lblCloseBoxSistema = $("#close_box_sistema");
@@ -216,7 +219,7 @@ export class Box {
           });
         }
       });
-      
+
       const notes = $("#quick_access_arqueo_justificacion").val() || null;
       const params = {
         conteo_efectivo: detallesArray,
@@ -403,6 +406,12 @@ export class Box {
 
   // CORREGIDO: Lógica de suma de Base solo a Efectivo
   #renderVistaGestion = () => {
+    // Mostramos el nombre de la caja en session
+    this.#lblTituloGestionBoxName.html(this.#datosSesionCaja.name_box);
+    this.#lblTituloArqueoBoxName.html(this.#datosSesionCaja.name_box);
+    this.#lblTituloCloseBoxName.html(this.#datosSesionCaja.name_box);
+
+    // Calculamos montos
     let amount_base = parseFloat(this.#datosSesionCaja.amount_base) || 0;
 
     this.#lblTotalGeneral.html(
@@ -463,7 +472,9 @@ export class Box {
     let htmlTarjetas = `
           <div class="flex-fill p-2 rounded-4 bg-primary-subtle border border-primary text-center">
             <small class="d-block text-primary fw-bold mb-1" style="font-size: 0.7rem;">Monto Inicial</small>
-            <span class="fw-bold text-primary">${this.#formatoMoneda(base)}</span>
+            <span class="fw-bold text-primary">${this.#formatoMoneda(
+              base
+            )}</span>
           </div>`;
 
     // Renderizado de Tarjetas Informativas (Yape, Visa, etc)
