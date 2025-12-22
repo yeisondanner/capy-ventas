@@ -404,4 +404,27 @@ class SalesModel extends Mysql
         $result = $this->select($sql, [$data['user_app_id'], $data['status'], $data['year'], $data['month']]);
         return $result;
     }
+    /**
+     * MEtodo que se encarga de registra los movimiento de caja
+     * @param array $data
+     */
+    public function insertBoxMovement(array $data)
+    {
+        $sql = <<<SQL
+            INSERT INTO `box_movements` 
+            (`boxSessions_id`, `type_movement`, `concept`, `amount`, `payment_method`, `reference_table`, `reference_id`) 
+            VALUES 
+            (?, ?, ?, ?, ?, ?, ?);
+        SQL;
+        $result = $this->insert($sql, [
+            $data['boxSessions_id'],
+            $data['type_movement'],
+            $data['concept'],
+            $data['amount'],
+            $data['payment_method'],
+            $data['reference_table'],
+            $data['reference_id']
+        ]);
+        return $result;
+    }
 }

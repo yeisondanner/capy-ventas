@@ -614,8 +614,25 @@ class Sales extends Controllers
             'business_id'        => $businessId,
             'user_app_id'        => $this->getUserId(),
         ]);
+        //validamos si la caja esta abierta para registrar la venta
+        $requestOpenBox = $this->model->selectOpenBoxByUser([
+            'user_app_id' => $this->getUserId(),
+            'status' => 'Abierta',
+            'year' => date('Y'),
+            'month' => date('m'),
+        ]);
+        if ($requestOpenBox) {
+            $insertMovement = $this->model->insertBoxMovement([
+                'boxSessions_id' => $requestOpenBox['idBoxSessions'] ?? 0,
+                'type_movement' => 'Ingreso',
+                'concept' => 'Venta POS - ' . ($voucherName !== '' ? $voucherName : 'Sin nombre'),
+                'amount' => $totalAmount,
+                'payment_method' => (string) ($paymentMethodId ?? 'Efectivo'),
+                'reference_table' => 'voucher_header',
+                'reference_id' => $headerId,
+            ]);
+        }
         //validar el registro de la venta en movimientos de caja (aun falta eso)
-
         if ($headerId <= 0) {
             $this->responseError('No fue posible registrar la cabecera de la venta.');
         }
