@@ -216,7 +216,7 @@ export class Box {
           });
         }
       });
-
+      
       const notes = $("#quick_access_arqueo_justificacion").val() || null;
       const params = {
         conteo_efectivo: detallesArray,
@@ -270,8 +270,8 @@ export class Box {
     const baseInicial = parseFloat(data.amount_base) || 0;
 
     // Ingresos Efectivo = Ventas Efectivo (La base ya es inicial, no es ingreso por venta)
-    const ingresosCaja = efectivoVentas;
     const egresosCaja = parseFloat(data.total_efectivo_egreso) || 0;
+    const ingresosCaja = efectivoVentas + egresosCaja;
 
     // Total Sistema = Base + Ingresos - Egresos
     const totalEsperadoSistema = baseInicial + ingresosCaja - egresosCaja;
@@ -443,6 +443,8 @@ export class Box {
   // CORREGIDO: Lógica de suma de Base para el Arqueo
   #renderResumenEsperadoArqueo() {
     const data = this.#datosSesionCaja;
+    console.log(data);
+
     const ventaEfectivo = parseFloat(data.total_payment_method.Efectivo) || 0;
     const base = parseFloat(data.amount_base) || 0;
 
@@ -457,13 +459,17 @@ export class Box {
     // IMPORTANTE: Actualizamos la variable global para que el cálculo de diferencia sea correcto
     this.#totalEfectivoSistema = totalEfectivoEsperado;
 
-    // Renderizado de Tarjetas Informativas (Yape, Visa, etc - NO Efectivo)
-    const htmlTarjetas = data.payment_method
-      .filter(
-        (el) =>
-          el.name !== "Efectivo" &&
-          data.total_payment_method[el.name] !== undefined
-      )
+    // Mostramos el monto inicial
+    let htmlTarjetas = `
+          <div class="flex-fill p-2 rounded-4 bg-primary-subtle border border-primary text-center">
+            <small class="d-block text-primary fw-bold mb-1" style="font-size: 0.7rem;">Monto Inicial</small>
+            <span class="fw-bold text-primary">${this.#formatoMoneda(base)}</span>
+          </div>`;
+
+    // Renderizado de Tarjetas Informativas (Yape, Visa, etc)
+
+    htmlTarjetas += data.payment_method
+      .filter((el) => data.total_payment_method[el.name] !== undefined)
       .map(
         (el) => `
           <div class="flex-fill p-2 rounded-4 bg-body-tertiary border text-center">

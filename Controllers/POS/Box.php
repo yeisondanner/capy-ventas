@@ -226,7 +226,7 @@ class Box extends Controllers
 
         // ? Si no hay un mensaje, lo agregamos por default
         if (is_null($notes) || empty($notes)) {
-            if ($difference === 0) {
+            if ($difference == 0) {
                 $notes = "Cuadre perfecto";
             } else if ($difference < 0) {
                 $notes = "Monto sobrante a favor";
