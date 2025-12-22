@@ -20,6 +20,7 @@ class BoxModel extends Mysql
     protected int $currencyDenominationId;
     protected int $quantity;
     protected float $total;
+    protected string $closingDate;
 
 
     // ? Funciones get
@@ -79,6 +80,21 @@ class BoxModel extends Mysql
         SQL;
 
         return $this->select($sql, [$this->userId]);
+    }
+
+    public function getLastCashCount(int $boxSessionsId)
+    {
+        $this->boxSessionsId = $boxSessionsId;
+        $sql = <<<SQL
+            SELECT
+                *
+            FROM box_cash_counts
+            WHERE box_session_id = ?
+            ORDER BY idBoxCashCounts DESC
+            LIMIT 1;
+        SQL;
+
+        return $this->select($sql, [$this->boxSessionsId]);
     }
 
     // ? Funciones getAll
@@ -227,5 +243,24 @@ class BoxModel extends Mysql
     }
 
     // ? Funciones update
+    public function updateCloseSession(int $boxSessionsId, string $closingDate, $notes, string $status): bool
+    {
+        $this->boxSessionsId = $boxSessionsId;
+        $this->closingDate = $closingDate;
+        $this->status = $status;
+
+        $sql = <<<SQL
+            UPDATE box_sessions
+            SET
+                closing_date = ?,
+                closing_notes = ?,
+                `status` = ?
+            WHERE idBoxSessions = ?
+            LIMIT 1;
+        SQL;
+
+        return (bool) $this->update($sql, [$this->closingDate, $notes, $this->status, $this->boxSessionsId]);
+    }
+
     // ? Funciones delete
 }
