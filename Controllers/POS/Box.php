@@ -142,6 +142,45 @@ class Box extends Controllers
         ]);
     }
 
+    // TODO: Endpoint para registrar todos los arqueos y cierre de caja
+    public function setBoxCashCount()
+    {
+        // * Validamos que llegue el metodo POST
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        // * Decodificamos la cadena de texto en formato JSON para validar
+        $raw = file_get_contents('php://input');
+        $data = json_decode($raw, true);
+
+        // * Limpiamos los campos
+        $type = strClean($data['type']);
+        $notes = strClean($data['notes']);
+        $conteo_efectivo = $data['conteo_efectivo'];
+
+        toJson($data);
+        // * Validamos que no este vacio los campos
+        validateFieldsEmpty(array(
+            "TIPO DE CAJA" => $type
+        ));
+
+        // * Validamos que no este vacio la justificacion sino lo colocamos como null
+        (!empty($notes)) ?? $notes = null;
+
+        // * Consultamos el ID del usuario
+        $userId = $this->getUserId();
+
+        // * Consultamos si el usuario tiene un caja aperturada
+        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
+        if (!$boxSessions) {
+            $this->responseError('No tienes ninguna caja aperturada. Por favor apertura tu turno.');
+        }
+
+        // * Consultamos los metodos de pagos disponibles por la app
+        $paymentMethod = $this->model->getPaymentMethods();
+    }
+
     // TODO: Funcion que devuelve si el usuario tiene aperturado un caja
     public function getuserCheckedBox()
     {

@@ -8,7 +8,10 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 ?>
 <!-- Navbar-->
 <header class="app-header">
-    <a class="app-header__logo" href="<?= base_url() ?>/pos/dashboard">Capy Ventas</a>
+    <a class="app-header__logo" href="<?= base_url() ?>/pos/dashboard">
+        <img class="p-1 bg-white rounded-5" style="width: 2rem;" src="<?= media() ?>/carpincho.png" alt="">
+        Capy Ventas
+    </a>
     <!-- Sidebar toggle button-->
     <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
     <!-- Navbar Right Menu-->
@@ -85,7 +88,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="modal-body d-flex flex-column p-4 gap-4">
-                <div class="d-flex justify-content-between align-items-start">
+                <div class="d-flex justify-content-between">
                     <div>
                         <h3 class="fw-bold mb-1">Apertura de Caja</h3>
                         <p class="text-muted mb-0 small">Configure los detalles para iniciar turno</p>
@@ -160,7 +163,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="modal-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex justify-content-between mb-4">
                     <div>
                         <h4 class="fw-bold mb-1">Movimientos y Gestión</h4>
                         <div class="d-flex align-items-center gap-2 small text-muted">
@@ -313,7 +316,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
             <div class="modal-body p-4 bg-light">
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex justify-content-between mb-4">
                     <div>
                         <h4 class="fw-bold mb-1">Arqueo de Caja</h4>
                         <div class="d-flex align-items-center gap-2 small text-muted">
@@ -329,9 +332,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                 </div>
 
                 <div class="row g-4">
-
                     <div class="col-lg-5 d-flex flex-column gap-3">
-
                         <div class="card border rounded-4 bg-white shadow-sm">
                             <div class="card-header bg-transparent border-bottom pt-3 pb-2">
                                 <h6 class="fw-bold text-muted mb-0"><i class="bi bi-hdd-rack-fill me-2"></i>Esperado por Sistema</h6>
@@ -340,7 +341,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 <div class="d-flex justify-content-between align-items-end mb-3">
                                     <div>
                                         <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem;">Efectivo Total</small>
-                                        <h3 id="quick_access_arqueo_efectivo_total" class="fw-bold text-dark mb-0"><?= getCurrency(); ?>950.00</h3>
+                                        <h3 id="quick_access_arqueo_total_efectivo" class="fw-bold text-dark mb-0"><?= getCurrency(); ?>950.00</h3>
                                     </div>
                                     <div class="text-end">
                                         <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem;">Ventas Totales</small>
@@ -354,26 +355,20 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         </div>
 
                         <div class="card border rounded-4 bg-white shadow-sm flex-fill">
-                            <div class="p-2">
-                                <div class="alert alert-danger d-flex align-items-center gap-2 p-2 rounded-4 mb-0" role="alert">
-                                    <i class="bi bi-exclamation-triangle-fill"></i>
-                                    <strong>Descuadre detectado</strong>
-                                </div>
+                            <div class="p-2" id="quick_access_arqueo_message">
+                                <!-- Aqui va el mensaje si es descuadre o esta ok -->
                             </div>
                             <h6 class="px-3 text-muted text-center mt-2 mb-0 small text-uppercase fw-bold">Total contado</h6>
                             <div class="d-flex flex-column px-3 pb-3">
-                                <h1 class="text-center w-100 mb-2 fw-bold text-primary"><?= getCurrency(); ?>0.00</h1>
+                                <h1 id="quick_access_arqueo_count_efectivo" class="text-center w-100 mb-2 fw-bold text-primary"><?= getCurrency(); ?>0.00</h1>
                                 <div class="d-flex flex-wrap align-items-center w-100 gap-2">
-                                    <div class="d-flex gap-2 align-items-center p-1">
-                                        <p class="mb-0 fw-bold small text-muted">Diferencia:</p>
-                                        <div class="card rounded-4 border-danger bg-danger-subtle">
-                                            <h5 class="mb-0 px-3 py-1 text-danger fw-bold"><?= getCurrency() ?>0.00</h5>
-                                        </div>
+                                    <div id="quick_access_arqueo_diference" class="d-flex gap-2 align-items-center p-1">
+                                        <!-- Aqui va la diferencia -->
                                     </div>
                                     <div class="flex-fill">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control rounded-4 border-opacity-75" id="txtJustification" placeholder="Motivo">
-                                            <label for="txtJustification" class="text-muted"><i class="bi bi-pencil-square me-1"></i>Justificación</label>
+                                            <input type="text" class="form-control rounded-4 border-opacity-75" id="quick_access_arqueo_justificacion" placeholder="Motivo">
+                                            <label for="quick_access_arqueo_justificacion" class="text-muted"><i class="bi bi-pencil-square me-1"></i>Justificación</label>
                                         </div>
                                     </div>
                                 </div>
@@ -384,44 +379,13 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         <div class="card border rounded-4 h-100 bg-white shadow-sm">
                             <div class="card-header bg-transparent border-bottom pt-3 pb-2 d-flex justify-content-between align-items-center">
                                 <h6 class="fw-bold text-muted mb-0"><i class="bi bi-cash-stack me-2 text-primary"></i>Conteo de Efectivo</h6>
-                                <button class="btn btn-sm btn-light border rounded-pill px-3">Limpiar</button>
+                                <button id="btnLimpiarArqueo" class="btn btn-sm btn-light border rounded-pill px-3">Limpiar</button>
                             </div>
                             <div class="card-body p-4">
                                 <div id="quick_access_arqueo_currency_denominations">
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h6 class="fw-bold text-success mb-0 me-3" style="min-width: 80px;"><i class="bi bi-cash"></i> BILLETES</h6>
-                                        <div class="flex-grow-1 border-bottom"></div>
-                                    </div>
-                                    <div class="row g-2 mb-4">
-                                        <?php
-                                        $billetes = [200, 100, 50, 20, 10];
-                                        foreach ($billetes as $val): ?>
-                                            <div class="col-6 item-box">
-                                                <div class="input-group">
-                                                    <span class="input-group-text bg-success-subtle text-success fw-bold border-end-0" style="width: 65px;"><?= getCurrency() . $val ?></span>
-                                                    <input type="number" class="form-control border-start-0 bg-light" placeholder="0" min="0">
-                                                </div>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
-                                    <div class="d-flex align-items-center mb-3">
-                                        <h6 class="fw-bold text-warning mb-0 me-3" style="min-width: 80px;"><i class="bi bi-coin"></i> MONEDAS</h6>
-                                        <div class="flex-grow-1 border-bottom"></div>
-                                    </div>
-                                    <div class="row g-2 mb-4">
-                                        <?php
-                                        $monedas = [5, 2, 1, 0.50, 0.20, 0.10];
-                                        foreach ($monedas as $val): ?>
-                                            <div class="col-4 item-box">
-                                                <div class="input-group input-group-sm">
-                                                    <span class="input-group-text bg-warning-subtle text-warning fw-bold border-end-0"><?= $val < 1 ? $val : getCurrency() . $val ?></span>
-                                                    <input type="number" class="form-control border-start-0 bg-light" placeholder="0">
-                                                </div>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    </div>
+                                    <!-- Denominaciones de monedas -->
                                 </div>
-                                <div class="d-flex justify-content-between pt-3 border-top bg-light rounded-3 p-2">
+                                <div id="quick_access_desgloce_efectivo" class="d-flex justify-content-between pt-3 border bg-light rounded-4 p-2">
                                     <div class="text-center w-50 border-end">
                                         <small class="text-muted text-uppercase fw-bold" style="font-size: 0.8rem;">Billetes</small>
                                         <div class="fw-bold text-dark"><?= getCurrency() ?>1,280.00</div>
@@ -439,7 +403,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <button type="button" class="btn btn-light border fw-bold rounded-pill px-4 text-muted" data-bs-dismiss="modal">
                         Cancelar
                     </button>
-                    <button type="button" class="btn btn-primary fw-bold rounded-pill px-4 shadow-sm">
+                    <button id="setArqueoCaja" type="button" class="btn btn-primary fw-bold rounded-pill px-4 shadow-sm">
                         <i class="bi bi-check2-circle me-2"></i> Confirmar Arqueo
                     </button>
                 </div>
