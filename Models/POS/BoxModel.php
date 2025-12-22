@@ -16,7 +16,10 @@ class BoxModel extends Mysql
     protected float $expectedAmount;
     protected float $countedAmount;
     protected float $difference;
-    protected $notes;
+    protected string $notes;
+    protected int $currencyDenominationId;
+    protected int $quantity;
+    protected float $total;
 
 
     // ? Funciones get
@@ -191,14 +194,14 @@ class BoxModel extends Mysql
         return (int) $this->insert($sql, [$this->boxSessionsId, $this->typeMovement, $this->concept, $this->initialAmount, $this->paymentMethod]);
     }
 
-    public function insertBoxCashCount(int $boxSessionsId, string $type, float $expectedAmount, float $countedAmount, float $difference, $notes)
+    public function insertBoxCashCount(int $boxSessionsId, string $type, float $expectedAmount, float $countedAmount, float $difference, string $notes)
     {
-    $this->$boxSessionsId = $boxSessionsId;
-    $this->$type = $type;
-    $this->$expectedAmount = $expectedAmount;
-    $this->$countedAmount = $countedAmount;
-    $this->$difference = $difference;
-    $this->$notes = $notes;
+        $this->boxSessionsId = $boxSessionsId;
+        $this->type = $type;
+        $this->expectedAmount = $expectedAmount;
+        $this->countedAmount = $countedAmount;
+        $this->difference = $difference;
+        $this->notes = $notes;
         $sql = <<<SQL
             INSERT INTO box_cash_counts
                 (box_session_id, `type`, expected_amount, counted_amount, difference, notes)
@@ -206,6 +209,21 @@ class BoxModel extends Mysql
                 (?, ?, ?, ?, ?, ?);
         SQL;
         return (int) $this->insert($sql, [$this->boxSessionsId, $this->type, $this->expectedAmount, $this->countedAmount, $this->difference, $this->notes]);
+    }
+
+    public function insertBoxCashCountDetails(int $boxCashCountsId, int $currencyDenominationId, int $quantity, float $total)
+    {
+        $this->boxCashCountsId = $boxCashCountsId;
+        $this->currencyDenominationId = $currencyDenominationId;
+        $this->quantity = $quantity;
+        $this->total = $total;
+        $sql = <<<SQL
+            INSERT INTO box_cash_count_details
+                (box_cash_count_id, currency_denomination_id, quantity, total)
+            VALUES
+                (?, ?, ?, ?);
+        SQL;
+        return (int) $this->insert($sql, [$this->boxCashCountsId, $this->currencyDenominationId, $this->quantity, $this->total]);
     }
 
     // ? Funciones update

@@ -45,7 +45,7 @@ class Account extends Controllers
 		}
 
 		// * Verificamos que no exista un usuario con este email
-		$is_exists_user = $this->model->isExistsUser(encryption($email));
+		$is_exists_user = $this->model->isExistsPeople(encryption($email));
 		if ($is_exists_user) {
 			$this->responseError("Ya existe un usuario registrado con este correo electrónico.");
 		}
@@ -211,7 +211,7 @@ class Account extends Controllers
 		}
 
 		// * Verificamos que no exista un usuario con este correo
-		$is_exists_user = $this->model->isExistsUser(encryption($email));
+		$is_exists_user = $this->model->isExistsPeople(encryption($email));
 		if ($is_exists_user) {
 			toJson([
 				"title" => "Ocurrió un error inesperado",

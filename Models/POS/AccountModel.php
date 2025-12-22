@@ -109,16 +109,16 @@ class AccountModel extends Mysql
         return $request ?? [];
     }
 
-    public function isExistsUser(string $email_hash)
+    public function isExistsPeople(string $email_hash)
     {
         $this->email = $email_hash;
         $sql = <<<SQL
-            SELECT * FROM user_app
-            WHERE user = ?
+            SELECT * FROM people
+            WHERE email = ?
             LIMIT 1;
             SQL;
         $request = $this->select($sql, [$this->email]);
-        return $request ?? [];
+        return $request ? true : false;
     }
 
     public function createPeople(string $names, string $lastname, string $email, string $date_of_birth, string $country, string $telephone_prefix, string $phone_number)
