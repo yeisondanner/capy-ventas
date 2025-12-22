@@ -281,8 +281,41 @@ class Box extends Controllers
 
         // * Consultamos si el usuario tiene un caja aperturada
         $boxSessions = $this->model->getBoxSessionsByUserId($userId);
-        if (!$boxSessions) {
-            $this->responseError('No tienes ninguna caja aperturada. Por favor apertura tu turno.');
+
+        // * Consultamos todos los movimientos asociados a la caja aperturada para calcular el total del sistema
+        $boxMovements = $this->model->getBoxMovements($boxSessions["idBoxSessions"]);
+        $total_efectivo_sistema = 0;
+        foreach ($boxMovements as $key => $value) {
+            $amount = (float) $value["amount"];
+            // ? Calculamos el total efectivo del sistema
+            if ($value["payment_method"] === "Efectivo") {
+                if ($value["type_movement"] !== "Egreso") {
+                    $total_efectivo_sistema += $amount;
+                } else {
+                    $total_efectivo_sistema -= $amount;
+                }
+            }
+        }
+
+        // * Consultamos si tiene un arqueo de caja realizado y trael el ultimo realizado
+        $cashCount = $this->model->getLastCashCount($boxSessions["idBoxSessions"]);
+
+        $type = "Cierre";
+        $total_efectivo_contado = 0;
+        $difference = $total_efectivo_sistema;
+        $notes_arqueo = "Descuadre detectado";
+
+        if ($cashCount) {
+            $total_efectivo_sistema = $cashCount["expected_amount"];
+            $total_efectivo_contado = $cashCount["counted_amount"];
+            $difference = $cashCount["difference"];
+            $notes_arqueo = $cashCount["notes"];
+        }
+
+        // * Insertamos el arqueo de cierre de caja
+        $insertArqueoBox = $this->model->insertBoxCashCount($boxSessions["idBoxSessions"], $type, $total_efectivo_sistema, $total_efectivo_contado, $difference, $notes_arqueo);
+        if(!$insertArqueoBox){
+            $this->responseError('Error al momento de registrar el arqueo de cierre de caja.');
         }
 
         // * sacamos la fecha actual del servidor
