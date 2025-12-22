@@ -36,3 +36,16 @@ Logo Upload Area
   padding: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
+/* Solo necesitamos esto para cambiar el color a verde.
+           El tamaño lo manejamos ahora con clases de Bootstrap (fs-2). */
+.switch-success:checked {
+  background-color: #198754;
+  border-color: #198754;
+}
+
+/* Opcional: Para que el cursor sea manita al pasar por encima */
+.form-check-input,
+.form-check-label {
+  cursor: pointer;
+}

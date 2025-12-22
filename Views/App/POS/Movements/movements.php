@@ -12,7 +12,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="tile">
+            <div class="tile rounded-3">
                 <div class="tile-body">
                     <h6 class="text-center text-primary mb-3">Filtrar Movimientos</h6>
                     <div class="d-flex flex-wrap gap-1 __filter-container">

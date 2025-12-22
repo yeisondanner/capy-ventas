@@ -118,6 +118,12 @@ class Inventory extends Controllers
             $this->responseError('Método de solicitud no permitido.');
         }
         $userId = $this->getUserId();
+        //validamos si chkProductStatus esta activo o inactivo
+        if (isset($_POST['chkProductStatus']) && $_POST['chkProductStatus'] === 'on') {
+            $statusChbx = 'Si';
+        } else {
+            $statusChbx = 'No';
+        }
         $this->validateCsrfToken($_POST['token'] ?? '', $userId);
         $requiredFields = [
             'txtProductName',
@@ -181,6 +187,7 @@ class Inventory extends Controllers
             'description'    => $description,
             'status'         => $status,
             'supplier_id'    => $supplierId,
+            'is_public'      => $statusChbx,
         ];
 
         $productId = $this->model->insertProduct($payload);
@@ -277,7 +284,8 @@ class Inventory extends Controllers
                 'status'         => $product['status'],
                 'currency_symbol' => $currencySymbol,
                 'images'         => $images ?? [],
-                'image_main'     => $product['image_main'] ?? ''
+                'image_main'     => $product['image_main'] ?? '',
+                'is_public'     => $product['is_public'] ?? 'No',
             ],
         ];
 
@@ -299,7 +307,12 @@ class Inventory extends Controllers
 
         $userId = $this->getUserId();
         $this->validateCsrfToken($_POST['token'] ?? '', $userId);
-
+        //validamos si chkProductStatus esta activo o inactivo
+        if (isset($_POST['update_chkProductStatus']) && $_POST['update_chkProductStatus'] === 'on') {
+            $statusChbx = 'Si';
+        } else {
+            $statusChbx = 'No';
+        }
         $requiredFields = [
             'update_txtProductId',
             'update_txtProductName',
@@ -380,6 +393,7 @@ class Inventory extends Controllers
             'description'    => $description,
             'status'         => $status,
             'supplier_id'    => $supplierId,
+            'is_public'      => $statusChbx,
         ];
 
         $updated = $this->model->updateProduct($payload);

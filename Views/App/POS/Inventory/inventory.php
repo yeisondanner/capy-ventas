@@ -43,10 +43,11 @@
                                     <th>Nombre</th>
                                     <th>Categoría</th>
                                     <th>Proveedor</th>
-                                    <th>Stock (Unidad)</th>
+                                    <th>Stock</th>
                                     <th>Precio venta</th>
                                     <th>Precio compra</th>
                                     <th>Ganancia</th>
+                                    <th>Publico</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -147,6 +148,25 @@
                                 rows="3" placeholder="Describe las características principales del producto"></textarea>
                         </div>
                     </div>
+                    <div class="col-12">
+                        <div class="card shadow-sm border-light">
+                            <div class="card-body d-flex justify-content-between align-items-center p-4">
+                                <!-- Columna de Texto -->
+                                <div class="me-3">
+                                    <label class="form-check-label fw-bold text-dark d-block mb-1" for="chkProductStatus">
+                                        Mostrar en el catálogo
+                                    </label>
+                                    <small class="text-muted">
+                                        El producto será visible en el catálogo de ventas si esta opción está activada.
+                                    </small>
+                                </div>
+                                <div class="form-check form-switch fs-2 m-0">
+                                    <!-- Agregamos la clase 'switch-success' solo para el color verde -->
+                                    <input class="form-check-input switch-success" type="checkbox" role="switch" id="chkProductStatus" name="chkProductStatus">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -197,9 +217,13 @@
                                     <label class="text-muted fw-bold d-block text-uppercase small" style="font-size: 0.7rem;">Proveedor</label>
                                     <span id="reportProductSupplier">-</span>
                                 </div>
-                                <div class="mb-0">
+                                <div class="mb-2">
                                     <label class="text-muted fw-bold d-block text-uppercase small" style="font-size: 0.7rem;">Unidad de medida</label>
                                     <span id="reportProductMeasurement">-</span>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="text-muted fw-bold d-block text-uppercase small" style="font-size: 0.7rem;">Es Publico</label>
+                                    <span id="reportProductIsPublic">-</span>
                                 </div>
                             </div>
                         </div>
@@ -269,11 +293,11 @@
                         <?= csrf(); ?>
                         <div class="col-sm-8 col-md-9">
                             <label for="txtCategoryName" class="visually-hidden">Nombre de la categoría</label>
-                            <input type="text" class="form-control" id="txtCategoryName" name="txtCategoryName" maxlength="255"
+                            <input type="text" class="form-control form-control-sm" id="txtCategoryName" name="txtCategoryName" maxlength="255"
                                 required placeholder="Ej. Bebidas calientes">
                         </div>
                         <div class="col-sm-4 col-md-3 d-grid">
-                            <button class="btn btn-info text-white" type="submit">
+                            <button class="btn btn-sm btn-outline-info" type="submit">
                                 <i class="bi bi-plus-lg"></i> Registrar
                             </button>
                         </div>
@@ -400,6 +424,25 @@
                             <span class="input-group-text"><i class="bi bi-info-circle"></i></span>
                             <textarea class="form-control" id="update_txtProductDescription" name="update_txtProductDescription"
                                 rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card shadow-sm border-light">
+                            <div class="card-body d-flex justify-content-between align-items-center p-4">
+                                <!-- Columna de Texto -->
+                                <div class="me-3">
+                                    <label class="form-check-label fw-bold text-dark d-block mb-1" for="update_chkProductStatus">
+                                        Mostrar en el catálogo
+                                    </label>
+                                    <small class="text-muted">
+                                        El producto será visible en el catálogo de ventas si esta opción está activada.
+                                    </small>
+                                </div>
+                                <div class="form-check form-switch fs-2 m-0">
+                                    <!-- Agregamos la clase 'switch-success' solo para el color verde -->
+                                    <input class="form-check-input switch-success" type="checkbox" role="switch" id="update_chkProductStatus" name="update_chkProductStatus">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

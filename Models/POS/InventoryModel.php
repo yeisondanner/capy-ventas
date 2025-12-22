@@ -29,7 +29,8 @@ class InventoryModel extends Mysql
                 p.supplier_id,
                 c.name AS category,
                 m.name AS measurement,
-                s.company_name AS supplier
+                s.company_name AS supplier,
+                p.is_public
             FROM product AS p
             INNER JOIN category AS c ON c.idCategory = p.category_id
             INNER JOIN measurement AS m ON m.idMeasurement = p.measurement_id
@@ -92,9 +93,9 @@ class InventoryModel extends Mysql
     {
         $sql = <<<SQL
             INSERT INTO product
-                (category_id, name, stock, purchase_price, sales_price, measurement_id, description, status, supplier_id)
+                (category_id, name, stock, purchase_price, sales_price, measurement_id, description, status, supplier_id,is_public)
             VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?);
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         SQL;
 
         $params = [
@@ -107,6 +108,7 @@ class InventoryModel extends Mysql
             $data['description'] !== '' ? $data['description'] : null,
             $data['status'],
             $data['supplier_id'],
+            $data['is_public']
         ];
 
         return (int) $this->insert($sql, $params);
@@ -132,7 +134,8 @@ class InventoryModel extends Mysql
                 measurement_id = ?,
                 description = ?,
                 status = ?,
-                supplier_id = ?
+                supplier_id = ?,
+                is_public = ?
             WHERE idProduct = ?
             LIMIT 1;
         SQL;
@@ -147,6 +150,7 @@ class InventoryModel extends Mysql
             $data['description'] !== '' ? $data['description'] : null,
             $data['status'],
             $data['supplier_id'],
+            $data['is_public'],
             $data['idProduct'],
         ];
 

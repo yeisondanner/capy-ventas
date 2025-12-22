@@ -180,6 +180,7 @@
     setReportField("reportProductPurchase", purchaseText);
     setReportField("reportProductSale", saleText);
     setReportField("reportImageMain", img_main, 2);
+    setReportField("reportProductIsPublic", product.is_public || "No");
     const listReportImages = document.getElementById("listReportImages");
     listReportImages.innerHTML = "";
     //recorremos todas las imagenes para mostrar
@@ -874,9 +875,18 @@
         { data: "category" },
         { data: "supplier" },
         { data: "stock" },
-        { data: "sales_price" },
-        { data: "purchase_price" },
-        { data: "gain" },
+        { data: "sales_price", className: "text-center" },
+        { data: "purchase_price", className: "text-center" },
+        { data: "gain", className: "text-center" },
+        {
+          data: "is_public",
+          className: "text-center",
+          render: function (data, type, row) {
+            return data === "Si"
+              ? '<span class="badge badge-success bg-success" title="Actualmente el producto es visible en el catalgo"><i class="bi bi-check-circle"></i> Sí</span>'
+              : '<span class="badge badge-secondary bg-secondary" title="Actualmente el producto no es visible en el catalgo"><i class="bi bi-slash-circle"></i> No</span>';
+          },
+        },
       ],
       dom: "lBfrtip",
       buttons: [
@@ -884,21 +894,21 @@
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
           className: "btn btn-sm btn-outline-secondary my-2",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
           className: "btn btn-sm btn-outline-success my-2",
           title: "Productos",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
           className: "btn btn-sm btn-outline-info my-2",
           title: "Productos",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
         },
         {
           extend: "pdfHtml5",
@@ -907,18 +917,17 @@
           orientation: "portrait",
           pageSize: "A4",
           title: "Productos",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
         },
       ],
       columnDefs: [
         { targets: 0, className: "text-center" },
         { targets: 1, className: "text-center" },
-        { targets: [5, 6, 7], className: "text-end" },
       ],
       responsive: true,
       destroy: true,
       colReorder: true,
-      stateSave: false,
+      stateSave: true,
       autoFill: false,
       iDisplayLength: 10,
       order: [[0, "asc"]],
@@ -929,7 +938,7 @@
         document
           .querySelectorAll(".dataTables_paginate > .pagination")
           .forEach((el) => {
-            el.classList.add("pagination-sm");
+            el.classList.add("pagination-sm", "mt-2");
           });
       },
     });
@@ -1272,6 +1281,8 @@
       document.getElementById(
         "update_txtProductMeasurement"
       ).value = `${product.measurement_id}`;
+      document.getElementById("update_chkProductStatus").checked =
+        product.is_public === "Si";
       document.getElementById("update_txtProductStock").value = product.stock;
       document.getElementById("update_txtProductPurchasePrice").value =
         product.purchase_price;
