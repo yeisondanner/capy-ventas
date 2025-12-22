@@ -13,12 +13,12 @@
     <div class="row">
         <div class="col-md-12">
             <div class="tile rounded-3">
-                <div class="tile-body">
+                <div class="tile-body bg-light border p-2 rounded-3">
                     <h6 class="text-center text-primary mb-3">Filtrar Movimientos</h6>
                     <div class="d-flex flex-wrap gap-1 __filter-container">
                         <div class="flex-fill __filter_col">
-                            <label for="filter-type" class="small font-weight-bold">Tipo de Filtro:</label>
-                            <select id="filter-type" class="form-select form-select-sm">
+                            <label for="filter-type" class="text-muted fw-bold d-block text-uppercase small">Tipo de Filtro:</label>
+                            <select id="filter-type" class="form-select">
                                 <option value="daily">Diario</option>
                                 <option value="weekly">Semanal</option>
                                 <option value="monthly">Mensual</option>
@@ -28,29 +28,29 @@
                         </div>
 
                         <div class="__fecha flex-fill" id="date-container">
-                            <label for="filter-date" class="small font-weight-bold" id="date-label">Fecha:</label>
-                            <input type="date" id="filter-date" class="form-control form-control-sm" value="<?= date('Y-m-d') ?>">
+                            <label for="filter-date" class="text-muted fw-bold d-block text-uppercase small" id="date-label">Fecha:</label>
+                            <input type="date" id="filter-date" class="form-control" value="<?= date('Y-m-d') ?>">
                         </div>
 
 
                         <div class="__fecha flex-fill" id="date-range-container" style="display: none;">
-                            <label for="min-date" class="small font-weight-bold">Desde:</label>
-                            <input type="date" id="min-date" class="form-control form-control-sm">
+                            <label for="min-date" class="text-muted fw-bold d-block text-uppercase small">Desde:</label>
+                            <input type="date" id="min-date" class="form-control">
                         </div>
 
                         <div class="__fecha flex-fill" id="date-to-container" style="display: none;">
-                            <label for="max-date" class="small font-weight-bold">Hasta:</label>
-                            <input type="date" id="max-date" class="form-control form-control-sm">
+                            <label for="max-date" class="text-muted fw-bold d-block text-uppercase small">Hasta:</label>
+                            <input type="date" id="max-date" class="form-control">
                         </div>
 
                         <div class="__search flex-fill">
-                            <label for="search-concept" class="small font-weight-bold">Buscar por Concepto:</label>
-                            <input type="text" id="search-concept" class="form-control form-control-sm" placeholder="Concepto de venta...">
+                            <label for="search-concept" class="text-muted fw-bold d-block text-uppercase small">Buscar por Concepto:</label>
+                            <input type="text" id="search-concept" class="form-control" placeholder="Concepto de venta...">
                         </div>
 
                         <div class="__buttons flex-fill d-flex align-items-end justify-content-center justify-content-sm-start">
-                            <button id="filter-btn" class="btn_filter flex-fill btn btn-primary btn- me-2"><i class="bi bi-funnel"></i> Filtrar</button>
-                            <button id="reset-btn" class="btn_clean flex-fill btn btn-secondary btn-sm"><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
+                            <button id="filter-btn" class="btn_filter flex-fill btn btn-outline-primary me-2"><i class="bi bi-funnel"></i> Filtrar</button>
+                            <button id="reset-btn" class="btn_clean flex-fill btn btn-outline-secondary "><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
                         </div>
                     </div>
                 </div>
@@ -58,48 +58,50 @@
         </div>
 
         <div class="col-md-12">
-            <div class="tile">
-                <div class="row g-3">
-                    <div class="col-12 col-sm-6 col-md-4">
-                        <div class="card border-0 shadow-sm h-100 card-enhanced">
-                            <div class="card-body d-flex align-items-center">
-                                <div class="icon-container bg-success-subtle d-flex align-items-center justify-content-center me-3">
-                                    <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
-                                </div>
-                                <div>
-                                    <div class="small text-muted">Balance</div>
-                                    <div class="fw-semibold fs-5" id="balance">
-                                        <?= getCurrency() . ' ' . number_format($data['totals']['balance'], 2, '.', ',') ?>
+            <div class="tile rounded-3">
+                <div class="tile-body  bg-light border p-2 rounded-3">
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-12 col-md-4">
+                            <div class="card border-0 shadow-sm h-100 card-enhanced">
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="icon-container bg-success-subtle d-flex align-items-center justify-content-center me-3">
+                                        <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted">Balance</div>
+                                        <div class="fw-semibold fs-5" id="balance">
+                                            <?= getCurrency() . ' ' . number_format($data['totals']['balance'], 2, '.', ',') ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-4">
-                        <div class="card border-0 shadow-sm h-100 card-enhanced">
-                            <div class="card-body d-flex align-items-center">
-                                <div class="icon-container bg-success-subtle d-flex align-items-center justify-content-center me-3">
-                                    <i class="bi bi-cash-stack fs-4 text-success"></i>
-                                </div>
-                                <div>
-                                    <div class="small text-muted">Ventas totales</div>
-                                    <div class="fw-semibold fs-5 text-success" id="totalSales">
-                                        <?= getCurrency() . ' ' . number_format($data['totals']['total_sales'], 2, '.', ',') ?>
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="card border-0 shadow-sm h-100 card-enhanced">
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="icon-container bg-success-subtle d-flex align-items-center justify-content-center me-3">
+                                        <i class="bi bi-cash-stack fs-4 text-success"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted">Ventas totales</div>
+                                        <div class="fw-semibold fs-5 text-success" id="totalSales">
+                                            <?= getCurrency() . ' ' . number_format($data['totals']['total_sales'], 2, '.', ',') ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12 col-sm-6 col-md-4">
-                        <div class="card border-0 shadow-sm h-100 card-enhanced">
-                            <div class="card-body d-flex align-items-center">
-                                <div class="icon-container bg-danger-subtle d-flex align-items-center justify-content-center me-3">
-                                    <i class="bi bi-currency-dollar fs-4 text-danger"></i>
-                                </div>
-                                <div>
-                                    <div class="small text-muted">Gastos totales</div>
-                                    <div class="fw-semibold fs-5 text-danger" id="totalExpenses">
-                                        <?= getCurrency() . ' ' . number_format($data['totals']['total_expenses'], 2, '.', ',') ?>
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="card border-0 shadow-sm h-100 card-enhanced">
+                                <div class="card-body d-flex align-items-center">
+                                    <div class="icon-container bg-danger-subtle d-flex align-items-center justify-content-center me-3">
+                                        <i class="bi bi-cash-stack fs-4 text-danger"></i>
+                                    </div>
+                                    <div>
+                                        <div class="small text-muted">Gastos totales</div>
+                                        <div class="fw-semibold fs-5 text-danger" id="totalExpenses">
+                                            <?= getCurrency() . ' ' . number_format($data['totals']['total_expenses'], 2, '.', ',') ?>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -111,10 +113,10 @@
 
 
         <div class="col-md-12">
-            <div class="tile">
+            <div class="tile rounded-3">
                 <div class="tile-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover table-bordered" id="table" data-token="<?= csrf(false); ?>">
+                    <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
+                        <table class="table table-sm table-hover table-bordered table-striped table-responsive" id="table" data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
@@ -124,7 +126,6 @@
                                     <th>Medios de Pago</th>
                                     <th>Nombre de Vendedor</th>
                                     <th>Fecha y Hora</th>
-
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -144,23 +145,26 @@
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
 
-            <div class="modal-header">
+            <div class="modal-header bg-info">
                 <h5 class="modal-title" id="voucherModalLabel">Comprobante de venta</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
             <div class="modal-body">
                 <div id="voucherContainer" class="voucher-container p-3">
 
-                    <!-- ENCABEZADO -->
-                    <div class="text-center mb-3">
-                        <h5 class="mb-0 fw-bold" id="name_bussines">NOMBRE DEL NEGOCIO</h5>
-                        <div class="small text-muted" id="direction_bussines">Dirección del negocio</div>
-                        <div class="small text-muted">
-                            RUC / Documento: <span id="document_bussines">00000000000</span>
-                        </div>
-                        <div class="small text-muted">
-                            Fecha y hora: <span id="date_time">2025-11-19 10:00:00</span>
+                    <div class="d-flex flex-column align-items-center">
+                        <img src="" alt="" id="logo_voucher" class="img-fluid mb-2" style="max-height: 40px;">
+                        <!-- ENCABEZADO -->
+                        <div class="text-center mb-3">
+                            <h5 class="mb-0 fw-bold" id="name_bussines">NOMBRE DEL NEGOCIO</h5>
+                            <div class="small text-muted" id="direction_bussines">Dirección del negocio</div>
+                            <div class="small text-muted">
+                                RUC / Documento: <span id="document_bussines">00000000000</span>
+                            </div>
+                            <div class="small text-muted">
+                                Fecha y hora: <span id="date_time">2025-11-19 10:00:00</span>
+                            </div>
                         </div>
                     </div>
 
@@ -238,7 +242,7 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-warning" id="download-png"><i class="bi bi-card-image"></i> Exportar PNG</button>
+                <button type="button" class="btn btn-outline-warning" id="download-png"><i class="bi bi-card-image"></i> Exportar PNG</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>

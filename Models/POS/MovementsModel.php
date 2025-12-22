@@ -63,14 +63,14 @@ class MovementsModel extends Mysql
             vh.amount,
             vh.percentage_discount,
             vd.stock_product,
+            b.logo,
             CONCAT(p.`names`, ' ', p.lastname) AS fullname
-        FROM voucher_detail vd
-        INNER JOIN voucher_header vh
-            ON vd.voucherheader_id = vh.idVoucherHeader
-        INNER JOIN user_app ua
-            ON vh.user_app_id = ua.idUserApp
-        INNER JOIN people p
-            ON ua.people_id = p.idPeople
+        FROM
+            voucher_detail vd
+            INNER JOIN voucher_header vh ON vd.voucherheader_id = vh.idVoucherHeader
+            INNER JOIN business AS b ON b.idBusiness=vh.business_id
+            INNER JOIN user_app ua ON vh.user_app_id = ua.idUserApp
+            INNER JOIN people p ON ua.people_id = p.idPeople
         WHERE vh.idVoucherHeader = ?
           AND vh.business_id = ?
         ORDER BY vd.name_product ASC;

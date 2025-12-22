@@ -112,7 +112,7 @@ class Movements extends Controllers
             $arrData[$key]['actions'] = '
                 <div class="btn-group">
                     <button
-                        class="btn btn-info report-item"
+                        class="btn btn-outline-info btn-sm  report-item"
                         title="Ver reporte"
                         type="button"
                         data-idvoucher="' . $idVoucher . '">
@@ -171,6 +171,7 @@ class Movements extends Controllers
             'fullname'            => $headerRow['fullname'],
             'amount'              => $headerRow['amount'],
             'percentage_discount' => $headerRow['percentage_discount'],
+            'logo'                => base_url() . '/Loadfile/iconbusiness?f=' . $headerRow['logo'],
         ];
 
         // Detalle (todas las filas)

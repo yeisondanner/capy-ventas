@@ -380,7 +380,12 @@
         { data: "cont" },
         { data: "actions" },
         { data: "voucher_name" },
-        { data: "amount" },
+        {
+          data: "amount",
+          render: function (data) {
+            return getcurrency + " " + data;
+          },
+        },
         { data: "name" },
         { data: "fullname" },
         { data: "date_time" },
@@ -391,25 +396,25 @@
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard-check'></i> Copiar",
           titleAttr: "Copiar",
-          className: "btn btn-secondary",
+          className: "btn btn-sm btn-outline-secondary",
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
           title: "Reporte de categorias en Excel",
-          className: "btn btn-success",
+          className: "btn btn-sm btn-outline-success",
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
           title: "Reporte de categorias en CSV",
-          className: "btn btn-info",
+          className: "btn btn-sm btn-outline-info",
         },
         {
           extend: "pdfHtml5",
           text: "<i class='bi bi-file-earmark-pdf'></i> PDF",
           title: "Reporte de categorias en PDF",
-          className: "btn btn-danger",
+          className: "btn btn-sm btn-outline-danger",
           orientation: "landscape",
           pageSize: "LEGAL",
         },
@@ -453,7 +458,7 @@
       responsive: true,
       processing: true,
       colReorder: true,
-      stateSave: false,
+      stateSave: true,
       destroy: true,
       iDisplayLength: 10,
       order: [[0, "asc"]],
@@ -498,6 +503,7 @@
           $("#name_customer").text(h.name_customer);
           $("#direction_customer").text(h.direction_customer);
           $("#fullname").text(h.fullname);
+          document.getElementById("logo_voucher").src = h.logo;
 
           // Totales
           $("#percentage_discount").text(h.percentage_discount);
