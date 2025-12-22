@@ -10,6 +10,7 @@
             <li class="breadcrumb-item"><a href="<?= base_url() ?>/pos/sales">Ventas</a></li>
         </ul>
     </div>
+  
     <div class="row g-2 p-0 pos-steps-row">
         <!-- PASO 1: Elegir producto -->
         <div class="col-12 col-lg-8 step-mobile" id="step1">

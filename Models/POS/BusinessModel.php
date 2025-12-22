@@ -87,11 +87,15 @@ class BusinessModel extends Mysql
         $sql = <<<SQL
             SELECT
                 b.idBusiness,
-                b.`name` AS business,
+                b.`name` AS 'business',
+                bt.`name` AS 'category',
+                b.direction,
+                b.city,
+                b.country,
+                b.email,
                 b.document_number,
-                b.status,
-                bt.`name` AS category,
-                b.logo
+                b.logo,
+                b.openBox
             FROM business AS b
             INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
             WHERE b.idBusiness = ? AND b.userapp_id = ?
@@ -114,12 +118,16 @@ class BusinessModel extends Mysql
         $this->userId     = $userId;
         $sql = <<<SQL
                 SELECT
-                    b.idBusiness,
-                    b.`name` AS business,
-                    b.document_number,
-                    b.status,
-                    bt.`name` AS category,
-                    b.logo
+                     b.idBusiness,
+                                b.`name` AS 'business',
+                                bt.`name` AS 'category',
+                                b.direction,
+                                b.city,
+                                b.country,
+                                b.email,
+                                b.document_number,
+                                b.logo,
+                                b.openBox
                 FROM
                     user_app AS ua
                     INNER JOIN employee AS e ON e.userapp_id = ua.idUserApp

@@ -63,7 +63,8 @@ class LoginModel extends Mysql
                                                                         b.country,
                                                                         b.email,
                                                                         b.document_number,
-                                                                        b.logo
+                                                                        b.logo,
+                                                                        b.openBox
                                                                 FROM
                                                                         business AS b
                                                                         INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
@@ -95,7 +96,8 @@ class LoginModel extends Mysql
                                 b.country,
                                 b.email,
                                 b.document_number,
-                                b.logo
+                                b.logo,
+                                b.openBox
                         FROM
                                 user_app AS ua
                                 INNER JOIN employee AS e ON e.userapp_id = ua.idUserApp

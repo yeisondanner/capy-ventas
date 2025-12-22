@@ -382,4 +382,26 @@ class SalesModel extends Mysql
         $result = $this->select_all($sql);
         return $result ?? [];
     }
+    /**
+     * Metodo que se encarga de obtener si hay alguna caja abierta
+     * por el usuario que ha iniciado sesion
+     * @param array $data
+     * @return void
+     */
+    public function selectOpenBoxByUser(array $data)
+    {
+        $sql = <<<SQL
+                SELECT
+                    *
+                FROM
+                    box_sessions AS b
+                WHERE
+                    b.userapp_id = ?
+                    AND b.`status` = ?
+                    AND YEAR(b.opening_date)= ?
+                    AND MONTH(b.opening_date)= ?;
+        SQL;
+        $result = $this->select($sql, [$data['user_app_id'], $data['status'], $data['year'], $data['month']]);
+        return $result;
+    }
 }

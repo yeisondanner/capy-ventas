@@ -193,7 +193,7 @@ class Business extends Controllers
         if ($businessId <= 0) {
             $this->responseError('Identificador de negocio inválido.');
         }
-        //validamos que si usuario es Zdueño o empleado
+        //validamos que si usuario es dueño o empleado
         if ($owner) {
             $business = $this->model->selectBusinessByIdForUser($businessId, $userId);
             $ownerText = 'Dueño';

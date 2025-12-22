@@ -510,6 +510,7 @@ class Sales extends Controllers
     {
         //VALIDACION DE PERMISOS
         (!validate_permission_app(1, "c", false)['status']) ? toJson(validate_permission_app(1, "c", false)) : '';
+
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -577,6 +578,25 @@ class Sales extends Controllers
         foreach ($productsInfo as $product) {
             $productsById[(int) ($product['idproduct'] ?? 0)] = $product;
         }
+        //validamos si el usuario tiene permiso de leer caja
+        $validationReadBox = (validate_permission_app(11, "r", false)) ? (int) validate_permission_app(11, "r", false)['read'] : 0;
+        //validamos si el usuario tiene permiso de leer caja
+        if ($validationReadBox === 1) {
+            //validamos si es obligatorio abrir caja antes de registrar una venta
+            $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
+            //validamos si es necesario abrir caja para registrar la venta
+            if ($openBox === 'Si') {
+                $requestOpenBox = $this->model->selectOpenBoxByUser([
+                    'user_app_id' => $this->getUserId(),
+                    'status' => 'Abierta',
+                    'year' => date('Y'),
+                    'month' => date('m'),
+                ]);
+                if (!$requestOpenBox) {
+                    $this->responseError('Para realizar la venta debe estar abierta la caja.');
+                }
+            }
+        }
 
         $headerId = $this->model->insertVoucherHeader([
             'name_customer'      => $customerName,
@@ -594,6 +614,7 @@ class Sales extends Controllers
             'business_id'        => $businessId,
             'user_app_id'        => $this->getUserId(),
         ]);
+        //validar el registro de la venta en movimientos de caja (aun falta eso)
 
         if ($headerId <= 0) {
             $this->responseError('No fue posible registrar la cabecera de la venta.');
