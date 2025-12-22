@@ -63,9 +63,9 @@
                     </div>
                 </div>
 
-                <div class="mb-3 password text-align-between">
+                <div class="mb-3 password text-center text-sm-end">
                     <p class="mb-0">
-                        <span class="text-primary align-items-center"><i class="bi bi-tools"></i> <a class="semibold-text" href="./resetpassword">¿Olvidaste tu contraseña?</a></span>
+                        <span class="text-primary align-items-center"><i class="bi bi-x-diamond-fill"></i> <a class="semibold-text" href="./resetpassword">¿Olvidaste tu contraseña?</a></span>
                     </p>
                 </div>
                 
@@ -89,10 +89,10 @@
                     <button class="btn btn-primary btn-block d-flex align-items-center justify-content-center" id="btnLogin"><i class="bi bi-box-arrow-in-right me-2 fs-5"></i>Ingresar</button>
                 </div>
 
-                <div class="mb-3 contacto">
-                    <p class="mb-0 d-flex justify-content-between">
+                <div class="contacto">
+                    <p class="mb-0 d-flex flex-column-reverse align-items-center flex-sm-row justify-content-sm-between">
                         <span>¿No tienes cuenta en <strong>Capy Ventas</strong>?</span>
-                        <span class="text-primary"><i class="bi bi-hand-index-thumb"></i> <a class="semibold-text" href="./account">Crear Cuenta</a></span>
+                        <span class="text-primary"><i class="bi bi-person-fill-add"></i> <a class="semibold-text" href="./account">Crear Cuenta</a></span>
                     </p>
                 </div>
             </form>

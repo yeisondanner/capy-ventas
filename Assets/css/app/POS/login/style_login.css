@@ -122,5 +122,12 @@ body {
 
   .login-content .login-box {
     min-width: 100%;
+    /* min-height: 510px; */
+  }
+}
+
+@media screen and (max-width: 521px) {
+  .login-content .login-box {
+    min-height: 505px;
   }
 }
