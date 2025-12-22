@@ -191,6 +191,7 @@ class Sales extends Controllers
             'SELECCIONADO' => $selected,
             'UNIDAD MEDIDA' => $measurement
         ]);
+        //validamos que la cantidad seleccionada no sea mayor al stock disponible
         if ($stock > 0) {
             $selected = min($selected, (int) $stock);
         }
@@ -463,12 +464,14 @@ class Sales extends Controllers
         if (!isset($_SESSION[$this->nameVarCart])) {
             return [];
         }
+        //comentamos la siguiente linea para evitar problemas al validar el stock
+        //toJson($_SESSION[$this->nameVarCart]);
         //valida que el stock no sea menor o igual a cero
-        foreach ($_SESSION[$this->nameVarCart] as $item) {
-            if ($item['stock'] <= 0) {
-                $this->responseError('El stock del producto ' . $item['name'] . ' no es suficiente.');
-            }
-        }
+        // foreach ($_SESSION[$this->nameVarCart] as $item) {
+        /*if ($item['stock'] <= 0) {
+                $this->responseError('El stock del producto ' . $item['product'] . ' no es suficiente.');
+            }*/
+        //}
         return array_values($_SESSION[$this->nameVarCart]);
     }
 
