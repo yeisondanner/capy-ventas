@@ -259,6 +259,50 @@ class Box extends Controllers
         ]);
     }
 
+    // TODO: Endpoint para cerrar caja
+    public function setCloseBoxSession()
+    {
+        // * Validamos que llegue el metodo POST
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        // * Decodificamos la cadena de texto en formato JSON para validar
+        $raw = file_get_contents('php://input');
+        $data = json_decode($raw, true);
+
+        $notes = strClean($data["notes"]);
+        if (!$notes || empty($notes)) {
+            $notes = null;
+        }
+
+        // * Consultamos el ID del usuario
+        $userId = $this->getUserId();
+
+        // * Consultamos si el usuario tiene un caja aperturada
+        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
+        if (!$boxSessions) {
+            $this->responseError('No tienes ninguna caja aperturada. Por favor apertura tu turno.');
+        }
+
+        // * sacamos la fecha actual del servidor
+        $fecha_actual = date('Y-m-d H:i:s');
+
+        // * Cerramos caja
+        $closeSession = $this->model->updateCloseSession($boxSessions["idBoxSessions"], $fecha_actual, $notes, "Cerrada");
+        if (!$closeSession) {
+            $this->responseError('Error al momento de cerrar caja.');
+        }
+
+        toJson([
+            'status'  => true,
+            'title'   => 'Cerrar Caja',
+            'message' => 'Caja #' . $boxSessions["idBoxSessions"] . ' cerrada Correctamente',
+            'type'    => 'success',
+            'icon'    => 'success',
+        ]);
+    }
+
     // TODO: Endpoint que devuelve si el usuario tiene aperturado un caja
     public function getuserCheckedBox()
     {
@@ -325,16 +369,18 @@ class Box extends Controllers
             }
 
             // ? Calculamos el total general de ingreso incluyendo bancos
-            if ($value["type_movement"] !== "Egreso") {
-                $totalGeneral += $amount;
-                $arrayPaymentMethod[$value["payment_method"]] += $amount;
-            } else {
-                $totalGeneral -= $amount;
-                $arrayPaymentMethod[$value["payment_method"]] -= $amount;
+            if ($value["type_movement"] !== "Inicio") {
+                if ($value["type_movement"] !== "Egreso") {
+                    $totalGeneral += $amount;
+                    $arrayPaymentMethod[$value["payment_method"]] += $amount;
+                } else {
+                    $totalGeneral -= $amount;
+                    $arrayPaymentMethod[$value["payment_method"]] -= $amount;
+                }
             }
 
             // ? Calculamos el total de efectivo que sale
-            if($value["type_movement"] === "Egreso" && $value["payment_method"] === "Efectivo"){
+            if ($value["type_movement"] === "Egreso" && $value["payment_method"] === "Efectivo") {
                 $totalEfectivo_egreso += $amount;
             }
         }
@@ -369,6 +415,36 @@ class Box extends Controllers
             'type'    => 'success',
             'icon'    => 'success',
             'data' => $currencyDenominations
+        ]);
+    }
+
+    // TODO: Funcion que devuelve el ultimo arqueo de caja
+    public function getLastCashCount()
+    {
+        // * Validamos que llegue el metodo GET
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        // * Consultamos el ID del usuario
+        $userId = $this->getUserId();
+
+        // * Consultamos si el usuario tiene un caja aperturada
+        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
+        if (!$boxSessions) {
+            $this->responseError('No tienes ninguna caja aperturada. Por favor apertura tu turno.');
+        }
+
+        // * Consultamos si tiene un arqueo de caja realizado y trael el ultimo realizado
+        $cashCount = $this->model->getLastCashCount($boxSessions["idBoxSessions"]);
+
+        toJson([
+            'status'  => true,
+            'title'   => 'Arqueo de caja',
+            'message' => 'Ultimo arqueo de caja.',
+            'type'    => 'success',
+            'icon'    => 'success',
+            'data' => $cashCount
         ]);
     }
 

@@ -416,6 +416,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 <div class="modal fade" id="modalCloseBox" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+
             <div class="modal-header border-bottom py-3 bg-white">
                 <div>
                     <h4 class="fw-bold mb-1">Cierre de Caja</h4>
@@ -430,14 +431,18 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <div class="modal-body p-4 bg-light">
                 <div class="row g-4">
+
                     <div class="col-lg-4 d-flex flex-column gap-3">
+
                         <div class="card rounded-4 shadow-sm">
                             <div class="card-body p-4">
                                 <h6 class="fw-bold text-muted small text-uppercase mb-4">
                                     <i class="bi bi-shop me-2"></i>Resumen del Turno
                                 </h6>
+
                                 <div class="d-flex justify-content-between align-items-end mb-4">
                                     <div>
                                         <small class="text-muted d-block fw-semibold">Ventas Totales</small>
@@ -448,6 +453,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                         <span class="fs-5 fw-bold text-dark" id="close_box_total_transactions">0</span>
                                     </div>
                                 </div>
+
                                 <div id="close_box_total_payment_method" class="d-flex flex-column gap-2 border-top pt-3">
                                     <div class="d-flex justify-content-between align-items-center small">
                                         <span class="text-success fw-bold"><i class="bi bi-circle-fill me-2" style="font-size: 0.5rem;"></i>Efectivo</span>
@@ -464,11 +470,48 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 </div>
                             </div>
                         </div>
+
                         <div class="card rounded-4 shadow-sm flex-fill">
+                            <div class="card-body p-4 d-flex flex-column">
+                                <h6 class="fw-bold text-muted small text-uppercase mb-3">
+                                    <i class="bi bi-wallet2 me-2"></i>Balance - Ultimo Arqueo
+                                </h6>
+
+                                <div class="d-flex justify-content-between mb-2 small">
+                                    <span class="text-muted fw-semibold">Monto Sistema</span>
+                                    <span class="fw-bold" id="close_box_sistema">S/ 0.00</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 small">
+                                    <span class="text-muted fw-semibold">Monto Contado</span>
+                                    <span class="fw-bold" id="close_box_contado">+S/ 0.00</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-4 small">
+                                    <span class="text-muted fw-semibold">Diferencia</span>
+                                    <span class="fw-bold" id="close_box_difference">-S/ 0.00</span>
+                                </div>
+
+                                <div class="mt-auto border-top pt-3">
+                                    <div id="close_box_status_container">
+                                    </div>
+                                    <div class="text-center mt-2">
+                                        <small class="text-muted fst-italic" style="font-size: 0.7rem;">
+                                            Comparado con arqueo físico previo
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-8">
+
+                        <div class="card rounded-4 shadow-sm mb-3">
                             <div class="card-body p-4 d-flex flex-column">
                                 <h6 class="fw-bold text-muted small text-uppercase mb-3">
                                     <i class="bi bi-wallet2 me-2"></i>Balance de Efectivo
                                 </h6>
+
                                 <div class="d-flex justify-content-between mb-2 small">
                                     <span class="text-muted fw-semibold">Fondo Inicial</span>
                                     <span class="fw-bold text-dark" id="close_box_base">S/ 0.00</span>
@@ -481,66 +524,16 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                     <span class="text-muted fw-semibold">Salidas/Retiros</span>
                                     <span class="fw-bold text-danger" id="close_box_expenses">-S/ 0.00</span>
                                 </div>
+
                                 <div class="mt-auto border-top pt-3">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <span class="fw-bold text-dark">Total Esperado</span>
+                                        <span class="fw-bold text-dark">Total Esperado (Sistema)</span>
                                         <span class="h5 fw-bold text-dark mb-0" id="close_box_expected">S/ 0.00</span>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                    <div id="close_box_status_container">
-                                    </div>
-                                    <div class="text-center mt-2">
-                                        <small class="text-muted fst-italic" style="font-size: 0.7rem;">
-                                            Comparado con arqueo físico previo
-                                        </small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-8">
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <div class="card shadow-sm rounded-4 h-100">
-                                    <div class="card-body p-4">
-                                        <div class="d-flex justify-content-between align-items-start mb-3">
-                                            <div>
-                                                <h6 class="fw-bold mb-1">Pendientes</h6>
-                                                <small class="text-muted">Órdenes sin finalizar</small>
-                                            </div>
-                                            <div class="bg-warning-subtle text-warning p-2 rounded-circle">
-                                                <i class="bi bi-clock-history fs-5"></i>
-                                            </div>
-                                        </div>
-                                        <div id="close_box_pending_list">
-                                            <div class="d-flex align-items-center gap-2 text-success small fw-bold">
-                                                <i class="bi bi-check-all fs-5"></i> Todo procesado correctamente
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card shadow-sm rounded-4 h-100">
-                                    <div class="card-body p-4">
-                                        <div class="d-flex justify-content-between align-items-start mb-3">
-                                            <div>
-                                                <h6 class="fw-bold mb-1">Alertas</h6>
-                                                <small class="text-muted">Estado del sistema</small>
-                                            </div>
-                                            <div class="bg-primary-subtle text-primary p-2 rounded-circle">
-                                                <i class="bi bi-bell fs-5"></i>
-                                            </div>
-                                        </div>
-                                        <div id="close_box_alerts_list">
-                                            <div class="d-flex align-items-center gap-2 text-muted small">
-                                                <i class="bi bi-shield-check fs-5"></i> Sin alertas críticas
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                         <div class="card shadow-sm rounded-4 mb-3">
                             <div class="card-body p-4">
                                 <h6 class="fw-bold mb-3">Notas Finales del Cierre</h6>
@@ -553,6 +546,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 </div>
                             </div>
                         </div>
+
                         <div class="alert alert-warning rounded-4 d-flex gap-3 align-items-start p-3 shadow-sm">
                             <i class="bi bi-exclamation-triangle-fill text-warning fs-4 mt-1"></i>
                             <div>
