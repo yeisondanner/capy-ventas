@@ -161,7 +161,7 @@ class BoxModel extends Mysql
                 movement_date
             FROM box_movements
             WHERE boxSessions_id = ?
-            ORDER BY type_movement DESC
+            ORDER BY movement_date DESC
             LIMIT $this->limit;
         SQL;
 
@@ -193,6 +193,29 @@ class BoxModel extends Mysql
         SQL;
 
         return $this->select_all($sql, [$this->status]);
+    }
+
+    public function getMovementsForHours(int $boxSessionsId) {
+        $this->boxSessionsId = $boxSessionsId;
+        $sql = "SELECT 
+            DATE_FORMAT(created_at, '%H:00') as hora, 
+            SUM(total) as total 
+        FROM sales 
+        WHERE box_session_id = ? 
+        GROUP BY hora 
+        ORDER BY hora ASC";
+
+        $sql = <<<SQL
+            SELECT 
+                DATE_FORMAT(movement_date, '%H:00') as hora, 
+                SUM(amount) as total
+            FROM box_movements 
+            WHERE boxSessions_id = ? AND type_movement = 'Ingreso' 
+            GROUP BY DATE_FORMAT(movement_date, '%H:00') 
+            ORDER BY hora ASC;
+        SQL;
+
+        return $this->select_all($sql, [$this->boxSessionsId]);
     }
 
     // ? Funciones insert

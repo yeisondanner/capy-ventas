@@ -8,6 +8,8 @@ export class Box {
   #mapaConteoEfectivo = new Map();
   #totalEfectivoSistema = 0;
   #totalEfectivoContado = 0;
+  #chartInstance = null;
+  #canvasGraphic = $("#graphic_sales_hour");
 
   // ==========================================
   // 2. ELEMENTOS DEL DOM (Selectores)
@@ -551,6 +553,9 @@ export class Box {
     this.#containerListaMovimientos.html(
       moves.map((mov) => this.#crearItemMovimiento(mov)).join("")
     );
+    // NUEVO: Llamar a la gráfica
+    // Pasamos el objeto 'chart_data' que enviamos desde PHP
+    this.#renderGraphicSales(this.#datosSesionCaja.chart_data);
   };
 
   #renderResumenEsperadoArqueo() {
@@ -648,6 +653,136 @@ export class Box {
     this.#containerArqueoInputsDinero.html(htmlFinal);
     if (this.#totalEfectivoContado > 0) this.#actualizarUIArqueo();
   }
+
+  #renderGraphicSales = (chartData) => {
+    // Si no existe el canvas en el DOM, salimos
+    if (this.#canvasGraphic.length === 0) return;
+
+    // Destruir gráfica anterior si existe para evitar superposiciones
+    if (this.#chartInstance) {
+      this.#chartInstance.destroy();
+    }
+
+    const ctx = this.#canvasGraphic.get(0).getContext("2d");
+
+    // --- MEJORA VISUAL 1: Gradiente más suave ---
+    // Creamos un degradado verde que se desvanece hacia abajo
+    const gradient = ctx.createLinearGradient(0, 0, 0, 350);
+    gradient.addColorStop(0, "rgba(25, 135, 84, 0.5)"); // Verde "Success" semitransparente arriba
+    gradient.addColorStop(1, "rgba(25, 135, 84, 0.05)"); // Casi transparente abajo
+
+    // Fuente estándar bonita (tipo Bootstrap)
+    const fontStack = "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
+
+    this.#chartInstance = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: chartData && chartData.labels ? chartData.labels : [],
+        datasets: [
+          {
+            data: chartData && chartData.values ? chartData.values : [],
+            label: "Ventas Totales", // Etiqueta interna
+            borderColor: "#198754", // Color de la línea (Verde Bootstrap Success)
+            backgroundColor: gradient, // El degradado que creamos arriba
+            borderWidth: 3, // Línea un poco más gruesa
+            // --- MEJORA VISUAL 2: Puntos más estilizados ---
+            pointBackgroundColor: "#fff", // Punto blanco por dentro
+            pointBorderColor: "#198754", // Borde verde
+            pointBorderWidth: 2,
+            pointRadius: 5, // Puntos normales más grandes
+            pointHoverRadius: 8, // Puntos muy grandes al pasar el mouse
+            fill: true, // Rellenar el área debajo
+            tension: 0.3, // Curvatura suave de la línea (0 es recta, 1 es muy curva)
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: "index",
+          intersect: false,
+        },
+        plugins: {
+          legend: { display: false }, // Ocultamos la leyenda por defecto (ya tenemos título)
+          // --- MEJORA VISUAL 3: Título Principal ---
+          title: {
+            display: true,
+            text: "Ingreso de Ventas por Hora (Turno Actual)",
+            align: "start", // Alineado a la izquierda
+            color: "#343a40", // Color gris oscuro
+            font: {
+              size: 16,
+              family: fontStack,
+              weight: "bold",
+            },
+            padding: { bottom: 20 },
+          },
+          // --- MEJORA VISUAL 4: Tooltip Profesional ---
+          tooltip: {
+            backgroundColor: "rgba(255, 255, 255, 0.95)", // Fondo blanco casi opaco
+            titleColor: "#000", // Texto negro
+            bodyColor: "#000",
+            borderColor: "#198754", // Borde verde
+            borderWidth: 1,
+            padding: 12,
+            boxPadding: 6,
+            usePointStyle: true,
+            callbacks: {
+              // Título del tooltip con un icono de reloj
+              title: (tooltipItems) => {
+                return "🕒 Hora: " + tooltipItems[0].label;
+              },
+              // Etiqueta del valor con formato de moneda claro
+              label: (context) => {
+                const valor = Number(context.parsed.y).toFixed(2);
+                return `  Ventas: S/ ${valor}`;
+              },
+            },
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            // --- MEJORA VISUAL 5: Título y Formato Eje Y ---
+            title: {
+              display: true,
+              text: "Monto Vendido (S/)",
+              color: "#6c757d",
+              font: { family: fontStack, weight: "bold", size: 11 },
+            },
+            grid: {
+              borderDash: [5, 5], // Líneas de cuadrícula punteadas
+              color: "#e9ecef",
+            },
+            ticks: {
+              color: "#6c757d",
+              font: { family: fontStack, size: 11 },
+              // Agregar "S/" a los números del eje Y
+              callback: function (value) {
+                return "S/ " + value;
+              },
+            },
+          },
+          x: {
+            // --- MEJORA VISUAL 6: Título Eje X ---
+            title: {
+              display: true,
+              text: "Hora del día (Formato 24h)",
+              color: "#6c757d",
+              font: { family: fontStack, weight: "bold", size: 11 },
+              padding: { top: 10 },
+            },
+            grid: { display: false }, // Sin líneas verticales para limpieza
+            ticks: {
+              color: "#6c757d",
+              font: { family: fontStack, size: 11 },
+            },
+          },
+        },
+      },
+    });
+  };
 
   #actualizarUIArqueo() {
     this.#lblArqueoTotalContado.html(

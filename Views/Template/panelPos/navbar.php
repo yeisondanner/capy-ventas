@@ -199,11 +199,13 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         </div>
                         <div id="quick_access_card_payment_method" class="row g-3">
                         </div>
-                        <div class="card border rounded-4 flex-fill">
-                            <div class="card-body d-flex align-items-center justify-content-center text-muted p-4" style="min-height: 140px;">
-                                <div class="text-center opacity-50">
-                                    <i class="bi bi-bar-chart-line fs-2 mb-2 d-block"></i>
-                                    <small>Estadística de ventas por hora</small>
+                        <div class="card border rounded-4 h-100 shadow-sm">
+                            <div class="card-body p-3">
+                                <h6 class="fw-bold text-muted small text-uppercase mb-3">
+                                    <i class="bi bi-graph-up me-2"></i>Ventas por Hora
+                                </h6>
+                                <div style="position: relative; height: 260px; width: 100%;">
+                                    <canvas id="graphic_sales_hour"></canvas>
                                 </div>
                             </div>
                         </div>

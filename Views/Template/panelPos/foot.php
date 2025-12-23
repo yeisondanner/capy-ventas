@@ -5,6 +5,7 @@
 <!-- Data table plugin-->
 <script type="text/javascript" src="<?= media() ?>/js/libraries/POS/plugins/jquery.dataTables.min.js?<?= versionSystem() ?>"></script>
 <script type="text/javascript" src="<?= media() ?>/js/libraries/POS/plugins/dataTables.min.js?<?= versionSystem() ?>"></script>
+
 <!-- Buttons for DataTables-->
 <script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/dataTables.buttons.min.js?<?= versionSystem() ?>"></script>
 <!-- Autofill for DataTables-->
@@ -19,8 +20,8 @@
 <script type="text/javascript" language="javascript"
     src="<?= media() ?>/js/libraries/Admin/plugins/buttons.html5.min.js?<?= versionSystem() ?>"></script>
 <!-- TODO: libreria principal main-->
+<script src="<?= media() ?>/js/libraries/POS/plugins/chart.umd.min.js?<?= versionSystem() ?>"></script>
 <script src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
-
 <!-- TODO: Librerias de la view-->
 <?php
 //variables de las rutas del js
@@ -50,7 +51,6 @@ if (is_array($pageJsFile)) {
 <!-- Servicios para caja -->
 <script type="module" src="<?= media() ?>/js/app/POS/box/functions_box_api.js"></script>
 <script type="module" src="<?= media() ?>/js/app/POS/box/functions_box.js"></script>
-
 </body>
 
 </html>

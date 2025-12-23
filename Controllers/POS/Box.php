@@ -452,6 +452,17 @@ class Box extends Controllers
         // * Consultamos los ultimos 4 movimientos asociados a la caja aperturada
         $boxMovements_limit = $this->model->getBoxMovementsByLimit($boxSessions["idBoxSessions"], 4);
 
+        // * Consultamos las ventas por hora
+        $ventasPorHora = $this->model->getMovementsForHours($boxSessions["idBoxSessions"]);
+        // * Formatear para Chart.js (Separar etiquetas y datos)
+        $labels = [];
+        $data = [];
+
+        foreach ($ventasPorHora as $venta) {
+            $labels[] = $venta['hora']; // Ej: "10:00", "11:00"
+            $data[] = $venta['total'];  // Ej: 150.00, 50.00
+        }
+
         $arrayPaymentMethod = array();
         $totalGeneral = 0;
         $totalTransacciones = 0;
@@ -492,6 +503,10 @@ class Box extends Controllers
             "total_payment_method" => $arrayPaymentMethod,
             "total_transacciones" => $totalTransacciones,
             "total_efectivo_egreso" => $totalEfectivo_egreso,
+            'chart_data' => [
+                'labels' => $labels,
+                'values' => $data
+            ],
             "movements_limit" => $boxMovements_limit,
         ];
         toJson($arrayResponse);
