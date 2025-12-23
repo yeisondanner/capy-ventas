@@ -21,6 +21,7 @@ class BoxModel extends Mysql
     protected int $quantity;
     protected float $total;
     protected string $closingDate;
+    protected float $amount;
 
 
     // ? Funciones get
@@ -255,6 +256,22 @@ class BoxModel extends Mysql
                 (?, ?, ?, ?);
         SQL;
         return (int) $this->insert($sql, [$this->boxCashCountsId, $this->currencyDenominationId, $this->quantity, $this->total]);
+    }
+
+    public function insertBoxMovement(int $boxSessionsId, string $type, string $notes, float $amount, string $paymentMethod)
+    {
+        $this->boxSessionsId = $boxSessionsId;
+        $this->type = $type;
+        $this->notes = $notes;
+        $this->amount = $amount;
+        $this->paymentMethod = $paymentMethod;
+        $sql = <<<SQL
+            INSERT INTO box_movements
+                (boxSessions_id, type_movement, concept, amount, payment_method)
+            VALUES
+                (?, ?, ?, ?, ?);
+        SQL;
+        return (int) $this->insert($sql, [$this->boxSessionsId, $this->type, $this->notes, $this->amount, $this->paymentMethod]);
     }
 
     // ? Funciones update

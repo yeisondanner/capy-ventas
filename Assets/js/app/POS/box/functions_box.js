@@ -19,6 +19,7 @@ export class Box {
   #modalGestionBox = $("#modalGestionBox");
   #modalArqueoBox = $("#modalArqueoBox");
   #modalCloseBox = $("#modalCloseBox");
+  #modalMovementBox = $("#modalMovementBox"); // NUEVO: Modal de Movimientos
 
   // Vistas Generales
   #divOpenBox = $("#divOpenBox");
@@ -60,7 +61,16 @@ export class Box {
   #lblCloseBoxDifference = $("#close_box_difference");
   #containerCloseBoxStatus = $("#close_box_status_container");
 
-  // Acciones
+  // Vista: Movimientos (Ingreso/Retiro) -> NUEVO
+  #btnTypeIngreso = $("#btnTypeIngreso");
+  #btnTypeRetiro = $("#btnTypeRetiro");
+  #inputMovementType = $("#movement_type");
+  #inputMovementAmount = $("#movement_amount");
+  #inputMovementDescription = $("#movement_description");
+  #btnSaveMovement = $("#btnSaveMovement");
+  #iconMovementWrapper = $("#movement_icon_wrapper");
+
+  // Acciones Finales
   #inputCloseBoxNotes = $("#close_box_notes");
   #btnFinalizarCierre = $("#btnFinalizarCierre");
 
@@ -68,7 +78,7 @@ export class Box {
     this.apiBox = new ApiBox(base_url);
     this.#verificarEstadoCaja();
     this.#iniciarReloj();
-    this.#configurarEventosEstaticos(); // Eventos que NO cambian (inputs, etc)
+    this.#configurarEventosEstaticos();
   }
 
   // ==========================================
@@ -82,25 +92,22 @@ export class Box {
       : this.#generarBotonGestionHtml();
 
     this.#divOpenBox.html(htmlBoton);
-    this.#activarListenersDinamicos(); // Solo botones que se acaban de crear
+    this.#activarListenersDinamicos();
   };
 
-  // Configura eventos que siempre están en el DOM (Delegados)
+  // Configura eventos de elementos que SIEMPRE existen en el HTML (Modales base)
   #configurarEventosEstaticos = () => {
-    // Input de dinero (Arqueo) - Delegado
+    // Input de dinero (Arqueo)
     this.#containerArqueoInputsDinero.on(
       "input",
       "input[type='number']",
       this.#handleInputConteoDinero
     );
 
-    // Botones dentro de modales (que siempre existen en el HTML base)
-    // CORRECCIÓN: Usar .off().on() para evitar duplicados si se llama varias veces
+    // Botones Arqueo
     $("#btnLimpiarArqueo")
       .off("click")
       .on("click", () => this.#limpiarArqueo());
-
-    // Botón Registrar Arqueo
     $("#setArqueoCaja")
       .off("click")
       .on("click", this.#handleClickRegistrarArqueoCaja);
@@ -109,37 +116,146 @@ export class Box {
     this.#btnFinalizarCierre
       .off("click")
       .on("click", this.#handleClickFinalizarCierre);
+
+    // --- NUEVO: Eventos del Modal de Movimientos ---
+    this.#btnTypeIngreso
+      .off("click")
+      .on("click", () => this.#cambiarTipoMovimiento("Ingreso"));
+    this.#btnTypeRetiro
+      .off("click")
+      .on("click", () => this.#cambiarTipoMovimiento("Egreso"));
+    this.#btnSaveMovement
+      .off("click")
+      .on("click", this.#handleClickGuardarMovimiento);
   };
 
-  // Configura eventos de botones que se crean dinámicamente con JS
+  // Configura eventos de elementos DINÁMICOS (Botones generados por JS o dentro de vistas cargadas)
   #activarListenersDinamicos = () => {
-    // Botón Abrir Caja
+    // Botones principales
     $("#btnOpenModalBox")
       .off("click")
       .on("click", this.#handleClickAbrirModalSeleccion);
-
-    // Botón Gestión de Caja
     $("#btnOpenModalGestionBox")
       .off("click")
       .on("click", this.#handleClickAbrirModalGestion);
 
-    // Botón Abrir Arqueo (Dentro de Gestión)
-    // CORRECCIÓN: Delegamos al body porque este botón está dentro de un modal
+    // Botones dentro de Gestión (Delegados al body porque el modal se renderiza/abre después)
     $("body")
       .off("click", "#btnOpenModalArqueoBox")
       .on("click", "#btnOpenModalArqueoBox", this.#handleClickAbrirModalArqueo);
-
-    // Botón Abrir Cierre (Dentro de Gestión)
     $("body")
       .off("click", "#btnOpenModalCloseBox")
       .on("click", "#btnOpenModalCloseBox", this.#handleClickAbrirModalCierre);
+
+    // --- NUEVO: Botón Azul "Ingreso / Retiro" ---
+    $("body")
+      .off("click", "#btnOpenModalMovement")
+      .on("click", "#btnOpenModalMovement", () => {
+        this.#resetearModalMovimiento();
+        this.#modalMovementBox.modal("show");
+      });
 
     // Formulario Apertura
     this.#btnOpenBox.off("click").on("click", this.#handleClickGuardarApertura);
   };
 
   // ==========================================
-  // 4. MANEJADORES DE EVENTOS (Handlers)
+  // 4. LÓGICA DE MOVIMIENTOS (NUEVO)
+  // ==========================================
+
+  #cambiarTipoMovimiento = (tipo) => {
+    this.#inputMovementType.val(tipo);
+
+    if (tipo === "Ingreso") {
+      // Visual: Botones Switch
+      this.#btnTypeIngreso
+        .addClass("btn-primary shadow-sm text-white")
+        .removeClass("text-muted btn-transparent");
+      this.#btnTypeRetiro
+        .removeClass("btn-primary shadow-sm text-white")
+        .addClass("text-muted btn-transparent");
+
+      // Visual: Input y Botón Guardar (Verde)
+      this.#inputMovementAmount
+        .removeClass("text-danger")
+        .addClass("text-success");
+      this.#btnSaveMovement
+        .removeClass("btn-danger")
+        .addClass("btn-success")
+        .html('<i class="bi bi-check2-circle me-2"></i> Registrar Ingreso');
+
+      // Visual: Icono
+      this.#iconMovementWrapper
+        .removeClass("bg-danger-subtle text-danger")
+        .addClass("bg-success-subtle text-success");
+    } else {
+      // Visual: Botones Switch
+      this.#btnTypeRetiro
+        .addClass("btn-primary shadow-sm text-white")
+        .removeClass("text-muted btn-transparent");
+      this.#btnTypeIngreso
+        .removeClass("btn-primary shadow-sm text-white")
+        .addClass("text-muted btn-transparent");
+
+      // Visual: Input y Botón Guardar (Rojo)
+      this.#inputMovementAmount
+        .removeClass("text-success")
+        .addClass("text-danger");
+      this.#btnSaveMovement
+        .removeClass("btn-success")
+        .addClass("btn-danger")
+        .html('<i class="bi bi-dash-circle me-2"></i> Registrar Retiro');
+
+      // Visual: Icono
+      this.#iconMovementWrapper
+        .removeClass("bg-success-subtle text-success")
+        .addClass("bg-danger-subtle text-danger");
+    }
+  };
+
+  #resetearModalMovimiento = () => {
+    this.#inputMovementAmount.val("");
+    this.#inputMovementDescription.val("");
+    this.#cambiarTipoMovimiento("Ingreso"); // Reset a Ingreso por defecto
+  };
+
+  #handleClickGuardarMovimiento = async () => {
+    const amount = this.#inputMovementAmount.val();
+    const description = this.#inputMovementDescription.val();
+    const type = this.#inputMovementType.val(); // "Ingreso" o "Retiro"
+
+    if (!amount || amount <= 0)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Monto inválido",
+        message: "Ingrese un monto mayor a 0.",
+      });
+
+    if (!description)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Faltan datos",
+        message: "Ingrese un motivo o descripción.",
+      });
+
+    const params = {
+      amount: amount,
+      description: description,
+      type_movement: type,
+    };
+
+    // Llamada al Backend
+    const response = await this.apiBox.post("setBoxMovement", params);
+
+    if (response.status) {
+      this.#modalMovementBox.modal("hide");
+      this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
+    }
+    this.#mostrarAlerta(response);
+  };
+
+  // ==========================================
+  // 5. MANEJADORES DE EVENTOS EXISTENTES
   // ==========================================
 
   #handleClickAbrirModalSeleccion = async () => {
@@ -247,7 +363,6 @@ export class Box {
   };
 
   #handleClickAbrirModalCierre = async () => {
-    // Si no hay datos, los pedimos
     if (
       !this.#datosSesionCaja ||
       Object.keys(this.#datosSesionCaja).length === 0
@@ -272,7 +387,6 @@ export class Box {
       montoContado = this.#totalEfectivoContado;
     }
 
-    // --- CÁLCULOS ---
     const totalVentas = parseFloat(data.total_general) || 0;
     const totalTransacciones =
       data.total_transacciones ||
@@ -280,19 +394,19 @@ export class Box {
     const efectivoVentas = parseFloat(data.total_payment_method.Efectivo) || 0;
     const baseInicial = parseFloat(data.amount_base) || 0;
 
-    const egresosCaja = parseFloat(data.total_efectivo_egreso) || 0;
     // Ingresos reales a caja (solo efectivo + base ya está en sistema)
     const ingresosCaja = efectivoVentas;
+    // Si tu backend suma Ingresos extras a 'total_general', revisa esta lógica.
+    // Por ahora asumimos Ingresos Caja = Ventas Efectivo. Si sumas ingresos manuales, agrégalos aquí.
 
-    // El sistema espera: Base + (Ventas Efectivo) - Egresos
+    const egresosCaja = parseFloat(data.total_efectivo_egreso) || 0;
     const totalEsperadoSistema = baseInicial + ingresosCaja - egresosCaja;
     const diferencia = montoContado - totalEsperadoSistema;
 
-    // --- RENDERIZADO ---
+    // Renderizado
     this.#lblCloseBoxTotalSales.html(this.#formatoMoneda(totalVentas));
     this.#lblCloseBoxTotalTransactions.html(totalTransacciones);
 
-    // Métodos Pago
     let htmlPaymentMethod = "";
     if (data.total_payment_method) {
       Object.entries(data.total_payment_method).forEach(([tipo, monto]) => {
@@ -311,13 +425,11 @@ export class Box {
     }
     this.#lblCloseBoxTotalPaymentMethod.html(htmlPaymentMethod);
 
-    // Balance
     this.#lblCloseBoxBase.html(this.#formatoMoneda(baseInicial));
     this.#lblCloseBoxIncome.html(`+${this.#formatoMoneda(ingresosCaja)}`);
     this.#lblCloseBoxExpenses.html(`-${this.#formatoMoneda(egresosCaja)}`);
     this.#lblCloseBoxExpected.html(this.#formatoMoneda(totalEsperadoSistema));
 
-    // Comparativa
     this.#lblCloseBoxSistema.html(this.#formatoMoneda(totalEsperadoSistema));
     this.#lblCloseBoxContado.html(this.#formatoMoneda(montoContado));
 
@@ -334,7 +446,6 @@ export class Box {
         .removeClass("text-danger")
         .addClass("text-success");
 
-    // Estado Visual
     let htmlStatus = "";
     if (!existeArqueoEnBd && montoContado === 0 && totalEsperadoSistema > 0) {
       htmlStatus = `<div class="alert alert-warning py-2 px-3 mb-0 rounded-3 d-flex align-items-center gap-2 small"><i class="bi bi-exclamation-circle-fill fs-5"></i><div><strong>Advertencia:</strong> No se ha realizado conteo físico (Arqueo).</div></div>`;
@@ -368,9 +479,9 @@ export class Box {
     if (!responseAlert.isConfirmed) return;
 
     const notes = this.#inputCloseBoxNotes.val() ?? null;
-    const params = { idBoxSession: this.#selectBox.val() || 1, notes: notes }; // Asegúrate de mandar el ID correcto si lo tienes
+    const params = { idBoxSession: this.#selectBox.val() || 1, notes: notes };
 
-    const response = await this.apiBox.post("setCloseBoxSession", params); // Ojo con el nombre del endpoint
+    const response = await this.apiBox.post("setCloseBoxSession", params);
 
     if (response.status) {
       setTimeout(() => {
@@ -382,7 +493,7 @@ export class Box {
   };
 
   // ==========================================
-  // 5. UTILIDADES DE RENDERIZADO (Helpers)
+  // 6. UTILIDADES DE RENDERIZADO (Helpers)
   // ==========================================
 
   #renderOpcionesDeCaja = (listaCajas) => {
@@ -569,10 +680,6 @@ export class Box {
     });
     this.#containerDesgloseFinal.html(htmlDesglose);
   }
-
-  // ==========================================
-  // 6. FUNCIONES AUXILIARES
-  // ==========================================
 
   #resetearFormularioArqueo = () => {
     this.#totalEfectivoContado = 0;
