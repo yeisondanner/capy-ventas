@@ -393,13 +393,13 @@ export class Box {
       (data.movements_limit ? data.movements_limit.length : 0);
     const efectivoVentas = parseFloat(data.total_payment_method.Efectivo) || 0;
     const baseInicial = parseFloat(data.amount_base) || 0;
+    const egresosCaja = parseFloat(data.total_efectivo_egreso) || 0;
 
     // Ingresos reales a caja (solo efectivo + base ya está en sistema)
-    const ingresosCaja = efectivoVentas;
+    const ingresosCaja = efectivoVentas + egresosCaja;
     // Si tu backend suma Ingresos extras a 'total_general', revisa esta lógica.
     // Por ahora asumimos Ingresos Caja = Ventas Efectivo. Si sumas ingresos manuales, agrégalos aquí.
 
-    const egresosCaja = parseFloat(data.total_efectivo_egreso) || 0;
     const totalEsperadoSistema = baseInicial + ingresosCaja - egresosCaja;
     const diferencia = montoContado - totalEsperadoSistema;
 
