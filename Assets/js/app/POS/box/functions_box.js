@@ -947,7 +947,7 @@ export class Box {
     </div>`;
 
   #crearCardMetodoPago = (el, total) => `
-    <div class="col-4">
+    <div class="col-6 col-sm-4">
         <div class="card border rounded-4 h-100 bg-body-tertiary">
             <div class="card-body p-3 text-center">
                 <span class="d-inline-flex align-items-center justify-content-center border bg-white rounded-circle mb-2" style="width: 35px; height: 35px;">${
