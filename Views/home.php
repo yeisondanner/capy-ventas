@@ -978,8 +978,8 @@
       <a class="btn btn-ghost" href="/pos/login">Soy cliente</a>
       <a
         class="btn btn-outline"
-        href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20Capy%20Ventas"
-        target="_blank"
+        href="/pos/account"
+        target="_self"
         rel="noopener noreferrer">
         Inicia gratis
       </a>
@@ -998,8 +998,8 @@
         <div class="hero-buttons">
           <a
             class="btn btn-primary"
-            href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20Capy%20Ventas"
-            target="_blank"
+            href="/pos/account"
+            target="_self"
             rel="noopener noreferrer">
             Inicia gratis
           </a>
