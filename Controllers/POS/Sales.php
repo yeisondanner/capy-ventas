@@ -411,7 +411,7 @@ class Sales extends Controllers
      *
      * @return void
      */
-    private function responseError(string $message): void
+    private function responseError(string $message, int $timer = 2000): void
     {
         $data = [
             'title'  => 'Ocurrió un error',
@@ -419,6 +419,7 @@ class Sales extends Controllers
             'type'   => 'error',
             'icon'   => 'error',
             'status' => false,
+            'timer' => $timer,
         ];
 
         toJson($data);
@@ -593,7 +594,7 @@ class Sales extends Controllers
                     'month' => date('m'),
                 ]);
                 if (!$requestOpenBox) {
-                    $this->responseError('Para realizar la venta debe estar abierta la caja.');
+                    $this->responseError('No se podra realizar una venta, mientras no abra caja. Para este negocio es obligatorio abrir caja.', 6000);
                 }
             }
         }

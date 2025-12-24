@@ -128,7 +128,12 @@
                         <a class="nav-link active text-success bg-success-subtle rounded-5" aria-current="page" href="#"> <i class="bi bi-plus"></i> Ingresos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-danger bg-danger-subtle rounded-5" href="#"> <i class="bi bi-dash"></i> Egresos</a>
+                        <a class="nav-link text-danger bg-danger-subtle rounded-5" href="#" onclick="Swal.fire({
+                        titl:'En desarrollo',
+                        text:'Esta funcionalidad se encuentra en desarrollo',
+                        icon:'info',
+                        confirmButtonText:'Aceptar'
+                        })"> <i class="bi bi-dash"></i> Egresos</a>
                     </li>
                 </ul>
                 <div class="tile-body">
