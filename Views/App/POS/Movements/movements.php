@@ -29,35 +29,49 @@
                     <h6 class="text-center text-primary mb-3">Filtrar Movimientos</h6>
                     <div class="d-flex flex-wrap gap-1 __filter-container">
                         <div class="flex-fill __filter_col">
-                            <label for="filter-type" class="text-muted fw-bold d-block text-uppercase small">Tipo de Filtro:</label>
-                            <select id="filter-type" class="form-select">
-                                <option value="daily">Diario</option>
-                                <option value="weekly">Semanal</option>
-                                <option value="monthly">Mensual</option>
-                                <option value="yearly">Anual</option>
-                                <option value="custom">Rango Personalizado</option>
-                            </select>
+                            <label for="filter-type" class="text-muted fw-bold d-block text-uppercase small form-label">Tipo de Filtro:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-filter"></i></span>
+                                <select id="filter-type" class="form-select">
+                                    <option value="daily">Diario</option>
+                                    <option value="weekly">Semanal</option>
+                                    <option value="monthly">Mensual</option>
+                                    <option value="yearly">Anual</option>
+                                    <option value="custom">Rango Personalizado</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="__fecha flex-fill" id="date-container">
-                            <label for="filter-date" class="text-muted fw-bold d-block text-uppercase small" id="date-label">Fecha:</label>
-                            <input type="date" id="filter-date" class="form-control" value="<?= date('Y-m-d') ?>">
+                            <label for="filter-date" class="text-muted fw-bold d-block text-uppercase small form-label" id="date-label">Fecha:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                <input type="date" id="filter-date" class="form-control" value="<?= date('Y-m-d') ?>">
+                            </div>
                         </div>
 
-
                         <div class="__fecha flex-fill" id="date-range-container" style="display: none;">
-                            <label for="min-date" class="text-muted fw-bold d-block text-uppercase small">Desde:</label>
-                            <input type="date" id="min-date" class="form-control">
+                            <label for="min-date" class="text-muted fw-bold d-block text-uppercase small form-label">Desde:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                <input type="date" id="min-date" class="form-control">
+                            </div>
                         </div>
 
                         <div class="__fecha flex-fill" id="date-to-container" style="display: none;">
-                            <label for="max-date" class="text-muted fw-bold d-block text-uppercase small">Hasta:</label>
-                            <input type="date" id="max-date" class="form-control">
+                            <label for="max-date" class="text-muted fw-bold d-block text-uppercase small form-label">Hasta:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                <input type="date" id="max-date" class="form-control">
+                            </div>
                         </div>
 
                         <div class="__search flex-fill">
-                            <label for="search-concept" class="text-muted fw-bold d-block text-uppercase small">Buscar por Concepto:</label>
-                            <input type="text" id="search-concept" class="form-control" placeholder="Concepto de venta...">
+                            <label for="search-concept" class="text-muted fw-bold d-block text-uppercase small form-label">Buscar por Concepto:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" id="search-concept" class="form-control" placeholder="Concepto de venta...">
+                            </div>
                         </div>
 
                         <div class="__buttons flex-fill d-flex align-items-end justify-content-center justify-content-sm-start">
