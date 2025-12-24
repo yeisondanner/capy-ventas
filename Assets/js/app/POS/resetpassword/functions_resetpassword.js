@@ -2,6 +2,7 @@ import { ApiResetpassword } from "./functions_resetpassword_api.js";
 export class Resetpassword {
   #cardAccount = $("#cardAccount");
   #verificationCode = null;
+  #verificationMail = null;
 
   constructor() {
     this.ApiResetpassword = new ApiResetpassword(base_url);
@@ -46,22 +47,21 @@ export class Resetpassword {
 
       showAlert({ message: "Enviando código de verificación." }, "loading");
 
-      this.ApiResetpassword
-        .post("sendCodeVerification", {
-          email: email,
-          accept_terms: accept_terms,
-        })
-        .then((response) => {
-          if (response.status) {
-            this.#cardAccount.html(this.#viewCardTwo());
-            this.#sendVerificationCode();
-          }
-          showAlert({
-            icon: response.type,
-            title: response.title,
-            message: response.message,
-          });
+      this.ApiResetpassword.post("sendCodeVerification", {
+        email: email,
+        accept_terms: accept_terms,
+      }).then((response) => {
+        if (response.status) {
+          this.#verificationMail = email;
+          this.#cardAccount.html(this.#viewCardTwo());
+          this.#sendVerificationCode();
+        }
+        showAlert({
+          icon: response.type,
+          title: response.title,
+          message: response.message,
         });
+      });
     });
   };
 
@@ -88,137 +88,45 @@ export class Resetpassword {
 
       showAlert({ message: "Verificando código." }, "loading");
 
-      this.ApiResetpassword
-        .post("validateVerificationCode", {
-          code: code,
-        })
-        .then((response) => {
-          if (response.status) {
-            this.#verificationCode = code;
-            this.#cardAccount.html(this.#viewCardTheree());
-            this.#setAccount();
-          }
-          showAlert({
-            icon: response.type,
-            title: response.title,
-            message: response.message,
-          });
+      this.ApiResetpassword.post("validateVerificationCode", {
+        code: code,
+      }).then((response) => {
+        if (response.status) {
+          this.#verificationCode = code;
+          this.#cardAccount.html(this.#viewCardTheree());
+          this.#setUpdatePassword();
+        }
+        showAlert({
+          icon: response.type,
+          title: response.title,
+          message: response.message,
         });
+      });
     });
   };
 
-  #setAccount = () => {
+  #setUpdatePassword = () => {
     $("#btnCreateAccount").on("click", () => {
-      let names = $("#names").val();
-      let lastname = $("#lastname").val();
-      let email = $("#email").val();
-      let date_of_birth = $("#date_of_birth").val();
-      let country = $("#country").val();
-      let telephone_prefix = $("#telephone_prefix").val();
-      let phone_number = $("#phone_number").val();
-      let password = $("#password").val();
-      let confirm_password = $("#confirm_password").val();
+      const password = $("#password").val();
+      const confirmPassword = $("#confirmPassword").val();
 
-      if (
-        names === "" ||
-        lastname === "" ||
-        email === "" ||
-        date_of_birth === "" ||
-        country === "" ||
-        telephone_prefix === "" ||
-        phone_number === "" ||
-        password === "" ||
-        confirm_password === ""
-      ) {
+      const email = this.#verificationMail;
+      const code = this.#verificationCode;
+
+      if (!email || !code) {
+        return showAlert({
+          icon: "warning",
+          title: "Validación de datos",
+          message:
+            "No se encontró el correo o el código verificado. Vuelve a iniciar el proceso.",
+        });
+      }
+
+      if (password === "" || confirmPassword === "") {
         return showAlert({
           icon: "warning",
           title: "Validacion de datos",
           message: "Los campos son obligatorios",
-        });
-      }
-
-      // * VALIDACION PARA NOMBRES Y APELLIDOS
-      const formatText = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' .-]{2,80}$/;
-      if (!formatText.test(names)) {
-        return showAlert({
-          icon: "warning",
-          title: "Validacion de datos",
-          message:
-            "Nombres inválidos (Solo letras y espacios, mínimo 2 caracteres y máximo 80).",
-        });
-      }
-
-      if (!formatText.test(lastname)) {
-        return showAlert({
-          icon: "warning",
-          title: "Validacion de datos",
-          message:
-            "Apellidos inválidos (Solo letras y espacios, mínimo 2 caracteres y máximo 80).",
-        });
-      }
-
-      // * VALIDACION PARA EMAIL
-      const formatEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,150}$/;
-      if (!formatEmail.test(email)) {
-        return showAlert({
-          icon: "warning",
-          title: "Validacion de datos",
-          message: "Correo electrónico inválido.",
-        });
-      }
-
-      // * VALIDACION PARA FECHA DE NACIMIENTO. PD. ESTO SI LO HICE CON CHATGPT, NO SABIA JAJJAA
-      const dob = new Date(date_of_birth);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      if (Number.isNaN(dob.getTime())) {
-        return showAlert({
-          icon: "warning",
-          title: "Validacion de datos",
-          message: "Fecha de nacimiento inválida.",
-        });
-      }
-
-      let age = today.getFullYear() - dob.getFullYear();
-      const m = today.getMonth() - dob.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
-
-      if (age < 18) {
-        return showAlert({
-          icon: "warning",
-          title: "Validacion de datos",
-          message: "Debes tener al menos 18 años para registrarte.",
-        });
-      }
-
-      //VALIDACION PARA PAIS
-      if (!formatText.test(country)) {
-        return showAlert({
-          icon: "warning",
-          title: "Validacion de datos",
-          message:
-            "País inválido (Solo letras y espacios, mínimo 2 caracteres).",
-        });
-      }
-
-      //VALIDACION PARA PREFIJO TELEFONICO
-      const formatPrefiij = /^\+?[1-9]\d{3}$/;
-      if (!formatPrefiij.test(telephone_prefix)) {
-        return showAlert({
-          icon: "warning",
-          title: "Validacion de datos",
-          message: "Prefijo telefónico inválido (Ejemplo: +51).",
-        });
-      }
-
-      //VALIDACION PARA NUMERO DE TELEFONO
-      const phoneRegex = /^\d{9}$/;
-      if (!phoneRegex.test(phone_number)) {
-        return showAlert({
-          icon: "warning",
-          title: "Validacion de datos",
-          message: "Número de teléfono inválido, debe tener 9 dígitos.",
         });
       }
 
@@ -231,7 +139,7 @@ export class Resetpassword {
         });
       }
 
-      if (password !== confirm_password) {
+      if (password !== confirmPassword) {
         return showAlert({
           icon: "warning",
           title: "Validacion de datos",
@@ -239,20 +147,14 @@ export class Resetpassword {
         });
       }
 
-      showAlert({ message: "Creando cuenta, espere." }, "loading");
+      showAlert({ message: "Actualizando contraseña, espere." }, "loading");
 
-      this.apiAccount
-        .post("setAccount", {
-          code: this.#verificationCode,
-          names: names,
-          lastname: lastname,
+      this.ApiResetpassword
+        .post("updatePassword", {
           email: email,
-          date_of_birth: date_of_birth,
-          country: country,
-          telephone_prefix: telephone_prefix,
-          phone_number: phone_number,
+          code: code,
           password: password,
-          confirm_password: confirm_password,
+          confirmPassword: confirmPassword,
         })
         .then((response) => {
           if (response.status) {
@@ -544,7 +446,7 @@ export class Resetpassword {
                         </div>
 
 
-                        <button id="btnCreateAccount" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Registrarse</button>
+                        <button id="btnCreateAccount" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Actualizar contraseña</button>
                     </form>
 
                     

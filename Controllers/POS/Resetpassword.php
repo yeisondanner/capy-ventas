@@ -131,118 +131,81 @@ class Resetpassword extends Controllers
 		toJson($response);
 	}
 
-	// public function setAccount()
-	// {
-	// 	if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-	// 		$this->responseError('Método de solicitud no permitido.');
-	// 	}
+	public function updatePassword()
+	{
+		if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+			$this->responseError('Método de solicitud no permitido.');
+		}
 
-	// 	$raw = file_get_contents('php://input');
-	// 	$data = json_decode($raw, true);
+		$raw  = file_get_contents('php://input');
+		$data = json_decode($raw, true);
 
-		
-	// 	// * Validamos que el codigo recibido sea el correcto
-	// 	$code = strClean($data["code"]);
-	// 	validateVerificationCode($code);
-		
-	// 	// * Validamos que existan las variables requeridas
-	// 	if(!$data["names"] || !$data["lastname"] || !$data["email"] || !$data["date_of_birth"] || !$data["country"] || !$data["telephone_prefix"] || !$data["phone_number"] || !$data["password"] || !$data["confirm_password"]){
-	// 		$this->responseError("Ingrese los campos requeridos.");
-	// 	}
-	// 	// * Limpiamos las variables
-	// 	$names = strClean($data["names"]);
-	// 	$lastname = strClean($data["lastname"]);
-	// 	$email = strClean($data["email"]);
-	// 	$date_of_birth = strClean($data["date_of_birth"]);
-	// 	$country = strClean($data["country"]);
-	// 	$telephone_prefix = strClean($data["telephone_prefix"]);
-	// 	$phone_number = strClean($data["phone_number"]);
-	// 	$password = strClean($data["password"]);
-	// 	$confirm_password = strClean($data["confirm_password"]);
-	// 	// * Validamos que no esten vacias
-	// 	validateFieldsEmpty(array(
-	// 		"NOMBRE COMPLETO" => $names,
-	// 		"APELLIDO COMPLETO" => $lastname,
-	// 		"CORREO SECUNDARIO" => $email,
-	// 		"FECHA DE CUMPLEAÑOS" => $date_of_birth,
-	// 		"CIUDAD" => $country,
-	// 		"PREFIJO DE TELEFONO" => $telephone_prefix,
-	// 		"NUMERO DE TELEFONO" => $phone_number,
-	// 		"CONTRASEÑA" => $password,
-	// 		"CONFIRMAR CONTRASEÑA" => $confirm_password,
-	// 	));
-	// 	// * Prefijo por defaul
-	// 	// ? Validar luego esto
-	// 	$telephone_prefix = "+51";
+		$code             = strClean($data["code"] ?? "");
+		$email            = strClean($data["email"] ?? "");
+		$password         = strClean($data["password"] ?? "");
+		$confirm_password = strClean($data["confirmPassword"] ?? "");
 
-	// 	// * Validación de formato de nombre
-	// 	if (verifyData("[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\s\-_.,()]+", $names)) {
-	// 		$this->responseError("El campo 'Nombres' no cumple con el formato requerido.");
-	// 	}
+		// Validación básica
+		if ($code === "" || $email === "" || $password === "" || $confirm_password === "") {
+			$this->responseError("Faltan datos obligatorios.");
+		}
 
-	// 	// * Validación de formato de apellidos
-	// 	if (verifyData("[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\s\-_.,()]+", $lastname)) {
-	// 		$this->responseError("El campo 'Apellidos' no cumple con el formato requerido.");
-	// 	}
+		// Validar código de verificación
+		$resp = validateVerificationCode($code);
+		if (empty($resp['status'])) {
+			$this->responseError($resp['message'] ?? "Código inválido o expirado.");
+		}
 
-	// 	// * Validación de formato de email
-	// 	if (verifyData("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", $email)) {
-	// 		$this->responseError("El campo 'Correo electrónico' no tiene un formato válido.");
-	// 	}
+		// Validar que el correo del POST sea el mismo correo verificado 
+		if (
+			empty($_SESSION['verificacion_correo']) ||
+			$_SESSION['verificacion_correo'] !== encryption($email)
+		) {
+			$this->responseError("El correo no coincide con el proceso de verificación.");
+		}
 
-	// 	// * Validación de formato de ciudad
-	// 	if (verifyData("[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\s\-_.,()]+", $country)) {
-	// 		$this->responseError("El campo 'Ciudad' no cumple con el formato requerido.");
-	// 	}
+		//  Asegurar que el status de verificación esté en true
+		if (empty($_SESSION['verificacion_status']) || $_SESSION['verificacion_status'] !== true) {
+			$this->responseError("Primero debes validar el código de verificación.");
+		}
 
-	// 	// * Validación de formato de número de teléfono (solo números)
-	// 	if (!preg_match('/^\d+$/', $phone_number)) {
-	// 		$this->responseError("El campo 'Número de teléfono' debe contener solo números.");
-	// 	}
+		// Confirmación de contraseña
+		if (!hash_equals($password, $confirm_password)) {
+			$this->responseError("El campo 'Contraseña' y 'Confirmar Contraseña' no coinciden.");
+		}
 
-	// 	// * Validación de password
-	// 	if (strlen($password) < 8) {
-	// 		$this->responseError("El campo 'Contraseña' debe contener mínimo 8 caracteres.");
-	// 	}
+		// Obtener usuario por email (en tu caso lo guardas encriptado)
+		$user = $this->model->getUserByEmail(encryption($email));
+		if (empty($user) || empty($user['id'])) {
+			$this->responseError("No existe una cuenta con ese correo.");
+		}
 
-	// 	// * Validamos que el confirm_passord sea igual que password
-	// 	if (!hash_equals($password, $confirm_password)) {
-	// 		$this->responseError("El campo 'Contraseña' y 'Confirmar Contraseña' no coinciden.");
-	// 	}
+		$userId = (int)$user['id'];
 
-	// 	// * Verificamos que no exista un usuario con este correo
-	// 	$is_exists_user = $this->model->isExistsUser(encryption($email));
-	// 	if ($is_exists_user) {
-	// 		toJson([
-	// 			"title" => "Ocurrió un error inesperado",
-	// 			"message" => "Ya existe un usuario registrado con este correo electrónico",
-	// 			"type" => "error",
-	// 			'icon'    => 'error',
-	// 			"status" => false
-	// 		]);
-	// 	}
+		// Actualizar password (mantengo tu encryption, aunque lo ideal es password_hash)
+		$updatePassword = $this->model->updatePassword($userId, encryption($password));
 
-	// 	// * Primero creamos la persona con los datos
-	// 	$people = $this->model->createPeople($names, $lastname, encryption($email), $date_of_birth, $country, $telephone_prefix, $phone_number);
-	// 	if ($people <= 0) {
-	// 		$this->responseError("No se pudo registrar tus datos personales. Por favor intente nuevamente.");
-	// 	}
-	// 	// * Creamos la cuenta de usuario
-	// 	$userApp = $this->model->createUserApp(encryption("svelallanos@gmail.com"), encryption($password), $people);
-	// 	if ($userApp > 0) {
-	// 		// * Eliminamos la sesiones
-	// 		$this->limpiarSesionVerificacion();
-	// 		// * respuesta
-	// 		toJson([
-	// 			'title'  => 'Cuenta creada correctamente',
-	// 			'message' => 'Bienvenido a la familia CapyVentas, tu cuenta fue creada correctamente. Inicia sesión con tu correo y contraseña.',
-	// 			'type'   => 'success',
-	// 			'icon'   => 'success',
-	// 			'status' => true,
-	// 		]);
-	// 	}
-	// 	$this->responseError("No se pudo crear tu cuenta :(. Comunicate con el Capy Administrador.");
-	// }
+		if ($updatePassword > 0) {
+			// Limpieza de sesión de verificación
+			$this->limpiarSesionVerificacion();
+
+			// Recomendado: regenerar id de sesión tras operación sensible
+			if (session_status() === PHP_SESSION_ACTIVE) {
+				session_regenerate_id(true);
+			}
+
+			toJson([
+				'title'   => 'Contraseña actualizada correctamente',
+				'message' => 'Tu contraseña fue actualizada correctamente. Inicia sesión con tu correo y contraseña.',
+				'type'    => 'success',
+				'icon'    => 'success',
+				'status'  => true,
+			]);
+			return;
+		}
+
+		$this->responseError("No se pudo actualizar tu contraseña. Intente nuevamente.");
+	}
 
 	private function responseError(string $message): void
 	{
