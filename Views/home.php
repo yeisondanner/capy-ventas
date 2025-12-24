@@ -1172,25 +1172,27 @@
             <article class="pricing-card">
               <h3 class="plan-name">Gratis</h3>
               <p class="plan-price">S/. 0<span>/mes</span></p>
+              <p class="plan-description">Prueba Capy Ventas en tu negocio con el plan gratuito. </p>
+
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Gratis%20mensual"
-                  target="_blank"
+                  href="/pos/account"
+                  target="_self"
                   rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Gratis%20mensual"
-                  target="_blank"
+                  href="/pos/account"
+                  target="_self"
                   rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
             </article>
 
-            <article class="pricing-card">
+            <!-- <article class="pricing-card">
               <h3 class="plan-name">Basic</h3>
               <p class="plan-price">S/. 10<span>/mes</span></p>
               <div class="plan-cta">
@@ -1209,31 +1211,32 @@
                   Inicia gratis
                 </a>
               </div>
-            </article>
+            </article>-->
 
             <article class="pricing-card recommended">
               <span class="plan-badge">Popular</span>
               <h3 class="plan-name">Pro</h3>
               <p class="plan-price">S/. 20<span>/mes</span></p>
+              <p class="plan-description">Prueba Capy Ventas en tu negocio con el plan Pro. </p>
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Pro%20mensual"
-                  target="_blank"
+                  href="/pos/account"
+                  target="_self"
                   rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Pro%20mensual"
-                  target="_blank"
+                  href="/pos/account"
+                  target="_self"
                   rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
             </article>
 
-            <article class="pricing-card">
+            <!-- <article class="pricing-card">
               <h3 class="plan-name">Business</h3>
               <p class="plan-price">S/. 30<span>/mes</span></p>
               <div class="plan-cta">
@@ -1294,7 +1297,7 @@
                   Inicia gratis
                 </a>
               </div>
-            </article>
+            </article>-->
           </div>
 
           <div class="pricing-grid is-hidden" data-plan-group="yearly">
