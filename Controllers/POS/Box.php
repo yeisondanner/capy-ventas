@@ -40,36 +40,33 @@ class Box extends Controllers
 
         // * IMPORTANTE: Re-indexar los números (0, 1, 2...)
         $boxesActivas = array_values($boxesActivas);
+        if (empty($boxesActivas)) {
+            $this->responseError('Este negocio no tiene ninguna caja habilitada, porfavor comunicate con tu capy administrador para habilitar una caja.');
+        }
 
         // * Agregamos un estado mas
         foreach ($boxesActivas as $key => $value) {
-            $boxesActivas[$key]["session"] = "Abierta";
+            $boxesActivas[$key]["session"] = false;
         }
 
-        // * cosultamos cajas disponibles
+
+        // * Consultamos la disponibilidad de las cajas
         foreach ($boxesActivas as $key => $value) {
-            $usingBox = $this->model->getUsingBox($value["idBox"]);
-            if ($usingBox && $usingBox["status"] === "Cerrada") {
-                $boxesActivas[$key]["session"] = "Cerrada";
+            $usingBox = $this->model->getUsingBox($value["idBox"], "Abierta");
+            if ($usingBox) {
+                $boxesActivas[$key]["session"] = true;
             }
         }
-        
-        toJson($boxesActivas);
-        toJson($usingBox);
-        // * Mensaje de respuesta correcta
-        if ($boxesActivas && !empty($boxesActivas)) {
-            toJson([
-                'title'  => 'Respuesta correcta',
-                'message' => 'Lista de cajas disponibles',
-                'type'   => 'success',
-                'icon'   => 'success',
-                'status' => true,
-                'data' => $boxesActivas
-            ]);
-        }
 
-        // * Mensaje de respuesta de error
-        toJson($this->responseError('Solicite al administrador que habilite almenos una caja.'));
+        // * Mensaje de respuesta correcta
+        toJson([
+            'title'  => 'Respuesta correcta',
+            'message' => 'Lista de cajas disponibles',
+            'type'   => 'success',
+            'icon'   => 'success',
+            'status' => true,
+            'data' => $boxesActivas
+        ]);
     }
 
     // TODO: Endpoint para aperturar un caja

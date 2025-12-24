@@ -263,7 +263,7 @@ export class Box {
   // TODO: LUEGO VER ESTO
   #handleClickAbrirModalSeleccion = async () => {
     const boxs = await this.#getBoxs();
-    if (boxs && boxs.session) {
+    if (boxs && boxs.status) {
       this.#renderOpcionesDeCaja(boxs.data);
       this.#modalAddBox.modal("show");
     }
@@ -505,16 +505,16 @@ export class Box {
     listaCajas.forEach((box, index) => {
       const num = index + 1;
       let clase =
-        box.session === "Activo"
+        !box.session
           ? ""
           : box.session === "Abierta"
           ? "text-primary fw-bold"
           : "text-danger";
-      let disabled = box.session === "Activo" ? "" : "disabled";
+      let disabled = !box.session ? "" : "disabled";
       let extra =
         box.session === "Abierta"
           ? "(En uso)"
-          : box.session === "Activo"
+          : !box.session
           ? ""
           : "(No disponible)";
       html += `<option class="${clase}" ${disabled} value="${box.idBox}">Caja ${num} - ${box.name} ${extra}</option>`;

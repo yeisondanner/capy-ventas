@@ -25,18 +25,19 @@ class BoxModel extends Mysql
 
 
     // ? Funciones get
-    public function getUsingBox(int $boxId)
+    public function getUsingBox(int $boxId, string $status)
     {
         $this->boxId = $boxId;
+        $this->status = $status;
         $sql = <<<SQL
             SELECT
                 *
             FROM box_sessions
-            WHERE box_id = ?
+            WHERE box_id = ? AND `status` = ?
             ORDER BY box_id ASC;
         SQL;
 
-        return $this->select($sql, [$this->boxId]);
+        return $this->select($sql, [$this->boxId, $this->status]);
     }
 
     public function getBox(int $boxId)
