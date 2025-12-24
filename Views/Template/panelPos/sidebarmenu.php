@@ -125,7 +125,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
             <?php endif; ?>
             <?php if ($data_menu_employee(2)) : ?>
                 <li>
-                    <a <?= $data_menu_employee(2) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= $data['page_id'] === 2 ? 'active' : '' ?>" href="<?= $data_menu_employee(2) ? base_url() . '/pos/movements' : base_url() . '/pos/Errors/no_permisos' ?>">
+                    <a <?= $data_menu_employee(2) ? '' : 'style="cursor: no-drop;"' ?> class="app-menu__item <?= ($data['page_id'] === 2  || $data['page_id'] === 12) ? 'active' : '' ?>" href="<?= $data_menu_employee(2) ? base_url() . '/pos/movements' : base_url() . '/pos/Errors/no_permisos' ?>">
                         <i class="app-menu__icon bi bi-pc-display-horizontal"></i>
                         <span class="app-menu__label"><?= $data_menu_employee(2) ? $data_menu_employee(2)['Interface'] : 'Movimientos' ?></span>
                     </a>
