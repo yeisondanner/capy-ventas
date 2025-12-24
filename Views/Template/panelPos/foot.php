@@ -49,8 +49,8 @@ if (is_array($pageJsFile)) {
 }
 ?>
 <!-- Servicios para caja -->
-<script type="module" src="<?= media() ?>/js/app/POS/box/functions_box_api.js"></script>
-<script type="module" src="<?= media() ?>/js/app/POS/box/functions_box.js"></script>
+<script type="module" src="<?= media() ?>/js/app/POS/box/functions_box_api.js?<?= versionSystem() ?>"></script>
+<script type="module" src="<?= media() ?>/js/app/POS/box/functions_box.js?<?= versionSystem() ?>"></script>
 </body>
 
 </html>
