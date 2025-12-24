@@ -1,5 +1,16 @@
 (() => {
   "use strict";
+  //obtenemos los elementos del DOM
+  const dateContainer = document.getElementById("date-container") ?? null;
+  const dateRangeContainer =
+    document.getElementById("date-range-container") ?? null;
+  const dateToContainer = document.getElementById("date-to-container") ?? null;
+  const dateLabel = document.getElementById("date-label") ?? null;
+  const filterType = document.getElementById("filter-type") ?? null;
+  const minDate = document.getElementById("min-date") ?? null;
+  const maxDate = document.getElementById("max-date") ?? null;
+  const filterDate = document.getElementById("filter-date") ?? null;
+
   /**
    * Inicializamos todos los eventos despues de cargard todo el DOM
    */
@@ -11,72 +22,71 @@
    * Funcion que se encarga de mostras/ocultar los filtros de acuerdo al tipo de filtro seleccionado
    */
   function toggleFilters() {
-    if (!document.getElementById("filter-type")) return;
+    //validamos que existan los elementos necesarios
+    if (
+      !filterType ||
+      !minDate ||
+      !maxDate ||
+      !filterDate ||
+      !dateLabel ||
+      !dateContainer ||
+      !dateRangeContainer ||
+      !dateToContainer
+    )
+      return;
     // Mostrar u ocultar campos de rango personalizado según selección y actualizar comportamiento del campo de fecha
-    const filterType = document.getElementById("filter-type");
     filterType.addEventListener("change", function () {
-      const filterType = this.value;
-      const dateContainer = document.getElementById("date-container");
-      const dateRangeContainer = document.getElementById(
-        "date-range-container"
-      );
-      const dateToContainer = document.getElementById("date-to-container");
-      const dateLabel = document.getElementById("date-label");
-
-      if (filterType === "custom") {
+      //obtenemos el valor del filtro seleccionado
+      const filterTypeValue = this.value;
+      if (filterTypeValue === "custom") {
         dateRangeContainer.style.display = "block";
         dateToContainer.style.display = "block";
         dateContainer.style.display = "none";
         // Limpiar los campos de fecha cuando se cambia de rango personalizado a otro tipo
-        document.getElementById("min-date").value = "";
-        document.getElementById("max-date").value = "";
+        minDate.value = "";
+        maxDate.value = "";
       } else {
         dateRangeContainer.style.display = "none";
         dateToContainer.style.display = "none";
         dateContainer.style.display = "block";
 
         // Limpiar los campos de fecha personalizados
-        document.getElementById("min-date").value = "";
-        document.getElementById("max-date").value = "";
+        minDate.value = "";
+        maxDate.value = "";
 
         // Actualizar la etiqueta del campo de fecha según el tipo de filtro
-        switch (filterType) {
+        switch (filterTypeValue) {
           case "daily":
             dateLabel.textContent = "Fecha:";
-            document.getElementById("filter-date").type = "date";
-            document.getElementById("filter-date").min = null;
-            document.getElementById("filter-date").max = null;
-            document.getElementById("filter-date").step = null;
-            document.getElementById("filter-date").value =
-              setDefaultDateValue("daily");
+            filterDate.type = "date";
+            filterDate.min = null;
+            filterDate.max = null;
+            filterDate.step = null;
+            filterDate.value = setDefaultDateValue("daily");
             break;
           case "weekly":
             dateLabel.textContent = "Semana:";
-            document.getElementById("filter-date").type = "week";
-            document.getElementById("filter-date").min = null;
-            document.getElementById("filter-date").max = null;
-            document.getElementById("filter-date").step = null;
-            document.getElementById("filter-date").value =
-              setDefaultDateValue("weekly");
+            filterDate.type = "week";
+            filterDate.min = null;
+            filterDate.max = null;
+            filterDate.step = null;
+            filterDate.value = setDefaultDateValue("weekly");
             break;
           case "monthly":
             dateLabel.textContent = "Mes:";
-            document.getElementById("filter-date").type = "month";
-            document.getElementById("filter-date").min = null;
-            document.getElementById("filter-date").max = null;
-            document.getElementById("filter-date").step = null;
-            document.getElementById("filter-date").value =
-              setDefaultDateValue("monthly");
+            filterDate.type = "month";
+            filterDate.min = null;
+            filterDate.max = null;
+            filterDate.step = null;
+            filterDate.value = setDefaultDateValue("monthly");
             break;
           case "yearly":
             dateLabel.textContent = "Año:";
-            document.getElementById("filter-date").type = "number";
-            document.getElementById("filter-date").min = "1970";
-            document.getElementById("filter-date").max =
-              new Date().getFullYear() + 10;
-            document.getElementById("filter-date").step = "1";
-            document.getElementById("filter-date").value =
-              setDefaultDateValue("yearly");
+            filterDate.type = "number";
+            filterDate.min = "1970";
+            filterDate.max = new Date().getFullYear() + 10;
+            filterDate.step = "1";
+            filterDate.value = setDefaultDateValue("yearly");
             break;
         }
       }
