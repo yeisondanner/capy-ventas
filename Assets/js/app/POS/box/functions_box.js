@@ -71,6 +71,8 @@ export class Box {
   #inputMovementDescription = $("#movement_description");
   #btnSaveMovement = $("#btnSaveMovement");
   #iconMovementWrapper = $("#movement_icon_wrapper");
+  #selectMovementCustomer = $("#movement_customer");
+  #selectMovementPaymentMethod = $("#movement_payment_method");
 
   // Acciones Finales
   #inputCloseBoxNotes = $("#close_box_notes");
@@ -152,8 +154,20 @@ export class Box {
     // --- NUEVO: Botón Azul "Ingreso / Retiro" ---
     $("body")
       .off("click", "#btnOpenModalMovement")
-      .on("click", "#btnOpenModalMovement", () => {
+      .on("click", "#btnOpenModalMovement", async () => {
         this.#resetearModalMovimiento();
+
+        // Consultamos la data para mostrar en venta rapida
+        const response = await this.apiBox.get("getDataQuickSale");
+        if (!response.status) {
+          return this.#mostrarAlerta({
+            icon: response.icon,
+            title: response.title,
+            message: response.message,
+          });
+        }
+
+        this.#renderQuickSale(response);
         this.#modalMovementBox.modal("show");
       });
 
@@ -225,6 +239,8 @@ export class Box {
     const amount = this.#inputMovementAmount.val();
     const description = this.#inputMovementDescription.val();
     const type = this.#inputMovementType.val(); // "Ingreso" o "Retiro"
+    const customer = this.#selectMovementCustomer.val(); // "Ingreso" o "Retiro"
+    const payment_method = this.#selectMovementPaymentMethod.val(); // "Ingreso" o "Retiro"
 
     if (!amount || amount <= 0)
       return this.#mostrarAlerta({
@@ -244,6 +260,8 @@ export class Box {
       amount: amount,
       description: description,
       type_movement: type,
+      customer: customer,
+      payment_method: payment_method,
     };
 
     // Llamada al Backend
@@ -260,7 +278,6 @@ export class Box {
   // 5. MANEJADORES DE EVENTOS EXISTENTES
   // ==========================================
 
-  // TODO: LUEGO VER ESTO
   #handleClickAbrirModalSeleccion = async () => {
     const boxs = await this.#getBoxs();
     if (boxs && boxs.status) {
@@ -504,12 +521,11 @@ export class Box {
       '<option value="" disabled selected>Seleccione una caja...</option>';
     listaCajas.forEach((box, index) => {
       const num = index + 1;
-      let clase =
-        !box.session
-          ? ""
-          : box.session === "Abierta"
-          ? "text-primary fw-bold"
-          : "text-danger";
+      let clase = !box.session
+        ? ""
+        : box.session === "Abierta"
+        ? "text-primary fw-bold"
+        : "text-danger";
       let disabled = !box.session ? "" : "disabled";
       let extra =
         box.session === "Abierta"
@@ -784,6 +800,26 @@ export class Box {
       },
     });
   };
+
+  #renderQuickSale = ({customers, payment_method}) => {
+    let html_customers = "<option disabled>Seleccionar</option>";
+    customers.forEach(element => {
+      html_customers += `<option ${element.document_number === "Sin cliente" ? "selected" : ""} value="${element.idCustomer}">${element.fullname}</option>`;
+    });
+
+    this.#selectMovementCustomer.html(html_customers);
+
+    let html_payment_method = "<option disabled>Seleccionar</option>";
+    payment_method.forEach(element => {
+      html_payment_method += `<option ${element.name === "Efectivo" ? "selected" : ""} value="${element.idPaymentMethod}">${element.name}</option>`;
+    });
+
+    this.#selectMovementPaymentMethod.html(html_payment_method);
+
+    console.log(customers);
+    console.log(payment_method);
+    
+  }
 
   #actualizarUIArqueo() {
     this.#lblArqueoTotalContado.html(

@@ -15,7 +15,7 @@
 .item-box .form-control,
 .item-box .form-select {
   background-color: var(--input-bg);
-  border: 1px solid var(--input-border);
+  border: 2px solid var(--input-border);
   border-left: none;
   border-radius: 1.2rem;
   padding: 0.625rem 0.875rem;
@@ -44,7 +44,7 @@
 
 .item-box .input-group-text {
   background-color: var(--input-bg);
-  border: 1px solid var(--input-border);
+  border: 2px solid var(--input-border);
   color: #6b7280;
 }
 

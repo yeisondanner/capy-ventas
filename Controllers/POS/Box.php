@@ -190,6 +190,8 @@ class Box extends Controllers
             if (!$boxs) {
                 $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
             }
+        }else{
+            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
         }
 
         // * Consultamos las denominaciones de las monedas
@@ -303,6 +305,8 @@ class Box extends Controllers
             if (!$boxs) {
                 $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
             }
+        }else{
+            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
         }
 
         // * Consultamos todos los movimientos asociados a la caja aperturada para calcular el total del sistema
@@ -374,12 +378,16 @@ class Box extends Controllers
         $description = strClean($data["description"]);
         $amount = (float) strClean($data["amount"]);
         $type_movement = strClean($data["type_movement"]);
+        $customer = (int) strClean($data["customer"]);
+        $payment_method = (int) strClean($data["payment_method"]);
 
         // * Validamos que no este vacio los campos
         validateFieldsEmpty(array(
             "DESCRIPCION DEL MOVIMIENTO" => $description,
             "MONTO DEL MOVIMIENTO" => $amount,
             "TIPO DE MOVIMIENTO" => $type_movement,
+            "CLIENTE" => $customer,
+            "METODO DE PAGO" => $payment_method,
         ));
 
         // * Validamos que el monto sea mayor que 0
@@ -407,8 +415,25 @@ class Box extends Controllers
             if (!$boxs) {
                 $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
             }
+        }else{
+            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
         }
 
+        // * Validamos que el cliente exista y pertenesca al negocio
+        $issetCustomer = $this->model->issetCustomer($businessId, $customer);
+        if(!$issetCustomer){
+            $this->responseError("Seleccione un cliente valido.");
+        }
+
+        // * Validamos que exista el metodo de pago
+        $issetPaymentMethod = $this->model->issetPaymentMethod($payment_method);
+        if(!$issetPaymentMethod){
+            $this->responseError("Seleccione un metodo de pago valido.");
+        }
+
+        // * Registramos los datos del ingreso en el header
+        // TODO: FALTA COMPLETAR
+        
         // * Registramos el movimiento
         $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, "Efectivo");
         if (!$movement_box) {
@@ -480,6 +505,8 @@ class Box extends Controllers
             if (!$boxs) {
                 $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
             }
+        } else {
+            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
         }
 
         // * cosultamos el nombre de la caja
@@ -595,6 +622,8 @@ class Box extends Controllers
             if (!$boxs) {
                 $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
             }
+        } else {
+            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
         }
 
         // * Consultamos si tiene un arqueo de caja realizado y trael el ultimo realizado
@@ -607,6 +636,51 @@ class Box extends Controllers
             'type'    => 'success',
             'icon'    => 'success',
             'data' => $cashCount
+        ]);
+    }
+
+    // TODO: Consutamos los datos necesarios para mostrar en venta rapida
+    public function getDataQuickSale()
+    {
+        // * Validamos que llegue el metodo GET
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        // * Consultamos el ID del usuario
+        $userId = $this->getUserId();
+
+        // * Validamos que el usuario haya aperturado una caja
+        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
+        if ($boxSessions) {
+            // * Consultamos el ID del negocio
+            $businessId = $this->getBusinessId();
+
+            // * Validamos si la caja pertenece al negocio
+            $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
+            if (!$boxs) {
+                $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+            }
+        }else{
+            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+        }
+
+        // * Consultamos todos los clientes del negocio
+        $customers = $this->model->getCustomersByBusiness($businessId);
+        if(!$customers || empty($customers)){
+            $this->responseError("No tienes ningun cliente registrado.");
+        }
+
+        // * Consultamos los metodos de pago
+        $paymentMethod = $this->model->getPaymentMethods();
+        if(!$paymentMethod || empty($paymentMethod)){
+            $this->responseError("No tienes ningun metodo de pago disponible.");
+        }
+
+        toJson([
+            "status" => true,
+            "customers" => $customers,
+            "payment_method" => $paymentMethod
         ]);
     }
 

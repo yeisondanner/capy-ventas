@@ -22,6 +22,8 @@ class BoxModel extends Mysql
     protected float $total;
     protected string $closingDate;
     protected float $amount;
+    protected int $customerId;
+    protected int $paymentMethodId;
 
 
     // ? Funciones get
@@ -130,6 +132,35 @@ class BoxModel extends Mysql
         return $this->select($sql, [$this->boxSessionsId]);
     }
 
+    public function issetCustomer(int $businessId, int $customerId)
+    {
+        $this->businessId = $businessId;
+        $this->customerId = $customerId;
+        $sql = <<<SQL
+            SELECT
+                *
+            FROM customer
+            WHERE business_id = ? AND idCustomer = ?
+            LIMIT 1;
+        SQL;
+
+        return $this->select($sql, [$this->businessId, $this->customerId]);
+    }
+
+    public function issetPaymentMethod(int $paymentMethodId)
+    {
+        $this->paymentMethodId = $paymentMethodId;
+        $sql = <<<SQL
+            SELECT
+                *
+            FROM payment_method
+            WHERE idPaymentMethod = ?
+            LIMIT 1;
+        SQL;
+
+        return $this->select($sql, [$this->paymentMethodId]);
+    }
+
     // ? Funciones getAll
     public function getBoxs(int $businessId)
     {
@@ -142,6 +173,22 @@ class BoxModel extends Mysql
             FROM `box`
             WHERE business_id = ?
             ORDER BY idBox ASC;
+        SQL;
+
+        return $this->select_all($sql, [$this->businessId]);
+    }
+
+    public function getCustomersByBusiness(int $businessId)
+    {
+        $this->businessId = $businessId;
+        $sql = <<<SQL
+            SELECT
+                idCustomer,
+                fullname,
+                document_number
+            FROM customer
+            WHERE business_id = ?
+            ORDER BY idCustomer ASC;
         SQL;
 
         return $this->select_all($sql, [$this->businessId]);
@@ -189,6 +236,8 @@ class BoxModel extends Mysql
     {
         $sql = <<<SQL
             SELECT
+                idPaymentMethod,
+                icon,
                 icon,
                 `name`
             FROM payment_method
@@ -212,7 +261,8 @@ class BoxModel extends Mysql
         return $this->select_all($sql, [$this->status]);
     }
 
-    public function getMovementsForHours(int $boxSessionsId) {
+    public function getMovementsForHours(int $boxSessionsId)
+    {
         $this->boxSessionsId = $boxSessionsId;
         $sql = "SELECT 
             DATE_FORMAT(created_at, '%H:00') as hora, 
