@@ -4,23 +4,24 @@ export class Box {
   // ==========================================
   // 1. ESTADO Y DATOS (State)
   // ==========================================
-  #datosSesionCaja = {}; // Datos generales de la sesión
-  #mapaConteoEfectivo = new Map(); // Mapa para el conteo físico
-  #totalEfectivoSistema = 0; // Calculado: Base + Ventas - Gastos
-  #totalEfectivoContado = 0; // Input del usuario
+  #datosSesionCaja = {};
+  #mapaConteoEfectivo = new Map();
+  #totalEfectivoSistema = 0;
+  #totalEfectivoContado = 0;
+  #chartInstance = null;
+  #canvasGraphic = $("#graphic_sales_hour");
 
   // ==========================================
   // 2. ELEMENTOS DEL DOM (Selectores)
   // ==========================================
-  // Botones Principales
   #btnOpenBox = $("#btnOpenBox");
-  // Usamos selector dinámico para cierre por si se renderiza después en el DOM
 
   // Modales
   #modalAddBox = $("#modalAddBox");
   #modalGestionBox = $("#modalGestionBox");
   #modalArqueoBox = $("#modalArqueoBox");
   #modalCloseBox = $("#modalCloseBox");
+  #modalMovementBox = $("#modalMovementBox"); // NUEVO: Modal de Movimientos
 
   // Vistas Generales
   #divOpenBox = $("#divOpenBox");
@@ -33,8 +34,9 @@ export class Box {
   #containerMetodosPago = $("#quick_access_card_payment_method");
   #containerListaMovimientos = $("#quick_access_card_list_movements");
   #lblTituloMovimientos = $("#quick_access_title_list_movements");
+  #lblTituloGestionBoxName = $("#gestion_box_name");
 
-  // Vista: Arqueo (Conteo Físico)
+  // Vista: Arqueo
   #lblArqueoTotalEfectivo = $("#quick_access_arqueo_total_efectivo");
   #lblArqueoTotalGeneral = $("#quick_access_arqueo_total_general");
   #containerArqueoTarjetas = $("#quick_access_arqueo_total_payment_method");
@@ -45,23 +47,30 @@ export class Box {
   #containerArqueoMensaje = $("#quick_access_arqueo_message");
   #containerArqueoDiferencia = $("#quick_access_arqueo_diference");
   #containerDesgloseFinal = $("#quick_access_desgloce_efectivo");
+  #lblTituloArqueoBoxName = $("#arqueo_box_name");
 
-  // Vista: Cierre de Caja (Dashboard Final)
+  // Vista: Cierre
   #lblCloseBoxTotalSales = $("#close_box_total_sales");
   #lblCloseBoxTotalTransactions = $("#close_box_total_transactions");
   #lblCloseBoxTotalPaymentMethod = $("#close_box_total_payment_method");
-
   #lblCloseBoxBase = $("#close_box_base");
   #lblCloseBoxIncome = $("#close_box_income");
   #lblCloseBoxExpenses = $("#close_box_expenses");
   #lblCloseBoxExpected = $("#close_box_expected");
-
-  // Balance Sistema vs Arqueo
+  #lblTituloCloseBoxName = $("#close_box_name");
   #lblCloseBoxSistema = $("#close_box_sistema");
   #lblCloseBoxContado = $("#close_box_contado");
   #lblCloseBoxDifference = $("#close_box_difference");
-
   #containerCloseBoxStatus = $("#close_box_status_container");
+
+  // Vista: Movimientos (Ingreso/Retiro) -> NUEVO
+  #btnTypeIngreso = $("#btnTypeIngreso");
+  #btnTypeRetiro = $("#btnTypeRetiro");
+  #inputMovementType = $("#movement_type");
+  #inputMovementAmount = $("#movement_amount");
+  #inputMovementDescription = $("#movement_description");
+  #btnSaveMovement = $("#btnSaveMovement");
+  #iconMovementWrapper = $("#movement_icon_wrapper");
 
   // Acciones Finales
   #inputCloseBoxNotes = $("#close_box_notes");
@@ -69,11 +78,9 @@ export class Box {
 
   constructor(base_url) {
     this.apiBox = new ApiBox(base_url);
-
-    // Inicialización
     this.#verificarEstadoCaja();
     this.#iniciarReloj();
-    this.#configurarEventosGlobales();
+    this.#configurarEventosEstaticos();
   }
 
   // ==========================================
@@ -90,41 +97,167 @@ export class Box {
     this.#activarListenersDinamicos();
   };
 
-  #configurarEventosGlobales = () => {
+  // Configura eventos de elementos que SIEMPRE existen en el HTML (Modales base)
+  #configurarEventosEstaticos = () => {
+    // Input de dinero (Arqueo)
     this.#containerArqueoInputsDinero.on(
       "input",
       "input[type='number']",
       this.#handleInputConteoDinero
     );
+
+    // Botones Arqueo
+    $("#btnLimpiarArqueo")
+      .off("click")
+      .on("click", () => this.#limpiarArqueo());
+    $("#setArqueoCaja")
+      .off("click")
+      .on("click", this.#handleClickRegistrarArqueoCaja);
+
+    // Botón Finalizar Cierre
+    this.#btnFinalizarCierre
+      .off("click")
+      .on("click", this.#handleClickFinalizarCierre);
+
+    // --- NUEVO: Eventos del Modal de Movimientos ---
+    this.#btnTypeIngreso
+      .off("click")
+      .on("click", () => this.#cambiarTipoMovimiento("Ingreso"));
+    this.#btnTypeRetiro
+      .off("click")
+      .on("click", () => this.#cambiarTipoMovimiento("Egreso"));
+    this.#btnSaveMovement
+      .off("click")
+      .on("click", this.#handleClickGuardarMovimiento);
   };
 
+  // Configura eventos de elementos DINÁMICOS (Botones generados por JS o dentro de vistas cargadas)
   #activarListenersDinamicos = () => {
     // Botones principales
-    $("#btnOpenModalBox").on("click", this.#handleClickAbrirModalSeleccion);
-    $("#btnOpenModalGestionBox").on(
-      "click",
-      this.#handleClickAbrirModalGestion
-    );
+    $("#btnOpenModalBox")
+      .off("click")
+      .on("click", this.#handleClickAbrirModalSeleccion);
+    $("#btnOpenModalGestionBox")
+      .off("click")
+      .on("click", this.#handleClickAbrirModalGestion);
 
-    // Botones dentro de Gestión
-    $("#btnOpenModalArqueoBox").on("click", this.#handleClickAbrirModalArqueo);
-    $("#btnLimpiarArqueo").on("click", () => this.#limpiarArqueo());
+    // Botones dentro de Gestión (Delegados al body porque el modal se renderiza/abre después)
+    $("body")
+      .off("click", "#btnOpenModalArqueoBox")
+      .on("click", "#btnOpenModalArqueoBox", this.#handleClickAbrirModalArqueo);
+    $("body")
+      .off("click", "#btnOpenModalCloseBox")
+      .on("click", "#btnOpenModalCloseBox", this.#handleClickAbrirModalCierre);
 
-    // Botón para Cierre Definitivo (Delegado)
-    $("body").on(
-      "click",
-      "#btnOpenModalCloseBox",
-      this.#handleClickAbrirModalCierre
-    );
+    // --- NUEVO: Botón Azul "Ingreso / Retiro" ---
+    $("body")
+      .off("click", "#btnOpenModalMovement")
+      .on("click", "#btnOpenModalMovement", () => {
+        this.#resetearModalMovimiento();
+        this.#modalMovementBox.modal("show");
+      });
 
-    // Lógicas de Guardado
-    this.#setupFormularioApertura();
-    this.#handleClickRegistrarArqueoCaja();
-    this.#setupEventoCierreDefinitivo();
+    // Formulario Apertura
+    this.#btnOpenBox.off("click").on("click", this.#handleClickGuardarApertura);
   };
 
   // ==========================================
-  // 4. MANEJADORES DE EVENTOS (Handlers)
+  // 4. LÓGICA DE MOVIMIENTOS (NUEVO)
+  // ==========================================
+
+  #cambiarTipoMovimiento = (tipo) => {
+    this.#inputMovementType.val(tipo);
+
+    if (tipo === "Ingreso") {
+      // Visual: Botones Switch
+      this.#btnTypeIngreso
+        .addClass("btn-primary shadow-sm text-white")
+        .removeClass("text-muted btn-transparent");
+      this.#btnTypeRetiro
+        .removeClass("btn-primary shadow-sm text-white")
+        .addClass("text-muted btn-transparent");
+
+      // Visual: Input y Botón Guardar (Verde)
+      this.#inputMovementAmount
+        .removeClass("text-danger")
+        .addClass("text-success");
+      this.#btnSaveMovement
+        .removeClass("btn-danger")
+        .addClass("btn-success")
+        .html('<i class="bi bi-check2-circle me-2"></i> Registrar Ingreso');
+
+      // Visual: Icono
+      this.#iconMovementWrapper
+        .removeClass("bg-danger-subtle text-danger")
+        .addClass("bg-success-subtle text-success");
+    } else {
+      // Visual: Botones Switch
+      this.#btnTypeRetiro
+        .addClass("btn-primary shadow-sm text-white")
+        .removeClass("text-muted btn-transparent");
+      this.#btnTypeIngreso
+        .removeClass("btn-primary shadow-sm text-white")
+        .addClass("text-muted btn-transparent");
+
+      // Visual: Input y Botón Guardar (Rojo)
+      this.#inputMovementAmount
+        .removeClass("text-success")
+        .addClass("text-danger");
+      this.#btnSaveMovement
+        .removeClass("btn-success")
+        .addClass("btn-danger")
+        .html('<i class="bi bi-dash-circle me-2"></i> Registrar Retiro');
+
+      // Visual: Icono
+      this.#iconMovementWrapper
+        .removeClass("bg-success-subtle text-success")
+        .addClass("bg-danger-subtle text-danger");
+    }
+  };
+
+  #resetearModalMovimiento = () => {
+    this.#inputMovementAmount.val("");
+    this.#inputMovementDescription.val("");
+    this.#cambiarTipoMovimiento("Ingreso"); // Reset a Ingreso por defecto
+  };
+
+  #handleClickGuardarMovimiento = async () => {
+    const amount = this.#inputMovementAmount.val();
+    const description = this.#inputMovementDescription.val();
+    const type = this.#inputMovementType.val(); // "Ingreso" o "Retiro"
+
+    if (!amount || amount <= 0)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Monto inválido",
+        message: "Ingrese un monto mayor a 0.",
+      });
+
+    if (!description)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Faltan datos",
+        message: "Ingrese un motivo o descripción.",
+      });
+
+    const params = {
+      amount: amount,
+      description: description,
+      type_movement: type,
+    };
+
+    // Llamada al Backend
+    const response = await this.apiBox.post("setBoxMovement", params);
+
+    if (response.status) {
+      this.#modalMovementBox.modal("hide");
+      this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
+    }
+    this.#mostrarAlerta(response);
+  };
+
+  // ==========================================
+  // 5. MANEJADORES DE EVENTOS EXISTENTES
   // ==========================================
 
   #handleClickAbrirModalSeleccion = async () => {
@@ -138,6 +271,7 @@ export class Box {
   #handleClickAbrirModalGestion = async () => {
     const response = await this.apiBox.get("getManagementBox");
     if (!response.status) return this.#mostrarAlerta(response);
+
     this.#datosSesionCaja = response;
     this.#renderVistaGestion();
     this.#modalGestionBox.modal("show");
@@ -172,66 +306,62 @@ export class Box {
     }
   };
 
-  #setupFormularioApertura = () => {
-    this.#btnOpenBox.off("click").on("click", async () => {
-      const boxId = this.#selectBox.val();
-      const monto = this.#inputMontoApertura.val();
+  #handleClickGuardarApertura = async () => {
+    const boxId = this.#selectBox.val();
+    const monto = this.#inputMontoApertura.val();
 
-      if (!boxId)
-        return this.#mostrarAlerta({
-          icon: "warning",
-          title: "Validación",
-          message: "Seleccione una caja.",
-        });
-      if (!monto || monto < 0)
-        return this.#mostrarAlerta({
-          icon: "warning",
-          title: "Validación",
-          message: "Monto inválido.",
-        });
-
-      const response = await this.apiBox.post("setOpenBox", {
-        box_id: boxId,
-        cash_opening_amount: monto,
+    if (!boxId)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Validación",
+        message: "Seleccione una caja.",
       });
-      this.#mostrarAlerta(response);
+    if (!monto || monto < 0)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Validación",
+        message: "Monto inválido.",
+      });
 
-      if (response.status) {
-        this.#modalAddBox.modal("hide");
-        this.#inputMontoApertura.val(0);
-        this.#verificarEstadoCaja();
-      }
+    const response = await this.apiBox.post("setOpenBox", {
+      box_id: boxId,
+      cash_opening_amount: monto,
     });
+    this.#mostrarAlerta(response);
+
+    if (response.status) {
+      this.#modalAddBox.modal("hide");
+      this.#inputMontoApertura.val(0);
+      this.#verificarEstadoCaja();
+    }
   };
 
-  #handleClickRegistrarArqueoCaja = () => {
-    $("#setArqueoCaja").on("click", async () => {
-      const detallesArray = [];
-      this.#mapaConteoEfectivo.forEach((data, key) => {
-        if (data.cantidad > 0) {
-          detallesArray.push({
-            denomination_id: key,
-            cantidad: data.cantidad,
-            total: data.total_amount,
-          });
-        }
-      });
-
-      const notes = $("#quick_access_arqueo_justificacion").val() || null;
-      const params = {
-        conteo_efectivo: detallesArray,
-        notes: notes,
-        type: "Auditoria",
-      };
-
-      const response = await this.apiBox.post("setBoxCashCount", params);
-
-      if (response.status) {
-        this.#resetearFormularioArqueo();
-        this.#modalArqueoBox.modal("hide");
+  #handleClickRegistrarArqueoCaja = async () => {
+    const detallesArray = [];
+    this.#mapaConteoEfectivo.forEach((data, key) => {
+      if (data.cantidad > 0) {
+        detallesArray.push({
+          denomination_id: key,
+          cantidad: data.cantidad,
+          total: data.total_amount,
+        });
       }
-      return this.#mostrarAlerta(response);
     });
+
+    const notes = $("#quick_access_arqueo_justificacion").val() || null;
+    const params = {
+      conteo_efectivo: detallesArray,
+      notes: notes,
+      type: "Auditoria",
+    };
+
+    const response = await this.apiBox.post("setBoxCashCount", params);
+
+    if (response.status) {
+      this.#resetearFormularioArqueo();
+      this.#modalArqueoBox.modal("hide");
+    }
+    return this.#mostrarAlerta(response);
   };
 
   #handleClickAbrirModalCierre = async () => {
@@ -252,7 +382,6 @@ export class Box {
     let montoContado = 0;
     let existeArqueoEnBd = false;
 
-    // Priorizamos datos de BD
     if (responseArqueo && responseArqueo.status && responseArqueo.data) {
       existeArqueoEnBd = true;
       montoContado = parseFloat(responseArqueo.data.counted_amount) || 0;
@@ -260,29 +389,26 @@ export class Box {
       montoContado = this.#totalEfectivoContado;
     }
 
-    // --- CÁLCULOS MATEMÁTICOS ---
     const totalVentas = parseFloat(data.total_general) || 0;
     const totalTransacciones =
       data.total_transacciones ||
       (data.movements_limit ? data.movements_limit.length : 0);
-
     const efectivoVentas = parseFloat(data.total_payment_method.Efectivo) || 0;
     const baseInicial = parseFloat(data.amount_base) || 0;
-
-    // Ingresos Efectivo = Ventas Efectivo (La base ya es inicial, no es ingreso por venta)
-    const ingresosCaja = efectivoVentas;
     const egresosCaja = parseFloat(data.total_efectivo_egreso) || 0;
 
-    // Total Sistema = Base + Ingresos - Egresos
-    const totalEsperadoSistema = baseInicial + ingresosCaja - egresosCaja;
+    // Ingresos reales a caja (solo efectivo + base ya está en sistema)
+    const ingresosCaja = efectivoVentas + egresosCaja;
+    // Si tu backend suma Ingresos extras a 'total_general', revisa esta lógica.
+    // Por ahora asumimos Ingresos Caja = Ventas Efectivo. Si sumas ingresos manuales, agrégalos aquí.
 
+    const totalEsperadoSistema = baseInicial + ingresosCaja - egresosCaja;
     const diferencia = montoContado - totalEsperadoSistema;
 
-    // --- RENDERIZADO ---
+    // Renderizado
     this.#lblCloseBoxTotalSales.html(this.#formatoMoneda(totalVentas));
     this.#lblCloseBoxTotalTransactions.html(totalTransacciones);
 
-    // Desglose Métodos de Pago
     let htmlPaymentMethod = "";
     if (data.total_payment_method) {
       Object.entries(data.total_payment_method).forEach(([tipo, monto]) => {
@@ -301,13 +427,11 @@ export class Box {
     }
     this.#lblCloseBoxTotalPaymentMethod.html(htmlPaymentMethod);
 
-    // Balance Efectivo
     this.#lblCloseBoxBase.html(this.#formatoMoneda(baseInicial));
     this.#lblCloseBoxIncome.html(`+${this.#formatoMoneda(ingresosCaja)}`);
     this.#lblCloseBoxExpenses.html(`-${this.#formatoMoneda(egresosCaja)}`);
     this.#lblCloseBoxExpected.html(this.#formatoMoneda(totalEsperadoSistema));
 
-    // Comparativa Sistema vs Arqueo
     this.#lblCloseBoxSistema.html(this.#formatoMoneda(totalEsperadoSistema));
     this.#lblCloseBoxContado.html(this.#formatoMoneda(montoContado));
 
@@ -315,7 +439,6 @@ export class Box {
     this.#lblCloseBoxDifference.html(
       `${signoDiff}${this.#formatoMoneda(diferencia)}`
     );
-
     if (diferencia < 0)
       this.#lblCloseBoxDifference
         .removeClass("text-success")
@@ -325,7 +448,6 @@ export class Box {
         .removeClass("text-danger")
         .addClass("text-success");
 
-    // Estado del Cuadre
     let htmlStatus = "";
     if (!existeArqueoEnBd && montoContado === 0 && totalEsperadoSistema > 0) {
       htmlStatus = `<div class="alert alert-warning py-2 px-3 mb-0 rounded-3 d-flex align-items-center gap-2 small"><i class="bi bi-exclamation-circle-fill fs-5"></i><div><strong>Advertencia:</strong> No se ha realizado conteo físico (Arqueo).</div></div>`;
@@ -345,36 +467,35 @@ export class Box {
     this.#modalCloseBox.modal("show");
   };
 
-  #setupEventoCierreDefinitivo = async () => {
-    this.#btnFinalizarCierre.off("click").on("click", async () => {
-      const responseAlert = await Swal.fire({
-        title: "¿Cerrar turno?",
-        text: "¿Está seguro de finalizar el turno? Esta acción es irreversible.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Sí, continuar",
-      });
-
-      if (!responseAlert.isConfirmed) return;
-
-      const notes = this.#inputCloseBoxNotes.val() ?? null;
-      const response = await this.apiBox.post("setCloseBoxSession", { notes });
-
-      if (response.status) {
-        setTimeout(() => {
-          this.#modalCloseBox.modal("hide");
-          window.location.reload();
-        }, 2000);
-      }
-
-      this.#mostrarAlerta(response);
+  #handleClickFinalizarCierre = async () => {
+    const responseAlert = await Swal.fire({
+      title: "¿Cerrar turno?",
+      text: "¿Está seguro de finalizar el turno? Esta acción es irreversible.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, continuar",
     });
+
+    if (!responseAlert.isConfirmed) return;
+
+    const notes = this.#inputCloseBoxNotes.val() ?? null;
+    const params = { idBoxSession: this.#selectBox.val() || 1, notes: notes };
+
+    const response = await this.apiBox.post("setCloseBoxSession", params);
+
+    if (response.status) {
+      setTimeout(() => {
+        this.#modalCloseBox.modal("hide");
+        window.location.reload();
+      }, 2000);
+    }
+    this.#mostrarAlerta(response);
   };
 
   // ==========================================
-  // 5. UTILIDADES DE RENDERIZADO (Helpers)
+  // 6. UTILIDADES DE RENDERIZADO (Helpers)
   // ==========================================
 
   #renderOpcionesDeCaja = (listaCajas) => {
@@ -395,16 +516,17 @@ export class Box {
           : box.session === "Activo"
           ? ""
           : "(No disponible)";
-
       html += `<option class="${clase}" ${disabled} value="${box.idBox}">Caja ${num} - ${box.name} ${extra}</option>`;
     });
     this.#selectBox.html(html);
   };
 
-  // CORREGIDO: Lógica de suma de Base solo a Efectivo
   #renderVistaGestion = () => {
-    let amount_base = parseFloat(this.#datosSesionCaja.amount_base) || 0;
+    this.#lblTituloGestionBoxName.html(this.#datosSesionCaja.name_box);
+    this.#lblTituloArqueoBoxName.html(this.#datosSesionCaja.name_box);
+    this.#lblTituloCloseBoxName.html(this.#datosSesionCaja.name_box);
 
+    let amount_base = parseFloat(this.#datosSesionCaja.amount_base) || 0;
     this.#lblTotalGeneral.html(
       this.#formatoMoneda(this.#datosSesionCaja.total_general + amount_base)
     );
@@ -413,19 +535,12 @@ export class Box {
     );
 
     let htmlMetodos = "";
-
     this.#datosSesionCaja.payment_method.forEach((el) => {
       if (this.#datosSesionCaja.total_payment_method[el.name] !== undefined) {
-        // Obtenemos el total de ventas por ese método
         let totalToShow = parseFloat(
           this.#datosSesionCaja.total_payment_method[el.name]
         );
-
-        // SOLO si es Efectivo, le sumamos la base para mostrar en la tarjeta
-        if (el.name === "Efectivo") {
-          totalToShow += amount_base;
-        }
-
+        if (el.name === "Efectivo") totalToShow += amount_base;
         htmlMetodos += this.#crearCardMetodoPago(el, totalToShow);
       }
     });
@@ -438,32 +553,33 @@ export class Box {
     this.#containerListaMovimientos.html(
       moves.map((mov) => this.#crearItemMovimiento(mov)).join("")
     );
+    // NUEVO: Llamar a la gráfica
+    // Pasamos el objeto 'chart_data' que enviamos desde PHP
+    this.#renderGraphicSales(this.#datosSesionCaja.chart_data);
   };
 
-  // CORREGIDO: Lógica de suma de Base para el Arqueo
   #renderResumenEsperadoArqueo() {
     const data = this.#datosSesionCaja;
     const ventaEfectivo = parseFloat(data.total_payment_method.Efectivo) || 0;
     const base = parseFloat(data.amount_base) || 0;
-
-    // Total Sistema = Ventas Efectivo + Base
     const totalEfectivoEsperado = ventaEfectivo + base;
 
     this.#lblArqueoTotalEfectivo.html(
       this.#formatoMoneda(totalEfectivoEsperado)
     );
     this.#lblArqueoTotalGeneral.html(this.#formatoMoneda(data.total_general));
-
-    // IMPORTANTE: Actualizamos la variable global para que el cálculo de diferencia sea correcto
     this.#totalEfectivoSistema = totalEfectivoEsperado;
 
-    // Renderizado de Tarjetas Informativas (Yape, Visa, etc - NO Efectivo)
-    const htmlTarjetas = data.payment_method
-      .filter(
-        (el) =>
-          el.name !== "Efectivo" &&
-          data.total_payment_method[el.name] !== undefined
-      )
+    let htmlTarjetas = `
+          <div class="flex-fill p-2 rounded-4 bg-primary-subtle border border-primary text-center">
+            <small class="d-block text-primary fw-bold mb-1" style="font-size: 0.7rem;">Monto Inicial</small>
+            <span class="fw-bold text-primary">${this.#formatoMoneda(
+              base
+            )}</span>
+          </div>`;
+
+    htmlTarjetas += data.payment_method
+      .filter((el) => data.total_payment_method[el.name] !== undefined)
       .map(
         (el) => `
           <div class="flex-fill p-2 rounded-4 bg-body-tertiary border text-center">
@@ -511,13 +627,7 @@ export class Box {
     let htmlFinal = "";
     Object.keys(grupos).forEach((tipo) => {
       const config = styleConfig[tipo] || styleConfig["default"];
-      htmlFinal += `
-          <div class="d-flex align-items-center mb-3">
-            <h6 class="fw-bold ${config.text} mb-0 me-3" style="min-width: 65px;"><i class="bi ${config.icon} me-2"></i>${tipo}</h6>
-            <div class="flex-grow-1 border-bottom"></div>
-          </div>
-          <div class="row g-2 mb-4">`;
-
+      htmlFinal += `<div class="d-flex align-items-center mb-3"><h6 class="fw-bold ${config.text} mb-0 me-3" style="min-width: 65px;"><i class="bi ${config.icon} me-2"></i>${tipo}</h6><div class="flex-grow-1 border-bottom"></div></div><div class="row g-2 mb-4">`;
       htmlFinal += grupos[tipo]
         .map((el) => {
           const dataMap = this.#mapaConteoEfectivo.get(el.idDenomination);
@@ -543,6 +653,136 @@ export class Box {
     this.#containerArqueoInputsDinero.html(htmlFinal);
     if (this.#totalEfectivoContado > 0) this.#actualizarUIArqueo();
   }
+
+  #renderGraphicSales = (chartData) => {
+    // Si no existe el canvas en el DOM, salimos
+    if (this.#canvasGraphic.length === 0) return;
+
+    // Destruir gráfica anterior si existe para evitar superposiciones
+    if (this.#chartInstance) {
+      this.#chartInstance.destroy();
+    }
+
+    const ctx = this.#canvasGraphic.get(0).getContext("2d");
+
+    // --- MEJORA VISUAL 1: Gradiente más suave ---
+    // Creamos un degradado verde que se desvanece hacia abajo
+    const gradient = ctx.createLinearGradient(0, 0, 0, 350);
+    gradient.addColorStop(0, "rgba(25, 135, 84, 0.5)"); // Verde "Success" semitransparente arriba
+    gradient.addColorStop(1, "rgba(25, 135, 84, 0.05)"); // Casi transparente abajo
+
+    // Fuente estándar bonita (tipo Bootstrap)
+    const fontStack = "'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif";
+
+    this.#chartInstance = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: chartData && chartData.labels ? chartData.labels : [],
+        datasets: [
+          {
+            data: chartData && chartData.values ? chartData.values : [],
+            label: "Ventas Totales", // Etiqueta interna
+            borderColor: "#198754", // Color de la línea (Verde Bootstrap Success)
+            backgroundColor: gradient, // El degradado que creamos arriba
+            borderWidth: 3, // Línea un poco más gruesa
+            // --- MEJORA VISUAL 2: Puntos más estilizados ---
+            pointBackgroundColor: "#fff", // Punto blanco por dentro
+            pointBorderColor: "#198754", // Borde verde
+            pointBorderWidth: 2,
+            pointRadius: 5, // Puntos normales más grandes
+            pointHoverRadius: 8, // Puntos muy grandes al pasar el mouse
+            fill: true, // Rellenar el área debajo
+            tension: 0.3, // Curvatura suave de la línea (0 es recta, 1 es muy curva)
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: {
+          mode: "index",
+          intersect: false,
+        },
+        plugins: {
+          legend: { display: false }, // Ocultamos la leyenda por defecto (ya tenemos título)
+          // --- MEJORA VISUAL 3: Título Principal ---
+          title: {
+            display: true,
+            text: "Ingreso de Ventas por Hora (Turno Actual)",
+            align: "start", // Alineado a la izquierda
+            color: "#343a40", // Color gris oscuro
+            font: {
+              size: 16,
+              family: fontStack,
+              weight: "bold",
+            },
+            padding: { bottom: 20 },
+          },
+          // --- MEJORA VISUAL 4: Tooltip Profesional ---
+          tooltip: {
+            backgroundColor: "rgba(255, 255, 255, 0.95)", // Fondo blanco casi opaco
+            titleColor: "#000", // Texto negro
+            bodyColor: "#000",
+            borderColor: "#198754", // Borde verde
+            borderWidth: 1,
+            padding: 12,
+            boxPadding: 6,
+            usePointStyle: true,
+            callbacks: {
+              // Título del tooltip con un icono de reloj
+              title: (tooltipItems) => {
+                return "🕒 Hora: " + tooltipItems[0].label;
+              },
+              // Etiqueta del valor con formato de moneda claro
+              label: (context) => {
+                const valor = Number(context.parsed.y).toFixed(2);
+                return `  Ventas: S/ ${valor}`;
+              },
+            },
+          },
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            // --- MEJORA VISUAL 5: Título y Formato Eje Y ---
+            title: {
+              display: true,
+              text: "Monto Vendido (S/)",
+              color: "#6c757d",
+              font: { family: fontStack, weight: "bold", size: 11 },
+            },
+            grid: {
+              borderDash: [5, 5], // Líneas de cuadrícula punteadas
+              color: "#e9ecef",
+            },
+            ticks: {
+              color: "#6c757d",
+              font: { family: fontStack, size: 11 },
+              // Agregar "S/" a los números del eje Y
+              callback: function (value) {
+                return "S/ " + value;
+              },
+            },
+          },
+          x: {
+            // --- MEJORA VISUAL 6: Título Eje X ---
+            title: {
+              display: true,
+              text: "Hora del día (Formato 24h)",
+              color: "#6c757d",
+              font: { family: fontStack, weight: "bold", size: 11 },
+              padding: { top: 10 },
+            },
+            grid: { display: false }, // Sin líneas verticales para limpieza
+            ticks: {
+              color: "#6c757d",
+              font: { family: fontStack, size: 11 },
+            },
+          },
+        },
+      },
+    });
+  };
 
   #actualizarUIArqueo() {
     this.#lblArqueoTotalContado.html(
@@ -575,10 +815,6 @@ export class Box {
     });
     this.#containerDesgloseFinal.html(htmlDesglose);
   }
-
-  // ==========================================
-  // 6. FUNCIONES AUXILIARES
-  // ==========================================
 
   #resetearFormularioArqueo = () => {
     this.#totalEfectivoContado = 0;
@@ -694,10 +930,6 @@ export class Box {
     else console.warn("showAlert no está definido", message);
   };
 
-  // ==========================================
-  // 7. HTML HELPERS
-  // ==========================================
-
   #generarBotonAperturaHtml = () => `
     <div class="d-flex justify-content-center align-items-center">
         <button id="btnOpenModalBox" class="btn btn-warning px-2 py-1 d-flex align-items-center gap-2 fw-bold">
@@ -714,7 +946,6 @@ export class Box {
         </button>
     </div>`;
 
-  // CORREGIDO: Ya no recibe 'base' porque la lógica se hace fuera
   #crearCardMetodoPago = (el, total) => `
     <div class="col-4">
         <div class="card border rounded-4 h-100 bg-body-tertiary">

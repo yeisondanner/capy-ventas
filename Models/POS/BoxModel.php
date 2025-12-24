@@ -21,6 +21,7 @@ class BoxModel extends Mysql
     protected int $quantity;
     protected float $total;
     protected string $closingDate;
+    protected float $amount;
 
 
     // ? Funciones get
@@ -33,6 +34,21 @@ class BoxModel extends Mysql
             FROM box_sessions
             WHERE box_id = ?
             ORDER BY box_id ASC;
+        SQL;
+
+        return $this->select($sql, [$this->boxId]);
+    }
+
+    public function getBox(int $boxId)
+    {
+        $this->boxId = $boxId;
+        $sql = <<<SQL
+            SELECT
+                name,
+                status
+            FROM `box`
+            WHERE idBox = ?
+            LIMIT 1;
         SQL;
 
         return $this->select($sql, [$this->boxId]);
@@ -145,7 +161,7 @@ class BoxModel extends Mysql
                 movement_date
             FROM box_movements
             WHERE boxSessions_id = ?
-            ORDER BY type_movement DESC
+            ORDER BY movement_date DESC
             LIMIT $this->limit;
         SQL;
 
@@ -177,6 +193,29 @@ class BoxModel extends Mysql
         SQL;
 
         return $this->select_all($sql, [$this->status]);
+    }
+
+    public function getMovementsForHours(int $boxSessionsId) {
+        $this->boxSessionsId = $boxSessionsId;
+        $sql = "SELECT 
+            DATE_FORMAT(created_at, '%H:00') as hora, 
+            SUM(total) as total 
+        FROM sales 
+        WHERE box_session_id = ? 
+        GROUP BY hora 
+        ORDER BY hora ASC";
+
+        $sql = <<<SQL
+            SELECT 
+                DATE_FORMAT(movement_date, '%H:00') as hora, 
+                SUM(amount) as total
+            FROM box_movements 
+            WHERE boxSessions_id = ? AND type_movement = 'Ingreso' 
+            GROUP BY DATE_FORMAT(movement_date, '%H:00') 
+            ORDER BY hora ASC;
+        SQL;
+
+        return $this->select_all($sql, [$this->boxSessionsId]);
     }
 
     // ? Funciones insert
@@ -240,6 +279,22 @@ class BoxModel extends Mysql
                 (?, ?, ?, ?);
         SQL;
         return (int) $this->insert($sql, [$this->boxCashCountsId, $this->currencyDenominationId, $this->quantity, $this->total]);
+    }
+
+    public function insertBoxMovement(int $boxSessionsId, string $type, string $notes, float $amount, string $paymentMethod)
+    {
+        $this->boxSessionsId = $boxSessionsId;
+        $this->type = $type;
+        $this->notes = $notes;
+        $this->amount = $amount;
+        $this->paymentMethod = $paymentMethod;
+        $sql = <<<SQL
+            INSERT INTO box_movements
+                (boxSessions_id, type_movement, concept, amount, payment_method)
+            VALUES
+                (?, ?, ?, ?, ?);
+        SQL;
+        return (int) $this->insert($sql, [$this->boxSessionsId, $this->type, $this->notes, $this->amount, $this->paymentMethod]);
     }
 
     // ? Funciones update

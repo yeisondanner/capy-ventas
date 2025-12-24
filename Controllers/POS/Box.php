@@ -226,7 +226,7 @@ class Box extends Controllers
 
         // ? Si no hay un mensaje, lo agregamos por default
         if (is_null($notes) || empty($notes)) {
-            if ($difference === 0) {
+            if ($difference == 0) {
                 $notes = "Cuadre perfecto";
             } else if ($difference < 0) {
                 $notes = "Monto sobrante a favor";
@@ -285,6 +285,42 @@ class Box extends Controllers
             $this->responseError('No tienes ninguna caja aperturada. Por favor apertura tu turno.');
         }
 
+        // * Consultamos todos los movimientos asociados a la caja aperturada para calcular el total del sistema
+        $boxMovements = $this->model->getBoxMovements($boxSessions["idBoxSessions"]);
+        $total_efectivo_sistema = 0;
+        foreach ($boxMovements as $key => $value) {
+            $amount = (float) $value["amount"];
+            // ? Calculamos el total efectivo del sistema
+            if ($value["payment_method"] === "Efectivo") {
+                if ($value["type_movement"] !== "Egreso") {
+                    $total_efectivo_sistema += $amount;
+                } else {
+                    $total_efectivo_sistema -= $amount;
+                }
+            }
+        }
+
+        // * Consultamos si tiene un arqueo de caja realizado y trael el ultimo realizado
+        $cashCount = $this->model->getLastCashCount($boxSessions["idBoxSessions"]);
+
+        $type = "Cierre";
+        $total_efectivo_contado = 0;
+        $difference = $total_efectivo_sistema;
+        $notes_arqueo = "Descuadre detectado";
+
+        if ($cashCount) {
+            $total_efectivo_sistema = $cashCount["expected_amount"];
+            $total_efectivo_contado = $cashCount["counted_amount"];
+            $difference = $cashCount["difference"];
+            $notes_arqueo = $cashCount["notes"];
+        }
+
+        // * Insertamos el arqueo de cierre de caja
+        $insertArqueoBox = $this->model->insertBoxCashCount($boxSessions["idBoxSessions"], $type, $total_efectivo_sistema, $total_efectivo_contado, $difference, $notes_arqueo);
+        if (!$insertArqueoBox) {
+            $this->responseError('Error al momento de registrar el arqueo de cierre de caja.');
+        }
+
         // * sacamos la fecha actual del servidor
         $fecha_actual = date('Y-m-d H:i:s');
 
@@ -300,6 +336,64 @@ class Box extends Controllers
             'message' => 'Caja #' . $boxSessions["idBoxSessions"] . ' cerrada Correctamente',
             'type'    => 'success',
             'icon'    => 'success',
+        ]);
+    }
+
+    // TODO: Endpoint para registrar una nuevo movimiento
+    public function setBoxMovement()
+    {
+        // * Validamos que llegue el metodo POST
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        // * Decodificamos la cadena de texto en formato JSON para validar
+        $raw = file_get_contents('php://input');
+        $data = json_decode($raw, true);
+
+        $description = strClean($data["description"]);
+        $amount = (float) strClean($data["amount"]);
+        $type_movement = strClean($data["type_movement"]);
+
+        // * Validamos que no este vacio los campos
+        validateFieldsEmpty(array(
+            "DESCRIPCION DEL MOVIMIENTO" => $description,
+            "MONTO DEL MOVIMIENTO" => $amount,
+            "TIPO DE MOVIMIENTO" => $type_movement,
+        ));
+
+        // * Validamos que el monto sea mayor que 0
+        if ($amount <= 0) {
+            $this->responseError("El monto ingresaado debe ser mayor que 0.");
+        }
+
+        // * Validar TYPE (Debe ser uno de los valores permitidos en tu ENUM)
+        $allowed_types = ['Ingreso', 'Egreso']; // Los valores de tu base de datos
+        if (!in_array($type_movement, $allowed_types)) {
+            $this->responseError("El tipo de arqueo es inválido. Debe ser 'Ingreso' o 'Egreso'.");
+        }
+
+        // * Consultamos el ID del usuario
+        $userId = $this->getUserId();
+
+        // * Consultamos si el usuario tiene un caja aperturada
+        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
+        if (!$boxSessions) {
+            $this->responseError('No tienes ninguna caja aperturada. Por favor apertura tu turno.');
+        }
+
+        // * Registramos el movimiento
+        $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, "Efectivo");
+        if (!$movement_box) {
+            $this->responseError('Error al registrar el ' . $type_movement . ' de caja.');
+        }
+
+        toJson([
+            'title'   => 'Gestión de Caja',
+            'message' => $type_movement . ' de caja registrado correctamente.',
+            'type'    => 'success',
+            'icon'    => 'success',
+            'status'  => true,
         ]);
     }
 
@@ -346,6 +440,9 @@ class Box extends Controllers
             $this->responseError('No tienes ninguna caja aperturada. Por favor apertura tu turno.');
         }
 
+        // * cosultamos el nombre de la caja
+        $box = $this->model->getBox($boxSessions["box_id"]);
+
         // * Consultamos los metodos de pagos disponibles por la app
         $paymentMethod = $this->model->getPaymentMethods();
 
@@ -354,6 +451,17 @@ class Box extends Controllers
 
         // * Consultamos los ultimos 4 movimientos asociados a la caja aperturada
         $boxMovements_limit = $this->model->getBoxMovementsByLimit($boxSessions["idBoxSessions"], 4);
+
+        // * Consultamos las ventas por hora
+        $ventasPorHora = $this->model->getMovementsForHours($boxSessions["idBoxSessions"]);
+        // * Formatear para Chart.js (Separar etiquetas y datos)
+        $labels = [];
+        $data = [];
+
+        foreach ($ventasPorHora as $venta) {
+            $labels[] = $venta['hora']; // Ej: "10:00", "11:00"
+            $data[] = $venta['total'];  // Ej: 150.00, 50.00
+        }
 
         $arrayPaymentMethod = array();
         $totalGeneral = 0;
@@ -388,12 +496,17 @@ class Box extends Controllers
         // * Devolvemos la respuesta formateada
         $arrayResponse = [
             "status" => true,
+            "name_box" => $box["name"],
             "amount_base" => (float) $boxSessions["initial_amount"],
             "total_general" => $totalGeneral,
             "payment_method" => $paymentMethod,
             "total_payment_method" => $arrayPaymentMethod,
             "total_transacciones" => $totalTransacciones,
             "total_efectivo_egreso" => $totalEfectivo_egreso,
+            'chart_data' => [
+                'labels' => $labels,
+                'values' => $data
+            ],
             "movements_limit" => $boxMovements_limit,
         ];
         toJson($arrayResponse);
