@@ -589,9 +589,11 @@ class Sales extends Controllers
             if ($openBox === 'Si') {
                 $requestOpenBox = $this->model->selectOpenBoxByUser([
                     'user_app_id' => $this->getUserId(),
+                    'business_id' => $businessId,
                     'status' => 'Abierta',
                     'year' => date('Y'),
                     'month' => date('m'),
+                    'day' => date('d'),
                 ]);
                 if (!$requestOpenBox) {
                     $this->responseError('No se podra realizar una venta, mientras no abra caja. Para este negocio es obligatorio abrir caja.', 6000);
@@ -618,9 +620,11 @@ class Sales extends Controllers
         //validamos si la caja esta abierta para registrar la venta
         $requestOpenBox = $this->model->selectOpenBoxByUser([
             'user_app_id' => $this->getUserId(),
+            'business_id' => $businessId,
             'status' => 'Abierta',
             'year' => date('Y'),
             'month' => date('m'),
+            'day' => date('d'),
         ]);
         //validamos si la caja esta abierta para registrar la venta
         if ($requestOpenBox) {

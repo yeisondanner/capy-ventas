@@ -391,17 +391,21 @@ class SalesModel extends Mysql
     public function selectOpenBoxByUser(array $data)
     {
         $sql = <<<SQL
-                SELECT
+               SELECT
                     *
                 FROM
-                    box_sessions AS b
+                    box_sessions AS bs
+                    INNER JOIN box AS bx ON bx.idBox = bs.box_id
+                    INNER JOIN business AS b ON b.idBusiness=bx.business_id
                 WHERE
-                    b.userapp_id = ?
-                    AND b.`status` = ?
-                    AND YEAR(b.opening_date)= ?
-                    AND MONTH(b.opening_date)= ?;
+                    bs.userapp_id = ?
+                    AND b.idBusiness=?
+                    AND bs.`status` = ?
+                    AND YEAR(bs.opening_date)= ?
+                    AND MONTH(bs.opening_date)= ?
+                    AND DAY(bs.opening_date)= ?;
         SQL;
-        $result = $this->select($sql, [$data['user_app_id'], $data['status'], $data['year'], $data['month']]);
+        $result = $this->select($sql, [$data['user_app_id'], $data['business_id'], $data['status'], $data['year'], $data['month'], $data['day']]);
         return $result;
     }
     /**
