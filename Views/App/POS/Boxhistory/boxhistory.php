@@ -29,7 +29,9 @@
             <div class="tile rounded-3">
                 <div class="tile-body border p-2 rounded-3 bg-light">
                     <h6 class="text-center text-primary mb-3">Filtrar Cierrres de caja</h6>
-                    <div class="d-flex flex-wrap gap-1"></div>
+                    <div class="d-flex flex-wrap gap-1">
+
+                    </div>
                 </div>
             </div>
         </div>
