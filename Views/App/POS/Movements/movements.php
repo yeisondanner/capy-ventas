@@ -18,7 +18,7 @@
                         <a class="nav-link border border-primary shadow-sm rounded-5 active" aria-current="page" href="<?= base_url() ?>/pos/movements"><i class="bi bi-pc-display-horizontal fs-4"></i> Movimientos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link border border-primary shadow-sm rounded-5" href="#"><i class="bi bi-cash fs-4"></i> Cierrres de caja</a>
+                        <a class="nav-link border border-primary shadow-sm rounded-5" href="<?= base_url() ?>/pos/boxhistory"><i class="bi bi-cash fs-4"></i> Cierrres de caja</a>
                     </li>
                 </ul>
             </div>
