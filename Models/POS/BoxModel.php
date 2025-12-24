@@ -54,6 +54,22 @@ class BoxModel extends Mysql
         return $this->select($sql, [$this->boxId]);
     }
 
+    public function getBoxsById(int $boxId, int $businessId)
+    {
+        $this->boxId = $boxId;
+        $this->businessId = $businessId;
+        $sql = <<<SQL
+            SELECT
+                name,
+                status
+            FROM `box`
+            WHERE idBox = ? AND business_id = ?
+            LIMIT 1;
+        SQL;
+
+        return $this->select($sql, [$this->boxId, $this->businessId]);
+    }
+
     public function getBoxByIdAndBusinessId(int $boxId, int $businessId)
     {
         $this->boxId = $boxId;
