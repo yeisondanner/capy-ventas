@@ -1216,7 +1216,7 @@
             <article class="pricing-card recommended">
               <span class="plan-badge">Popular</span>
               <h3 class="plan-name">Pro</h3>
-              <p class="plan-price">S/. 70<span>/mes</span></p>
+              <p class="plan-price">S/. 60<span>/mes</span></p>
               <p class="plan-description">Prueba Capy Ventas en tu negocio con el plan Pro. </p>
               <div class="plan-cta">
                 <a
@@ -1304,7 +1304,7 @@
             <article class="pricing-card recommended">
               <span class="plan-badge">Recomendado</span>
               <h3 class="plan-name">Pro Anual</h3>
-              <p class="plan-price">S/. 204<span>/año</span></p>
+              <p class="plan-price">S/. 520<span>/año</span></p>
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
@@ -1325,7 +1325,7 @@
 
             <article class="pricing-card">
               <h3 class="plan-name">Business Anual</h3>
-              <p class="plan-price">S/. 288<span>/año</span></p>
+              <p class="plan-price">S/. 620<span>/año</span></p>
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
@@ -1344,7 +1344,7 @@
               </div>
             </article>
 
-            <article class="pricing-card">
+            <article class="pricing-card" style="display: none;">
               <h3 class="plan-name">Premium Anual</h3>
               <p class="plan-price">S/. 384<span>/año</span></p>
               <div class="plan-cta">
@@ -1365,7 +1365,7 @@
               </div>
             </article>
 
-            <article class="pricing-card">
+            <article class="pricing-card" style="display: none;">
               <h3 class="plan-name">Full Max Anual</h3>
               <p class="plan-price">S/. 480<span>/año</span></p>
               <div class="plan-cta">
