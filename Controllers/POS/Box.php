@@ -43,17 +43,19 @@ class Box extends Controllers
 
         // * Agregamos un estado mas
         foreach ($boxesActivas as $key => $value) {
-            $boxesActivas[$key]["session"] = $value["status"];
+            $boxesActivas[$key]["session"] = "Abierta";
         }
 
         // * cosultamos cajas disponibles
         foreach ($boxesActivas as $key => $value) {
             $usingBox = $this->model->getUsingBox($value["idBox"]);
-            if ($usingBox && $usingBox["status"] !== "Cerrada") {
-                $boxesActivas[$key]["session"] = $usingBox["status"];
+            if ($usingBox && $usingBox["status"] === "Cerrada") {
+                $boxesActivas[$key]["session"] = "Cerrada";
             }
         }
-
+        
+        toJson($boxesActivas);
+        toJson($usingBox);
         // * Mensaje de respuesta correcta
         if ($boxesActivas && !empty($boxesActivas)) {
             toJson([

@@ -260,9 +260,10 @@ export class Box {
   // 5. MANEJADORES DE EVENTOS EXISTENTES
   // ==========================================
 
+  // TODO: LUEGO VER ESTO
   #handleClickAbrirModalSeleccion = async () => {
     const boxs = await this.#getBoxs();
-    if (boxs && boxs.status) {
+    if (boxs && boxs.session) {
       this.#renderOpcionesDeCaja(boxs.data);
       this.#modalAddBox.modal("show");
     }
