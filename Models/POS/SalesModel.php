@@ -427,4 +427,17 @@ class SalesModel extends Mysql
         ]);
         return $result;
     }
+    /**
+     * Metodo que se encarga de obtener la informacion del metodo del
+     * pago mediante su Id
+     * @param int $paymentMethodId
+     * @return void
+     */
+    public function selectPaymentMethodById(int $paymentMethodId): ?array
+    {
+        $sql = <<<SQL
+            SELECT*FROM payment_method AS pm WHERE pm.idPaymentMethod=?;
+        SQL;
+        return $this->select($sql, [$paymentMethodId]);
+    }
 }

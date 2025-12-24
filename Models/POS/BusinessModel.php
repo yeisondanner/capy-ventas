@@ -233,6 +233,23 @@ class BusinessModel extends Mysql
         $request = $this->select_all($sql);
         return $request ?? [];
     }
+    /**
+     * obtenemos el tipo del negocio por id
+     * obtenemos la información 
+     * @param int $id
+     * @return array
+     */
+    public function selectBusinessTypeById(int $id): array
+    {
+        $sql = <<<SQL
+            SELECT idBusinessType, `name`
+            FROM business_type
+            WHERE idBusinessType = ?;
+        SQL;
+
+        $request = $this->select($sql, [$id]);
+        return $request ?: [];
+    }
 
     /**
      * Registra los datos básicos por defecto para un nuevo negocio.
@@ -393,5 +410,4 @@ class BusinessModel extends Mysql
         $params = [$this->businessId];
         return $this->update($sql, $params);
     }
-   
 }

@@ -380,6 +380,22 @@ class Business extends Controllers
         ];
         $responseUpdate = $this->model->updateBusiness($data);
         if ($responseUpdate) {
+            $dataTypeBusiness = $this->model->selectBusinessTypeById($typebusinessId);
+            //se crea el array para la variable de session
+            $bussiness = array(
+                "idBusiness" => $idBusiness,
+                "business" => $name,
+                "category" => $dataTypeBusiness['name'],
+                "direction" => $direction,
+                "city" => $city,
+                "country" => $country,
+                "email" => $email,
+                "document_number" => $documentNumber,
+                "logo" => $logoname,
+                "openBox" => $openBoxSwitch
+            );
+            //actualizamos la sesion
+            $_SESSION[$this->nameVarBusiness] = $bussiness;
             toJson([
                 'title'   => 'Negocio actualizado',
                 'message' => 'El negocio ha sido actualizado con exito.',

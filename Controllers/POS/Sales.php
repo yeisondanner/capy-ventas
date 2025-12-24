@@ -621,13 +621,16 @@ class Sales extends Controllers
             'year' => date('Y'),
             'month' => date('m'),
         ]);
+        //validamos si la caja esta abierta para registrar la venta
         if ($requestOpenBox) {
+            $requestPaymentMethod = $this->model->selectPaymentMethodById($paymentMethodId);
+            //registramos el movimiento de la caja
             $insertMovement = $this->model->insertBoxMovement([
                 'boxSessions_id' => $requestOpenBox['idBoxSessions'] ?? 0,
                 'type_movement' => 'Ingreso',
-                'concept' => 'Venta POS - ' . ($voucherName !== '' ? $voucherName : 'Sin nombre'),
+                'concept' => 'Venta realizada el ' . date('Y-m-d H:i:s'),
                 'amount' => $totalAmount,
-                'payment_method' => (string) ($paymentMethodId ?? 'Efectivo'),
+                'payment_method' => (string) ($requestPaymentMethod['name'] ?? 'Efectivo'),
                 'reference_table' => 'voucher_header',
                 'reference_id' => $headerId,
             ]);

@@ -12,6 +12,18 @@
     </div>
     <div class="row">
         <div class="col-md-12">
+            <div class="tile rounded-5 border shadow-sm">
+                <ul class="nav nav-pills nav-fill">
+                    <li class="nav-item">
+                        <a class="nav-link border border-primary shadow-sm rounded-5 active" aria-current="page" href="<?= base_url() ?>/pos/movements"><i class="bi bi-pc-display-horizontal fs-4"></i> Movimientos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link border border-primary shadow-sm rounded-5" href="#"><i class="bi bi-cash fs-4"></i> Cierrres de caja</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-12">
             <div class="tile rounded-3">
                 <div class="tile-body bg-light border p-2 rounded-3">
                     <h6 class="text-center text-primary mb-3">Filtrar Movimientos</h6>
@@ -56,13 +68,12 @@
                 </div>
             </div>
         </div>
-
         <div class="col-md-12">
             <div class="tile rounded-3">
                 <div class="tile-body  bg-light border p-2 rounded-3">
                     <div class="row g-3">
                         <div class="col-12 col-sm-12 col-md-4">
-                            <div class="card border-0 shadow-sm h-100 card-enhanced">
+                            <div class="card border-0 shadow-sm h-100 card-enhanced rounded-5">
                                 <div class="card-body d-flex align-items-center">
                                     <div class="icon-container bg-success-subtle d-flex align-items-center justify-content-center me-3">
                                         <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
@@ -77,7 +88,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-sm-6 col-md-4">
-                            <div class="card border-0 shadow-sm h-100 card-enhanced">
+                            <div class="card border-0 shadow-sm h-100 card-enhanced rounded-5">
                                 <div class="card-body d-flex align-items-center">
                                     <div class="icon-container bg-success-subtle d-flex align-items-center justify-content-center me-3">
                                         <i class="bi bi-cash-stack fs-4 text-success"></i>
@@ -92,7 +103,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-sm-6 col-md-4">
-                            <div class="card border-0 shadow-sm h-100 card-enhanced">
+                            <div class="card border-0 shadow-sm h-100 card-enhanced rounded-5">
                                 <div class="card-body d-flex align-items-center">
                                     <div class="icon-container bg-danger-subtle d-flex align-items-center justify-content-center me-3">
                                         <i class="bi bi-cash-stack fs-4 text-danger"></i>
@@ -110,10 +121,16 @@
                 </div>
             </div>
         </div>
-
-
         <div class="col-md-12">
             <div class="tile rounded-3">
+                <ul class="nav nav-pills nav-fill mb-3">
+                    <li class="nav-item">
+                        <a class="nav-link active text-success bg-success-subtle rounded-5" aria-current="page" href="#"> <i class="bi bi-plus"></i> Ingresos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger bg-danger-subtle rounded-5" href="#"> <i class="bi bi-dash"></i> Egresos</a>
+                    </li>
+                </ul>
                 <div class="tile-body">
                     <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
                         <table class="table table-sm table-hover table-bordered table-striped table-responsive" id="table" data-token="<?= csrf(false); ?>">
