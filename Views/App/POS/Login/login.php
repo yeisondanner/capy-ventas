@@ -68,7 +68,7 @@
                         <span class="text-primary align-items-center"><i class="bi bi-x-diamond-fill"></i> <a class="semibold-text" href="./resetpassword">¿Olvidaste tu contraseña?</a></span>
                     </p>
                 </div>
-                
+
 
                 <!-- <div class="mb-3">
                     <div class="utility">
@@ -95,9 +95,12 @@
                         <span class="text-primary"><i class="bi bi-person-fill-add"></i> <a class="semibold-text" href="./account">Crear Cuenta</a></span>
                     </p>
                 </div>
+                <div class="d-flex justify-content-center py-2">
+                    <span class="text-center badge bg-primary"><?= versionSystem() ?></span>
+                </div>
             </form>
 
-            
+
 
 
             <!-- Formulario de recuperar contraseña -->
@@ -119,6 +122,7 @@
                 <div class="mb-3 mt-3">
                     <p class="semibold-text mb-0"><a href="#" data-toggle="flip"><i class="bi bi-chevron-left me-1"></i> Ir al login</a></p>
                 </div>
+
             </form>
 
         </div>

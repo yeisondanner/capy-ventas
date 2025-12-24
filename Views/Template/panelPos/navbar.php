@@ -252,7 +252,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         <div class="card border rounded-4 flex-fill">
                             <div class="card-header bg-transparent border-bottom pt-3 pb-2 d-flex justify-content-between align-items-center">
                                 <h6 id="quick_access_title_list_movements" class="fw-bold mb-0">Últimos Movimientos</h6>
-                                <a href="#" class="text-decoration-none small fw-bold">Ver todos</a>
+                                <a href="<?= base_url() ?>/pos/boxhistory" class="text-decoration-none small fw-bold">Ver todos</a>
                             </div>
                             <div id="quick_access_card_list_movements" class="list-group list-group-flush rounded-bottom-4">
                                 <div class="list-group-item px-3 py-3 border-bottom-0">
