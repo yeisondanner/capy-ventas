@@ -1216,7 +1216,7 @@
             <article class="pricing-card recommended">
               <span class="plan-badge">Popular</span>
               <h3 class="plan-name">Pro</h3>
-              <p class="plan-price">S/. 50<span>/mes</span></p>
+              <p class="plan-price">S/. 70<span>/mes</span></p>
               <p class="plan-description">Prueba Capy Ventas en tu negocio con el plan Pro. </p>
               <div class="plan-cta">
                 <a
