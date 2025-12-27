@@ -155,7 +155,7 @@ headerPos($data); ?>
                                     </div>
                                 </div>
                                 <!-- Total final luego del descuento -->
-                                <div class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos border px-2 py-1 bg-light">
+                                <div class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos border border-2 border-success px-2 py-1 bg-dark bg-opacity-10 rounded-2">
                                     <span>Total a pagar</span>
                                     <span id="lblTotal">S/ <?= number_format($basketSubtotal, 2) ?></span>
                                 </div>
@@ -163,12 +163,18 @@ headerPos($data); ?>
                                 <div class="row g-2 align-items-end">
                                     <div class="col-12 col-sm-6">
                                         <label class="form-label form-label-sm mb-1 small">Fecha de venta</label>
-                                        <input type="date" id="fechaVenta" class="form-control">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                            <input type="date" id="fechaVenta" class="form-control">
+                                        </div>
                                     </div>
                                     <div class="col-12 col-sm-6">
                                         <label class="form-label form-label-sm mb-1 small">Medio de pago</label>
-                                        <select class="form-select" id="paymentMethod">
-                                        </select>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-cash-stack"></i></span>
+                                            <select class="form-select" id="paymentMethod">
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label form-label-sm mb-1 small">Cliente</label>
