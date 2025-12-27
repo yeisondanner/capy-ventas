@@ -72,7 +72,9 @@ class Login extends Controllers
 				"email" => "",
 				"document_number" => "",
 				"logo" => "",
-				"openBox" => "No"
+				"openBox" => "No",
+				"taxname" => "--",
+				"tax" => 0.0
 			);
 		}
 		//creamos las variables de session para el usuario

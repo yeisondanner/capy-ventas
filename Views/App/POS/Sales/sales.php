@@ -1,4 +1,5 @@
-<?= headerPos($data) ?>
+<?php
+headerPos($data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
@@ -144,13 +145,20 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="col-12 mb-2">
+                                    <label for="" class="form-label form-label-sm mb-1 small">Impuesto</label>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text"><?= $data['taxname'] ?></span>
+                                        <input type="number" class="form-control text-end " disabled id="tax" min="0" step="0.10"
+                                            placeholder="<?= $data['tax'] ?>" value="<?= $data['tax'] ?>">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
                                 <!-- Total final luego del descuento -->
-                                <div class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos">
+                                <div class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos border px-2 py-1 bg-light">
                                     <span>Total a pagar</span>
                                     <span id="lblTotal">S/ <?= number_format($basketSubtotal, 2) ?></span>
                                 </div>
-
                                 <!-- Datos básicos de la venta -->
                                 <div class="row g-2 align-items-end">
                                     <div class="col-12 col-sm-6">
@@ -168,15 +176,6 @@
                                             <span class="input-group-text"><i class="bi bi-person"></i></span>
                                             <select class="form-select" id="customerSelect">
                                             </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <label for="" class="form-label form-label-sm mb-1 small">Impuesto</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">IGV</span>
-                                            <input type="number" class="form-control" id="igv" min="0" step="0.10"
-                                                placeholder="0.00">
-                                            <span class="input-group-text">%</span>
                                         </div>
                                     </div>
                                 </div>

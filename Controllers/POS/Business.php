@@ -381,7 +381,7 @@ class Business extends Controllers
         $responseUpdate = $this->model->updateBusiness($data);
         if ($responseUpdate) {
             $dataTypeBusiness = $this->model->selectBusinessTypeById($typebusinessId);
-            //se crea el array para la variable de session
+            //se crea el array para la variable de session para mantener actualizado el array del negocio
             $bussiness = array(
                 "idBusiness" => $idBusiness,
                 "business" => $name,
@@ -392,7 +392,9 @@ class Business extends Controllers
                 "email" => $email,
                 "document_number" => $documentNumber,
                 "logo" => $logoname,
-                "openBox" => $openBoxSwitch
+                "openBox" => $openBoxSwitch,
+                "taxname" => $taxName,
+                "tax" => $tax
             );
             //actualizamos la sesion
             $_SESSION[$this->nameVarBusiness] = $bussiness;

@@ -54,6 +54,8 @@ class Sales extends Controllers
             'page_container'   => 'Sales',
             'page_view'        => 'sales',
             'page_js_css'      => 'sales',
+            'taxname'          => $_SESSION[$this->nameVarBusiness]['taxname'] ?? '',
+            'tax'         => $_SESSION[$this->nameVarBusiness]['tax'] ?? '',
         ];
 
         $this->views->getView($this, 'sales', $data, 'POS');
@@ -526,7 +528,9 @@ class Sales extends Controllers
         $discountAmount    = (float) strClean($_POST['discountAmount'] ?? 0);
         $discountPercent   = (float) strClean($_POST['discountPercentage'] ?? 0);
         $paidAmount        = max(0, (float) strClean($_POST['paidAmount'] ?? 0));
-
+        //obtenemos los datos de impuesto del negocio
+        $taxname = $_SESSION[$this->nameVarBusiness]['taxname'];
+        $tax = $_SESSION[$this->nameVarBusiness]['tax'];
         if ($paymentMethodId <= 0) {
             $this->responseError('Selecciona un método de pago válido.');
         }
@@ -538,7 +542,10 @@ class Sales extends Controllers
         $discountPercent = $subtotal > 0
             ? min(round(($discountAmount / $subtotal) * 100, 2), 100)
             : 0;
-        $totalAmount     = max($subtotal - $discountAmount, 0);
+
+        $totalAmountNoTax     = max($subtotal - $discountAmount, 0);
+        $totalAmountTax       = $totalAmountNoTax * ($tax / 100);
+        $totalAmount          = $totalAmountNoTax + $totalAmountTax;
 
         $saleDateTime = date('Y-m-d H:i:s');
         if ($saleDate !== '') {
@@ -615,6 +622,9 @@ class Sales extends Controllers
             'voucher_name'       => $voucherName !== '' ? $voucherName : null,
             'payment_method_id'  => $paymentMethodId,
             'business_id'        => $businessId,
+            'taxname'           => $taxname,
+            'tax'                => $tax,
+            'amounttax'          => $totalAmountTax,
             'user_app_id'        => $this->getUserId(),
         ]);
         //validamos si la caja esta abierta para registrar la venta

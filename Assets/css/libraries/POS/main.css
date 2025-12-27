@@ -3186,6 +3186,8 @@ textarea.form-control-lg {
   border: 2px solid var(--bs-border-color);
   border-top-left-radius: 1.25rem;
   border-bottom-left-radius: 1.25rem;
+  border-top-right-radius: 1.25rem;
+  border-bottom-right-radius: 1.25rem;
 }
 
 .input-group-lg > .form-control,

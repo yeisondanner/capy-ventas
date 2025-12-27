@@ -14,6 +14,7 @@ $widget_alert = $data['page_vars'][2];
         </ul>
     </div>
     <?php
+    dep($_SESSION);
     if (isset($_SESSION[$widget_alert])):
         $alert = $_SESSION[$widget_alert];
     ?>

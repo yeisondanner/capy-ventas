@@ -85,9 +85,8 @@
                                     <th>#</th>
                                     <th>Acciones</th>
                                     <th>Usuario</th>
-                                    <th>Valor</th>
-                                    <th>Medios de Pago</th>
-                                    <th>Nombre de Vendedor</th>
+                                    <th>Monto Inicial</th>
+                                    <th>Monto Final</th>
                                     <th>Fecha y Hora</th>
                                 </tr>
                             </thead>

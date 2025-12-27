@@ -26,6 +26,7 @@
   const inputDescuentoMonto = document.getElementById("descuentoMonto");
   const inputDescuentoPorc = document.getElementById("descuentoPorc");
   const lblSubtotal = document.getElementById("lblSubtotal");
+  const tax = document.getElementById("tax");
   const lblTotal = document.getElementById("lblTotal");
   const selectCustomer = document.getElementById("customerSelect");
   const inputFechaVenta = document.getElementById("fechaVenta");
@@ -253,7 +254,10 @@
       inputDescuentoPorc.value = porcentaje.toFixed(2);
 
       // Total nunca menor que cero
-      const total = Math.max(subtotal - monto, 0);
+      const subTotal = Math.max(subtotal - monto, 0);
+      //calculamos el inpuesto
+      const Tax = subTotal * (parseFloat(tax.value) / 100);
+      const total = subTotal + Tax;
       lblTotal.textContent = "S/ " + total.toFixed(2);
     };
 
@@ -279,7 +283,11 @@
       inputDescuentoPorc.value = porcentaje.toFixed(2);
       inputDescuentoMonto.value = monto.toFixed(2);
 
-      const total = Math.max(subtotal - monto, 0);
+      const subTotal = Math.max(subtotal - monto, 0);
+      //calculamos el inpuesto
+      const Tax = subTotal * (parseFloat(tax.value) / 100);
+      const total = subTotal + Tax;
+
       lblTotal.textContent = "S/ " + total.toFixed(2);
     };
 

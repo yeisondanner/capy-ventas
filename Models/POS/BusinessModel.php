@@ -95,7 +95,9 @@ class BusinessModel extends Mysql
                 b.email,
                 b.document_number,
                 b.logo,
-                b.openBox
+                b.openBox,
+                b.taxname,
+                b.tax
             FROM business AS b
             INNER JOIN business_type AS bt ON bt.idBusinessType = b.typebusiness_id
             WHERE b.idBusiness = ? AND b.userapp_id = ?
@@ -127,7 +129,9 @@ class BusinessModel extends Mysql
                                 b.email,
                                 b.document_number,
                                 b.logo,
-                                b.openBox
+                                b.openBox,
+                                b.taxname,
+                                b.tax
                 FROM
                     user_app AS ua
                     INNER JOIN employee AS e ON e.userapp_id = ua.idUserApp
