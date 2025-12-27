@@ -3184,8 +3184,10 @@ textarea.form-control-lg {
   white-space: nowrap;
   background-color: var(--bs-tertiary-bg);
   border: 2px solid var(--bs-border-color);
-  border-top-left-radius: 1rem;
-  border-bottom-left-radius: 1rem;
+  border-top-left-radius: 1.25rem;
+  border-bottom-left-radius: 1.25rem;
+  border-top-right-radius: 1.25rem;
+  border-bottom-right-radius: 1.25rem;
 }
 
 .input-group-lg > .form-control,
@@ -3194,7 +3196,7 @@ textarea.form-control-lg {
 .input-group-lg > .btn {
   padding: 0.5rem 1rem;
   font-size: 1.09375rem;
-  border-radius: 4px;
+  border-radius: 1.25rem;
 }
 
 .input-group-sm > .form-control,

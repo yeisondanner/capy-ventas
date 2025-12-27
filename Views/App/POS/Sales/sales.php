@@ -1,4 +1,5 @@
-<?= headerPos($data) ?>
+<?php
+headerPos($data); ?>
 <main class="app-content">
     <div class="app-title">
         <div>
@@ -10,7 +11,7 @@
             <li class="breadcrumb-item"><a href="<?= base_url() ?>/pos/sales">Ventas</a></li>
         </ul>
     </div>
-  
+
     <div class="row g-2 p-0 pos-steps-row">
         <!-- PASO 1: Elegir producto -->
         <div class="col-12 col-lg-8 step-mobile" id="step1">
@@ -28,7 +29,8 @@
                             <label class="form-label small mb-1">Buscar producto</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" id="productSearchInput" placeholder="Escribe nombre, proveedor o categoría...">
+                                <input type="text" class="form-control" id="productSearchInput"
+                                    placeholder="Escribe nombre, proveedor o categoría...">
                             </div>
                         </div>
 
@@ -84,7 +86,8 @@
 
                                 <!-- Navegación móvil compacta entre paso 1 y 3 -->
                                 <div class="d-flex justify-content-between gap-2 d-lg-none mt-2">
-                                    <button id="btnBackToStep1" class="btn btn-outline-secondary w-50 btn-nav btn-nav-small">
+                                    <button id="btnBackToStep1"
+                                        class="btn btn-outline-secondary w-50 btn-nav btn-nav-small">
                                         <i class="bi bi-arrow-left-circle me-1"></i> Productos
                                     </button>
                                     <button id="btnToStep3" class="btn btn-success w-50 btn-nav btn-nav-small">
@@ -131,58 +134,63 @@
                                         <!-- Descuento en monto fijo -->
                                         <div class="input-group input-group-sm descuento-group">
                                             <span class="input-group-text">S/</span>
-                                            <input
-                                                type="number"
-                                                class="form-control text-end"
-                                                id="descuentoMonto"
-                                                value="0"
-                                                min="0"
-                                                step="0.10"
-                                                placeholder="Monto">
+                                            <input type="number" class="form-control text-end" id="descuentoMonto"
+                                                value="0" min="0" step="0.10" placeholder="Monto">
                                         </div>
                                         <!-- Descuento en porcentaje -->
                                         <div class="input-group input-group-sm descuento-group">
-                                            <input
-                                                type="number"
-                                                class="form-control text-end"
-                                                id="descuentoPorc"
-                                                value="0"
-                                                min="0"
-                                                step="0.10"
-                                                placeholder="%">
+                                            <input type="number" class="form-control text-end" id="descuentoPorc"
+                                                value="0" min="0" step="0.10" placeholder="%">
                                             <span class="input-group-text">%</span>
                                         </div>
                                     </div>
                                 </div>
-
+                                <div class="col-12 mb-2">
+                                    <label for="" class="form-label form-label-sm mb-1 small">Impuesto</label>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text"><?= $data['taxname'] ?></span>
+                                        <input type="number" class="form-control text-end " disabled id="tax" min="0" step="0.10"
+                                            placeholder="<?= $data['tax'] ?>" value="<?= $data['tax'] ?>">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
                                 <!-- Total final luego del descuento -->
-                                <div class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos">
+                                <div class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos border border-2 border-success px-2 py-1 bg-dark bg-opacity-10 rounded-2">
                                     <span>Total a pagar</span>
                                     <span id="lblTotal">S/ <?= number_format($basketSubtotal, 2) ?></span>
                                 </div>
-
                                 <!-- Datos básicos de la venta -->
                                 <div class="row g-2 align-items-end">
                                     <div class="col-12 col-sm-6">
                                         <label class="form-label form-label-sm mb-1 small">Fecha de venta</label>
-                                        <input type="date" id="fechaVenta" class="form-control">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                            <input type="date" id="fechaVenta" class="form-control">
+                                        </div>
                                     </div>
                                     <div class="col-12 col-sm-6">
                                         <label class="form-label form-label-sm mb-1 small">Medio de pago</label>
-                                        <select class="form-select" id="paymentMethod">
-                                        </select>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-cash-stack"></i></span>
+                                            <select class="form-select" id="paymentMethod">
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="col-12">
                                         <label class="form-label form-label-sm mb-1 small">Cliente</label>
-                                        <select class="form-select" id="customerSelect">
-                                        </select>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                            <select class="form-select" id="customerSelect">
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Navegación móvil debajo del formulario de pago -->
                             <div class="mt-3 d-lg-none d-flex justify-content-between gap-2">
-                                <button id="btnBackToStep2" class="btn btn-outline-secondary w-50 btn-nav btn-nav-small">
+                                <button id="btnBackToStep2"
+                                    class="btn btn-outline-secondary w-50 btn-nav btn-nav-small">
                                     <i class="bi bi-arrow-left-circle me-1"></i> Atras: Canasta
                                 </button>
                                 <!-- Botón de cobrar en móvil -->
@@ -232,7 +240,8 @@
                     <label class="form-label small">Con cuánto está pagando</label>
                     <div class="input-group">
                         <span class="input-group-text">S/</span>
-                        <input type="number" class="form-control text-end" id="montoPaga" min="0" step="0.10" placeholder="0.00">
+                        <input type="number" class="form-control text-end" id="montoPaga" min="0" step="0.10"
+                            placeholder="0.00">
                     </div>
                 </div>
 
@@ -278,7 +287,8 @@
                 <div class="mb-3">
                     <label class="form-label form-label-sm small">Nombre de la venta (opcional)</label>
                     <div class="input-group input-group-sm">
-                        <input type="text" class="form-control" id="nombreVenta" placeholder="Ej. Venta Samuel - Audífonos">
+                        <input type="text" class="form-control" id="nombreVenta"
+                            placeholder="Ej. Venta Samuel - Audífonos">
                         <button class="btn btn-primary" type="button" id="btnGuardarNombreVenta">
                             <i class="bi bi-save me-1"></i> Guardar
                         </button>

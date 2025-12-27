@@ -233,8 +233,11 @@ class SalesModel extends Mysql
                 voucher_name,
                 payment_method_id,
                 business_id,
-                user_app_id
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);
+                user_app_id,
+                tax_name,
+                tax_percentage,
+                tax_amount
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?);
         SQL;
 
         $values = [
@@ -252,6 +255,9 @@ class SalesModel extends Mysql
             $data['payment_method_id'] ?? 0,
             $data['business_id'] ?? 0,
             $data['user_app_id'] ?? 0,
+            $data['taxname'] ?? '--',
+            $data['tax'] ?? 0,
+            $data['amounttax'] ?? 0,
         ];
 
         return (int) $this->insert($sql, $values);
