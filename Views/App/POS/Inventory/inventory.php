@@ -228,7 +228,6 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Columna Derecha: Métricas, Galería y Descripción -->
                     <div class="col-md-7">
                         <!-- Métricas -->
@@ -252,7 +251,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- Galería Visual con Proporción 1:1 (Cuadrada) -->
                         <div class="bg-white p-3 border rounded shadow-sm mb-3">
                             <label class="text-muted fw-bold d-block text-uppercase small mb-2" style="font-size: 0.7rem;">Galería de Fotos</label>
@@ -260,17 +258,14 @@
                                 --
                             </div>
                         </div>
-
                         <!-- Descripción -->
                         <div class="bg-white p-3 border rounded shadow-sm">
                             <label class="text-muted fw-bold d-block text-uppercase small mb-1 border-bottom pb-1" style="font-size: 0.7rem;">Descripción</label>
                             <p class="mb-0 small text-secondary" id="reportProductDescription">Sin descripción registrada.</p>
                         </div>
                     </div>
-
                 </div>
             </div>
-
             <div class="modal-footer bg-white border-top-0">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
