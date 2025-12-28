@@ -1,4 +1,9 @@
 export default class ReadBox {
+  //encapsulamos los atributos de busqueda
+  #filterType = document.getElementById("filter-type") ?? null;
+  #minDate = document.getElementById("min-date") ?? null;
+  #maxDate = document.getElementById("max-date") ?? null;
+  #filterDate = document.getElementById("filter-date") ?? null;
   constructor() {
     this.table = $("#table");
   }
@@ -6,9 +11,21 @@ export default class ReadBox {
    * Metodo que se encarga de cargar la tabla
    */
   loadTable() {
+    //obtenemos los valores de los filtros
+    const filterType = this.#filterType.value;
+    const minDate = this.#minDate.value;
+    const maxDate = this.#maxDate.value;
+    const filterDate = this.#filterDate.value;
+    //cargamos la tabla
     this.table.DataTable({
       ajax: {
         url: `${base_url}/pos/Boxhistory/loadBoxHistory`,
+        data: function (d) {
+          d.filterType = filterType;
+          d.minDate = minDate;
+          d.maxDate = maxDate;
+          d.filterDate = filterDate;
+        },
         dataSrc: "",
       },
       columns: [
@@ -48,9 +65,11 @@ export default class ReadBox {
           render: (data, type, row) => {
             //validamos si la diferencia es positiva o negativa le agregamos un icono
             if (row.difference > 0) {
-              return `<span class="text-success"><i class="bi bi-arrow-up"></i> ${getcurrency} ${data}</span>`;
-            } else {
-              return `<span class="text-danger"><i class="bi bi-arrow-down"></i> ${getcurrency} ${data}</span>`;
+              return `<span class="text-success" title="${row.notes}"><i class="bi bi-arrow-up"></i> ${getcurrency} ${data}</span>`;
+            } else if (row.difference < 0) {
+              return `<span class="text-danger" title="${row.notes}"><i class="bi bi-arrow-down"></i> ${getcurrency} ${data}</span>`;
+            } else if (row.difference == 0) {
+              return `<span class="text-primary" title="${row.notes}"><i class="bi bi-arrow-left-right"></i> ${getcurrency} ${data}</span>`;
             }
           },
         },

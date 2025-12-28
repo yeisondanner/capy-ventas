@@ -39,6 +39,7 @@
                                     <option value="weekly">Semanal</option>
                                     <option value="monthly">Mensual</option>
                                     <option value="yearly">Anual</option>
+                                    <option value="all">Todos</option>
                                     <option value="custom">Rango Personalizado</option>
                                 </select>
                             </div>
@@ -85,8 +86,8 @@
                                     <th>#</th>
                                     <th>Acciones</th>
                                     <th>Usuario</th>
-                                    <th>Monto Inicial</th>
-                                    <th>Monto Final</th>
+                                    <th>Se abrió</th>
+                                    <th>Se cerró</th>
                                     <th>Diferencia</th>
                                     <th>Fecha y Hora</th>
                                 </tr>

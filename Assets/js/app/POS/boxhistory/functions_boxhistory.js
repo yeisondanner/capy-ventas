@@ -11,6 +11,7 @@ import ReadBox from "./read_box.js";
   const minDate = document.getElementById("min-date") ?? null;
   const maxDate = document.getElementById("max-date") ?? null;
   const filterDate = document.getElementById("filter-date") ?? null;
+  const resetBtn = document.getElementById("reset-btn") ?? null;
   //creamos un objeto de la clase ReadBox
   const readBox = new ReadBox();
   /**
@@ -20,6 +21,8 @@ import ReadBox from "./read_box.js";
     readBox.loadTable();
     //inicializamos la funcion toggleFilters
     toggleFilters();
+    //inicializamos la funcion resetFilters
+    resetFiltersBtn();
   });
   /**
    * Funcion que se encarga de mostras/ocultar los filtros de acuerdo al tipo de filtro seleccionado
@@ -91,8 +94,72 @@ import ReadBox from "./read_box.js";
             filterDate.step = "1";
             filterDate.value = setDefaultDateValue("yearly");
             break;
+          case "all":
+            dateContainer.style.display = "none";
+            dateRangeContainer.style.display = "none";
+            dateToContainer.style.display = "none";
+            break;
         }
       }
     });
+  }
+  /**
+   * MEtodo que se encarga de detectar el evento clic al boton de resetear los filtros
+   */
+  function resetFiltersBtn() {
+    resetBtn.addEventListener("click", resetFilters);
+  }
+  /**
+   * Metodo que se encarga de limpiar los filtros
+   */
+  function resetFilters() {
+    minDate.value = "";
+    maxDate.value = "";
+    filterType.value = "daily";
+    filterDate.type = "date";
+    filterDate.min = null;
+    filterDate.max = null;
+    filterDate.step = null;
+    filterDate.value = "daily";
+    dateLabel.textContent = "Fecha:";
+    dateRangeContainer.style.display = "none";
+    dateToContainer.style.display = "none";
+    dateContainer.style.display = "block";
+    readBox.loadTable();
+  }
+  // Función para inicializar el campo de fecha con valores predeterminados según el tipo de filtro
+  function setDefaultDateValue(filterType) {
+    const now = new Date();
+    // Para evitar problemas de zona horaria, usamos la fecha local en lugar de ISO
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    const todayStr = `${year}-${month}-${day}`;
+
+    switch (filterType) {
+      case "daily":
+        return todayStr;
+      case "weekly":
+        const weekNum = getWeekNumber(now);
+        const weekYear = now.getFullYear();
+        return `${weekYear}-W${weekNum.toString().padStart(2, "0")}`;
+      case "monthly":
+        return (
+          now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0")
+        );
+      case "yearly":
+        return now.getFullYear().toString();
+      default:
+        return todayStr;
+    }
+  }
+  // Función para obtener el número de semana
+  function getWeekNumber(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    var yearStart = new Date(Date.UTC(d.getFullYear(), 0, 1));
+    var weekNo = Math.ceil(
+      ((d - yearStart) / 86400000 + yearStart.getUTCDay() + 1) / 7
+    );
+    return weekNo;
   }
 })();

@@ -22,7 +22,8 @@ class BoxhistoryModel extends Mysql
                     bcc.notes,
                     bcc.`type`,
                     CONCAT(p.`names`,' ',p.lastname) AS 'fullname',
-                    bxs.`status`
+                    bxs.`status`,
+                    bcc.notes
                 FROM
                     box AS bx
                     INNER JOIN box_sessions AS bxs ON bxs.box_id = bx.idBox
