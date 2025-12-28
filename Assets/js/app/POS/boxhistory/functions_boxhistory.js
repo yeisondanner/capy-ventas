@@ -1,3 +1,4 @@
+import ReadBox from "./read_box.js";
 (() => {
   "use strict";
   //obtenemos los elementos del DOM
@@ -10,11 +11,13 @@
   const minDate = document.getElementById("min-date") ?? null;
   const maxDate = document.getElementById("max-date") ?? null;
   const filterDate = document.getElementById("filter-date") ?? null;
-
+  //creamos un objeto de la clase ReadBox
+  const readBox = new ReadBox();
   /**
    * Inicializamos todos los eventos despues de cargard todo el DOM
    */
   document.addEventListener("DOMContentLoaded", () => {
+    readBox.loadTable();
     //inicializamos la funcion toggleFilters
     toggleFilters();
   });

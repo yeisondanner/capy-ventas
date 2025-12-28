@@ -87,6 +87,7 @@
                                     <th>Usuario</th>
                                     <th>Monto Inicial</th>
                                     <th>Monto Final</th>
+                                    <th>Diferencia</th>
                                     <th>Fecha y Hora</th>
                                 </tr>
                             </thead>
