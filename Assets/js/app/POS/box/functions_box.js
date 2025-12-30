@@ -256,6 +256,20 @@ export class Box {
         message: "Ingrese un motivo o descripción.",
       });
 
+    if (!customer)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Faltan datos",
+        message: "Seleccione el cliente.",
+      });
+
+    if (!payment_method)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Faltan datos",
+        message: "Seleccione el metodo de pago.",
+      });
+
     const params = {
       amount: amount,
       description: description,
@@ -266,7 +280,7 @@ export class Box {
 
     // Llamada al Backend
     const response = await this.apiBox.post("setBoxMovement", params);
-
+  
     if (response.status) {
       this.#modalMovementBox.modal("hide");
       this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
@@ -521,18 +535,14 @@ export class Box {
       '<option value="" disabled selected>Seleccione una caja...</option>';
     listaCajas.forEach((box, index) => {
       const num = index + 1;
-      let clase = !box.session
-        ? ""
-        : box.session === "Abierta"
+      let clase = box.session
         ? "text-primary fw-bold"
-        : "text-danger";
+        : "";
       let disabled = !box.session ? "" : "disabled";
       let extra =
-        box.session === "Abierta"
+        box.session
           ? "(En uso)"
-          : !box.session
-          ? ""
-          : "(No disponible)";
+          : "";
       html += `<option class="${clase}" ${disabled} value="${box.idBox}">Caja ${num} - ${box.name} ${extra}</option>`;
     });
     this.#selectBox.html(html);
@@ -801,25 +811,28 @@ export class Box {
     });
   };
 
-  #renderQuickSale = ({customers, payment_method}) => {
+  #renderQuickSale = ({ customers, payment_method }) => {
     let html_customers = "<option disabled>Seleccionar</option>";
-    customers.forEach(element => {
-      html_customers += `<option ${element.document_number === "Sin cliente" ? "selected" : ""} value="${element.idCustomer}">${element.fullname}</option>`;
+    customers.forEach((element) => {
+      html_customers += `<option ${
+        element.document_number === "Sin cliente" ? "selected" : ""
+      } value="${element.idCustomer}">${element.fullname}</option>`;
     });
 
     this.#selectMovementCustomer.html(html_customers);
 
     let html_payment_method = "<option disabled>Seleccionar</option>";
-    payment_method.forEach(element => {
-      html_payment_method += `<option ${element.name === "Efectivo" ? "selected" : ""} value="${element.idPaymentMethod}">${element.name}</option>`;
+    payment_method.forEach((element) => {
+      html_payment_method += `<option ${
+        element.name === "Efectivo" ? "selected" : ""
+      } value="${element.idPaymentMethod}">${element.name}</option>`;
     });
 
     this.#selectMovementPaymentMethod.html(html_payment_method);
 
     console.log(customers);
     console.log(payment_method);
-    
-  }
+  };
 
   #actualizarUIArqueo() {
     this.#lblArqueoTotalContado.html(

@@ -49,7 +49,6 @@ class Box extends Controllers
             $boxesActivas[$key]["session"] = false;
         }
 
-
         // * Consultamos la disponibilidad de las cajas
         foreach ($boxesActivas as $key => $value) {
             $usingBox = $this->model->getUsingBox($value["idBox"], "Abierta");
@@ -128,7 +127,7 @@ class Box extends Controllers
         }
 
         // * Registramos en movimientos para mejar el historial por caja
-        $boxMovements = $this->model->insertBoxMovements($boxSessions, "Inicio", "Apertura de caja", $cash_opening_amount, "Efectivo");
+        $boxMovements = $this->model->insertBoxMovement($boxSessions, "Inicio", "Apertura de caja", $cash_opening_amount, "Efectivo");
         if ($boxMovements > 0) {
             toJson([
                 'title'   => 'Apertura de Caja',
@@ -237,21 +236,21 @@ class Box extends Controllers
         }
 
         // ? Calculamos la diferencia
-        $difference = $total_efectivo_sistema - $total_efectivo_contado;
+        $difference = $total_efectivo_contado - $total_efectivo_sistema;
 
         // ? Si no hay un mensaje, lo agregamos por default
         if (is_null($notes) || empty($notes)) {
             if ($difference == 0) {
                 $notes = "Cuadre perfecto";
             } else if ($difference < 0) {
-                $notes = "Monto sobrante a favor";
-            } else {
                 $notes = "Descuadre detectado";
+            } else {
+                $notes = "Monto sobrante a favor";
             }
         }
 
         // ? Sacamos el valor absoluto
-        $difference = abs($difference);
+        // $difference = abs($difference);
 
         // * Registramos el arqueo o cierre de caja
         $insertArqueoBox = $this->model->insertBoxCashCount($boxSessions["idBoxSessions"], $type, $total_efectivo_sistema, $total_efectivo_contado, $difference, $notes);
@@ -431,11 +430,17 @@ class Box extends Controllers
             $this->responseError("Seleccione un metodo de pago valido.");
         }
 
+        // * Consultamos la fecha y hora actual
+        $fecha_actual = date('Y-m-d H:i:s');
+
         // * Registramos los datos del ingreso en el header
-        // TODO: FALTA COMPLETAR
+        $voucher = $this->model->insertVoucherHeader("Sin cliente", "Sin cliente", $_SESSION[$this->nameVarBusiness]["business"], $_SESSION[$this->nameVarBusiness]["document_number"], $_SESSION[$this->nameVarBusiness]["direction"], $fecha_actual, $amount, $description, $payment_method, $businessId, $userId);
+        if(!$voucher){
+            $this->responseError('Error al registrar la venta de ' . $description . '.');
+        }
         
         // * Registramos el movimiento
-        $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, "Efectivo");
+        $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, "Efectivo", "voucher_header", $voucher);
         if (!$movement_box) {
             $this->responseError('Error al registrar el ' . $type_movement . ' de caja.');
         }
