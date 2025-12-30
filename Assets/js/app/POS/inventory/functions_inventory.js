@@ -925,6 +925,7 @@
         { targets: 1, className: "text-center" },
       ],
       responsive: true,
+      processing: true,
       destroy: true,
       colReorder: true,
       stateSave: true,

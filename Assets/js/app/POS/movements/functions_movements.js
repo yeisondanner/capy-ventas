@@ -454,7 +454,6 @@
           className: "text-center",
         },
       ],
-
       responsive: true,
       processing: true,
       colReorder: true,
