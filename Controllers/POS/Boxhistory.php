@@ -53,8 +53,58 @@ class Boxhistory extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->responseError('Método de solicitud no permitido.');
         }
+        //Obtenemos el id del negocio activo
         $business_id = $this->getBusinessId();
-        $request = $this->model->select_box_history($business_id);
+        //obtenemos los filtros
+        $filterType = $_GET['filterType'] ?? 'daily';
+        switch ($filterType) {
+            case 'daily':
+                $minDate = $_GET['filterDate'] ?? date('Y-m-d');
+                $maxDate = $_GET['filterDate'] ?? date('Y-m-d');
+                break;
+            case 'weekly':
+                if (isset($_GET['filterDate']) && !empty($_GET['filterDate'])) {
+                    // El formato esperado es YYYY-Www (ej. 2025-W01)
+                    $parts = explode("-W", $_GET['filterDate']);
+                    $year = (int)$parts[0];
+                    $weekNumber = (int)$parts[1];
+
+                    $dto = new DateTime();
+
+                    // setISODate establece la fecha basada en: Año, Semana, Día de la semana (1 = Lunes)
+                    $dto->setISODate($year, $weekNumber, 1);
+                    $minDate = $dto->format('Y-m-d');
+
+                    // Sumamos 6 días para llegar al domingo
+                    $dto->modify('+6 days');
+                    $maxDate = $dto->format('Y-m-d');
+                } else {
+                    $minDate = date('Y-m-d', strtotime('monday this week'));
+                    $maxDate = date('Y-m-d', strtotime('sunday this week'));
+                }
+                break;
+            case 'monthly':
+                $minDate = isset($_GET['filterDate']) ? $_GET['filterDate'] . date("-01") : date('Y-m-d', strtotime('first day of this month'));
+                $maxDate = isset($_GET['filterDate']) ? $_GET['filterDate'] . date("-t") : date('Y-m-d', strtotime('last day of this month'));
+                break;
+            case 'yearly':
+                $minDate = isset($_GET['filterDate']) ? $_GET['filterDate'] . date("-01-01") : date("Y-m-d", strtotime("first day of january this year"));
+                $maxDate = isset($_GET['filterDate']) ? $_GET['filterDate'] . date("-12-31") : date("Y-m-d", strtotime("last day of december this year"));
+                break;
+            case 'custom':
+                $minDate = $_GET['minDate'] ?? date("Y-m-01");
+                $maxDate = $_GET['maxDate'] ?? date("Y-m-t");
+                break;
+            case 'all':
+                $minDate = null;
+                $maxDate = null;
+                break;
+            default:
+                $minDate = $_GET['filterDate'] ?? date('Y-m-d');
+                $maxDate = $_GET['filterDate'] ?? date('Y-m-d');
+                break;
+        }
+        $request = $this->model->select_box_history($business_id, $minDate, $maxDate);
         $cont = 1;
         foreach ($request as $key => $value) {
             $request[$key]['cont'] = $cont;

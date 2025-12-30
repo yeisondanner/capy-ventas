@@ -12,6 +12,7 @@ import ReadBox from "./read_box.js";
   const maxDate = document.getElementById("max-date") ?? null;
   const filterDate = document.getElementById("filter-date") ?? null;
   const resetBtn = document.getElementById("reset-btn") ?? null;
+  const filterBtn = document.getElementById("filter-btn") ?? null;
   //creamos un objeto de la clase ReadBox
   const readBox = new ReadBox();
   /**
@@ -23,6 +24,8 @@ import ReadBox from "./read_box.js";
     toggleFilters();
     //inicializamos la funcion resetFilters
     resetFiltersBtn();
+    //inicializamos la funcion inputEvents
+    inputAndBtnEvents();
   });
   /**
    * Funcion que se encarga de mostras/ocultar los filtros de acuerdo al tipo de filtro seleccionado
@@ -101,6 +104,8 @@ import ReadBox from "./read_box.js";
             break;
         }
       }
+      //ejecutamos la funcion loadTable
+      readBox.loadTable();
     });
   }
   /**
@@ -161,5 +166,20 @@ import ReadBox from "./read_box.js";
       ((d - yearStart) / 86400000 + yearStart.getUTCDay() + 1) / 7
     );
     return weekNo;
+  }
+  //Metodo que se encarga de de activarse de los eventos del input
+  function inputAndBtnEvents() {
+    filterDate.addEventListener("change", function () {
+      readBox.loadTable();
+    });
+    minDate.addEventListener("change", function () {
+      readBox.loadTable();
+    });
+    maxDate.addEventListener("change", function () {
+      readBox.loadTable();
+    });
+    filterBtn.addEventListener("click", function () {
+      readBox.loadTable();
+    });
   }
 })();

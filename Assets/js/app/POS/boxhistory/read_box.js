@@ -126,4 +126,81 @@ export default class ReadBox {
       drawCallBack: function () {},
     });
   }
+  // Función para calcular las fechas de inicio y fin según el tipo de filtro y el valor del campo
+  calculateDateRange(filterType, filterValue) {
+    let minDate, maxDate;
+
+    if (filterType === "custom") {
+      // Para rango personalizado, se usan los campos separados (esto se manejará fuera de esta función)
+      minDate = document.getElementById("min-date").value;
+      maxDate = document.getElementById("max-date").value;
+    } else {
+      // Para otros tipos de filtro, usar el campo de fecha único
+      switch (filterType) {
+        case "daily":
+          minDate = maxDate = filterValue || setDefaultDateValue("daily");
+          break;
+        case "weekly":
+          // Convertir el valor de semana a fechas (formato YYYY-WXX)
+          if (filterValue) {
+            const [year, week] = filterValue.split("-W");
+            const dates = getStartAndEndOfWeek(parseInt(year), parseInt(week));
+            minDate = dates.start;
+            maxDate = dates.end;
+          } else {
+            // Si no hay valor, usar semana actual
+            const today = new Date();
+            const weekNum = getWeekNumber(today);
+            const dates = getStartAndEndOfWeek(today.getFullYear(), weekNum);
+            minDate = dates.start;
+            maxDate = dates.end;
+          }
+          break;
+        case "monthly":
+          if (filterValue) {
+            // El formato es YYYY-MM
+            const [year, month] = filterValue.split("-");
+            const startDate = year + "-" + month + "-01";
+            // Calcular último día del mes
+            const endDate = new Date(year, month, 0).getDate();
+            minDate = startDate;
+            maxDate = year + "-" + month + "-" + endDate;
+          } else {
+            // Si no hay valor, usar mes actual
+            const today = new Date();
+            const startDate =
+              today.getFullYear() +
+              "-" +
+              String(today.getMonth() + 1).padStart(2, "0") +
+              "-01";
+            const endDate = new Date(
+              today.getFullYear(),
+              today.getMonth() + 1,
+              0
+            ).getDate();
+            minDate = startDate;
+            maxDate =
+              today.getFullYear() +
+              "-" +
+              String(today.getMonth() + 1).padStart(2, "0") +
+              "-" +
+              endDate;
+          }
+          break;
+        case "yearly":
+          if (filterValue) {
+            minDate = filterValue + "-01-01";
+            maxDate = filterValue + "-12-31";
+          } else {
+            // Si no hay valor, usar año actual
+            const year = new Date().getFullYear();
+            minDate = year + "-01-01";
+            maxDate = year + "-12-31";
+          }
+          break;
+      }
+    }
+
+    return { minDate, maxDate };
+  }
 }

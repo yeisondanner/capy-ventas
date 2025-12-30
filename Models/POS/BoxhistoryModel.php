@@ -1,12 +1,11 @@
 <?php
 class BoxhistoryModel extends Mysql
 {
-    private int $business_id;
     /**
      * metodo que trae los datos de la cajas cerradas de manera globarl del negocio
      * @return void
      */
-    public function select_box_history(int $business_id)
+    public function select_box_history(int $business_id, $minDate = null, $maxDate = null)
     {
         $sql = <<<SQL
                 SELECT
@@ -31,10 +30,14 @@ class BoxhistoryModel extends Mysql
                     INNER JOIN user_app AS ua ON ua.idUserApp = bxs.userapp_id
                     INNER JOIN people AS p ON p.idPeople = ua.people_id
                     WHERE bx.business_id=? AND bxs.`status`='Cerrada'
-                    ORDER BY bxs.closing_date DESC;
         SQL;
-        $this->business_id = $business_id;
-        $request = $this->select_all($sql, [$this->business_id]);
+        $arrValues = [$business_id];
+        if ($minDate != null && $maxDate != null) {
+            $sql .= " AND DATE(bxs.closing_date) BETWEEN ? AND ?";
+            array_push($arrValues, $minDate, $maxDate);
+        }
+        $sql .= "ORDER BY bxs.closing_date DESC;";
+        $request = $this->select_all($sql, $arrValues);
         return $request;
     }
 }
