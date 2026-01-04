@@ -73,7 +73,7 @@ $widget_alert = $data['page_vars'][2];
                 </div>
                 <div>
                     <h2 class="mb-1 fw-bold">Actualización Beta</h2>
-                    <p class="mb-0 opacity-90">Lanzada el 13 de Diciembre, 2025</p>
+                    <p class="mb-0 opacity-90">Lanzada el 03 de Enero, 2026</p>
                 </div>
             </div>
             <div class="text-end">
