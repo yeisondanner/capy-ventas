@@ -35,7 +35,7 @@ export default class ReadBox {
           className: "text-center",
           render: function (data, type, row) {
             return `<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-                        <button type="button" class="btn btn-sm btn-outline-info" data-id="${row.box_id}"><i class="bi bi-file-text"></i></button>
+                        <button type="button" title="Ver reporte" class="btn btn-sm btn-outline-info report-item" data-id="${row.idBoxSessions}"><i class="bi bi-file-text"></i></button>
                     </div>`;
           },
         },
@@ -114,6 +114,7 @@ export default class ReadBox {
         },
       ],
       responsive: true,
+      keyTable: true,
       processing: true,
       destroy: true,
       colReorder: true,

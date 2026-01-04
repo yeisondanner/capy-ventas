@@ -114,6 +114,61 @@ class Boxhistory extends Controllers
         toJson($request);
     }
     /**
+     * Obtiene los detalles de una sesión de caja específica vía POST.
+     * @return void
+     */
+    public function getBoxSession()
+    {
+        if (!$_POST) {
+            $this->responseError('Solicitud inválida.');
+        }
+
+        $idBoxSession = intval($_POST['idBoxSession'] ?? 0);
+
+        if ($idBoxSession <= 0) {
+            $this->responseError('Identificador de sesión no válido.');
+        }
+
+        $businessId = $this->getBusinessId();
+
+        $data = $this->model->getBoxSessionDetails($idBoxSession, $businessId);
+
+        if (empty($data)) {
+            $arrResponse = [
+                'status' => false,
+                'msg'    => 'No se encontraron datos para este cierre de caja.'
+            ];
+            toJson($arrResponse);
+            return;
+        }
+
+        // Formatear datos para la vista
+        $data['opening_date'] = dateFormat($data['opening_date']);
+        $data['closing_date'] = dateFormat($data['closing_date']);
+
+        // Formatear historial de arqueos
+        foreach ($data['counts_history'] as $key => $count) {
+            $data['counts_history'][$key]['date_time'] = dateFormat($count['date_time']);
+            $data['counts_history'][$key]['type'] = ucfirst($count['type']);
+        }
+
+        // Formatear historial de movimientos
+        foreach ($data['movements_history'] as $key => $movement) {
+            $data['movements_history'][$key]['created_at'] = dateFormat($movement['created_at']);
+            $data['movements_history'][$key]['type_movement'] = ucfirst($movement['type_movement']);
+        }
+
+        // Agregar logo URL
+        $data['logo_url'] = base_url() . '/Loadfile/iconbusiness?f=' . $data['logo'];
+
+        $arrResponse = [
+            'status' => true,
+            'data'   => $data
+        ];
+
+        toJson($arrResponse);
+    }
+    /**
      * Envía una respuesta de error estándar en formato JSON y finaliza la ejecución.
      *
      * @param string $message Mensaje descriptivo del error.

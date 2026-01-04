@@ -100,4 +100,146 @@
         </div>
     </div>
 </main>
+
+<!-- Modal Reporte Caja Cerrada -->
+<div class="modal fade" id="boxSessionModal" tabindex="-1" aria-labelledby="boxSessionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header bg-info">
+                <h5 class="modal-title" id="boxSessionModalLabel">Reporte de Cierre de Caja</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="voucherContainer" class="p-4 bg-white">
+
+                    <!-- ENCABEZADO -->
+                    <div class="text-center mb-4">
+                        <img src="" alt="" id="logo_business" class="img-fluid mb-2" style="max-height: 60px;">
+                        <h5 class="fw-bold text-uppercase mb-1" id="name_business">NOMBRE DEL NEGOCIO</h5>
+                        <div class="text-muted small" id="direction_business">Dirección del negocio</div>
+                        <div class="text-muted small">
+                            RUC / Doc: <span id="document_business" class="fw-semibold">00000000000</span>
+                        </div>
+                    </div>
+
+                    <!-- TARJETAS DE INFORMACION -->
+                    <div class="row g-3 mb-4">
+                        <!-- Usuario y Caja -->
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 h-100 bg-light">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-person-circle fs-4 text-primary me-2"></i>
+                                    <span class="fw-bold text-muted small text-uppercase">Responsable</span>
+                                </div>
+                                <h6 id="user_fullname" class="mb-0 fw-bold">Nombre Usuario</h6>
+                                <small id="box_name" class="text-muted">Caja 1</small>
+                            </div>
+                        </div>
+                        <!-- Fechas -->
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 h-100 bg-light">
+                                <div class="d-flex align-items-center mb-2">
+                                    <i class="bi bi-clock-history fs-4 text-info me-2"></i>
+                                    <span class="fw-bold text-muted small text-uppercase">Sesión</span>
+                                </div>
+                                <div class="d-flex justify-content-between small mb-1">
+                                    <span class="text-muted">Apertura:</span>
+                                    <span id="opening_date" class="fw-semibold">--/--/---- --:--</span>
+                                </div>
+                                <div class="d-flex justify-content-between small">
+                                    <span class="text-muted">Cierre:</span>
+                                    <span id="closing_date" class="fw-semibold">--/--/---- --:--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RESUMEN FINANCIERO -->
+                    <div class="card border-0 shadow-sm mb-4" style="background-color: #f8f9fa;">
+                        <div class="card-body">
+                            <h6 class="card-title fw-bold text-uppercase mb-3 border-bottom pb-2">
+                                <i class="bi bi-wallet2 me-2"></i>Resumen Financiero
+                            </h6>
+                            <div class="row text-center row-cols-3 g-2">
+                                <div class="col border-end">
+                                    <small class="text-muted d-block mb-1">Monto Inicial</small>
+                                    <span id="initial_amount" class="fw-bold fs-6 text-secondary">0.00</span>
+                                </div>
+                                <div class="col border-end">
+                                    <small class="text-muted d-block mb-1">Monto Contado</small>
+                                    <span id="counted_amount" class="fw-bold fs-6 text-dark">0.00</span>
+                                </div>
+                                <div class="col">
+                                    <small class="text-muted d-block mb-1">Diferencia</small>
+                                    <span id="difference_amount" class="fw-bold fs-6">0.00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NOTAS -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold small text-uppercase mb-2"><i class="bi bi-sticky me-1"></i>Notas de Cierre</h6>
+                        <div class="p-3 bg-light rounded fst-italic text-muted border-start border-4 border-info small" id="session_notes">
+                            Sin notas.
+                        </div>
+                    </div>
+
+                    <hr class="my-4 text-muted">
+
+                    <!-- GRAFICAS (New) -->
+                    <div class="row mb-4">
+                        <div class="col-12 mb-3">
+                            <h6 class="fw-bold text-uppercase text-center mb-3 text-muted small">Gráficas de Sesión</h6>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="border rounded p-2">
+                                <canvas id="financialChart" style="max-height: 200px;"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3" id="movementsChartContainer">
+                            <div class="border rounded p-2">
+                                <canvas id="movementsChart" style="max-height: 200px;"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 text-muted">
+
+                    <!-- HISTORIAL DE ARQUEOS (Timeline Style) -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold text-uppercase mb-3"><i class="bi bi-list-check me-2"></i>Historial de Arqueos</h6>
+                        <div id="counts_history_container" class="vstack gap-3">
+                            <!-- Contenido generado por JS -->
+                        </div>
+                    </div>
+
+                    <!-- MOVIMIENTOS DE CAJA -->
+                    <div id="movements_general_container" style="display:none;">
+                        <h6 class="fw-bold text-uppercase mb-3 mt-4"><i class="bi bi-arrow-left-right me-2"></i>Movimientos de Caja</h6>
+                        <div id="movements_history_container" class="vstack gap-2">
+                            <!-- Contenido generado por JS -->
+                        </div>
+                    </div>
+
+                    <!-- PIE -->
+                    <div class="mt-5 text-center small text-muted">
+                        <div>Reporte generado automáticamente el <?= date('d/m/Y H:i') ?></div>
+                        <div class="fst-italic">Sistema de Ventas</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" id="download-png"><i class="bi bi-card-image"></i> Exportar PNG</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="<?= media(); ?>/js/libraries/POS/plugins/chart.umd.min.js"></script>
 <?= footerPos($data) ?>
