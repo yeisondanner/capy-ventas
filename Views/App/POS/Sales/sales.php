@@ -13,6 +13,10 @@ headerPos($data); ?>
     </div>
 
     <div class="row g-2 p-0 pos-steps-row">
+        <div class="col-12">
+            <button class="btn btn-primary btn-nav" id="btnOpenModalMovement"> <i class="bi bi-rocket"></i> Venta
+                rápida</button>
+        </div>
         <!-- PASO 1: Elegir producto -->
         <div class="col-12 col-lg-8 step-mobile" id="step1">
             <div class="card shadow-sm border-0 pos-step-card h-100">
@@ -149,13 +153,14 @@ headerPos($data); ?>
                                     <label for="" class="form-label form-label-sm mb-1 small">Impuesto</label>
                                     <div class="input-group input-group-sm">
                                         <span class="input-group-text"><?= $data['taxname'] ?></span>
-                                        <input type="number" class="form-control text-end " disabled id="tax" min="0" step="0.10"
-                                            placeholder="<?= $data['tax'] ?>" value="<?= $data['tax'] ?>">
+                                        <input type="number" class="form-control text-end " disabled id="tax" min="0"
+                                            step="0.10" placeholder="<?= $data['tax'] ?>" value="<?= $data['tax'] ?>">
                                         <span class="input-group-text">%</span>
                                     </div>
                                 </div>
                                 <!-- Total final luego del descuento -->
-                                <div class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos border border-2 border-success px-2 py-1 bg-dark bg-opacity-10 rounded-2">
+                                <div
+                                    class="d-flex justify-content-between mb-3 fw-bold fs-5 totales-pos border border-2 border-success px-2 py-1 bg-dark bg-opacity-10 rounded-2">
                                     <span>Total a pagar</span>
                                     <span id="lblTotal">S/ <?= number_format($basketSubtotal, 2) ?></span>
                                 </div>

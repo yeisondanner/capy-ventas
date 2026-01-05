@@ -33,12 +33,12 @@ class Boxhistory extends Controllers
     {
         validate_permission_app(12, "r");
         $data = [
-            'page_id'          => 12,
-            'page_title'       => 'Historial de cajas',
+            'page_id' => 12,
+            'page_title' => 'Historial de cajas',
             'page_description' => 'Administra los clientes registrados en tu negocio.',
-            'page_container'   => 'Boxhistory',
-            'page_view'        => 'boxhistory',
-            'page_js_css'      => 'boxhistory',
+            'page_container' => 'Boxhistory',
+            'page_view' => 'boxhistory',
+            'page_js_css' => 'boxhistory',
         ];
         $this->views->getView($this, 'boxhistory', $data, 'POS');
     }
@@ -66,8 +66,8 @@ class Boxhistory extends Controllers
                 if (isset($_GET['filterDate']) && !empty($_GET['filterDate'])) {
                     // El formato esperado es YYYY-Www (ej. 2025-W01)
                     $parts = explode("-W", $_GET['filterDate']);
-                    $year = (int)$parts[0];
-                    $weekNumber = (int)$parts[1];
+                    $year = (int) $parts[0];
+                    $weekNumber = (int) $parts[1];
 
                     $dto = new DateTime();
 
@@ -119,6 +119,8 @@ class Boxhistory extends Controllers
      */
     public function getBoxSession()
     {
+        (!validate_permission_app(12, "r", false)['status']) ? toJson(validate_permission_app(12, "r", false)) : '';
+
         if (!$_POST) {
             $this->responseError('Solicitud inválida.');
         }
@@ -136,7 +138,7 @@ class Boxhistory extends Controllers
         if (empty($data)) {
             $arrResponse = [
                 'status' => false,
-                'msg'    => 'No se encontraron datos para este cierre de caja.'
+                'msg' => 'No se encontraron datos para este cierre de caja.'
             ];
             toJson($arrResponse);
             return;
@@ -163,7 +165,7 @@ class Boxhistory extends Controllers
 
         $arrResponse = [
             'status' => true,
-            'data'   => $data
+            'data' => $data
         ];
 
         toJson($arrResponse);
@@ -178,10 +180,10 @@ class Boxhistory extends Controllers
     private function responseError(string $message): void
     {
         $data = [
-            'title'  => 'Ocurrió un error',
+            'title' => 'Ocurrió un error',
             'message' => $message,
-            'type'   => 'error',
-            'icon'   => 'error',
+            'type' => 'error',
+            'icon' => 'error',
             'status' => false,
         ];
         $idBusiness = $this->getBusinessId();
