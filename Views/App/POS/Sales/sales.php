@@ -13,9 +13,10 @@ headerPos($data); ?>
     </div>
 
     <div class="row g-2 p-0 pos-steps-row">
-        <div class="col-12">
-            <button class="btn btn-primary btn-nav" id="btnOpenModalMovement"> <i class="bi bi-rocket"></i> Venta
-                rápida</button>
+        <div class="col-12 d-flex justify-content-end">
+            <button class="btn btn-primary btn-nav " id="btnOpenModalMovement">
+                <i class="bi bi-rocket"></i> Venta rápida/Gasto <i class="bi bi-cash-coin ms-1"></i>
+            </button>
         </div>
         <!-- PASO 1: Elegir producto -->
         <div class="col-12 col-lg-8 step-mobile" id="step1">
