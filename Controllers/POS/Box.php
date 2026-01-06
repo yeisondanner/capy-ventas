@@ -402,10 +402,10 @@ class Box extends Controllers
         // * Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
         $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
+        // * Validamos que el usuario haya aperturado una caja
+        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
         //validamos si es necesario abrir caja para registrar la venta
         if ($openBox === 'Si') {
-            // * Validamos que el usuario haya aperturado una caja
-            $boxSessions = $this->model->getBoxSessionsByUserId($userId);
             if ($boxSessions) {
                 // * Validamos si la caja pertenece al negocio
                 $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
@@ -438,7 +438,7 @@ class Box extends Controllers
             $this->responseError('Error al registrar la venta de ' . $description . '.');
         }
         //validamos si es necesario abrir caja para registrar la venta
-        if ($openBox === 'Si') {
+        if ($boxSessions) {
             // * Registramos el movimiento
             $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, "Efectivo", "voucher_header", $voucher);
             if (!$movement_box) {
