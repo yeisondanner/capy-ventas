@@ -14,10 +14,15 @@ headerPos($data); ?>
 
     <div class="row g-2 p-0 pos-steps-row">
         <div class="col-12 row justify-content-end p-0">
-            <div class="col-12 col-md-3 p-0">
-                <button class="btn btn-primary btn-nav w-100" id="btnOpenModalMovement">
-                    <i class="bi bi-rocket"></i> Venta rápida/Gasto <i class="bi bi-cash-coin ms-1"></i>
-                </button>
+            <div class="col-12 col-md-4">
+                <div class="btn-group w-100 p-0">
+                    <button class="btn btn-primary btn-nav" id="btnOpenModalMovement">
+                        <i class="bi bi-rocket"></i> Venta rápida <i class="bi bi-cash-coin ms-1"></i>
+                    </button>
+                    <button class="btn btn-danger btn-nav" id="">
+                        <i class="bi bi-trash"></i> Gasto <i class="bi bi-cash-coin ms-1"></i>
+                    </button>
+                </div>
             </div>
         </div>
         <!-- PASO 1: Elegir producto -->
