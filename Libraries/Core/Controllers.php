@@ -2,8 +2,8 @@
 
 class Controllers
 {
-	/*protected $views;
-	protected $model = null;*/
+	protected $views;
+	protected $model = null;
 	protected string $folderModel;
 	public function __construct(string $folderModel = "Admin")
 	{
