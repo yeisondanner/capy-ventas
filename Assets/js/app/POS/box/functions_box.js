@@ -156,7 +156,6 @@ export class Box {
       .off("click", "#btnOpenModalMovement")
       .on("click", "#btnOpenModalMovement", async () => {
         this.#resetearModalMovimiento();
-
         // Consultamos la data para mostrar en venta rapida
         const response = await this.apiBox.get("getDataQuickSale");
         if (!response.status) {
@@ -166,7 +165,6 @@ export class Box {
             message: response.message,
           });
         }
-
         this.#renderQuickSale(response);
         this.#modalMovementBox.modal("show");
       });
@@ -237,7 +235,7 @@ export class Box {
 
   #handleClickGuardarMovimiento = async () => {
     const amount = this.#inputMovementAmount.val();
-    const description = this.#inputMovementDescription.val();
+    let description = this.#inputMovementDescription.val();
     const type = this.#inputMovementType.val(); // "Ingreso" o "Retiro"
     const customer = this.#selectMovementCustomer.val(); // "Ingreso" o "Retiro"
     const payment_method = this.#selectMovementPaymentMethod.val(); // "Ingreso" o "Retiro"
@@ -249,11 +247,19 @@ export class Box {
         message: "Ingrese un monto mayor a 0.",
       });
 
-    if (!description)
+    if (!description) description = "Venta rápida";
+    if (!customer)
       return this.#mostrarAlerta({
         icon: "warning",
         title: "Faltan datos",
-        message: "Ingrese un motivo o descripción.",
+        message: "Seleccione el cliente.",
+      });
+
+    if (!payment_method)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Faltan datos",
+        message: "Seleccione el metodo de pago.",
       });
 
     const params = {
@@ -269,7 +275,9 @@ export class Box {
 
     if (response.status) {
       this.#modalMovementBox.modal("hide");
-      this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
+      if (response.openBox === "Si") {
+        this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
+      }
     }
     this.#mostrarAlerta(response);
   };
@@ -521,18 +529,9 @@ export class Box {
       '<option value="" disabled selected>Seleccione una caja...</option>';
     listaCajas.forEach((box, index) => {
       const num = index + 1;
-      let clase = !box.session
-        ? ""
-        : box.session === "Abierta"
-        ? "text-primary fw-bold"
-        : "text-danger";
+      let clase = box.session ? "text-primary fw-bold" : "";
       let disabled = !box.session ? "" : "disabled";
-      let extra =
-        box.session === "Abierta"
-          ? "(En uso)"
-          : !box.session
-          ? ""
-          : "(No disponible)";
+      let extra = box.session ? "(En uso)" : "";
       html += `<option class="${clase}" ${disabled} value="${box.idBox}">Caja ${num} - ${box.name} ${extra}</option>`;
     });
     this.#selectBox.html(html);
@@ -801,25 +800,28 @@ export class Box {
     });
   };
 
-  #renderQuickSale = ({customers, payment_method}) => {
+  #renderQuickSale = ({ customers, payment_method }) => {
     let html_customers = "<option disabled>Seleccionar</option>";
-    customers.forEach(element => {
-      html_customers += `<option ${element.document_number === "Sin cliente" ? "selected" : ""} value="${element.idCustomer}">${element.fullname}</option>`;
+    customers.forEach((element) => {
+      html_customers += `<option ${
+        element.document_number === "Sin cliente" ? "selected" : ""
+      } value="${element.idCustomer}">${element.fullname}</option>`;
     });
 
     this.#selectMovementCustomer.html(html_customers);
 
     let html_payment_method = "<option disabled>Seleccionar</option>";
-    payment_method.forEach(element => {
-      html_payment_method += `<option ${element.name === "Efectivo" ? "selected" : ""} value="${element.idPaymentMethod}">${element.name}</option>`;
+    payment_method.forEach((element) => {
+      html_payment_method += `<option ${
+        element.name === "Efectivo" ? "selected" : ""
+      } value="${element.idPaymentMethod}">${element.name}</option>`;
     });
 
     this.#selectMovementPaymentMethod.html(html_payment_method);
 
     console.log(customers);
     console.log(payment_method);
-    
-  }
+  };
 
   #actualizarUIArqueo() {
     this.#lblArqueoTotalContado.html(

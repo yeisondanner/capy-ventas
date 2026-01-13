@@ -94,6 +94,14 @@ class Dashboard extends Controllers
                 'text'  => $storageText,
                 'color' => 'warning',
             ],
+            [
+                'title' => 'Gestion de caja',
+                'icon'  => 'fa fa-money',
+                'value' => 'Gestionar',
+                'link'  => "{$base}/../pos/box",
+                'text'  => 'Apertura y cierre de caja, movimientos y arqueos.',
+                'color' => 'danger',
+            ],
         ];
 
         // Contexto de request/usuario

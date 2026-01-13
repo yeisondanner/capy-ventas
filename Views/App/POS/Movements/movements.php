@@ -139,10 +139,10 @@
             <div class="tile rounded-3">
                 <ul class="nav nav-pills nav-fill mb-3">
                     <li class="nav-item">
-                        <a class="nav-link active text-success bg-success-subtle rounded-5" aria-current="page" href="#"> <i class="bi bi-plus"></i> Ingresos</a>
+                        <a class="nav-link active text-success bg-success-subtle rounded-5 border" id="btnIncome" aria-current="page" href="#"> <i class="bi bi-plus"></i> Ingresos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-danger bg-danger-subtle rounded-5" href="#" onclick="Swal.fire({
+                        <a class="nav-link text-danger bg-danger-subtle rounded-5 border" id="btnExpenses" href="#" onclick="Swal.fire({
                         titl:'En desarrollo',
                         text:'Esta funcionalidad se encuentra en desarrollo',
                         icon:'info',

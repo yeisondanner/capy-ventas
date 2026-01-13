@@ -49,29 +49,30 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                         </span>
                     </div>
                 </div>
+                <!-- CAMBIO REALIZADO: Se agregaron IDs a los elementos para permitir actualización dinámica sin recargar la página -->
                 <div class="d-flex align-items-center gap-3 mt-3">
                     <div class="avatar-wrapper">
                         <img src="<?= GENERAR_PERFIL . $avatarName; ?>" class="rounded-circle shadow-sm profile-avatar" alt="Avatar">
                     </div>
                     <div>
-                        <h5 class="mb-1"><?= htmlspecialchars($user['fullname'] ?? 'Usuario', ENT_QUOTES, 'UTF-8'); ?></h5>
-                        <p class="mb-0 text-muted">Usuario: <strong><?= htmlspecialchars($user['user'] ?? 'Sin usuario', ENT_QUOTES, 'UTF-8'); ?></strong></p>
-                        <p class="mb-0 text-muted">Correo: <strong><?= htmlspecialchars($user['email'] ?? 'Sin correo', ENT_QUOTES, 'UTF-8'); ?></strong></p>
+                        <h5 class="mb-1" id="profile-fullname"><?= htmlspecialchars($user['fullname'] ?? 'Usuario', ENT_QUOTES, 'UTF-8'); ?></h5>
+                        <p class="mb-0 text-muted">Usuario: <strong id="profile-username"><?= htmlspecialchars($user['user'] ?? 'Sin usuario', ENT_QUOTES, 'UTF-8'); ?></strong></p>
+                        <p class="mb-0 text-muted">Correo: <strong id="profile-email"><?= htmlspecialchars($user['email'] ?? 'Sin correo', ENT_QUOTES, 'UTF-8'); ?></strong></p>
                     </div>
                 </div>
                 <hr>
                 <div class="row g-3">
                     <div class="col-6">
                         <p class="mb-1 text-muted">País</p>
-                        <p class="mb-0 fw-semibold"><?= htmlspecialchars($user['country'] ?? 'Sin país', ENT_QUOTES, 'UTF-8'); ?></p>
+                        <p class="mb-0 fw-semibold" id="profile-country"><?= htmlspecialchars($user['country'] ?? 'Sin país', ENT_QUOTES, 'UTF-8'); ?></p>
                     </div>
                     <div class="col-6">
                         <p class="mb-1 text-muted">Teléfono</p>
-                        <p class="mb-0 fw-semibold"><?= htmlspecialchars($user['phone'] ?? 'Sin teléfono', ENT_QUOTES, 'UTF-8'); ?></p>
+                        <p class="mb-0 fw-semibold" id="profile-phone"><?= htmlspecialchars($user['phone'] ?? 'Sin teléfono', ENT_QUOTES, 'UTF-8'); ?></p>
                     </div>
                     <div class="col-6">
                         <p class="mb-1 text-muted">Nacimiento</p>
-                        <p class="mb-0 fw-semibold"><?= formatDateProfile($user['birthDate'] ?? null, false); ?></p>
+                        <p class="mb-0 fw-semibold" id="profile-birthdate"><?= formatDateProfile($user['birthDate'] ?? null, false); ?></p>
                     </div>
                     <div class="col-6">
                         <p class="mb-1 text-muted">Fecha de expiración plan</p>

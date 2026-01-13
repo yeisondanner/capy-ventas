@@ -14,7 +14,6 @@ $widget_alert = $data['page_vars'][2];
         </ul>
     </div>
     <?php
-    //dep($_SESSION);
     if (isset($_SESSION[$widget_alert])):
         $alert = $_SESSION[$widget_alert];
     ?>
@@ -74,7 +73,7 @@ $widget_alert = $data['page_vars'][2];
                 </div>
                 <div>
                     <h2 class="mb-1 fw-bold">Actualización Beta</h2>
-                    <p class="mb-0 opacity-90">Lanzada el 13 de Diciembre, 2025</p>
+                    <p class="mb-0 opacity-90">Lanzada el 03 de Enero, 2026</p>
                 </div>
             </div>
             <div class="text-end">
@@ -145,6 +144,36 @@ $widget_alert = $data['page_vars'][2];
                 </div>
             </div>
 
+            <!-- Feature 5: Gestión de Caja -->
+            <div class="change-item d-flex align-items-start gap-4 type-new">
+                <div class="icon-box shadow-sm text-success">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge rounded-pill bg-success text-white type-badge">¡YA DISPONIBLE!</span>
+                        <small class="text-muted">Caja</small>
+                    </div>
+                    <h5 class="fw-bold mb-2">Gestión de Caja</h5>
+                    <p class="text-muted mb-0">Control total de tu dinero. Apertura y cierre de turnos, registro de ingresos/egresos y arqueos detallados.</p>
+                </div>
+            </div>
+
+            <!-- Feature 6: Sesiones e Historial -->
+            <div class="change-item d-flex align-items-start gap-4 type-new">
+                <div class="icon-box shadow-sm text-primary">
+                    <i class="bi bi-clock-history"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge rounded-pill bg-primary text-white type-badge">¡YA DISPONIBLE!</span>
+                        <small class="text-muted">Auditoría</small>
+                    </div>
+                    <h5 class="fw-bold mb-2">Sesiones e Historial</h5>
+                    <p class="text-muted mb-0">Auditoría completa. Revisa el historial de todas las cajas, ver quien abrió/cerró y los montos exactos de cada sesión.</p>
+                </div>
+            </div>
+
         </div>
 
         <!-- Sección En Construcción (Próximamente) -->
@@ -153,15 +182,6 @@ $widget_alert = $data['page_vars'][2];
                 <i class="bi bi-cone-striped me-2"></i> Próximamente en Capy Ventas
             </h6>
             <div class="row g-3">
-                <div class="col-md-6">
-                    <div class="roadmap-item shadow-sm">
-                        <i class="bi bi-cash-stack"></i>
-                        <div>
-                            <div class="fw-bold small">Gestión de Caja</div>
-                            <div class="text-muted" style="font-size: 0.8rem;">Control de apertura y cierre</div>
-                        </div>
-                    </div>
-                </div>
                 <div class="col-md-6">
                     <div class="roadmap-item shadow-sm">
                         <i class="bi bi-receipt"></i>
@@ -177,15 +197,6 @@ $widget_alert = $data['page_vars'][2];
                         <div>
                             <div class="fw-bold small">Estadísticas Avanzadas</div>
                             <div class="text-muted" style="font-size: 0.8rem;">Reportes detallados del negocio</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="roadmap-item shadow-sm">
-                        <i class="bi bi-clock-history"></i>
-                        <div>
-                            <div class="fw-bold small">Sesiones e Historial</div>
-                            <div class="text-muted" style="font-size: 0.8rem;">Auditoría completa de cajas</div>
                         </div>
                     </div>
                 </div>

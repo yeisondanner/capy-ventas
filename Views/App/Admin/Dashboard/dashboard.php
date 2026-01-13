@@ -14,7 +14,7 @@
     <div class="row">
         <?php
         foreach ($data['page_widget'] as $key => $value) {
-            ?>
+        ?>
             <div class="col-md-6 col-lg-3">
                 <a href="<?= $value['link'] ?>" title="<?= $value['text'] ?>" data-toggle="tooltip"
                     class="bg-white rounded mb-3 widget-small <?= $value['color'] ?> coloured-icon"
@@ -25,7 +25,7 @@
                     </div>
                 </a>
             </div>
-            <?php
+        <?php
         }
         ?>
     </div>
