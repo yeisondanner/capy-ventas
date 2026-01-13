@@ -152,6 +152,8 @@
     document.getElementById("reset-btn").addEventListener("click", function () {
       resetFilters();
     });
+    //cargamos el boton de ingresos
+    loadBtnIncomeTable();
   });
 
   // Función para obtener el número de semana
@@ -575,4 +577,22 @@
         });
     });
   };
+  /**
+   * Metodo que se encarga de cargar los registros de movimientos de ingresos
+   */
+  function loadBtnIncomeTable() {
+    if (!document.getElementById("btnIncome")) return;
+    const btnIncome = document.getElementById("btnIncome");
+    btnIncome.addEventListener("click", function (e) {
+      e.preventDefault();
+      Swal.fire({
+        title: "Cargando",
+        text: "Cargando registros de movimientos de ingresos",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+    });
+  }
 })();
