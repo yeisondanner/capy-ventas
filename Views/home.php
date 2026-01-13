@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es">
 
 <head>
@@ -15,8 +16,10 @@
   <!-- Canonical URL -->
   <!-- Asegúrate de reemplazar 'https://www.capyventas.com' con tu dominio real -->
   <link rel="canonical" href="https://www.capyventas.com/">
+    <!--<link rel="stylesheet" href="./../Assets/css/libraries/POS/plugins/feather.css" type="text/css">-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
 
-  <!-- Open Graph / Facebook -->
+    <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.capyventas.com/">
   <meta property="og:title" content="Capy Ventas | Plataforma Comercial Integral">
@@ -1420,6 +1423,13 @@
 
   <footer>
     © <span id="current-year"></span> Capy Ventas · Plataforma integral para la gestión y crecimiento de ventas.
+  </footer>
+
+  <footer>
+     <link rel = "stylesheet" href="Assets/css/app/POS/chatbot/style_chatbot.css">
+      <?php include __DIR__ . '/../Views/App/POS/chatbot/capyChatbot.php'; ?>
+      <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+      <script src="Assets/js/app/POS/chatbot/capyChatbot.js"></script>
   </footer>
 
   <script>
