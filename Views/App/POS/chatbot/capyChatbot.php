@@ -1,9 +1,3 @@
-<span class="welcome-suport">
-
-</span>
-<div id="botSuport-toogle">
-    <img src="Assets/icon_whatsapp.png"">
-</div>
 
 <div id="chatbot">
     <div id="chatbot-header">
