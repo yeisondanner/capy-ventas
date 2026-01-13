@@ -155,7 +155,7 @@ class ProfileModel extends Mysql
         if (!empty($fullname)) {
             $parts = preg_split('/\s+/', $fullname);
             if (count($parts) > 1) {
-                // último “token” como apellido (simple pero suficiente)
+                // último "token" como apellido (simple pero suficiente)
                 $lastname = array_pop($parts);
                 $names    = implode(' ', $parts);
             }
@@ -167,10 +167,12 @@ class ProfileModel extends Mysql
         $country   = trim($data['country'] ?? '');
         $birthDate = $data['birthDate'] ?? null;
 
-        // Si en tu BD usas prefijo separado, aquí podrías dividir el teléfono.
-        // Para simplificar, guardo todo en phone_number.
-        $telephonePrefix = null;
-        $phoneNumber     = $phone;
+        // CORRECCIÓN REALIZADA: Mantener el prefijo telefónico existente y solo actualizar el número de teléfono
+        // Antes se intentaba separar el prefijo del número, lo cual era incorrecto
+        // Ahora se obtienen los datos actuales para preservar el prefijo existente
+        $currentData = $this->selectUserProfile($userAppId);
+        $telephonePrefix = $currentData['telephone_prefix'] ?? null; // Mantener el prefijo actual de la BD
+        $phoneNumber = $phone; // Actualizar solo el número de teléfono
 
         // Encriptar campos que están cifrados en BD
         $emailEncrypted = !empty($email) ? encryption($email) : null;
@@ -187,8 +189,8 @@ class ProfileModel extends Mysql
                 p.email            = COALESCE(?, p.email),
                 p.date_of_birth    = COALESCE(?, p.date_of_birth),
                 p.country          = COALESCE(?, p.country),
-                p.telephone_prefix = COALESCE(?, p.telephone_prefix),
-                p.phone_number     = COALESCE(?, p.phone_number),
+                p.telephone_prefix = COALESCE(?, p.telephone_prefix),  -- Mantener el prefijo existente
+                p.phone_number     = COALESCE(?, p.phone_number),      -- Actualizar solo el número
                 p.update_date      = NOW()
             WHERE ua.idUserApp = ?;
         SQL;
@@ -200,8 +202,8 @@ class ProfileModel extends Mysql
             $emailEncrypted,
             !empty($birthDate) ? $birthDate : null,
             $country ?: null,
-            $telephonePrefix,
-            $phoneNumber ?: null,
+            $telephonePrefix,  // Mantener el prefijo existente
+            $phoneNumber ?: null,  // Actualizar solo el número de teléfono
             $userAppId,
         ];
 

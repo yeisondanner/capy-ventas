@@ -249,21 +249,30 @@ class Profile extends Controllers
         $requestUpdate = $this->model->updateUserProfile($userAppId, $dataUpdate);
 
         if ($requestUpdate) {
-            // Opcional: refrescar datos básicos de la sesión
-            $_SESSION[$this->nameVarLoginInfo]['name']  = $fullname;
-            $_SESSION[$this->nameVarLoginInfo]['user']  = $username;
-            $_SESSION[$this->nameVarLoginInfo]['email'] = $email;
+            // Actualizar todos los campos relevantes en la sesión para reflejar los cambios inmediatamente
+            $_SESSION[$this->nameVarLoginInfo]['name']      = $fullname;
+            $_SESSION[$this->nameVarLoginInfo]['user']      = $username;
+            $_SESSION[$this->nameVarLoginInfo]['email']     = $email;
+            $_SESSION[$this->nameVarLoginInfo]['phone']     = $phone;
+            $_SESSION[$this->nameVarLoginInfo]['country']   = $country;
+            $_SESSION[$this->nameVarLoginInfo]['birthDate'] = $birthDate;
 
-            $arrResponse = [
-                'status' => true,
-                'msg'    => 'Perfil actualizado correctamente.'
-            ];
+            // Preparar respuesta con los datos actualizados para que el frontend pueda actualizar la vista
+            // CAMBIO REALIZADO: Se incluyen los datos actualizados en la respuesta para actualizar la vista sin recargar la página
             $data = [
-                'title'  => 'Información actualizada',
-                'message' => 'Perfil actualizado correctamente.',
-                'type'   => 'success',
-                'icon'   => 'success',
-                'status' => true,
+                'title'     => 'Información actualizada',
+                'message'   => 'Perfil actualizado correctamente.',
+                'type'      => 'success',
+                'icon'      => 'success',
+                'status'    => true,
+                'updatedData' => [
+                    'fullname'  => $fullname,
+                    'username'  => $username,
+                    'email'     => $email,
+                    'phone'     => $phone,
+                    'country'   => $country,
+                    'birthDate' => $birthDate
+                ]
             ];
 
             toJson($data);
