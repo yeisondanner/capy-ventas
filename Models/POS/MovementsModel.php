@@ -104,7 +104,8 @@ class MovementsModel extends Mysql
                     ) AS 'total_expense'
                 FROM
                     expense_economic AS ee
-                WHERE 
+                WHERE
+                    ee.`status`='pagado' AND
                     ee.business_id=?   
         SQL;
 
