@@ -385,6 +385,10 @@
       ajax: {
         url: base_url + "/pos/Movements/getMovements",
         data: function (d) {
+          const type = document.querySelector(
+            'input[name="movementType"]:checked'
+          ).value;
+          d.type = type;
           d.filterType = document.getElementById("filter-type").value;
           d.searchConcept = document.getElementById("search-concept").value;
           // Obtener el valor del campo de fecha según el tipo de filtro
@@ -614,7 +618,7 @@
       btn.addEventListener("click", (e) => {
         e.preventDefault();
         //obtenemos el atributo data-type
-        const type = btn.getAttribute("data-type");
+        const type = btn.getAttribute("value");
         //traducimos el tipo
         const typeTranslate = type === "income" ? "ingresos" : "egresos";
         showAlert(
@@ -625,6 +629,8 @@
           },
           "float"
         );
+        table.ajax.reload();
+        loadTotals();
       });
     });
   }

@@ -14,9 +14,9 @@ class MovementsModel extends Mysql
      * @param string $type_movements
      * @return array
      */
-    public function select_movements(int $businessId, $minDate = null, $maxDate = null, $searchConcept = null, $type_movements = 'sales'): array
+    public function select_movements(int $businessId, $minDate = null, $maxDate = null, $searchConcept = null, $type_movements = 'income'): array
     {
-        if ($type_movements === 'sales') {
+        if ($type_movements === 'income') {
             $sql = "SELECT
                     vh.idVoucherHeader,
                     CASE
@@ -49,7 +49,9 @@ class MovementsModel extends Mysql
                 array_push($arrValues, $searchParam, $searchParam);
             }
             $sql .= " ORDER BY vh.date_time DESC";
-        } else if ($type_movements === 'expenses') {
+        } else if ($type_movements === 'expense') {
+            $sql = "";
+            $arrValues = [$businessId];
         }
         return $this->select_all($sql, $arrValues);
     }
@@ -140,8 +142,8 @@ class MovementsModel extends Mysql
         $resultTotalExpense = $this->select($sqlTotalExpenses, $arrValues);
 
         $totals = [
-            'total_sales' => (float)($resultTotalSale['total_sales'] ?? 0),
-            'total_expenses' => (float)($resultTotalExpense['total_expense'] ?? 0),
+            'total_sales' => (float) ($resultTotalSale['total_sales'] ?? 0),
+            'total_expenses' => (float) ($resultTotalExpense['total_expense'] ?? 0),
         ];
 
         $totals['balance'] = $totals['total_sales'] - $totals['total_expenses'];

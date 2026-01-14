@@ -29,8 +29,8 @@ class Movements extends Controllers
         parent::__construct("POS");
 
         $sessionName = config_sesion(1)['name'] ?? '';
-        $this->nameVarBusiness   = $sessionName . 'business_active';
-        $this->nameVarLoginInfo  = $sessionName . 'login_info';
+        $this->nameVarBusiness = $sessionName . 'business_active';
+        $this->nameVarLoginInfo = $sessionName . 'login_info';
     }
 
     public function movements()
@@ -43,13 +43,13 @@ class Movements extends Controllers
         $searchConcept = null; // Por defecto no hay búsqueda
         $totals = $this->model->getTotals($businessId, $minDate, $maxDate, $searchConcept);
         $data = [
-            'page_id'          => 2,
-            'page_title'       => 'Inventario de productos',
+            'page_id' => 2,
+            'page_title' => 'Inventario de productos',
             'page_description' => 'Gestiona los productos disponibles en tu negocio.',
-            'page_container'   => 'Movements',
-            'page_view'        => 'movements',
-            'page_js_css'      => 'movements',
-            'totals'           => $totals,
+            'page_container' => 'Movements',
+            'page_view' => 'movements',
+            'page_js_css' => 'movements',
+            'totals' => $totals,
         ];
         $this->views->getView($this, "movements", $data, "POS");
     }
@@ -69,6 +69,7 @@ class Movements extends Controllers
         $maxDate = (isset($_GET["maxDate"]) && !empty($_GET["maxDate"])) ? strClean($_GET['maxDate']) : null;
         $filterType = (isset($_GET["filterType"]) && !empty($_GET["filterType"])) ? strClean($_GET['filterType']) : 'daily';
         $searchConcept = (isset($_GET["searchConcept"]) && !empty($_GET["searchConcept"])) ? strClean($_GET['searchConcept']) : null;
+        $type = (isset($_GET["type"]) && !empty($_GET["type"])) ? strClean($_GET['type']) : 'income';
 
         // Calcular fechas según el tipo de filtro SI NO se han enviado fechas específicas
         if ($filterType !== 'custom') {
@@ -98,7 +99,7 @@ class Movements extends Controllers
         }
 
         // Traemos solo los movimientos de ese negocio con filtros
-        $arrData = $this->model->select_movements($businessId, $minDate, $maxDate, $searchConcept);
+        $arrData = $this->model->select_movements($businessId, $minDate, $maxDate, $searchConcept, $type);
 
         $cont = 1; // Contador para la tabla
 
@@ -152,7 +153,7 @@ class Movements extends Controllers
         if (empty($rows)) {
             $arrResponse = [
                 'status' => false,
-                'msg'    => 'No se encontraron datos para este comprobante.'
+                'msg' => 'No se encontraron datos para este comprobante.'
             ];
             toJson($arrResponse);
             return;
@@ -162,32 +163,32 @@ class Movements extends Controllers
         $headerRow = $rows[0];
 
         $header = [
-            'name_bussines'       => $headerRow['name_bussines'],
-            'direction_bussines'  => $headerRow['direction_bussines'],
-            'document_bussines'   => $headerRow['document_bussines'],
-            'date_time'           => dateFormat($headerRow['date_time']),
-            'name_customer'       => $headerRow['name_customer'],
-            'direction_customer'  => $headerRow['direction_customer'],
-            'fullname'            => $headerRow['fullname'],
-            'amount'              => $headerRow['amount'],
+            'name_bussines' => $headerRow['name_bussines'],
+            'direction_bussines' => $headerRow['direction_bussines'],
+            'document_bussines' => $headerRow['document_bussines'],
+            'date_time' => dateFormat($headerRow['date_time']),
+            'name_customer' => $headerRow['name_customer'],
+            'direction_customer' => $headerRow['direction_customer'],
+            'fullname' => $headerRow['fullname'],
+            'amount' => $headerRow['amount'],
             'percentage_discount' => $headerRow['percentage_discount'],
-            'logo'                => base_url() . '/Loadfile/iconbusiness?f=' . $headerRow['logo'],
+            'logo' => base_url() . '/Loadfile/iconbusiness?f=' . $headerRow['logo'],
         ];
 
         // Detalle (todas las filas)
         $details = [];
         foreach ($rows as $row) {
             $details[] = [
-                'name_product'        => $row['name_product'],
+                'name_product' => $row['name_product'],
                 'unit_of_measurement' => $row['unit_of_measurement'],
                 'sales_price_product' => $row['sales_price_product'],
-                'stock_product'       => $row['stock_product'],
+                'stock_product' => $row['stock_product'],
             ];
         }
 
         $arrResponse = [
-            'status'  => true,
-            'header'  => $header,
+            'status' => true,
+            'header' => $header,
             'details' => $details,
         ];
 
@@ -253,18 +254,18 @@ class Movements extends Controllers
         $totals = $this->model->getTotals($businessId, $minDate, $maxDate, $searchConcept);
 
         // Valores crudos (por si los quieres seguir usando)
-        $balanceRaw        = (float)($totals['balance']        ?? 0);
-        $totalSalesRaw     = (float)($totals['total_sales']    ?? 0);
-        $totalExpensesRaw  = (float)($totals['total_expenses'] ?? 0);
+        $balanceRaw = (float) ($totals['balance'] ?? 0);
+        $totalSalesRaw = (float) ($totals['total_sales'] ?? 0);
+        $totalExpensesRaw = (float) ($totals['total_expenses'] ?? 0);
 
         // Símbolo de moneda desde el helper
         $currency = getCurrency(); // ej. "S/"
 
         // Formateados
         $formattedTotals = [
-            'balance'         => $currency . ' ' . number_format($balanceRaw, 2, '.', ','),
-            'total_sales'     => $currency . ' ' . number_format($totalSalesRaw, 2, '.', ','),
-            'total_expenses'  => $currency . ' ' . number_format($totalExpensesRaw, 2, '.', ','),
+            'balance' => $currency . ' ' . number_format($balanceRaw, 2, '.', ','),
+            'total_sales' => $currency . ' ' . number_format($totalSalesRaw, 2, '.', ','),
+            'total_expenses' => $currency . ' ' . number_format($totalExpensesRaw, 2, '.', ','),
         ];
 
         $arrResponse = [
@@ -286,11 +287,11 @@ class Movements extends Controllers
     private function responseError(string $message): void
     {
         $data = [
-            'title'   => 'Ocurrió un error',
+            'title' => 'Ocurrió un error',
             'message' => $message,
-            'type'    => 'error',
-            'icon'    => 'error',
-            'status'  => false,
+            'type' => 'error',
+            'icon' => 'error',
+            'status' => false,
         ];
 
         toJson($data);

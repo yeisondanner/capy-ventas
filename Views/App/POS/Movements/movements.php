@@ -159,8 +159,8 @@
 
                     <!-- Radio Ingresos (Seleccionado por defecto) -->
                     <div class="flex-fill">
-                        <input type="radio" class="btn-check" name="movementType" id="radio-income" autocomplete="off"
-                            value="income" checked>
+                        <input type="radio" class="btn-check btn-movement" name="movementType" id="radio-income"
+                            autocomplete="off" value="income" checked>
                         <label class="btn btn-outline-success w-100 rounded-5 border border-success py-2"
                             for="radio-income">
                             <i class="bi bi-plus"></i> Ingresos
@@ -169,8 +169,8 @@
 
                     <!-- Radio Egresos -->
                     <div class="flex-fill">
-                        <input type="radio" class="btn-check" name="movementType" id="radio-expense" autocomplete="off"
-                            value="expense">
+                        <input type="radio" class="btn-check btn-movement" name="movementType" id="radio-expense"
+                            autocomplete="off" value="expense">
                         <label class="btn btn-outline-danger w-100 rounded-5 border border-danger py-2"
                             for="radio-expense">
                             <i class="bi bi-dash"></i> Egresos
