@@ -605,13 +605,27 @@
     });
   };
   /**
-   * Metodo que se encarga de cargar los registros de movimientos de ingresos
+   * Metodo que se encarga de cargar los registros de movimientos de ingresos o egresos
    */
   function loadBtnIncomeTable() {
-    if (!document.getElementById("btnIncome")) return;
-    const btnIncome = document.getElementById("btnIncome");
-    btnIncome.addEventListener("click", function (e) {
-      e.preventDefault();
+    if (document.querySelectorAll(".btn-movement").length === 0) return;
+    const dataBtnIncome = document.querySelectorAll(".btn-movement");
+    dataBtnIncome.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        //obtenemos el atributo data-type
+        const type = btn.getAttribute("data-type");
+        //traducimos el tipo
+        const typeTranslate = type === "income" ? "ingresos" : "egresos";
+        showAlert(
+          {
+            title: "Mostrando registros de " + typeTranslate,
+            message: "Cargando registros de " + typeTranslate + "...",
+            icon: "info",
+          },
+          "float"
+        );
+      });
     });
   }
 })();

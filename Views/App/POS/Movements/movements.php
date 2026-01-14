@@ -15,10 +15,13 @@
             <div class="tile rounded-5 border shadow-sm">
                 <ul class="nav nav-pills nav-fill">
                     <li class="nav-item">
-                        <a class="nav-link border border-primary shadow-sm rounded-5 active" aria-current="page" href="<?= base_url() ?>/pos/movements"><i class="bi bi-pc-display-horizontal fs-4"></i> Movimientos</a>
+                        <a class="nav-link border border-primary shadow-sm rounded-5 active" aria-current="page"
+                            href="<?= base_url() ?>/pos/movements"><i class="bi bi-pc-display-horizontal fs-4"></i>
+                            Movimientos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link border border-primary shadow-sm rounded-5" href="<?= base_url() ?>/pos/boxhistory"><i class="bi bi-cash fs-4"></i> Cierrres de caja</a>
+                        <a class="nav-link border border-primary shadow-sm rounded-5"
+                            href="<?= base_url() ?>/pos/boxhistory"><i class="bi bi-cash fs-4"></i> Cierrres de caja</a>
                     </li>
                 </ul>
             </div>
@@ -29,7 +32,9 @@
                     <h6 class="text-center text-primary mb-3">Filtrar Movimientos</h6>
                     <div class="d-flex flex-wrap gap-1 __filter-container">
                         <div class="flex-fill __filter_col">
-                            <label for="filter-type" class="text-muted fw-bold d-block text-uppercase small form-label">Tipo de Filtro:</label>
+                            <label for="filter-type"
+                                class="text-muted fw-bold d-block text-uppercase small form-label">Tipo de
+                                Filtro:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-filter"></i></span>
                                 <select id="filter-type" class="form-select">
@@ -43,7 +48,8 @@
                         </div>
 
                         <div class="__fecha flex-fill" id="date-container">
-                            <label for="filter-date" class="text-muted fw-bold d-block text-uppercase small form-label" id="date-label">Fecha:</label>
+                            <label for="filter-date" class="text-muted fw-bold d-block text-uppercase small form-label"
+                                id="date-label">Fecha:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-calendar"></i></span>
                                 <input type="date" id="filter-date" class="form-control" value="<?= date('Y-m-d') ?>">
@@ -51,7 +57,8 @@
                         </div>
 
                         <div class="__fecha flex-fill" id="date-range-container" style="display: none;">
-                            <label for="min-date" class="text-muted fw-bold d-block text-uppercase small form-label">Desde:</label>
+                            <label for="min-date"
+                                class="text-muted fw-bold d-block text-uppercase small form-label">Desde:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-calendar"></i></span>
                                 <input type="date" id="min-date" class="form-control">
@@ -59,7 +66,8 @@
                         </div>
 
                         <div class="__fecha flex-fill" id="date-to-container" style="display: none;">
-                            <label for="max-date" class="text-muted fw-bold d-block text-uppercase small form-label">Hasta:</label>
+                            <label for="max-date"
+                                class="text-muted fw-bold d-block text-uppercase small form-label">Hasta:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-calendar"></i></span>
                                 <input type="date" id="max-date" class="form-control">
@@ -67,16 +75,22 @@
                         </div>
 
                         <div class="__search flex-fill">
-                            <label for="search-concept" class="text-muted fw-bold d-block text-uppercase small form-label">Buscar por Concepto:</label>
+                            <label for="search-concept"
+                                class="text-muted fw-bold d-block text-uppercase small form-label">Buscar por
+                                Concepto:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" id="search-concept" class="form-control" placeholder="Concepto de venta/egreso...">
+                                <input type="text" id="search-concept" class="form-control"
+                                    placeholder="Concepto de venta/egreso...">
                             </div>
                         </div>
 
-                        <div class="__buttons flex-fill d-flex align-items-end justify-content-center justify-content-sm-start">
-                            <button id="filter-btn" class="btn_filter flex-fill btn btn-outline-primary me-2"><i class="bi bi-funnel"></i> Filtrar</button>
-                            <button id="reset-btn" class="btn_clean flex-fill btn btn-outline-secondary "><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
+                        <div
+                            class="__buttons flex-fill d-flex align-items-end justify-content-center justify-content-sm-start">
+                            <button id="filter-btn" class="btn_filter flex-fill btn btn-outline-primary me-2"><i
+                                    class="bi bi-funnel"></i> Filtrar</button>
+                            <button id="reset-btn" class="btn_clean flex-fill btn btn-outline-secondary "><i
+                                    class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
                         </div>
                     </div>
                 </div>
@@ -89,7 +103,8 @@
                         <div class="col-12 col-sm-12 col-md-4">
                             <div class="card border-0 shadow-sm h-100 card-enhanced rounded-5">
                                 <div class="card-body d-flex align-items-center">
-                                    <div class="icon-container bg-success-subtle d-flex align-items-center justify-content-center me-3">
+                                    <div
+                                        class="icon-container bg-success-subtle d-flex align-items-center justify-content-center me-3">
                                         <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
                                     </div>
                                     <div>
@@ -104,7 +119,8 @@
                         <div class="col-12 col-sm-6 col-md-4">
                             <div class="card border-0 shadow-sm h-100 card-enhanced rounded-5">
                                 <div class="card-body d-flex align-items-center">
-                                    <div class="icon-container bg-success-subtle d-flex align-items-center justify-content-center me-3">
+                                    <div
+                                        class="icon-container bg-success-subtle d-flex align-items-center justify-content-center me-3">
                                         <i class="bi bi-cash-stack fs-4 text-success"></i>
                                     </div>
                                     <div>
@@ -119,7 +135,8 @@
                         <div class="col-12 col-sm-6 col-md-4">
                             <div class="card border-0 shadow-sm h-100 card-enhanced rounded-5">
                                 <div class="card-body d-flex align-items-center">
-                                    <div class="icon-container bg-danger-subtle d-flex align-items-center justify-content-center me-3">
+                                    <div
+                                        class="icon-container bg-danger-subtle d-flex align-items-center justify-content-center me-3">
                                         <i class="bi bi-cash-stack fs-4 text-danger"></i>
                                     </div>
                                     <div>
@@ -137,22 +154,34 @@
         </div>
         <div class="col-md-12">
             <div class="tile rounded-3">
-                <ul class="nav nav-pills nav-fill mb-3">
-                    <li class="nav-item">
-                        <a class="nav-link active text-success bg-success-subtle rounded-5 border" id="btnIncome" aria-current="page" href="#"> <i class="bi bi-plus"></i> Ingresos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-danger bg-danger-subtle rounded-5 border" id="btnExpenses" href="#" onclick="Swal.fire({
-                        titl:'En desarrollo',
-                        text:'Esta funcionalidad se encuentra en desarrollo',
-                        icon:'info',
-                        confirmButtonText:'Aceptar'
-                        })"> <i class="bi bi-dash"></i> Egresos</a>
-                    </li>
-                </ul>
+                <!-- Grupo de Radio Buttons -->
+                <div class="d-flex gap-2 mb-3">
+
+                    <!-- Radio Ingresos (Seleccionado por defecto) -->
+                    <div class="flex-fill">
+                        <input type="radio" class="btn-check" name="movementType" id="radio-income" autocomplete="off"
+                            value="income" checked>
+                        <label class="btn btn-outline-success w-100 rounded-5 border border-success py-2"
+                            for="radio-income">
+                            <i class="bi bi-plus"></i> Ingresos
+                        </label>
+                    </div>
+
+                    <!-- Radio Egresos -->
+                    <div class="flex-fill">
+                        <input type="radio" class="btn-check" name="movementType" id="radio-expense" autocomplete="off"
+                            value="expense">
+                        <label class="btn btn-outline-danger w-100 rounded-5 border border-danger py-2"
+                            for="radio-expense">
+                            <i class="bi bi-dash"></i> Egresos
+                        </label>
+                    </div>
+
+                </div>
                 <div class="tile-body">
                     <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
-                        <table class="table table-sm table-hover table-bordered table-striped table-responsive" id="table" data-token="<?= csrf(false); ?>">
+                        <table class="table table-sm table-hover table-bordered table-striped table-responsive"
+                            id="table" data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
@@ -278,7 +307,8 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" id="download-png"><i class="bi bi-card-image"></i> Exportar PNG</button>
+                <button type="button" class="btn btn-outline-warning" id="download-png"><i class="bi bi-card-image"></i>
+                    Exportar PNG</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
