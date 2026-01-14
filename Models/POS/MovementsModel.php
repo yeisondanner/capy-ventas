@@ -79,36 +79,61 @@ class MovementsModel extends Mysql
         return $this->select_all($sql, [$voucherId, $businessId]);
     }
 
-
+    /**
+     * Metodo que se encarga de obtener los totales de ventas y gastos
+     * asi mismo se encarga de obtener el balance
+     * @param int $businessId
+     * @param string $minDate
+     * @param string $maxDate
+     * @param string $searchConcept
+     * @return array
+     */
     public function getTotals(int $businessId, $minDate = null, $maxDate = null, $searchConcept = null): array
     {
-        $sql = "SELECT
+        $sqlTotalSales = <<<SQL
+                SELECT
                     COALESCE(SUM(vh.amount), 0) AS total_sales
                 FROM voucher_header vh
-                WHERE vh.business_id = ?";
+                WHERE vh.business_id = ? 
+        SQL;
+        $sqlTotalExpenses = <<<SQL
+                SELECT
+                    COALESCE(
+                        SUM(ee.amount),
+                        0
+                    ) AS 'total_expense'
+                FROM
+                    expense_economic AS ee
+                WHERE 
+                    ee.business_id=?   
+        SQL;
 
         $arrValues = [$businessId];
 
         // Si se proporcionan fechas, añadir la condición de rango
         if ($minDate != null && $maxDate != null) {
-            $sql .= " AND DATE(vh.date_time) BETWEEN ? AND ?";
+            $sqlTotalSales .= " AND DATE(vh.date_time) BETWEEN ? AND ?";
+            $sqlTotalExpenses .= " AND DATE(ee.expense_date) BETWEEN ? AND ?";
             array_push($arrValues, $minDate, $maxDate);
         }
 
         // Agregar filtro por concepto si se proporciona
         if ($searchConcept != null && !empty($searchConcept)) {
-            $sql .= " AND (vh.voucher_name LIKE ? OR vh.name_customer LIKE ?)";
+            $sqlTotalSales .= " AND (vh.voucher_name LIKE ? OR vh.name_customer LIKE ?)";
+            $sqlTotalExpenses .= " AND (ee.name_expense LIKE ? OR ee.name_expense LIKE ?)";
             $searchParam = '%' . $searchConcept . '%';
             array_push($arrValues, $searchParam, $searchParam);
         }
 
-        $sql .= " AND vh.amount > 0";
+        $sqlTotalSales .= " AND vh.amount > 0";
+        $sqlTotalExpenses .= " AND ee.amount > 0";
 
-        $result = $this->select($sql, $arrValues);
+        $resultTotalSale = $this->select($sqlTotalSales, $arrValues);
+        $resultTotalExpense = $this->select($sqlTotalExpenses, $arrValues);
 
         $totals = [
-            'total_sales' => (float)($result['total_sales'] ?? 0),
-            'total_expenses' => 0, // Asumiendo que no hay gastos por ahora
+            'total_sales' => (float)($resultTotalSale['total_sales'] ?? 0),
+            'total_expenses' => (float)($resultTotalExpense['total_expense'] ?? 0),
         ];
 
         $totals['balance'] = $totals['total_sales'] - $totals['total_expenses'];

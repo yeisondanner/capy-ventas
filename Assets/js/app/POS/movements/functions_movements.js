@@ -552,7 +552,9 @@
       });
     });
   }
-
+  /**
+   * Metodo que se encarga de descargar el comprobante en formato PNG
+   */
   const dowloadPNG = () => {
     $("#download-png").click(() => {
       // console.log("descargar png");
@@ -585,14 +587,8 @@
     const btnIncome = document.getElementById("btnIncome");
     btnIncome.addEventListener("click", function (e) {
       e.preventDefault();
-      Swal.fire({
-        title: "Cargando",
-        text: "Cargando registros de movimientos de ingresos",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
-      });
+      //cargamos el filtro
+      loadTable();
     });
   }
 })();
