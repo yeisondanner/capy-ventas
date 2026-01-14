@@ -332,6 +332,17 @@
         filterType: filterType,
         searchConcept: searchConcept,
       },
+      //ponemos un load
+      beforeSend: function () {
+        showAlert(
+          {
+            title: "Cargando",
+            message: "Cargando totales...",
+            icon: "info",
+          },
+          "loading"
+        );
+      },
       dataType: "json",
       success: function (res) {
         if (res.status) {
@@ -343,7 +354,25 @@
         }
       },
       error: function () {
-        console.error("Error al cargar los totales");
+        showAlert(
+          {
+            title: "Error",
+            message: "Error al cargar los totales",
+            icon: "error",
+          },
+          "float"
+        );
+      },
+      complete: function () {
+        Swal.close();
+        showAlert(
+          {
+            title: "Listo",
+            message: "Información cargada correctamente",
+            icon: "success",
+          },
+          "float"
+        );
       },
     });
   }
@@ -358,7 +387,6 @@
         data: function (d) {
           d.filterType = document.getElementById("filter-type").value;
           d.searchConcept = document.getElementById("search-concept").value;
-
           // Obtener el valor del campo de fecha según el tipo de filtro
           let filterValue;
           if (d.filterType === "custom") {
@@ -366,13 +394,11 @@
           } else {
             filterValue = document.getElementById("filter-date").value;
           }
-
           // Calcular fechas usando la función centralizada
           const { minDate, maxDate } = calculateDateRange(
             d.filterType,
             filterValue
           );
-
           d.minDate = minDate;
           d.maxDate = maxDate;
         },
@@ -481,7 +507,6 @@
   function loadReport() {
     $("#table").on("click", ".report-item", function () {
       const idVoucher = $(this).data("idvoucher");
-
       $.ajax({
         url: base_url + "/pos/Movements/getVoucher",
         type: "POST",
@@ -587,8 +612,6 @@
     const btnIncome = document.getElementById("btnIncome");
     btnIncome.addEventListener("click", function (e) {
       e.preventDefault();
-      //cargamos el filtro
-      loadTable();
     });
   }
 })();

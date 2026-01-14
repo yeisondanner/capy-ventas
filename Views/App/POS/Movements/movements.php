@@ -70,7 +70,7 @@
                             <label for="search-concept" class="text-muted fw-bold d-block text-uppercase small form-label">Buscar por Concepto:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" id="search-concept" class="form-control" placeholder="Concepto de venta...">
+                                <input type="text" id="search-concept" class="form-control" placeholder="Concepto de venta/egreso...">
                             </div>
                         </div>
 
