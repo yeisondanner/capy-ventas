@@ -11,9 +11,12 @@ export class Account {
   init() {
     this.#viewCardOne();
   }
-
+  /**
+   * Funcion para enviar el correo electronico
+   */
   #bindEventSendCode = () => {
-    $("#btnSendCode").on("click", () => {
+    $("#formSendCode").on("submit", (e) => {
+      e.preventDefault();
       // ? Validamos que se envie el correo electronico
       let email = $("#email").val();
       if (!email) {
@@ -64,9 +67,12 @@ export class Account {
         });
     });
   };
-
+  /**
+   * Funcion para enviar el codigo de verificacion
+   */
   #sendVerificationCode = () => {
-    $("#btnVerifyCode").on("click", () => {
+    $("#formVerifyCode").on("submit", (e) => {
+      e.preventDefault();
       // ? Validamos que se envie el correo electronico
       let code = $("#code").val();
 
@@ -97,6 +103,14 @@ export class Account {
             this.#verificationCode = code;
             this.#cardAccount.html(this.#viewCardTheree());
             this.#setAccount();
+            const p1 = document.getElementById("password");
+            const p2 = document.getElementById("confirm_password");
+            p1.addEventListener("input", () => {
+              this.checkPasswords(p1, p2);
+            });
+            p2.addEventListener("input", () => {
+              this.checkPasswords(p1, p2);
+            });
           }
           showAlert({
             icon: response.type,
@@ -108,7 +122,8 @@ export class Account {
   };
 
   #setAccount = () => {
-    $("#btnCreateAccount").on("click", () => {
+    $("#formAccount").on("submit", (e) => {
+      e.preventDefault();
       let names = $("#names").val();
       let lastname = $("#lastname").val();
       let email = $("#email").val();
@@ -118,6 +133,7 @@ export class Account {
       let phone_number = $("#phone_number").val();
       let password = $("#password").val();
       let confirm_password = $("#confirm_password").val();
+      let username = $("#username").val();
 
       if (
         names === "" ||
@@ -128,7 +144,8 @@ export class Account {
         telephone_prefix === "" ||
         phone_number === "" ||
         password === "" ||
-        confirm_password === ""
+        confirm_password === "" ||
+        username === ""
       ) {
         return showAlert({
           icon: "warning",
@@ -238,6 +255,15 @@ export class Account {
           message: "Las contraseñas no coinciden",
         });
       }
+      const formatUsername = /^[a-zA-Z0-9_-]{6,10}$/;
+      if (!formatUsername.test(username)) {
+        return showAlert({
+          icon: "warning",
+          title: "Validacion de datos",
+          message:
+            "El nombre de usuario debe tener mínimo 6 caracteres y máximo 10, solo letras, números y guiones.",
+        });
+      }
 
       showAlert({ message: "Creando cuenta, espere." }, "loading");
 
@@ -253,6 +279,7 @@ export class Account {
           phone_number: phone_number,
           password: password,
           confirm_password: confirm_password,
+          username: username,
         })
         .then((response) => {
           if (response.status) {
@@ -322,11 +349,11 @@ export class Account {
                 <div class="col-md-7 bg-white p-4">
                     <div class="text-center mb-4 mt-lg-5">
                         <div class="login-head">
-                            <img src="${media_url}/carpincho.png" alt="">
+                            <img src="${media_url}/capymd.png" alt="Logo capy ventas">
                         </div>
                         <h2 class="fw-bold">Regístrate para comenzar</h2>
                     </div>
-                    <form id="formAccount" class="account-form">
+                    <form id="formSendCode" class="account-form">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Ingresa tu correo electrónico</label>
                             <div class="text-muted small mb-2">Te enviaremos un código de verificación por <span class="fw-bold">correo electrónico</span></div>
@@ -335,18 +362,18 @@ export class Account {
                                 <span class="input-group-text text-muted">
                                     <i class="bi bi-envelope-at"></i>
                                 </span>
-                                <input type="email" class="form-control" placeholder="Escribe tu correo electrónico" id="email">
+                                <input type="email" class="form-control" placeholder="Escribe tu correo electrónico" id="email" name="email" required>
                             </div>
                         </div>
 
                         <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="accept_terms">
+                            <input class="form-check-input" type="checkbox" id="accept_terms" name="accept_terms" required>
                             <label class="form-check-label small text-muted" for="termsCheck">
                                 He leído y acepto los <a href="#" class="text-dark fw-bold">Términos y Condiciones</a>, y autorizo expresamente el tratamiento de mis datos personales conforme a la <a href="#" class="text-dark fw-bold">Política de Privacidad</a>.
                             </label>
                         </div>
 
-                        <button id="btnSendCode" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Enviar código</button>
+                        <button id="btnSendCode" type="submit" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Enviar código <i class="bi bi-arrow-right"></i></button>
                     </form>
 
                     <div class="text-center mt-4">
@@ -414,31 +441,22 @@ export class Account {
                 <div class="col-md-7 bg-white p-4">
                     <div class="text-center mb-4 mt-lg-5">
                         <div class="login-head">
-                            <img src="${media_url}/carpincho.png" alt="">
+                            <img src="${media_url}/capymd.png" alt="">
                         </div>
                         <h2 class="fw-bold">Verificación del código</h2>
                     </div>
-                    <form class="account-form">
+                    <form id="formVerifyCode" class="account-form">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Ingresa tu código de verificación</label>
                             <div class="text-muted small mb-2">El código de verificación se envío a tu <span class="fw-bold">correo electrónico</span></div>
-
                             <div class="input-group mb-3">
                                 <span class="input-group-text text-muted">
-                                    <i class="bi bi-envelope-check-fill"></i>
+                                    <i class="bi bi-123"></i>
                                 </span>
-                                <input id="code" type="input" class="form-control" placeholder="Escribe tu código de verificación">
+                                <input id="code" name="code" type="text" class="form-control" placeholder="Escribe tu código de verificación" required>
                             </div>
                         </div>
-
-                        <!-- <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="termsCheck">
-                            <label class="form-check-label small text-muted" for="termsCheck">
-                                He leído y acepto los <a href="#" class="text-dark fw-bold">Términos y Condiciones</a>, y autorizo expresamente el tratamiento de mis datos personales conforme a la <a href="#" class="text-dark fw-bold">Política de Privacidad</a>.
-                            </label>
-                        </div> -->
-
-                        <button id="btnVerifyCode" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Verificar código</button>
+                        <button id="btnVerifyCode" type="submit" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Verificar código <i class="bi bi-arrow-right"></i></button>
                     </form>
 
                     <div class="text-center mt-4">
@@ -502,40 +520,39 @@ export class Account {
 
                 </div>
                 <div class="col-md-7 bg-white p-4">
-                    <!-- <div class="text-center mb-2 mt-lg-2">
+                    <div class="text-center mb-2 mt-lg-2">
                         <div class="login-head">
-                            <img src="${media_url}/carpincho.png" alt="">
+                            <img src="${media_url}/capymd.png" alt="">
                         </div>
-                        <h2 class="fw-bold">Tu cuenta</h2>
-                    </div> -->
+                        <h2 class="fw-bold">Crea tu cuenta</h2>
+                    </div> 
 
-                    <form class="account-form">
-                        <h2 class="fw-bold text-center mb-3">Tu cuenta</h2>
+                    <form id="formAccount" class="account-form">
+                        <h5 class="text-left fw-bold mb-3 text-primary"><i class="bi bi-person-fill"></i> Datos personales</h5>
                         <!-- nombres y apellidos -->
                         <div class="row">
-
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Nombres: </label>
+                                    <label class="form-label fw-bold">Nombres <span class="text-danger">*</span>: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-person-fill"></i>
                                         </span>
-                                        <input id="names" type="input" class="form-control" placeholder="Escriba sus nombres">
+                                        <input id="names" type="text" class="form-control" placeholder="Escriba sus nombres" required>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Apellidos: </label>
+                                    <label class="form-label fw-bold">Apellidos <span class="text-danger">*</span>: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-person-fill"></i>
                                         </span>
-                                        <input id="lastname" type="input" class="form-control" placeholder="Escriba sus apellidos">
+                                        <input id="lastname" type="text" class="form-control" placeholder="Escriba sus apellidos" required>
                                     </div>
                                 </div>
 
@@ -548,13 +565,13 @@ export class Account {
 
                             <div class="col-md-12">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Correo Electrónico: </label>
+                                    <label class="form-label fw-bold">Correo Electrónico <span class="text-danger">*</span>: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-envelope-fill"></i>
                                         </span>
-                                        <input id="email" type="email" class="form-control" placeholder="Escriba su correo electrónico">
+                                        <input id="email" type="email" class="form-control" placeholder="Escriba su correo electrónico" required>
                                     </div>
                                 </div>
                             </div>
@@ -565,13 +582,13 @@ export class Account {
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Fecha de Nacimiento: </label>
+                                    <label class="form-label fw-bold">Fecha de Nacimiento <span class="text-danger">*</span>: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-calendar-event-fill"></i>
                                         </span>
-                                        <input id="date_of_birth" type="date" class="form-control" placeholder="Escriba sus apellidos">
+                                        <input id="date_of_birth" type="date" class="form-control" placeholder="Seleccione su fecha de nacimiento" required>
                                     </div>
                                 </div>
 
@@ -579,13 +596,13 @@ export class Account {
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">País: </label>
+                                    <label class="form-label fw-bold">País <span class="text-danger">*</span>: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-globe-americas-fill"></i>
                                         </span>
-                                        <input id="country" type="input" class="form-control" placeholder="Escriba su país">
+                                        <input id="country" type="text" class="form-control" placeholder="Escriba su país" value="Perú" readonly disabled>
                                     </div>
                                 </div>
 
@@ -596,13 +613,13 @@ export class Account {
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Prefijo Tel.: </label>
+                                    <label class="form-label fw-bold">Prefijo Tel. <span class="text-danger">*</span>: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-telephone-fill"></i>
                                         </span>
-                                        <input id="telephone_prefix" type="input" class="form-control" placeholder="+51">
+                                        <input id="telephone_prefix" type="text" class="form-control" placeholder="+51" value="+51" readonly disabled>
                                     </div>
                                 </div>
 
@@ -610,13 +627,13 @@ export class Account {
 
                             <div class="col-md-8">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Número de Teléfono: </label>
+                                    <label class="form-label fw-bold">Número de Teléfono <span class="text-danger">*</span>: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-phone-fill"></i>
                                         </span>
-                                        <input id="phone_number" type="number" class="form-control" placeholder="987654321">
+                                        <input id="phone_number" type="number" class="form-control" placeholder="987654321" required>
                                     </div>
                                 </div>
 
@@ -624,18 +641,31 @@ export class Account {
                         </div>
 
                         <hr>
+                        <h5 class="text-left fw-bold mb-3 text-primary"><i class="bi bi-lock-fill"></i> Datos de Acceso</h5>
 
                         <!-- prefijo y numero de telefono -->
                         <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Usuario <span class="text-danger">*</span>: </label>
+
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text text-muted">
+                                            <i class="bi bi-person-fill"></i>
+                                        </span>
+                                        <input id="username" type="text" class="form-control" placeholder="Ingrese un nombre de usuario" required minlength="6" maxlength="10" pattern="[a-zA-Z0-9_-]">
+                                    </div>
+                                </div>
+                            </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Contraseña: </label>
+                                    <label class="form-label fw-bold">Contraseña <span class="text-danger">*</span>: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-file-lock2-fill"></i>
                                         </span>
-                                        <input id="password" type="password" class="form-control" placeholder="Ingrese su contraseña">
+                                        <input id="password" type="password" class="form-control" placeholder="Ingrese su contraseña" required>
                                     </div>
                                 </div>
 
@@ -643,29 +673,64 @@ export class Account {
 
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold">Repita la Contraseña: </label>
+                                    <label class="form-label fw-bold">Repita la Contraseña <span class="text-danger">*</span>: </label>
 
                                     <div class="input-group mb-3">
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-file-lock2-fill"></i>
                                         </span>
-                                        <input id="confirm_password" type="password" class="form-control" placeholder="Ingrese su contraseña">
+                                        <input id="confirm_password" type="password" class="form-control" placeholder="Ingrese su contraseña" required>
                                     </div>
                                 </div>
 
+                            </div>
+                            <div class="col-md-12">
+                                <!-- Mensaje de Alerta (Bootstrap Alert) -->
+                                <div id="msg-container" class="mb-3 d-none">
+                                    <div id="msg-alert" class="alert py-2 px-3 small d-flex align-items-center" role="alert">
+                                        <span id="msg-text"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-
-                        <button id="btnCreateAccount" type="button" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Registrarse</button>
+                        <button id="btnCreateAccount" type="submit" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Registrarse <i class="bi bi-arrow-right"></i></button>
                     </form>
-
-                    
-
                 </div>
             </div>`;
     return html;
   };
+  /**
+   * Función que verifica que las contraseñas coincidan
+   * @returns
+   */
+  checkPasswords(p1, p2) {
+    const val1 = p1.value;
+    const val2 = p2.value;
+    // Elementos del DOM
+    const msgContainer = document.getElementById("msg-container");
+    const msgAlert = document.getElementById("msg-alert");
+    const msgText = document.getElementById("msg-text");
+    // Si el segundo campo está vacío, ocultamos el mensaje
+    if (val2 === "") {
+      msgContainer.classList.add("d-none");
+      p2.classList.remove("is-valid", "is-invalid");
+      return;
+    }
+    msgContainer.classList.remove("d-none");
+    if (val1 === val2 && val1 !== "") {
+      // Coinciden: Usamos clases de éxito de Bootstrap
+      msgAlert.className = "alert alert-success py-2 px-3 small mb-0";
+      msgText.innerText = "✓ Las contraseñas coinciden.";
+      p2.classList.remove("is-invalid");
+      p2.classList.add("is-valid");
+    } else {
+      // No coinciden: Usamos clases de error de Bootstrap
+      msgAlert.className = "alert alert-danger py-2 px-3 small mb-0";
+      msgText.innerText = "✕ Las contraseñas no coinciden.";
+      p2.classList.remove("is-valid");
+      p2.classList.add("is-invalid");
+    }
+  }
 }
 
 new Account();

@@ -32,7 +32,7 @@ class Account extends Controllers
 		$data = json_decode($raw, true);
 
 		$accept_terms = strClean($data['accept_terms']);
-		$email    = strClean($data['email']);
+		$email = strClean($data['email']);
 
 		// * Valimos que llegue el correo electronico
 		if (!$email || empty($email)) {
@@ -76,10 +76,10 @@ class Account extends Controllers
 		saveSessionVerification(encryption($email), encryption($code));
 		//cargamos la plantilla de recuperación de contraseña               
 		$data = [
-			'nombres'     => "Capy Amigo",
-			'titulo'      => "Bienvenido a CapyVentas",
+			'nombres' => "Capy Amigo",
+			'titulo' => "Bienvenido a CapyVentas",
 			'descripcion' => "Gracias por unirte a nosotros. Estás a un solo paso de gestionar tus ventas de manera más eficiente. \nPor favor, usa el siguiente código de verificación para confirmar tu correo electrónico y activar tu cuenta:",
-			'codigo'      => $code
+			'codigo' => $code
 		];
 		// * Cargar plantilla HTML externa
 		$plantillaHTML = renderTemplate('./Views/Template/email/notification_sendcode.php', $data);
@@ -87,7 +87,7 @@ class Account extends Controllers
 		$params = [
 			// 'to' => [decryption($email)], // o string
 			'to' => $email, // o string
-			'subject' => 'NOTIFICACION [ ' . "hola" . ' ]- ' . getCompanyName(),
+			'subject' => 'SOLICITUD DE CODIGO DE VERIFICACION',
 			'body' => $plantillaHTML,
 			'attachments' => [] // opcional
 		];
@@ -98,11 +98,11 @@ class Account extends Controllers
 
 		// * Respuesta correcta
 		return toJson([
-			'title'   => 'Revisa tu correo',
+			'title' => 'Revisa tu correo',
 			'message' => "Se ha enviado un código de 6 dígitos a $email. Tienes 10 minutos para usarlo.",
-			'type'    => 'success',
-			'icon'    => 'success',
-			'status'  => true,
+			'type' => 'success',
+			'icon' => 'success',
+			'status' => true,
 		]);
 	}
 
@@ -115,7 +115,7 @@ class Account extends Controllers
 		$raw = file_get_contents('php://input');
 		$data = json_decode($raw, true);
 
-		$code    = strClean($data['code'] ?? '');
+		$code = strClean($data['code'] ?? '');
 		// TODO: Validamos que no este vacio el codigo y que tenga seis caracteres
 		if (empty($code) || strlen($code) !== 6) {
 			toJson([
@@ -140,13 +140,13 @@ class Account extends Controllers
 		$raw = file_get_contents('php://input');
 		$data = json_decode($raw, true);
 
-		
+
 		// * Validamos que el codigo recibido sea el correcto
 		$code = strClean($data["code"]);
 		validateVerificationCode($code);
-		
+
 		// * Validamos que existan las variables requeridas
-		if(!$data["names"] || !$data["lastname"] || !$data["email"] || !$data["date_of_birth"] || !$data["country"] || !$data["telephone_prefix"] || !$data["phone_number"] || !$data["password"] || !$data["confirm_password"]){
+		if (!$data["names"] || !$data["lastname"] || !$data["email"] || !$data["date_of_birth"] || !$data["country"] || !$data["telephone_prefix"] || !$data["phone_number"] || !$data["password"] || !$data["confirm_password"] || !$data["username"]) {
 			$this->responseError("Ingrese los campos requeridos.");
 		}
 		// * Limpiamos las variables
@@ -159,6 +159,7 @@ class Account extends Controllers
 		$phone_number = strClean($data["phone_number"]);
 		$password = strClean($data["password"]);
 		$confirm_password = strClean($data["confirm_password"]);
+		$username = strClean($data["username"]);
 		// * Validamos que no esten vacias
 		validateFieldsEmpty(array(
 			"NOMBRE COMPLETO" => $names,
@@ -170,6 +171,7 @@ class Account extends Controllers
 			"NUMERO DE TELEFONO" => $phone_number,
 			"CONTRASEÑA" => $password,
 			"CONFIRMAR CONTRASEÑA" => $confirm_password,
+			"NOMBRE DE USUARIO" => $username,
 		));
 		// * Prefijo por defaul
 		// ? Validar luego esto
@@ -217,7 +219,7 @@ class Account extends Controllers
 				"title" => "Ocurrió un error inesperado",
 				"message" => "Ya existe un usuario registrado con este correo electrónico",
 				"type" => "error",
-				'icon'    => 'error',
+				'icon' => 'error',
 				"status" => false
 			]);
 		}
@@ -234,10 +236,10 @@ class Account extends Controllers
 			$this->limpiarSesionVerificacion();
 			// * respuesta
 			toJson([
-				'title'  => 'Cuenta creada correctamente',
+				'title' => 'Cuenta creada correctamente',
 				'message' => 'Bienvenido a la familia CapyVentas, tu cuenta fue creada correctamente. Inicia sesión con tu correo y contraseña.',
-				'type'   => 'success',
-				'icon'   => 'success',
+				'type' => 'success',
+				'icon' => 'success',
 				'status' => true,
 			]);
 		}
@@ -247,10 +249,10 @@ class Account extends Controllers
 	private function responseError(string $message): void
 	{
 		$data = [
-			'title'  => 'Ocurrió un error',
+			'title' => 'Ocurrió un error',
 			'message' => $message,
-			'type'   => 'error',
-			'icon'   => 'error',
+			'type' => 'error',
+			'icon' => 'error',
 			'status' => false,
 		];
 
