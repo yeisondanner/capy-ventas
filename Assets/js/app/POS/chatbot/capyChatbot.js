@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let listeningInterval = null;
     let dotCount = 0;
 
-    const INACTIVITY_TIME = 1 * 60 * 1000; // 10 minutos
+    const INACTIVITY_TIME = 10*1000;//1 * 60 * 1000; // 10 minutos
 
     initSpeechRecognition();
 
@@ -50,7 +50,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     sendBtn.addEventListener("click", sendMessage);
 
-    input.addEventListener("input", autoResizeInput);
+    input.addEventListener("input", () => {
+        resetInactivityTimer();
+        autoResizeInput();
+    });
 
     input.addEventListener("keydown", (e) => {
         if (e.key === "Enter" && !e.shiftKey) {
@@ -62,7 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
     input.addEventListener("input", () => {
         input.style.height = "auto";
         input.style.height = Math.min(input.scrollHeight, 120) + "px";
-        resentInactivityTimer();
     });
 
     input.addEventListener("input", function() {
@@ -81,6 +83,21 @@ document.addEventListener("DOMContentLoaded", () => {
         welcomeClose.addEventListener("click", () => {
             welcomeMessage.style.display = "none";
         });
+    }
+
+    function resetInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(handleInactivity, INACTIVITY_TIME);
+    }
+    function handleInactivity(){
+        if(chatState === "closed") return;
+        appendBotMessage("Hemos esperado mucho tiempo y no recibimos ninguna respuesta. Si deseas continuar inicia un nuevo mensaje.");
+        disableChatInput();
+
+        setTimeout(() => {
+            closeChat();
+            activeConversationId = null;
+        }, 3000);
     }
 
     function initSpeechRecognition() {
@@ -106,6 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function starRecording(){
+        resetInactivityTimer();
         if(isRecording) return;
         isRecording = true;
         input.disabled = true;
@@ -128,6 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
         input.value = transcript;
         input.disabled = false;
         autoResizeInput();
+        resetInactivityTimer();
     }
 
     function handleSpeechEnd() {
@@ -170,6 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setToggleIcon("bi-chevron-down");
        // showListView();
         chatState = "open";
+        resetInactivityTimer();
     }
 
     function closeChat() {
@@ -178,6 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setToggleIcon("bi-chat-left-text-fill");
         hideHeaderButtons();
         chatState = "closed";
+        clearTimeout(inactivityTimer);
     }
     function hideHeaderButtons(){
         backBtn.style.display = "none";
@@ -246,7 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function unlockInput(){
-        isBotBusy.disabled = false;
+        isBotBusy = false;
         input.disabled = false;
         sendBtn.disabled = false;
         micBtn.disabled = false;
@@ -273,8 +294,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         messages.querySelectorAll(".message").forEach(m => m.remove());
         setStartDay();
-        resentInactivityTimer();
         input.focus();
+        resetInactivityTimer();
     }
 
     function renderConversationList() {
@@ -349,7 +370,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //mensajes
     async function sendMessage() {
-
+        resetInactivityTimer();
         if (isBotBusy || !activeConversationId) return;
 
         const text = input.value.trim();
@@ -357,7 +378,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const convo = conversations.find(c => c.id === activeConversationId);
         if (!convo) return;
-
         appendUserMessage(text);
         convo.messages.push({ sender: "user", text });
         convo.time = getTime();
@@ -381,10 +401,10 @@ document.addEventListener("DOMContentLoaded", () => {
             typingMsg.remove();
 
             appendBotMessage(data.reply, true);
+            clearTimeout(inactivityTimer);
             convo.messages.push({ sender: "bot", text: data.reply });
             convo.time = getTime();
             renderConversationList();
-            clearTimeout(inactivityTimer);
 
         } catch {
             typingMsg.remove();
@@ -530,22 +550,6 @@ document.addEventListener("DOMContentLoaded", () => {
             scrollBottom();
         });
     }*/
-
-    function resentInactivityTimer(){
-        clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(() =>{
-            handleInactivity();
-        },
-        INACTIVITY_TIME);
-    }
-    function handleInactivity(){
-        appendBotMessage("Hemos esperado mucho tiempo y no recibimos ninguna respuesta. Si deseas continuar inicia un nuevo mensaje.");
-        disableChatInput();
-
-        setTimeout(() => {
-            closeChat();
-        }, 3000);
-    }
 
     function scrollBottom() {
         messages.scrollTop = messages.scrollHeight;
