@@ -393,19 +393,19 @@ class Box extends Controllers
             $this->responseError("El monto ingresaado debe ser mayor que 0.");
         }
         // * Validar TYPE (Debe ser uno de los valores permitidos en tu ENUM)
-        $allowed_types = ['Ingreso', 'Egreso']; // Los valores de tu base de datos
-        if (!in_array($type_movement, $allowed_types)) {
-            $this->responseError("El tipo de arqueo es inválido. Debe ser 'Ingreso' o 'Egreso'.");
-        }
+        // $allowed_types = ['Ingreso', 'Egreso']; // Los valores de tu base de datos
+        // if (!in_array($type_movement, $allowed_types)) {
+        //     $this->responseError("El tipo de arqueo es inválido. Debe ser 'Ingreso' o 'Egreso'.");
+        // }
         // * Consultamos el ID del usuario
         $userId = $this->getUserId();
         // * Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
+        // * Consultamos si es necesario contar con caja aperturada para registrar una venta
         $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
-        // * Validamos que el usuario haya aperturado una caja
-        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
-        //validamos si es necesario abrir caja para registrar la venta
-        if ($openBox === 'Si') {
+        if($openBox === "Si"){
+            // * Validamos que el usuario haya aperturado una caja
+            $boxSessions = $this->model->getBoxSessionsByUserId($userId);
             if ($boxSessions) {
                 // * Validamos si la caja pertenece al negocio
                 $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
@@ -437,10 +437,10 @@ class Box extends Controllers
         if (!$voucher) {
             $this->responseError('Error al registrar la venta de ' . $description . '.');
         }
-        //validamos si es necesario abrir caja para registrar la venta
-        if ($boxSessions) {
+        // * validamos si es necesario abrir caja para registrar la venta
+        if ($openBox === "Si" && $boxSessions) {
             // * Registramos el movimiento
-            $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, "Efectivo", "voucher_header", $voucher);
+            $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, $issetPaymentMethod["name"], "voucher_header", $voucher);
             if (!$movement_box) {
                 $this->responseError('Error al registrar el ' . $type_movement . ' de caja.');
             }
@@ -451,7 +451,7 @@ class Box extends Controllers
             'type'    => 'success',
             'icon'    => 'success',
             'status'  => true,
-            'openBox' => $openBox
+            // 'openBox' => $openBox
         ]);
     }
 
