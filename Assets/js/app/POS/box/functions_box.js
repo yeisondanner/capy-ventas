@@ -971,17 +971,17 @@ export class Box {
 
   #generarBotonAperturaHtml = () => `
     <div class="d-flex justify-content-center align-items-center">
-        <button id="btnOpenModalBox" class="btn btn-warning px-2 py-1 d-flex align-items-center gap-2 fw-bold">
+        <button title="Abrir Caja" id="btnOpenModalBox" class="btn btn-warning px-2 py-1 d-flex align-items-center gap-2 fw-bold">
             <img style="width: 22px;" src="${media_url}/icons/POS/open-box.png" alt="">
-            <span class="fw-semibold">Abrir Caja</span>
+            <span class="d-none d-sm-block fw-semibold">Abrir Caja</span>
         </button>
     </div>`;
 
   #generarBotonGestionHtml = () => `
     <div class="d-flex justify-content-center align-items-center">
-        <button id="btnOpenModalGestionBox" class="btn btn-warning px-2 py-1 d-flex align-items-center gap-2 fw-bold">
+        <button title="Gestión de Caja" id="btnOpenModalGestionBox" class="btn btn-warning px-2 py-1 d-flex align-items-center gap-2 fw-bold">
             <img style="width: 22px;" src="${media_url}/icons/POS/open-box.png" alt="">
-            <span class="fw-semibold">Gestión de Caja</span>
+            <span class="d-none d-sm-block fw-semibold">Gestión de Caja</span>
         </button>
     </div>`;
 
