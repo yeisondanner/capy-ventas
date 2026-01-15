@@ -303,7 +303,7 @@ export class Account {
                 <div class="d-none d-md-block col-md-5 bg-warning-subtle p-5 d-flex flex-column justify-content-between">
                     <div>
                         <div class="mb-5 d-flex align-items-center gap-2">
-                            <div class="bg-info text-white rounded py-1 px-2"><i class="bi bi-patch-check"></i></div>
+                            <div class="text-white" style="width: 50px; height: 50px;"><img src="${media_url}/capysm.png" alt="Logo" class="img-fluid rounded-circle"></div>
                             <h3 class="fw-bold m-0 text-dark">Capy Ventas</h3>
                         </div>
                         <div class="stepper-container ms-2">
@@ -395,7 +395,7 @@ export class Account {
                 <div class="d-none d-md-block col-md-5 bg-warning-subtle p-5 d-flex flex-column justify-content-between">
                     <div>
                         <div class="mb-5 d-flex align-items-center gap-2">
-                            <div class="bg-info text-white rounded py-1 px-2"><i class="bi bi-patch-check"></i></div>
+                            <div class="text-white" style="width: 50px; height: 50px;"><img src="${media_url}/capysm.png" alt="Logo" class="img-fluid rounded-circle"></div>
                             <h3 class="fw-bold m-0 text-dark">Capy Ventas</h3>
                         </div>
                         <div class="stepper-container ms-2">
@@ -476,7 +476,7 @@ export class Account {
                 <div class="d-none d-md-block col-md-5 bg-warning-subtle p-5 d-flex flex-column justify-content-between">
                     <div>
                         <div class="mb-5 d-flex align-items-center gap-2">
-                            <div class="bg-info text-white rounded py-1 px-2"><i class="bi bi-patch-check"></i></div>
+                            <div class="text-white" style="width: 50px; height: 50px;"><img src="${media_url}/capysm.png" alt="Logo" class="img-fluid rounded-circle"></div>
                             <h3 class="fw-bold m-0 text-dark">Capy Ventas</h3>
                         </div>
                         <div class="stepper-container ms-2">
