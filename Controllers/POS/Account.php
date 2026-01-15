@@ -175,6 +175,10 @@ class Account extends Controllers
 		// ? Validar luego esto
 		$telephone_prefix = "+51";
 
+		// * Pais por default
+		// ? Luego borrar esto
+		$country = "PERU";
+
 		// * Validación de formato de nombre
 		if (verifyData("[A-ZÁÉÍÓÚÑa-záéíóúñ0-9\s\-_.,()]+", $names)) {
 			$this->responseError("El campo 'Nombres' no cumple con el formato requerido.");
@@ -228,7 +232,7 @@ class Account extends Controllers
 			$this->responseError("No se pudo registrar tus datos personales. Por favor intente nuevamente.");
 		}
 		// * Creamos la cuenta de usuario
-		$userApp = $this->model->createUserApp(encryption("svelallanos@gmail.com"), encryption($password), $people);
+		$userApp = $this->model->createUserApp(encryption($email), encryption($password), $people);
 		if ($userApp > 0) {
 			// * Eliminamos la sesiones
 			$this->limpiarSesionVerificacion();
