@@ -2,6 +2,7 @@ import { ApiAccount } from "./functions_account_api.js";
 export class Account {
   #cardAccount = $("#cardAccount");
   #verificationCode = null;
+  #email = null;
 
   constructor() {
     this.apiAccount = new ApiAccount(base_url);
@@ -58,6 +59,7 @@ export class Account {
           if (response.status) {
             this.#cardAccount.html(this.#viewCardTwo());
             this.#sendVerificationCode();
+            this.#email = email;
           }
           showAlert({
             icon: response.type,
@@ -126,7 +128,7 @@ export class Account {
       e.preventDefault();
       let names = $("#names").val();
       let lastname = $("#lastname").val();
-      let email = $("#email").val();
+      let email = this.#email;
       let date_of_birth = $("#date_of_birth").val();
       let country = $("#country").val();
       let telephone_prefix = $("#telephone_prefix").val();
@@ -571,7 +573,9 @@ export class Account {
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-envelope-fill"></i>
                                         </span>
-                                        <input id="email" type="email" class="form-control" placeholder="Escriba su correo electrónico" required>
+                                        <input id="email" type="email" class="form-control" placeholder="Escriba su correo electrónico" value="${
+                                          this.#email
+                                        }" readonly disabled>
                                     </div>
                                 </div>
                             </div>
@@ -653,7 +657,7 @@ export class Account {
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-person-fill"></i>
                                         </span>
-                                        <input id="username" type="text" class="form-control" placeholder="Ingrese un nombre de usuario" required minlength="6" maxlength="10" pattern="[a-zA-Z0-9_-]">
+                                        <input id="username" name="username" type="text" class="form-control" placeholder="Ingrese un nombre de usuario" required minlength="6" maxlength="10" pattern="[a-zA-Z0-9_-]">
                                     </div>
                                 </div>
                             </div>

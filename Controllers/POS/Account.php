@@ -215,6 +215,23 @@ class Account extends Controllers
 		if (!hash_equals($password, $confirm_password)) {
 			$this->responseError("El campo 'Contraseña' y 'Confirmar Contraseña' no coinciden.");
 		}
+		//validamos que el username tenga minimo 6 caracteres y maximo 10
+		if (strlen($username) < 6 || strlen($username) > 10) {
+			$this->responseError("El campo 'Nombre de usuario' debe tener mínimo 6 caracteres y máximo 10.");
+		}
+		//validamos que el username solo tenga letras, numeros y guiones
+		if (verifyData("[a-zA-Z0-9_-]{6,10}", $username)) {
+			$this->responseError("El campo 'Nombre de usuario' debe contener solo letras, números y guiones.");
+		}
+		//validamos que el username no este repetido
+		$is_exists_user = $this->model->isExistsUserApp(encryption($username));
+		if ($is_exists_user) {
+			$this->responseError("El usuario que proporcionaste ya existe para otro usuario.");
+		}
+		//validamos que la contraseña y el usuario sean iguales
+		if ($username === $password && $username === $confirm_password) {
+			$this->responseError("El campo 'Nombre de usuario' y 'Contraseña' no pueden ser iguales.");
+		}
 
 		// * Verificamos que no exista un usuario con este correo
 		$is_exists_user = $this->model->isExistsPeople(encryption($email));
@@ -234,7 +251,7 @@ class Account extends Controllers
 			$this->responseError("No se pudo registrar tus datos personales. Por favor intente nuevamente.");
 		}
 		// * Creamos la cuenta de usuario
-		$userApp = $this->model->createUserApp(encryption($email), encryption($password), $people);
+		$userApp = $this->model->createUserApp(encryption($username), encryption($password), $people);
 		if ($userApp > 0) {
 			// * Eliminamos la sesiones
 			$this->limpiarSesionVerificacion();
