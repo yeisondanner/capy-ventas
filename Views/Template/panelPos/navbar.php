@@ -240,9 +240,14 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             </div>
                         </div>
                         <div class="d-flex flex-column gap-2">
-                            <button id="btnOpenModalMovement" class="btn btn-primary w-100 rounded-pill py-2 fw-bold">
-                                <i class="bi bi-arrow-left-right me-2"></i> Ingreso / Retiro
-                            </button>
+                            <div class="d-flex gap-2 w-100">
+                                <button id="btnOpenModalMovement" class="btn btn-primary w-50 rounded-pill py-2 fw-bold">
+                                    <i class="bi bi-arrow-left-right me-2"></i> Ingreso
+                                </button>
+                                <button id="btnOpenModalRetireCash" class="btn btn-danger w-50 rounded-pill py-2 fw-bold">
+                                    <i class="bi bi-dash-circle me-2"></i> Retiro
+                                </button>
+                            </div>
                             <div class="row g-2">
                                 <div class="col-6">
                                     <button id="btnOpenModalArqueoBox"
@@ -620,18 +625,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         <i class="bi bi-person-badge-fill fs-4"></i>
                     </div>
                 </div>
-                <div class="d-flex gap-2 mb-4 p-1 bg-light rounded-pill border">
-                    <button type="button"
-                        class="btn btn-sm w-50 rounded-pill fw-bold border btn-primary text-white shadow-sm transition-all"
-                        id="btnTypeIngreso">
-                        <i class="bi bi-arrow-down-left me-1"></i> Ingreso
-                    </button>
-                    <button disabled type="button"
-                        class="btn btn-sm w-50 rounded-pill fw-bold border text-muted transition-all"
-                        id="btnTypeRetiro">
-                        <i class="bi bi-arrow-up-right me-1"></i> Retiro / Gasto
-                    </button>
-                </div>
+                <h5 class="border-bottom pb-2 border-2 mb-2">Detalle venta rápida</h5>
                 <div class="mb-3">
                     <label class="form-label" for="movement_customer">Clientes (<span
                             class="text-danger">*</span>)</label>
