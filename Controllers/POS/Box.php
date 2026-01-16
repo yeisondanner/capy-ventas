@@ -403,16 +403,16 @@ class Box extends Controllers
         $businessId = $this->getBusinessId();
         // * Consultamos si es necesario contar con caja aperturada para registrar una venta
         $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
-        if($openBox === "Si"){
-            // * Validamos que el usuario haya aperturado una caja
-            $boxSessions = $this->model->getBoxSessionsByUserId($userId);
-            if ($boxSessions) {
-                // * Validamos si la caja pertenece al negocio
-                $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
-                if (!$boxs) {
-                    $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
-                }
-            } else {
+        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
+        if ($openBox === "Si" && !$boxSessions) {
+            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+        }
+
+        // * Validamos si el usuario haya aperturado una caja
+        if($boxSessions){
+            // * Validamos si la caja pertenece al negocio
+            $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
+            if (!$boxs) {
                 $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
             }
         }
@@ -438,7 +438,7 @@ class Box extends Controllers
             $this->responseError('Error al registrar la venta de ' . $description . '.');
         }
         // * validamos si es necesario abrir caja para registrar la venta
-        if ($openBox === "Si" && $boxSessions) {
+        if ($boxSessions) {
             // * Registramos el movimiento
             $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, $issetPaymentMethod["name"], "voucher_header", $voucher);
             if (!$movement_box) {
