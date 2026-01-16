@@ -8,6 +8,7 @@ class AccountModel extends Mysql
     protected string $password;
     protected int $iduser;
     protected string $email;
+    protected int $people_id;
 
     public function __construct()
     {
@@ -142,8 +143,11 @@ class AccountModel extends Mysql
 
         return (int) $this->insert($sql, $params);
     }
-    public function createUserApp(string $email, string $password, string $people_id)
+    public function createUserApp(string $user, string $password, string $people_id)
     {
+        $this->user = $user;
+        $this->password = $password;
+        $this->people_id = $people_id;
         $sql = <<<SQL
             INSERT INTO user_app
                 (`user`, `password`, `people_id`)
@@ -152,9 +156,9 @@ class AccountModel extends Mysql
         SQL;
 
         $params = [
-            $email,
-            $password,
-            $people_id
+            $this->user,
+            $this->password,
+            $this->people_id
         ];
 
         return (int) $this->insert($sql, $params);
