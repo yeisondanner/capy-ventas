@@ -379,6 +379,7 @@ class Box extends Controllers
         $type_movement = strClean($data["type_movement"]);
         $customer = (int) strClean($data["customer"]);
         $payment_method = (int) strClean($data["payment_method"]);
+        $status_movement_header = $data["payment_method"] ? true : false;
 
         // * Validamos que no este vacio los campos
         validateFieldsEmpty(array(
@@ -437,6 +438,7 @@ class Box extends Controllers
         if (!$voucher) {
             $this->responseError('Error al registrar la venta de ' . $description . '.');
         }
+        
         // * validamos si es necesario abrir caja para registrar la venta
         if ($boxSessions) {
             // * Registramos el movimiento
@@ -445,13 +447,14 @@ class Box extends Controllers
                 $this->responseError('Error al registrar el ' . $type_movement . ' de caja.');
             }
         }
+
         toJson([
             'title'   => 'Gestión de Caja',
             'message' => $type_movement . ' de caja registrado correctamente.',
             'type'    => 'success',
             'icon'    => 'success',
             'status'  => true,
-            // 'openBox' => $openBox
+            'status_movement_header' => $status_movement_header
         ]);
     }
 

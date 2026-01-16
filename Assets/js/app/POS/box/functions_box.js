@@ -10,6 +10,7 @@ export class Box {
   #totalEfectivoContado = 0;
   #chartInstance = null;
   #canvasGraphic = $("#graphic_sales_hour");
+  #statusRegisterHeader = false;
 
   // ==========================================
   // 2. ELEMENTOS DEL DOM (Selectores)
@@ -228,6 +229,7 @@ export class Box {
   };
 
   #resetearModalMovimiento = () => {
+    this.#statusRegisterHeader = true;
     this.#inputMovementAmount.val("");
     this.#inputMovementDescription.val("");
     this.#cambiarTipoMovimiento("Ingreso"); // Reset a Ingreso por defecto
@@ -239,6 +241,7 @@ export class Box {
     const type = this.#inputMovementType.val(); // "Ingreso" o "Retiro"
     const customer = this.#selectMovementCustomer.val(); // "Ingreso" o "Retiro"
     const payment_method = this.#selectMovementPaymentMethod.val(); // "Ingreso" o "Retiro"
+    const status_movement_header = this.#statusRegisterHeader;
 
     if (!amount || amount <= 0)
       return this.#mostrarAlerta({
@@ -268,6 +271,7 @@ export class Box {
       type_movement: type,
       customer: customer,
       payment_method: payment_method,
+      status_movement_header: status_movement_header
     };
 
     // Llamada al Backend
@@ -275,7 +279,7 @@ export class Box {
 
     if (response.status) {
       this.#modalMovementBox.modal("hide");
-      if (response.openBox === "Si") {
+      if (response.status_movement_header) {
         this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
       }
     }
