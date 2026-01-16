@@ -27,7 +27,11 @@ class BoxModel extends Mysql
 
     protected $referenceTable = null;
     protected $referenceId = null;
-    
+
+    protected $taxName = null;
+    protected $taxPercentage = null;
+    protected $tax_amount = null;
+
     // Variables de tabla voucher header
     protected string $nameCustomer;
     protected string $directionCustomer;
@@ -363,7 +367,7 @@ class BoxModel extends Mysql
         return (int) $this->insert($sql, [$this->boxSessionsId, $this->type, $this->notes, $this->amount, $this->paymentMethod, $this->referenceTable, $this->referenceId]);
     }
 
-    public function insertVoucherHeader(string $nameCustomer, string $directionCustomer, string $nameBussines, string $documentBussines, string $directionBussines, string $dateTime, float $amount, string $voucherName, int $paymentMethod, int $businessId, int $userId)
+    public function insertVoucherHeader(string $nameCustomer, string $directionCustomer, string $nameBussines, string $documentBussines, string $directionBussines, string $dateTime, float $amount, $taxName, $taxPercentage, $tax_amount, string $voucherName, int $paymentMethod, int $businessId, int $userId)
     {
         $this->nameCustomer = $nameCustomer;
         $this->directionCustomer = $directionCustomer;
@@ -372,17 +376,20 @@ class BoxModel extends Mysql
         $this->directionBussines = $directionBussines;
         $this->dateTime = $dateTime;
         $this->amount = $amount;
+        $this->taxName = $taxName;
+        $this->taxPercentage = $taxPercentage;
+        $this->tax_amount = $tax_amount;
         $this->voucherName = $voucherName;
         $this->paymentMethod = $paymentMethod;
         $this->businessId = $businessId;
         $this->userId = $userId;
         $sql = <<<SQL
             INSERT INTO voucher_header
-                (name_customer, direction_customer, name_bussines, document_bussines, direction_bussines, date_time, amount, voucher_name, payment_method_id, business_id, user_app_id)
+                (name_customer, direction_customer, name_bussines, document_bussines, direction_bussines, date_time, amount, tax_name, tax_percentage, tax_amount, voucher_name, payment_method_id, business_id, user_app_id)
             VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         SQL;
-        return (int) $this->insert($sql, [$this->nameCustomer, $this->directionCustomer, $this->nameBussines, $this->documentBussines, $this->directionBussines, $this->dateTime, $this->amount, $this->voucherName, $this->paymentMethod, $this->businessId, $this->userId]);
+        return (int) $this->insert($sql, [$this->nameCustomer, $this->directionCustomer, $this->nameBussines, $this->documentBussines, $this->directionBussines, $this->dateTime, $this->amount, $this->taxName, $this->taxPercentage , $this->tax_amount, $this->voucherName, $this->paymentMethod, $this->businessId, $this->userId]);
     }
 
     // ? Funciones update

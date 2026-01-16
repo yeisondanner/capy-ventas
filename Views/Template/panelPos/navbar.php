@@ -241,7 +241,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         </div>
                         <div class="d-flex flex-column gap-2">
                             <div class="d-flex gap-2 w-100">
-                                <button id="btnOpenModalMovement" class="btn btn-primary w-50 rounded-pill py-2 fw-bold">
+                                <button id="btnOpenModalMovement" data-header="1" class="btn btn-primary w-50 rounded-pill py-2 fw-bold">
                                     <i class="bi bi-arrow-left-right me-2"></i> Ingreso
                                 </button>
                                 <button id="btnOpenModalRetireCash" class="btn btn-danger w-50 rounded-pill py-2 fw-bold">
@@ -638,12 +638,39 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <div class="input-group input-group-lg">
                         <span class="input-group-text bg-transparent text-muted ps-5">S/</span>
                         <input type="number" id="movement_amount"
-                            class="form-control fw-bold text-success fs-1 shadow-none" min="0" step="0.1"
+                            class="form-control fw-bold fs-1 shadow-none" min="0" step="0.1"
                             placeholder="0.0" style="margin-left: -10px;">
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div class="mb-4 item-box">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="movement_check_tax">
+                                <label id="label_tax_name" class="small text-muted fw-bold text-uppercase mb-2">IGV</label>
+                            </div>
+                            <div class="input-group">
+                                <span id="span_tax" class="input-group-text bg-dark-subtle text-muted fw-bold">18%</span>
+                                <input disabled type="text" id="movement_tax"
+                                    class="form-control fw-bold bg-dark-subtle shadow-none text-end" value="S/ 0.00"
+                                    placeholder="0.0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="mb-4 item-box">
+                            <label class="small text-muted fw-bold text-uppercase mb-2">Total</label>
+                            <div class="input-group">
+                                <span class="input-group-text text-muted fw-bold"></span>
+                                <input disabled type="text" id="movement_total"
+                                    class="form-control fw-bold shadow-none text-end" value="0.00"
+                                    placeholder="0.0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="mb-3">
-                    <label class="form-label" for="movement_payment_method">Metodo de pago (<span
+                    <label class="small text-muted fw-bold text-uppercase mb-2" for="movement_payment_method">Metodo de pago (<span
                             class="text-danger">*</span>)</label>
                     <select class="form-select" id="movement_payment_method" name="movement_payment_method">
                         <option disabled>Seleccionar</option>

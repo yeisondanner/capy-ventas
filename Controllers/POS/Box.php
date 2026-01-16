@@ -379,7 +379,10 @@ class Box extends Controllers
         $type_movement = strClean($data["type_movement"]);
         $customer = (int) strClean($data["customer"]);
         $payment_method = (int) strClean($data["payment_method"]);
-        $status_movement_header = $data["payment_method"] ? true : false;
+        $status_movement_header = (int) $data["status_movement_header"];
+        $check_tax = $data["check_tax"];
+
+        // toJson($data);
 
         // * Validamos que no este vacio los campos
         validateFieldsEmpty(array(
@@ -410,7 +413,7 @@ class Box extends Controllers
         }
 
         // * Validamos si el usuario haya aperturado una caja
-        if($boxSessions){
+        if ($boxSessions) {
             // * Validamos si la caja pertenece al negocio
             $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
             if (!$boxs) {
@@ -430,15 +433,28 @@ class Box extends Controllers
             $this->responseError("Seleccione un metodo de pago valido.");
         }
 
+        // * Calculamos el impuesto si esta activo el check
+        $tax = null;
+        $taxname = null;
+        $tax_amount = null;
+
+        if ($check_tax) {
+            // * Consultamos el impuesto
+            $tax = (float) $this->getTaxBusiness()["tax"];
+            $taxname = $this->getTaxBusiness()["taxname"];
+            $tax_amount = $tax * $amount / 100;
+            $amount = $amount + $tax_amount;
+        }
+
         // * Consultamos la fecha y hora actual
         $fecha_actual = date('Y-m-d H:i:s');
 
         // * Registramos los datos del ingreso en el header
-        $voucher = $this->model->insertVoucherHeader("Sin cliente", "Sin cliente", $_SESSION[$this->nameVarBusiness]["business"], $_SESSION[$this->nameVarBusiness]["document_number"], $_SESSION[$this->nameVarBusiness]["direction"], $fecha_actual, $amount, $description, $payment_method, $businessId, $userId);
+        $voucher = $this->model->insertVoucherHeader("Sin cliente", "Sin cliente", $_SESSION[$this->nameVarBusiness]["business"], $_SESSION[$this->nameVarBusiness]["document_number"], $_SESSION[$this->nameVarBusiness]["direction"], $fecha_actual, $amount, $taxname, $tax, $tax_amount, $description, $payment_method, $businessId, $userId);
         if (!$voucher) {
             $this->responseError('Error al registrar la venta de ' . $description . '.');
         }
-        
+
         // * validamos si es necesario abrir caja para registrar la venta
         if ($boxSessions) {
             // * Registramos el movimiento
@@ -660,7 +676,8 @@ class Box extends Controllers
         $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
         // * Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
-        //validamos si es necesario abrir caja para registrar la venta
+        // * validamos si es necesario abrir caja para registrar la venta
+        // TODO: Falta validar a nivel de permiso
         if ($openBox === 'Si') {
             // * Validamos que el usuario haya aperturado una caja
             $boxSessions = $this->model->getBoxSessionsByUserId($userId);
@@ -674,6 +691,21 @@ class Box extends Controllers
                 $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
             }
         }
+
+        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
+        if ($openBox === "Si" && !$boxSessions) {
+            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+        }
+
+        // * Validamos si el usuario haya aperturado una caja
+        if ($boxSessions) {
+            // * Validamos si la caja pertenece al negocio
+            $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
+            if (!$boxs) {
+                $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+            }
+        }
+
         // * Consultamos todos los clientes del negocio
         $customers = $this->model->getCustomersByBusiness($businessId);
         if (!$customers || empty($customers)) {
@@ -686,10 +718,14 @@ class Box extends Controllers
             $this->responseError("No tienes ningun metodo de pago disponible.");
         }
 
+        // * Consultamos si tiene su interes configurado
+        $tax = $this->getTaxBusiness();
+
         toJson([
             "status" => true,
             "customers" => $customers,
-            "payment_method" => $paymentMethod
+            "payment_method" => $paymentMethod,
+            "tax_business" => $tax,
         ]);
     }
 
@@ -711,6 +747,19 @@ class Box extends Controllers
         }
 
         return (int) $_SESSION[$this->nameVarLoginInfo]['idUser'];
+    }
+
+    // TODO: Consultamos el ID del usuario
+    private function getTaxBusiness(): array
+    {
+        if (!isset($_SESSION[$this->nameVarBusiness]['tax']) || !isset($_SESSION[$this->nameVarBusiness]['taxname'])) {
+            $this->responseError('Tasa de interes del negocio no configurado.');
+        }
+
+        return [
+            "tax" => $_SESSION[$this->nameVarBusiness]['tax'],
+            "taxname" => $_SESSION[$this->nameVarBusiness]['taxname'],
+        ];
     }
 
     // TODO: Mensaje de respuesta

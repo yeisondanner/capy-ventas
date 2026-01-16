@@ -10,7 +10,8 @@ export class Box {
   #totalEfectivoContado = 0;
   #chartInstance = null;
   #canvasGraphic = $("#graphic_sales_hour");
-  #statusRegisterHeader = false;
+  #statusRegisterHeader = null;
+  #valueTax = null;
 
   // ==========================================
   // 2. ELEMENTOS DEL DOM (Selectores)
@@ -74,6 +75,11 @@ export class Box {
   #iconMovementWrapper = $("#movement_icon_wrapper");
   #selectMovementCustomer = $("#movement_customer");
   #selectMovementPaymentMethod = $("#movement_payment_method");
+  #labelTaxName = $("#label_tax_name");
+  #spanTax = $("#span_tax");
+  #inputTotal = $("#movement_total");
+  #inputCheckTax = $("#movement_check_tax");
+  #inputTax = $("#movement_tax");
 
   // Acciones Finales
   #inputCloseBoxNotes = $("#close_box_notes");
@@ -155,8 +161,9 @@ export class Box {
     // --- NUEVO: Botón Azul "Ingreso / Retiro" ---
     $("body")
       .off("click", "#btnOpenModalMovement")
-      .on("click", "#btnOpenModalMovement", async () => {
-        this.#resetearModalMovimiento();
+      .on("click", "#btnOpenModalMovement", async (e) => {
+        const reset = $(e.currentTarget).attr("data-header");
+        this.#resetearModalMovimiento(reset);
         // Consultamos la data para mostrar en venta rapida
         const response = await this.apiBox.get("getDataQuickSale");
         if (!response.status) {
@@ -167,6 +174,7 @@ export class Box {
           });
         }
         this.#renderQuickSale(response);
+        this.#handleCheckTax();
         this.#modalMovementBox.modal("show");
       });
 
@@ -191,9 +199,6 @@ export class Box {
         .addClass("text-muted btn-transparent");
 
       // Visual: Input y Botón Guardar (Verde)
-      this.#inputMovementAmount
-        .removeClass("text-danger")
-        .addClass("text-success");
       this.#btnSaveMovement
         .removeClass("btn-danger")
         .addClass("btn-success")
@@ -213,9 +218,6 @@ export class Box {
         .addClass("text-muted btn-transparent");
 
       // Visual: Input y Botón Guardar (Rojo)
-      this.#inputMovementAmount
-        .removeClass("text-success")
-        .addClass("text-danger");
       this.#btnSaveMovement
         .removeClass("btn-success")
         .addClass("btn-danger")
@@ -228,11 +230,25 @@ export class Box {
     }
   };
 
-  #resetearModalMovimiento = () => {
-    this.#statusRegisterHeader = true;
+  #resetearModalMovimiento = (reload) => {
+    this.#statusRegisterHeader = reload;
+
+    // 1. Limpiar inputs principales
     this.#inputMovementAmount.val("");
     this.#inputMovementDescription.val("");
-    this.#cambiarTipoMovimiento("Ingreso"); // Reset a Ingreso por defecto
+
+    // 2. Resetear lógica de Impuestos
+    this.#inputCheckTax.prop("checked", false); // Desmarcar check
+    this.#inputTax.val(""); // Limpiar input impuesto
+    this.#inputTotal.val(""); // Limpiar input total
+
+    // 3. Restaurar estilos visuales (volver a gris "desactivado")
+    // Agregamos el gris y quitamos el blanco
+    this.#spanTax.addClass("bg-dark-subtle").removeClass("bg-white");
+    this.#inputTax.addClass("bg-dark-subtle").removeClass("bg-white");
+
+    // 4. Reset a Ingreso por defecto
+    this.#cambiarTipoMovimiento("Ingreso");
   };
 
   #handleClickGuardarMovimiento = async () => {
@@ -271,7 +287,8 @@ export class Box {
       type_movement: type,
       customer: customer,
       payment_method: payment_method,
-      status_movement_header: status_movement_header
+      status_movement_header: status_movement_header,
+      check_tax: this.#inputCheckTax.prop("checked"),
     };
 
     // Llamada al Backend
@@ -279,7 +296,7 @@ export class Box {
 
     if (response.status) {
       this.#modalMovementBox.modal("hide");
-      if (response.status_movement_header) {
+      if (response.status_movement_header === 1) {
         this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
       }
     }
@@ -522,6 +539,49 @@ export class Box {
       }, 2000);
     }
     this.#mostrarAlerta(response);
+  };
+
+  #handleCheckTax = () => {
+    // 1. Creamos una función reutilizable para calcular y pintar
+    const recalcular = () => {
+      // Leemos el estado actual (NO usamos click, solo leemos)
+      const isChecked = this.#inputCheckTax.prop("checked");
+      const amount = +this.#inputMovementAmount.val() || 0; // El || 0 evita NaN si borran todo
+
+      if (isChecked) {
+        const interes = (amount * this.#valueTax) / 100;
+        const total = interes + amount;
+
+        // Estilos: Activo (Blanco)
+        this.#spanTax.removeClass("bg-dark-subtle").addClass("bg-white");
+        this.#inputTax.removeClass("bg-dark-subtle").addClass("bg-white");
+
+        this.#inputTax.val(this.#formatoMoneda(interes));
+        this.#inputTotal.val(this.#formatoMoneda(total));
+      } else {
+        // Estilos: Inactivo (Gris)
+        this.#spanTax.addClass("bg-dark-subtle").removeClass("bg-white");
+        this.#inputTax.addClass("bg-dark-subtle").removeClass("bg-white");
+
+        this.#inputTax.val(this.#formatoMoneda(0));
+        this.#inputTotal.val(this.#formatoMoneda(amount));
+      }
+    };
+
+    // ---------------------------------------------------------
+    // 2. Asignamos los eventos
+    // ---------------------------------------------------------
+
+    // Evento A: Cuando el usuario marca/desmarca el check
+    this.#inputCheckTax.on("click", () => {
+      recalcular();
+    });
+
+    // Evento B: Cuando el usuario escribe números
+    // Usamos arrow function (e) => para no perder el 'this' de la clase
+    this.#inputMovementAmount.on("input", (e) => {
+      recalcular();
+    });
   };
 
   // ==========================================
@@ -804,7 +864,7 @@ export class Box {
     });
   };
 
-  #renderQuickSale = ({ customers, payment_method }) => {
+  #renderQuickSale = ({ customers, payment_method, tax_business }) => {
     let html_customers = "<option disabled>Seleccionar</option>";
     customers.forEach((element) => {
       html_customers += `<option ${
@@ -823,8 +883,13 @@ export class Box {
 
     this.#selectMovementPaymentMethod.html(html_payment_method);
 
+    this.#labelTaxName.html(tax_business.taxname);
+    this.#spanTax.html(tax_business.tax + `%`);
+    this.#valueTax = tax_business.tax;
+
     console.log(customers);
     console.log(payment_method);
+    console.log(tax_business);
   };
 
   #actualizarUIArqueo() {
