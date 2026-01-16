@@ -332,17 +332,6 @@
         filterType: filterType,
         searchConcept: searchConcept,
       },
-      //ponemos un load
-      beforeSend: function () {
-        showAlert(
-          {
-            title: "Cargando",
-            message: "Cargando totales...",
-            icon: "info",
-          },
-          "loading"
-        );
-      },
       dataType: "json",
       success: function (res) {
         if (res.status) {
@@ -549,7 +538,10 @@
             (subtotal * Number(h.percentage_discount || 0)) / 100;
 
           $("#subtotal_amount").text("S/ " + subtotal.toFixed(2));
-          $("#discount_amount").text("S/ " + descuento.toFixed(2));
+          $("#discount_amount").text("- S/ " + descuento.toFixed(2));
+          $("#tax_name").text(h.tax_name);
+          $("#tax_percentage").text(Number(h.tax_percentage).toFixed(2));
+          $("#tax_amount").text(getcurrency + Number(h.tax_amount).toFixed(2));
 
           // === Detalle ===
           const $tbody = $("#tbodyVoucherDetails");

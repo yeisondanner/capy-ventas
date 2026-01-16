@@ -288,6 +288,9 @@
                                 <span>Descuento (<span id="percentage_discount">0</span>%):</span>
                                 <span id="discount_amount">S/ 0.00</span>
                             </div>
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>Imp. (<span id="tax_name">--</span>) (<span id="tax_percentage">0</span>%):</span> <span id="tax_amount"></span>
+                            </div>
                             <div class="d-flex justify-content-between fw-semibold border-top pt-2">
                                 <span>Total:</span>
                                 <span id="total_amount">S/ 0.00</span>

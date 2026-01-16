@@ -157,17 +157,17 @@ class Movements extends Controllers
 
         $rows = $this->model->select_voucher($idVoucherHeader, $businessId);
 
-        /*if (empty($rows)) {
+        if (empty($rows)) {
             $arrResponse = [
                 'status' => false,
                 'msg' => 'No se encontraron datos para este comprobante.'
             ];
             toJson($arrResponse);
             return;
-        }*/
+        }
 
         // Cabecera desde la primera fila
-        $headerRow = $rows[0];
+        $headerRow = $rows['header'];
 
         $header = [
             'name_bussines' => $headerRow['name_bussines'],
@@ -180,19 +180,30 @@ class Movements extends Controllers
             'amount' => $headerRow['amount'],
             'percentage_discount' => $headerRow['percentage_discount'],
             'logo' => base_url() . '/Loadfile/iconbusiness?f=' . $headerRow['logo'],
+            'tax_name' => $headerRow['tax_name'],
+            'tax_percentage' => $headerRow['tax_percentage'],
+            'tax_amount' => $headerRow['tax_amount'],
         ];
-
+        $dataDetails = $rows['detail'];
         // Detalle (todas las filas)
         $details = [];
-        foreach ($rows as $row) {
+        if ($dataDetails) {
+            foreach ($dataDetails as $row) {
+                $details[] = [
+                    'name_product' => $row['name_product'],
+                    'unit_of_measurement' => $row['unit_of_measurement'],
+                    'sales_price_product' => $row['sales_price_product'],
+                    'stock_product' => $row['stock_product'],
+                ];
+            }
+        } else {
             $details[] = [
-                'name_product' => $row['name_product'],
-                'unit_of_measurement' => $row['unit_of_measurement'],
-                'sales_price_product' => $row['sales_price_product'],
-                'stock_product' => $row['stock_product'],
+                'sales_price_product' => $headerRow['amount'],
+                'name_product' => $headerRow['voucher_name'] ?? 'Venta rápida',
+                'unit_of_measurement' => 'Servicio',
+                'stock_product' => 1,
             ];
         }
-
         $arrResponse = [
             'status' => true,
             'header' => $header,

@@ -102,7 +102,33 @@ class MovementsModel extends Mysql
 
     public function select_voucher(int $voucherId, int $businessId): array
     {
-        $sql = <<<SQL
+        $sqlHeader = <<<SQL
+            SELECT
+                    vh.name_bussines,
+                    vh.direction_bussines,
+                    vh.document_bussines,
+                    vh.date_time,
+                    vh.name_customer,
+                    vh.direction_customer,
+                    vh.amount,
+                    vh.percentage_discount,
+                    vh.voucher_name,
+                    vh.tax_name,
+                    vh.tax_percentage,
+                    vh.tax_amount,
+                    b.logo,
+                    CONCAT(p.`names`, ' ', p.lastname) AS fullname
+                FROM
+                    voucher_header vh
+                    INNER JOIN business AS b ON b.idBusiness = vh.business_id
+                    INNER JOIN user_app ua ON vh.user_app_id = ua.idUserApp
+                    INNER JOIN people p ON ua.people_id = p.idPeople
+                WHERE
+                    vh.idVoucherHeader = ?
+                    AND vh.business_id = ?
+                LIMIT 1;
+        SQL;
+        $sqlDetail = <<<SQL
                 SELECT
                     vh.name_bussines,
                     vh.direction_bussines,
@@ -129,7 +155,12 @@ class MovementsModel extends Mysql
                 ORDER BY vd.name_product ASC;
             SQL;
 
-        return $this->select_all($sql, [$voucherId, $businessId]);
+        $header = $this->select($sqlHeader, [$voucherId, $businessId]);
+        $detail = $this->select_all($sqlDetail, [$voucherId, $businessId]);
+        return [
+            'header' => $header,
+            'detail' => $detail
+        ];
     }
 
     /**
