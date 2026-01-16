@@ -1,5 +1,5 @@
 <?php
-$validationCreateBox = (validate_permission_app(11, "c", false)) ? (int) validate_permission_app(11, "c", false)['create'] : 0;
+$validationCreateBox = (validate_permission_app(11, "c", false)) ? (int) (isset(validate_permission_app(11, "c", false)['create']) ? validate_permission_app(11, "c", false)['create'] : 0) : 0;
 if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     $logoBusiness = GENERAR_PERFIL . htmlspecialchars($_SESSION[$nameVarBusiness]['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8');
 } else {
@@ -17,7 +17,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     <!-- Navbar Right Menu-->
     <ul class="app-nav gap-2">
         <?php if ($validationCreateBox === 1):
-        ?>
+            ?>
             <div class="d-flex gap-2" id="divOpenBox">
             </div>
         <?php endif;
@@ -76,8 +76,10 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
             </a>
             <ul class="dropdown-menu settings-menu dropdown-menu-right">
                 <!-- <li><a class="dropdown-item" href="page-user.html"><i class="bi bi-gear me-2 fs-5"></i> Settings</a></li>-->
-                <li><a class="dropdown-item" href="<?= base_url() ?>/pos/Profile"><i class="bi bi-person me-2 fs-5"></i> Perfil</a></li>
-                <li><a class="dropdown-item" href="<?= base_url() ?>/pos/LogOut"><i class="bi bi-box-arrow-right me-2 fs-5"></i> Cerrar Sesión</a></li>
+                <li><a class="dropdown-item" href="<?= base_url() ?>/pos/Profile"><i class="bi bi-person me-2 fs-5"></i>
+                        Perfil</a></li>
+                <li><a class="dropdown-item" href="<?= base_url() ?>/pos/LogOut"><i
+                            class="bi bi-box-arrow-right me-2 fs-5"></i> Cerrar Sesión</a></li>
             </ul>
         </li>
     </ul>
@@ -97,15 +99,19 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                 </div>
                 <div class="d-flex align-items-center gap-3 p-2 pe-3 border rounded-pill bg-body-tertiary">
                     <div class="position-relative">
-                        <img src="<?= $logoBusiness ?>" alt="Avatar" class="rounded-circle border border-2 border-white shadow-sm" style="width: 48px; height: 48px; object-fit: cover;">
-                        <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle"></span>
+                        <img src="<?= $logoBusiness ?>" alt="Avatar"
+                            class="rounded-circle border border-2 border-white shadow-sm"
+                            style="width: 48px; height: 48px; object-fit: cover;">
+                        <span
+                            class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle"></span>
                     </div>
                     <div class="flex-fill lh-1">
                         <h6 class="mb-1 fw-bold text-dark">
                             <?= ucwords(strtolower($_SESSION[$nameVarLoginInfo]['name'] . " " . $_SESSION[$nameVarLoginInfo]['lastname'])) ?>
                         </h6>
                         <small class="text-muted" style="font-size: 0.85rem;">
-                            ID: <?= $_SESSION[$nameVarLoginInfo]['idUser'] ?> <span class="mx-1">•</span> <span class="text-primary fw-medium">Cajero</span>
+                            ID: <?= $_SESSION[$nameVarLoginInfo]['idUser'] ?> <span class="mx-1">•</span> <span
+                                class="text-primary fw-medium">Cajero</span>
                         </small>
                     </div>
                     <div class="text-opacity-75 opacity-50 px-2">
@@ -121,7 +127,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             <span class="input-group-text border-end-0 ps-3">
                                 <i class="bi bi-shop-window"></i>
                             </span>
-                            <select class="form-select border-start-0 py-2 fw-medium" name="selectBox" id="selectBox" required>
+                            <select class="form-select border-start-0 py-2 fw-medium" name="selectBox" id="selectBox"
+                                required>
                             </select>
                         </div>
                     </div>
@@ -133,23 +140,20 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             <span class="input-group-text border-end-0 ps-3">
                                 <i class="bi bi-cash-coin fs-4"></i>
                             </span>
-                            <input type="number"
-                                class="form-control border-start-0 text-center fw-bold fs-3 text-dark"
-                                name="cash_opening_amount"
-                                id="cash_opening_amount"
-                                value="0"
-                                placeholder="0.00"
-                                step="0.01"
-                                min="0"
-                                required>
+                            <input type="number" class="form-control border-start-0 text-center fw-bold fs-3 text-dark"
+                                name="cash_opening_amount" id="cash_opening_amount" value="0" placeholder="0.00"
+                                step="0.01" min="0" required>
                         </div>
                     </div>
                 </div>
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-lg btn-light border flex-grow-1 text-muted fw-bold rounded-pill" data-bs-dismiss="modal">
+                    <button type="button"
+                        class="btn btn-lg btn-light border flex-grow-1 text-muted fw-bold rounded-pill"
+                        data-bs-dismiss="modal">
                         Cancelar
                     </button>
-                    <button id="btnOpenBox" type="button" class="btn btn-lg btn-primary flex-grow-1 fw-bold rounded-pill shadow-sm">
+                    <button id="btnOpenBox" type="button"
+                        class="btn btn-lg btn-primary flex-grow-1 fw-bold rounded-pill shadow-sm">
                         <i class="bi bi-unlock-fill me-2"></i> Abrir Turno
                     </button>
                 </div>
@@ -183,15 +187,18 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             <div class="card-body p-4">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
-                                        <h6 class="text-success fw-bold text-uppercase mb-2" style="font-size: 0.75rem; letter-spacing: 1px;">Total en Caja</h6>
+                                        <h6 class="text-success fw-bold text-uppercase mb-2"
+                                            style="font-size: 0.75rem; letter-spacing: 1px;">Total en Caja</h6>
                                         <h2 id="quick_access_total_general" class="display-6 fw-bold text-dark mb-0">
                                             <!-- Aqui carga el total general -->
                                         </h2>
                                     </div>
                                     <div class="text-end">
-                                        <span class="fs-6 badge border border-success text-success bg-white rounded-pill px-3 py-2">
+                                        <span
+                                            class="fs-6 badge border border-success text-success bg-white rounded-pill px-3 py-2">
                                             <i class="bi bi-graph-up-arrow me-1"></i>
-                                            <small id="quick_access_base_amount"><!-- Aqui carga el monto inicial de apertura --></small>
+                                            <small
+                                                id="quick_access_base_amount"><!-- Aqui carga el monto inicial de apertura --></small>
                                         </span>
                                     </div>
                                 </div>
@@ -213,15 +220,19 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <div class="col-lg-5 d-flex flex-column gap-3">
                         <div class="d-flex align-items-center gap-3 p-2 pe-3 border rounded-pill bg-body-tertiary">
                             <div class="position-relative">
-                                <img src="<?= $logoBusiness ?>" alt="Avatar" class="rounded-circle border border-2 border-white shadow-sm" style="width: 48px; height: 48px; object-fit: cover;">
-                                <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle"></span>
+                                <img src="<?= $logoBusiness ?>" alt="Avatar"
+                                    class="rounded-circle border border-2 border-white shadow-sm"
+                                    style="width: 48px; height: 48px; object-fit: cover;">
+                                <span
+                                    class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle"></span>
                             </div>
                             <div class="flex-fill lh-1">
                                 <h6 class="mb-1 fw-bold text-dark">
                                     <?= ucwords(strtolower($_SESSION[$nameVarLoginInfo]['name'] . " " . $_SESSION[$nameVarLoginInfo]['lastname'])) ?>
                                 </h6>
                                 <small class="text-muted" style="font-size: 0.85rem;">
-                                    ID: <?= $_SESSION[$nameVarLoginInfo]['idUser'] ?> <span class="mx-1">•</span> <span class="text-primary fw-medium">Cajero</span>
+                                    ID: <?= $_SESSION[$nameVarLoginInfo]['idUser'] ?> <span class="mx-1">•</span> <span
+                                        class="text-primary fw-medium">Cajero</span>
                                 </small>
                             </div>
                             <div class="text-opacity-75 opacity-50 px-2">
@@ -239,14 +250,16 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             </div>
                             <div class="row g-2">
                                 <div class="col-6">
-                                    <button id="btnOpenModalArqueoBox" class="btn btn-outline-light border w-100 p-3 rounded-4 h-100 text-start">
+                                    <button id="btnOpenModalArqueoBox"
+                                        class="btn btn-outline-light border w-100 p-3 rounded-4 h-100 text-start">
                                         <i class="bi bi-calculator fs-4 mb-1 d-block text-primary"></i>
                                         <span class="fw-bold text-dark d-block">Arqueo</span>
                                         <small class="text-muted" style="font-size: 0.75rem;">Contar dinero</small>
                                     </button>
                                 </div>
                                 <div class="col-6">
-                                    <button id="btnOpenModalCloseBox" class="btn btn-outline-light border w-100 p-3 rounded-4 h-100 text-start">
+                                    <button id="btnOpenModalCloseBox"
+                                        class="btn btn-outline-light border w-100 p-3 rounded-4 h-100 text-start">
                                         <i class="bi bi-lock-fill fs-4 mb-1 d-block text-danger"></i>
                                         <span class="fw-bold text-dark d-block">Cierre</span>
                                         <small class="text-muted" style="font-size: 0.75rem;">Finalizar turno</small>
@@ -255,33 +268,41 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             </div>
                         </div>
                         <div class="card border rounded-4 flex-fill">
-                            <div class="card-header bg-transparent border-bottom pt-3 pb-2 d-flex justify-content-between align-items-center">
+                            <div
+                                class="card-header bg-transparent border-bottom pt-3 pb-2 d-flex justify-content-between align-items-center">
                                 <h6 id="quick_access_title_list_movements" class="fw-bold mb-0">Últimos Movimientos</h6>
-                                <a href="<?= base_url() ?>/pos/boxhistory" class="text-decoration-none small fw-bold">Ver todos</a>
+                                <a href="<?= base_url() ?>/pos/boxhistory"
+                                    class="text-decoration-none small fw-bold">Ver todos</a>
                             </div>
-                            <div id="quick_access_card_list_movements" class="list-group list-group-flush rounded-bottom-4">
+                            <div id="quick_access_card_list_movements"
+                                class="list-group list-group-flush rounded-bottom-4">
                                 <div class="list-group-item px-3 py-3 border-bottom-0">
                                     <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                        <div class="bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center"
+                                            style="width: 38px; height: 38px;">
                                             <i class="bi bi-cart-fill"></i>
                                         </div>
                                         <div class="flex-fill lh-1">
-                                            <h6 class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">Venta #234</h6>
+                                            <h6 class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">Venta #234
+                                            </h6>
                                             <small class="text-muted" style="font-size: 0.75rem;">Hace 2 min</small>
                                         </div>
                                         <div class="text-end lh-1">
-                                            <span class="d-block fw-bold text-success">+<?= getCurrency(); ?>50.00</span>
+                                            <span
+                                                class="d-block fw-bold text-success">+<?= getCurrency(); ?>50.00</span>
                                             <small class="text-muted" style="font-size: 0.75rem;">Efectivo</small>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="list-group-item px-3 py-3 border-bottom-0">
                                     <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                        <div class="bg-danger-subtle text-danger rounded-circle d-flex align-items-center justify-content-center"
+                                            style="width: 38px; height: 38px;">
                                             <i class="bi bi-arrow-up-right"></i>
                                         </div>
                                         <div class="flex-fill lh-1">
-                                            <h6 class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">Retiro Parcial</h6>
+                                            <h6 class="mb-1 fw-bold text-dark" style="font-size: 0.9rem;">Retiro Parcial
+                                            </h6>
                                             <small class="text-muted" style="font-size: 0.75rem;">Hace 15 min</small>
                                         </div>
                                         <div class="text-end lh-1">
@@ -292,7 +313,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 </div>
                                 <div class="list-group-item px-3 py-3 border-bottom-0">
                                     <div class="d-flex align-items-center gap-3">
-                                        <div class="bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                        <div class="bg-info-subtle text-info rounded-circle d-flex align-items-center justify-content-center"
+                                            style="width: 38px; height: 38px;">
                                             <i class="bi bi-key-fill"></i>
                                         </div>
                                         <div class="flex-fill lh-1">
@@ -300,7 +322,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                             <small class="text-muted">09:00 AM • Inicio</small>
                                         </div>
                                         <div class="text-end lh-1">
-                                            <span class="d-block text-success fw-bold">+<?= getCurrency(); ?>100.00</span>
+                                            <span
+                                                class="d-block text-success fw-bold">+<?= getCurrency(); ?>100.00</span>
                                         </div>
                                     </div>
                                 </div>
@@ -309,7 +332,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </div>
                 </div>
                 <div class="d-flex justify-content-end gap-2 mt-2 w-100">
-                    <button type="button" class="btn btn-light border text-muted fw-bold rounded-4" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-light border text-muted fw-bold rounded-4"
+                        data-bs-dismiss="modal">
                         Cancelar
                     </button>
                 </div>
@@ -342,17 +366,26 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <div class="col-lg-5 d-flex flex-column gap-3">
                         <div class="card border rounded-4 bg-white shadow-sm">
                             <div class="card-header bg-transparent border-bottom pt-3 pb-2">
-                                <h6 class="fw-bold text-muted mb-0"><i class="bi bi-hdd-rack-fill me-2"></i>Esperado por Sistema</h6>
+                                <h6 class="fw-bold text-muted mb-0"><i class="bi bi-hdd-rack-fill me-2"></i>Esperado por
+                                    Sistema</h6>
                             </div>
                             <div class="card-body p-3">
                                 <div class="d-flex justify-content-between align-items-end mb-3">
                                     <div>
-                                        <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem;">Efectivo Total</small>
-                                        <h3 id="quick_access_arqueo_total_efectivo" class="fw-bold text-dark mb-0"><?= getCurrency(); ?>950.00</h3>
+                                        <small class="text-uppercase fw-bold text-muted"
+                                            style="font-size: 0.7rem;">Efectivo Total</small>
+
+
+                                        <h3 id="quick_access_arqueo_total_efectivo" class="fw-bold text-dark mb-0">
+                                            <?= getCurrency(); ?>950.00
+                                        </h3>
                                     </div>
                                     <div class="text-end">
-                                        <small class="text-uppercase fw-bold text-muted" style="font-size: 0.7rem;">Ventas Totales</small>
-                                        <h6 id="quick_access_arqueo_total_general" class="mb-0 text-muted"><?= getCurrency(); ?>12,540.00</h6>
+                                        <small class="text-uppercase fw-bold text-muted"
+                                            style="font-size: 0.7rem;">Ventas Totales</small>
+                                        <h6 id="quick_access_arqueo_total_general" class="mb-0 text-muted">
+                                            <?= getCurrency(); ?>12,540.00
+                                        </h6>
                                     </div>
                                 </div>
                                 <div class="d-flex flex-wrap gap-2" id="quick_access_arqueo_total_payment_method">
@@ -365,17 +398,21 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             <div class="p-2" id="quick_access_arqueo_message">
                                 <!-- Aqui va el mensaje si es descuadre o esta ok -->
                             </div>
-                            <h6 class="px-3 text-muted text-center mt-2 mb-0 small text-uppercase fw-bold">Total contado</h6>
+                            <h6 class="px-3 text-muted text-center mt-2 mb-0 small text-uppercase fw-bold">Total contado
+                            </h6>
                             <div class="d-flex flex-column px-3 pb-3">
-                                <h1 id="quick_access_arqueo_count_efectivo" class="text-center w-100 mb-2 fw-bold text-primary"><?= getCurrency(); ?>0.00</h1>
+                                <h1 id="quick_access_arqueo_count_efectivo"
+                                    class="text-center w-100 mb-2 fw-bold text-primary"><?= getCurrency(); ?>0.00</h1>
                                 <div class="d-flex flex-wrap align-items-center w-100 gap-2">
                                     <div id="quick_access_arqueo_diference" class="d-flex gap-2 align-items-center p-1">
                                         <!-- Aqui va la diferencia -->
                                     </div>
                                     <div class="flex-fill">
                                         <div class="form-floating">
-                                            <input type="text" class="form-control rounded-4 border-opacity-75" id="quick_access_arqueo_justificacion" placeholder="Motivo">
-                                            <label for="quick_access_arqueo_justificacion" class="text-muted"><i class="bi bi-pencil-square me-1"></i>Justificación</label>
+                                            <input type="text" class="form-control rounded-4 border-opacity-75"
+                                                id="quick_access_arqueo_justificacion" placeholder="Motivo">
+                                            <label for="quick_access_arqueo_justificacion" class="text-muted"><i
+                                                    class="bi bi-pencil-square me-1"></i>Justificación</label>
                                         </div>
                                     </div>
                                 </div>
@@ -384,21 +421,27 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </div>
                     <div class="col-lg-7">
                         <div class="card border rounded-4 h-100 bg-white shadow-sm">
-                            <div class="card-header bg-transparent border-bottom pt-3 pb-2 d-flex justify-content-between align-items-center">
-                                <h6 class="fw-bold text-muted mb-0"><i class="bi bi-cash-stack me-2 text-primary"></i>Conteo de Efectivo</h6>
-                                <button id="btnLimpiarArqueo" class="btn btn-sm btn-light border rounded-pill px-3">Limpiar</button>
+                            <div
+                                class="card-header bg-transparent border-bottom pt-3 pb-2 d-flex justify-content-between align-items-center">
+                                <h6 class="fw-bold text-muted mb-0"><i
+                                        class="bi bi-cash-stack me-2 text-primary"></i>Conteo de Efectivo</h6>
+                                <button id="btnLimpiarArqueo"
+                                    class="btn btn-sm btn-light border rounded-pill px-3">Limpiar</button>
                             </div>
                             <div class="card-body p-4">
                                 <div id="quick_access_arqueo_currency_denominations">
                                     <!-- Denominaciones de monedas -->
                                 </div>
-                                <div id="quick_access_desgloce_efectivo" class="d-flex justify-content-between pt-3 border bg-light rounded-4 p-2">
+                                <div id="quick_access_desgloce_efectivo"
+                                    class="d-flex justify-content-between pt-3 border bg-light rounded-4 p-2">
                                     <div class="text-center w-50 border-end">
-                                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.8rem;">Billetes</small>
+                                        <small class="text-muted text-uppercase fw-bold"
+                                            style="font-size: 0.8rem;">Billetes</small>
                                         <div class="fw-bold text-dark"><?= getCurrency() ?>1,280.00</div>
                                     </div>
                                     <div class="text-center w-50">
-                                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.8rem;">Monedas</small>
+                                        <small class="text-muted text-uppercase fw-bold"
+                                            style="font-size: 0.8rem;">Monedas</small>
                                         <div class="fw-bold text-dark"><?= getCurrency() ?>65.80</div>
                                     </div>
                                 </div>
@@ -407,10 +450,12 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </div>
                 </div>
                 <div class="d-flex justify-content-end gap-2 mt-4">
-                    <button type="button" class="btn btn-light border fw-bold rounded-pill px-4 text-muted" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-light border fw-bold rounded-pill px-4 text-muted"
+                        data-bs-dismiss="modal">
                         Cancelar
                     </button>
-                    <button id="setArqueoCaja" type="button" class="btn btn-primary fw-bold rounded-pill px-4 shadow-sm">
+                    <button id="setArqueoCaja" type="button"
+                        class="btn btn-primary fw-bold rounded-pill px-4 shadow-sm">
                         <i class="bi bi-check2-circle me-2"></i> Confirmar Arqueo
                     </button>
                 </div>
@@ -449,17 +494,21 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 <div class="bg-light rounded-3 p-3 mb-3">
                                     <div class="d-flex justify-content-between align-items-end">
                                         <div>
-                                            <small class="text-muted d-block fw-semibold" style="font-size: 0.75rem;">Total Generado</small>
+                                            <small class="text-muted d-block fw-semibold"
+                                                style="font-size: 0.75rem;">Total Generado</small>
                                             <h3 class="fw-bold text-dark mb-0" id="close_box_total_sales">S/ 0.00</h3>
                                         </div>
                                         <div class="text-end">
-                                            <small class="text-muted d-block fw-semibold" style="font-size: 0.75rem;">Transacc.</small>
-                                            <span class="badge bg-white text-dark border shadow-sm" id="close_box_total_transactions">0</span>
+                                            <small class="text-muted d-block fw-semibold"
+                                                style="font-size: 0.75rem;">Transacc.</small>
+                                            <span class="badge bg-white text-dark border shadow-sm"
+                                                id="close_box_total_transactions">0</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                <h6 class="fw-bold text-muted small mb-2" style="font-size: 0.75rem;">Desglose por Método</h6>
+                                <h6 class="fw-bold text-muted small mb-2" style="font-size: 0.75rem;">Desglose por
+                                    Método</h6>
                                 <div id="close_box_total_payment_method" class="d-flex flex-column gap-2">
                                 </div>
                             </div>
@@ -492,7 +541,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                     <span class="small fw-bold text-muted">Contado (Arqueo):</span>
                                     <span class="fw-bold text-primary" id="close_box_contado">S/ 0.00</span>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center mt-2 p-2 bg-light rounded-3 border">
+                                <div
+                                    class="d-flex justify-content-between align-items-center mt-2 p-2 bg-light rounded-3 border">
                                     <span class="small fw-bold text-dark">Diferencia:</span>
                                     <span class="fw-bold fs-5" id="close_box_difference">S/ 0.00</span>
                                 </div>
@@ -507,16 +557,17 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         <div class="card shadow-sm rounded-4">
                             <div class="card-body p-3">
                                 <div class="form-floating mb-3">
-                                    <textarea class="form-control bg-light rounded-3"
-                                        placeholder="Observaciones"
-                                        id="close_box_notes"
-                                        style="height: 80px; resize: none;"></textarea>
-                                    <label for="close_box_notes" class="text-muted opacity-75">Notas finales del cierre...</label>
+                                    <textarea class="form-control bg-light rounded-3" placeholder="Observaciones"
+                                        id="close_box_notes" style="height: 80px; resize: none;"></textarea>
+                                    <label for="close_box_notes" class="text-muted opacity-75">Notas finales del
+                                        cierre...</label>
                                 </div>
-                                <div class="d-flex gap-2 align-items-start border border-warning text-warning-emphasis bg-warning-subtle p-2 rounded-3 small">
+                                <div
+                                    class="d-flex gap-2 align-items-start border border-warning text-warning-emphasis bg-warning-subtle p-2 rounded-3 small">
                                     <i class="bi bi-exclamation-triangle-fill mt-1"></i>
                                     <div style="line-height: 1.3;">
-                                        <strong>Acción Irreversible:</strong> Al confirmar, se cerrará el turno y se generará el reporte Z. Asegúrese de haber validado el arqueo.
+                                        <strong>Acción Irreversible:</strong> Al confirmar, se cerrará el turno y se
+                                        generará el reporte Z. Asegúrese de haber validado el arqueo.
                                     </div>
                                 </div>
                             </div>
@@ -525,14 +576,17 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                 </div>
             </div>
             <div class="modal-footer border-top bg-white p-3 d-flex justify-content-between align-items-center">
-                <button type="button" class="btn btn-light border fw-bold rounded-pill px-3 text-muted" style="font-size: 0.9rem;">
+                <button type="button" class="btn btn-light border fw-bold rounded-pill px-3 text-muted"
+                    style="font-size: 0.9rem;">
                     <i class="bi bi-printer me-2"></i>Reporte
                 </button>
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-light border fw-bold rounded-pill px-4" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-light border fw-bold rounded-pill px-4"
+                        data-bs-dismiss="modal">
                         Cancelar
                     </button>
-                    <button id="btnFinalizarCierre" type="button" class="btn btn-danger fw-bold rounded-pill px-4 shadow-sm">
+                    <button id="btnFinalizarCierre" type="button"
+                        class="btn btn-danger fw-bold rounded-pill px-4 shadow-sm">
                         <i class="bi bi-lock-fill me-2"></i> Finalizar
                     </button>
                 </div>
@@ -552,15 +606,19 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
             <div class="modal-body p-4">
                 <div class="d-flex align-items-center gap-3 p-2 pe-3 border rounded-pill bg-body-tertiary mb-3">
                     <div class="position-relative">
-                        <img src="<?= $logoBusiness ?>" alt="Avatar" class="rounded-circle border border-2 border-white shadow-sm" style="width: 48px; height: 48px; object-fit: cover;">
-                        <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle"></span>
+                        <img src="<?= $logoBusiness ?>" alt="Avatar"
+                            class="rounded-circle border border-2 border-white shadow-sm"
+                            style="width: 48px; height: 48px; object-fit: cover;">
+                        <span
+                            class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle"></span>
                     </div>
                     <div class="flex-fill lh-1">
                         <h6 class="mb-1 fw-bold text-dark">
                             <?= ucwords(strtolower($_SESSION[$nameVarLoginInfo]['name'] . " " . $_SESSION[$nameVarLoginInfo]['lastname'])) ?>
                         </h6>
                         <small class="text-muted" style="font-size: 0.85rem;">
-                            ID: <?= $_SESSION[$nameVarLoginInfo]['idUser'] ?> <span class="mx-1">•</span> <span class="text-primary fw-medium">Cajero</span>
+                            ID: <?= $_SESSION[$nameVarLoginInfo]['idUser'] ?> <span class="mx-1">•</span> <span
+                                class="text-primary fw-medium">Cajero</span>
                         </small>
                     </div>
                     <div class="text-opacity-75 opacity-50 px-2">
@@ -569,7 +627,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                 </div>
                 <h5 class="border-bottom pb-2 border-2 mb-2">Detalle venta rápida</h5>
                 <div class="mb-3">
-                    <label class="form-label" for="movement_customer">Clientes (<span class="text-danger">*</span>)</label>
+                    <label class="form-label" for="movement_customer">Clientes (<span
+                            class="text-danger">*</span>)</label>
                     <select class="form-select" id="movement_customer" name="movement_customer">
                     </select>
                 </div>
@@ -578,11 +637,14 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <label class="small text-muted fw-bold text-uppercase mb-2">Monto del movimiento</label>
                     <div class="input-group input-group-lg">
                         <span class="input-group-text bg-transparent text-muted ps-5">S/</span>
-                        <input type="number" id="movement_amount" class="form-control fw-bold text-success fs-1 shadow-none" min="0" step="0.1" placeholder="0.0" style="margin-left: -10px;">
+                        <input type="number" id="movement_amount"
+                            class="form-control fw-bold text-success fs-1 shadow-none" min="0" step="0.1"
+                            placeholder="0.0" style="margin-left: -10px;">
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label" for="movement_payment_method">Metodo de pago (<span class="text-danger">*</span>)</label>
+                    <label class="form-label" for="movement_payment_method">Metodo de pago (<span
+                            class="text-danger">*</span>)</label>
                     <select class="form-select" id="movement_payment_method" name="movement_payment_method">
                         <option disabled>Seleccionar</option>
                         <option value="1" selected>Efectivo</option>
@@ -592,7 +654,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </select>
                 </div>
                 <div class="form-floating mb-3">
-                    <textarea class="form-control bg-light rounded-4" placeholder="Motivo" id="movement_description" style="height: 100px; resize: none;"></textarea>
+                    <textarea class="form-control bg-light rounded-4" placeholder="Motivo" id="movement_description"
+                        style="height: 100px; resize: none;"></textarea>
                     <label for="movement_description" class="text-muted">Descripción o Motivo</label>
                 </div>
                 <div class="alert alert-light border border-2 rounded-4 d-flex align-items-center gap-3 p-3">
@@ -604,7 +667,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </div>
                 </div>
                 <div class="d-grid">
-                    <button type="button" id="btnSaveMovement" class="btn btn-success btn-lg rounded-pill fw-bold shadow-sm">
+                    <button type="button" id="btnSaveMovement"
+                        class="btn btn-success btn-lg rounded-pill fw-bold shadow-sm">
                         <i class="bi bi-check2-circle me-2"></i> Registrar Ingreso
                     </button>
                 </div>

@@ -142,7 +142,6 @@ class AccountModel extends Mysql
 
         return (int) $this->insert($sql, $params);
     }
-
     public function createUserApp(string $email, string $password, string $people_id)
     {
         $sql = <<<SQL
@@ -159,5 +158,23 @@ class AccountModel extends Mysql
         ];
 
         return (int) $this->insert($sql, $params);
+    }
+    /**
+     * Método que verifica si existe un usuario con el nombre de usuario recibido.
+     *
+     * @param string $user_hash Nombre de usuario.
+     *
+     * @return bool Regresa true si existe, false si no existe.
+     */
+    public function isExistsUserApp(string $user_hash)
+    {
+        $this->user = $user_hash;
+        $sql = <<<SQL
+            SELECT * FROM user_app
+            WHERE user = ?
+            LIMIT 1;
+            SQL;
+        $request = $this->select($sql, [$this->user]);
+        return $request ? true : false;
     }
 }

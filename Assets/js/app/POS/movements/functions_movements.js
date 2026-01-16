@@ -332,6 +332,17 @@
         filterType: filterType,
         searchConcept: searchConcept,
       },
+      //ponemos un load
+      beforeSend: function () {
+        showAlert(
+          {
+            title: "Cargando",
+            message: "Cargando totales...",
+            icon: "info",
+          },
+          "loading"
+        );
+      },
       dataType: "json",
       success: function (res) {
         if (res.status) {
@@ -343,7 +354,25 @@
         }
       },
       error: function () {
-        console.error("Error al cargar los totales");
+        showAlert(
+          {
+            title: "Error",
+            message: "Error al cargar los totales",
+            icon: "error",
+          },
+          "float"
+        );
+      },
+      complete: function () {
+        Swal.close();
+        showAlert(
+          {
+            title: "Listo",
+            message: "Información cargada correctamente",
+            icon: "success",
+          },
+          "float"
+        );
       },
     });
   }
@@ -356,9 +385,12 @@
       ajax: {
         url: base_url + "/pos/Movements/getMovements",
         data: function (d) {
+          const type = document.querySelector(
+            'input[name="movementType"]:checked'
+          ).value;
+          d.type = type;
           d.filterType = document.getElementById("filter-type").value;
           d.searchConcept = document.getElementById("search-concept").value;
-
           // Obtener el valor del campo de fecha según el tipo de filtro
           let filterValue;
           if (d.filterType === "custom") {
@@ -366,13 +398,11 @@
           } else {
             filterValue = document.getElementById("filter-date").value;
           }
-
           // Calcular fechas usando la función centralizada
           const { minDate, maxDate } = calculateDateRange(
             d.filterType,
             filterValue
           );
-
           d.minDate = minDate;
           d.maxDate = maxDate;
         },
@@ -481,7 +511,6 @@
   function loadReport() {
     $("#table").on("click", ".report-item", function () {
       const idVoucher = $(this).data("idvoucher");
-
       $.ajax({
         url: base_url + "/pos/Movements/getVoucher",
         type: "POST",
@@ -552,7 +581,9 @@
       });
     });
   }
-
+  /**
+   * Metodo que se encarga de descargar el comprobante en formato PNG
+   */
   const dowloadPNG = () => {
     $("#download-png").click(() => {
       // console.log("descargar png");
@@ -578,20 +609,28 @@
     });
   };
   /**
-   * Metodo que se encarga de cargar los registros de movimientos de ingresos
+   * Metodo que se encarga de cargar los registros de movimientos de ingresos o egresos
    */
   function loadBtnIncomeTable() {
-    if (!document.getElementById("btnIncome")) return;
-    const btnIncome = document.getElementById("btnIncome");
-    btnIncome.addEventListener("click", function (e) {
-      e.preventDefault();
-      Swal.fire({
-        title: "Cargando",
-        text: "Cargando registros de movimientos de ingresos",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
-        },
+    if (document.querySelectorAll(".btn-movement").length === 0) return;
+    const dataBtnIncome = document.querySelectorAll(".btn-movement");
+    dataBtnIncome.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        //obtenemos el atributo data-type
+        const type = btn.getAttribute("value");
+        //traducimos el tipo
+        const typeTranslate = type === "income" ? "ingresos" : "egresos";
+        showAlert(
+          {
+            title: "Mostrando registros de " + typeTranslate,
+            message: "Cargando registros de " + typeTranslate + "...",
+            icon: "info",
+          },
+          "float"
+        );
+        table.ajax.reload();
+        loadTotals();
       });
     });
   }

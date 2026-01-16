@@ -152,6 +152,12 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         class="app-menu__icon bi bi-shield-check"></i><span
                         class="app-menu__label"><?= $data_menu(6) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?>
                         <?= $data_menu(6) ? $data_menu(6)['Interface'] : 'Roles' ?></span></a></li>
+            <li><a class="app-menu__item <?= $data['page_id'] === 13 ? 'active' : '' ?>"
+                    href="<?= $data_menu(13) ? base_url() . '/pos/undefined' : $linkestadointerfaz ?>"><i
+                        class="app-menu__icon bi bi-inboxes"></i><span class="app-menu__label">
+                        <?= $data_menu(13) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?>
+                        <?= $data_menu(13) ? $data_menu(13)['Interface'] : 'Gestionar Cajas' ?>
+                    </span></a></li>
         <?php else: ?>
             <li>
                 <a class="app-menu__item <?= $data['page_id'] === 0 ? 'active' : '' ?>"
@@ -248,7 +254,17 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </a>
                 </li>
             <?php endif; ?>
-
+            <?php if ($data_menu_employee(13)): ?>
+                <li>
+                    <a <?= $data_menu_employee(13) ? '' : 'style="cursor: no-drop;"' ?>
+                        class="app-menu__item <?= $data['page_id'] === 13 ? 'active' : '' ?>"
+                        href="<?= $data_menu_employee(13) ? base_url() . '/pos/undefined' : base_url() . '/pos/Errors/no_permisos' ?>">
+                        <i class="app-menu__icon bi bi-inboxes"></i>
+                        <span
+                            class="app-menu__label"><?= $data_menu_employee(13) ? $data_menu_employee(13)['Interface'] : 'Gestionar Cajas' ?></span>
+                    </a>
+                </li>
+            <?php endif; ?>
         <?php endif; ?>
     </ul>
     <div class="w-100 text-center">
