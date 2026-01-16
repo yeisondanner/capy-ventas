@@ -17,7 +17,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     <!-- Navbar Right Menu-->
     <ul class="app-nav gap-2">
         <?php if ($validationCreateBox === 1):
-            ?>
+        ?>
             <div class="d-flex gap-2" id="divOpenBox">
             </div>
         <?php endif;

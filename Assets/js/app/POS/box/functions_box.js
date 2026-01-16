@@ -63,11 +63,14 @@ export class Box {
   #lblCloseBoxDifference = $("#close_box_difference");
   #containerCloseBoxStatus = $("#close_box_status_container");
 
-  // Vista: Movimientos (Ingreso) -> NUEVO
+  // Vista: Movimientos (Ingreso/Retiro) -> NUEVO
+  #btnTypeIngreso = $("#btnTypeIngreso");
+  #btnTypeRetiro = $("#btnTypeRetiro");
   #inputMovementType = $("#movement_type");
   #inputMovementAmount = $("#movement_amount");
   #inputMovementDescription = $("#movement_description");
   #btnSaveMovement = $("#btnSaveMovement");
+  #iconMovementWrapper = $("#movement_icon_wrapper");
   #selectMovementCustomer = $("#movement_customer");
   #selectMovementPaymentMethod = $("#movement_payment_method");
 
@@ -119,6 +122,12 @@ export class Box {
       .on("click", this.#handleClickFinalizarCierre);
 
     // --- NUEVO: Eventos del Modal de Movimientos ---
+    this.#btnTypeIngreso
+      .off("click")
+      .on("click", () => this.#cambiarTipoMovimiento("Ingreso"));
+    this.#btnTypeRetiro
+      .off("click")
+      .on("click", () => this.#cambiarTipoMovimiento("Egreso"));
     this.#btnSaveMovement
       .off("click")
       .on("click", this.#handleClickGuardarMovimiento);
@@ -168,11 +177,60 @@ export class Box {
   // 4. LÓGICA DE MOVIMIENTOS (NUEVO)
   // ==========================================
 
+  #cambiarTipoMovimiento = (tipo) => {
+    this.#inputMovementType.val(tipo);
 
+    if (tipo === "Ingreso") {
+      // Visual: Botones Switch
+      this.#btnTypeIngreso
+        .addClass("btn-primary shadow-sm text-white")
+        .removeClass("text-muted btn-transparent");
+      this.#btnTypeRetiro
+        .removeClass("btn-primary shadow-sm text-white")
+        .addClass("text-muted btn-transparent");
+
+      // Visual: Input y Botón Guardar (Verde)
+      this.#inputMovementAmount
+        .removeClass("text-danger")
+        .addClass("text-success");
+      this.#btnSaveMovement
+        .removeClass("btn-danger")
+        .addClass("btn-success")
+        .html('<i class="bi bi-check2-circle me-2"></i> Registrar Ingreso');
+
+      // Visual: Icono
+      this.#iconMovementWrapper
+        .removeClass("bg-danger-subtle text-danger")
+        .addClass("bg-success-subtle text-success");
+    } else {
+      // Visual: Botones Switch
+      this.#btnTypeRetiro
+        .addClass("btn-primary shadow-sm text-white")
+        .removeClass("text-muted btn-transparent");
+      this.#btnTypeIngreso
+        .removeClass("btn-primary shadow-sm text-white")
+        .addClass("text-muted btn-transparent");
+
+      // Visual: Input y Botón Guardar (Rojo)
+      this.#inputMovementAmount
+        .removeClass("text-success")
+        .addClass("text-danger");
+      this.#btnSaveMovement
+        .removeClass("btn-success")
+        .addClass("btn-danger")
+        .html('<i class="bi bi-dash-circle me-2"></i> Registrar Retiro');
+
+      // Visual: Icono
+      this.#iconMovementWrapper
+        .removeClass("bg-success-subtle text-success")
+        .addClass("bg-danger-subtle text-danger");
+    }
+  };
 
   #resetearModalMovimiento = () => {
     this.#inputMovementAmount.val("");
     this.#inputMovementDescription.val("");
+    this.#cambiarTipoMovimiento("Ingreso"); // Reset a Ingreso por defecto
   };
 
   #handleClickGuardarMovimiento = async () => {
