@@ -122,7 +122,9 @@ export class Account {
         });
     });
   };
-
+  /**
+   * Metodo que se encarga de crear la cuenta
+   */
   #setAccount = () => {
     $("#formAccount").on("submit", (e) => {
       e.preventDefault();
@@ -451,12 +453,13 @@ export class Account {
                         <div class="mb-3">
                             <label class="form-label fw-bold">Ingresa tu código de verificación</label>
                             <div class="text-muted small mb-2">El código de verificación se envío a tu <span class="fw-bold">correo electrónico</span></div>
-                            <div class="input-group mb-3">
+                            <div class="input-group">
                                 <span class="input-group-text text-muted">
                                     <i class="bi bi-123"></i>
                                 </span>
                                 <input id="code" name="code" type="text" class="form-control" placeholder="Escribe tu código de verificación" required>
                             </div>
+                            <span class="text-muted small">Revisa el código de verificación en tu <span class="fw-bold">spam</span> o <span class="fw-bold">correo no deseado</span> si no lo encuentras en tu <span class="fw-bold">bandeja de entrada</span></span>
                         </div>
                         <button id="btnVerifyCode" type="submit" class="btn btn-dark w-100 py-3 rounded-5 fw-bold">Verificar código <i class="bi bi-arrow-right"></i></button>
                     </form>

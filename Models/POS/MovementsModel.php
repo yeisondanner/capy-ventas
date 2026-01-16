@@ -17,25 +17,28 @@ class MovementsModel extends Mysql
     public function select_movements(int $businessId, $minDate = null, $maxDate = null, $searchConcept = null, $type_movements = 'income'): array
     {
         if ($type_movements === 'income') {
-            $sql = "SELECT
-                    vh.idVoucherHeader,
-                    CASE
-                        WHEN vh.voucher_name IS NULL
-                            THEN CONCAT('Venta del dia ', DATE(vh.date_time))
-                        ELSE vh.voucher_name
-                    END AS voucher_name,
-                    vh.amount,
-                    pm.name,
-                    vh.date_time,
-                    CONCAT(p.`names`, ' ', p.lastname) AS fullname
-                FROM voucher_header vh
-                INNER JOIN payment_method pm
-                    ON vh.payment_method_id = pm.idPaymentMethod
-                INNER JOIN user_app ua
-                ON vh.user_app_id = ua.idUserApp
-                INNER JOIN people p
-                ON ua.people_id = p.idPeople
-                WHERE vh.business_id = ?";
+            /**
+             * Seccion de obtener las ventas de acuerdo a los filtros proporcionados
+             */
+            $sql = <<<SQL
+                SELECT
+                    vh.idVoucherHeader AS 'id',
+                    CASE WHEN vh.voucher_name IS NULL THEN CONCAT(
+                        'Venta del dia ',
+                        DATE(vh.date_time)
+                    ) ELSE vh.voucher_name END AS 'name',
+                    vh.amount AS 'amount',
+                    pm.name AS 'method_payment',
+                    vh.date_time AS 'date_time',
+                    CONCAT(p.`names`, ' ', p.lastname) AS 'fullname'
+                FROM
+                    voucher_header vh
+                    INNER JOIN payment_method pm ON vh.payment_method_id = pm.idPaymentMethod
+                    INNER JOIN user_app ua ON vh.user_app_id = ua.idUserApp
+                    INNER JOIN people p ON ua.people_id = p.idPeople
+                    WHERE 
+                    vh.business_id = ?
+            SQL;
 
             $arrValues = [$businessId];
             if ($minDate != null && $maxDate != null) {
@@ -50,7 +53,28 @@ class MovementsModel extends Mysql
             }
             $sql .= " ORDER BY vh.date_time DESC";
         } else if ($type_movements === 'expense') {
-            $sql = "";
+            /**
+             * Seccion de obtener los gastos de acuerdo a los filtros proporcionados
+             */
+            $sql = <<<SQL
+                SELECT
+                    ee.idExpense_economic AS 'id',
+                    CASE WHEN ee.name_expense IS NULL THEN CONCAT(
+                        'Gastos del dia ',
+                        DATE(ee.expense_date)
+                    ) ELSE ee.name_expense END AS 'name',
+                    ee.amount AS 'amount',
+                    pm.`name` AS 'method_payment',
+                    ee.expense_date AS 'date_time',
+                    CONCAT(p.`names`, ' ', p.lastname) AS 'fullname'
+                FROM
+                    expense_economic AS ee
+                    INNER JOIN payment_method AS pm ON pm.idPaymentMethod = ee.PaymentMethod_id
+                    INNER JOIN user_app AS ua ON ua.idUserApp = ee.userapp_id
+                    INNER JOIN people AS p ON p.idPeople = ua.people_id
+                    WHERE 
+                    ee.business_id=?
+            SQL;
             $arrValues = [$businessId];
         }
         return $this->select_all($sql, $arrValues);

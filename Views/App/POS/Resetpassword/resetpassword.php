@@ -31,8 +31,8 @@
         </div>
     </section>
 
-    <a target="_blank" href="https://wa.me/51910367611?text=Hola,%20tengo%20problemas%20con%20el%20registro%20en%20Capy%20Ventas" class="btn-whatsapp-float">
-        <i class="bi bi-whatsapp me-2"></i> ¿Tienes problemas con el registro?
+    <a target="_blank" href="https://wa.me/51910367611?text=Hola,%20tengo%20problemas%20con%20la%20recuperación%20de%20contraseña%20en%20Capy%20Ventas" class="btn-whatsapp-float">
+        <i class="bi bi-whatsapp me-2"></i> ¿Tienes problemas con la recuperación?
     </a>
     <!-- TODO: Essential javascripts for application to work-->
     <script src="<?= media() ?>/js/libraries/POS/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>

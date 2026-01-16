@@ -76,7 +76,7 @@ class Resetpassword extends Controllers
 		saveSessionVerification(encryption($email), encryption($code));
 		//cargamos la plantilla de recuperación de contraseña               
 		$data = [
-			'nombres'     => "Capy Amigo",
+			'nombres'     => $is_exists_user['names'] . ' ' . $is_exists_user['lastname'],
 			'titulo'      => "Bienvenido a CapyVentas",
 			'descripcion' => "Gracias por ser parte de nosotros. Estás a un solo paso de poder recuperar tu contraseña. \nPor favor, usa el siguiente código de verificación para poder recuperar tu contraseña:",
 			'codigo'      => $code
@@ -87,7 +87,7 @@ class Resetpassword extends Controllers
 		$params = [
 			// 'to' => [decryption($email)], // o string
 			'to' => $email, // o string
-			'subject' => 'NOTIFICACION [ ' . "hola" . ' ]- ' . getCompanyName(),
+			'subject' => 'CapyVentas - Recuperación de contraseña',
 			'body' => $plantillaHTML,
 			'attachments' => [] // opcional
 		];

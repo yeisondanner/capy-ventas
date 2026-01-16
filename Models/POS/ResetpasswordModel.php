@@ -61,6 +61,6 @@ class ResetpasswordModel extends Mysql
             LIMIT 1;
             SQL;
         $request = $this->select($sql, [$this->email]);
-        return $request ? true : false;
+        return $request;
     }
 }

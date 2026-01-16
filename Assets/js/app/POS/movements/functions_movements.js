@@ -411,14 +411,14 @@
       columns: [
         { data: "cont" },
         { data: "actions" },
-        { data: "voucher_name" },
+        { data: "name" },
         {
           data: "amount",
           render: function (data) {
             return getcurrency + " " + data;
           },
         },
-        { data: "name" },
+        { data: "method_payment" },
         { data: "fullname" },
         { data: "date_time" },
       ],

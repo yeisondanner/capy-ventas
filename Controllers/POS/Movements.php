@@ -106,7 +106,7 @@ class Movements extends Controllers
 
         foreach ($arrData as $key => $value) {
 
-            $idVoucher = $value['idVoucherHeader'];
+            $idVoucher = $value['id'];
 
             $arrData[$key]['cont'] = $cont;
             $arrData[$key]['date_time'] = dateFormat($value['date_time']);
