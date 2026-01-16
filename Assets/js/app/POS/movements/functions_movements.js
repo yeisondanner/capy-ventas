@@ -5,6 +5,7 @@
   window.addEventListener("DOMContentLoaded", (e) => {
     loadTable();
     loadReportVoucher();
+    loadReportExpense();
     dowloadPNG();
 
     // Mostrar u ocultar campos de rango personalizado según selección y actualizar comportamiento del campo de fecha
@@ -571,6 +572,21 @@
           alert("Error de comunicación con el servidor");
         },
       });
+    });
+  }
+  //funcion que encarga de cargar el reporte de los gastos
+  function loadReportExpense() {
+    $("#table").on("click", ".report-item-expense", function () {
+      const idVoucher = $(this).data("id");
+      showAlert(
+        {
+          icon: "info",
+          title: "Información",
+          message: "Funcionalidad en desarrollo",
+          position: "bottom",
+        },
+        "float"
+      );
     });
   }
   /**
