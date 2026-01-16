@@ -70,6 +70,10 @@ class Movements extends Controllers
         $filterType = (isset($_GET["filterType"]) && !empty($_GET["filterType"])) ? strClean($_GET['filterType']) : 'daily';
         $searchConcept = (isset($_GET["searchConcept"]) && !empty($_GET["searchConcept"])) ? strClean($_GET['searchConcept']) : null;
         $type = (isset($_GET["type"]) && !empty($_GET["type"])) ? strClean($_GET['type']) : 'income';
+        //verificamos que el tipo de movimiento sea income o expense
+        if ($type !== 'income' && $type !== 'expense') {
+            $type = 'income';
+        }
 
         // Calcular fechas según el tipo de filtro SI NO se han enviado fechas específicas
         if ($filterType !== 'custom') {
@@ -105,27 +109,30 @@ class Movements extends Controllers
 
 
         foreach ($arrData as $key => $value) {
-
-            $idVoucher = $value['id'];
-
             $arrData[$key]['cont'] = $cont;
             $arrData[$key]['date_time'] = dateFormat($value['date_time']);
-            $arrData[$key]['actions'] = '
-                <div class="btn-group">
-                    <button
-                        class="btn btn-outline-info btn-sm  report-item"
-                        title="Ver reporte"
-                        type="button"
-                        data-idvoucher="' . $idVoucher . '">
-                        <i class="bi bi-clipboard2-data-fill"></i>
-                    </button>
-                </div>
-            ';
+            $arrData[$key]['actions'] = $this->renderGroupButtons($value);
 
             $cont++;
         }
 
         toJson($arrData);
+    }
+    protected function renderGroupButtons($data)
+    {
+        $type = $data['type'];
+        $id = $data['id'];
+        return <<<HTML
+                <div class="btn-group">
+                    <button
+                        class="btn btn-outline-info btn-sm  report-item-{$type}"
+                        title="Ver reporte"
+                        type="button"
+                        data-id="$id">
+                        <i class="bi bi-clipboard2-data-fill"></i>
+                    </button>
+                </div>
+        HTML;
     }
 
     /**
@@ -150,14 +157,14 @@ class Movements extends Controllers
 
         $rows = $this->model->select_voucher($idVoucherHeader, $businessId);
 
-        if (empty($rows)) {
+        /*if (empty($rows)) {
             $arrResponse = [
                 'status' => false,
                 'msg' => 'No se encontraron datos para este comprobante.'
             ];
             toJson($arrResponse);
             return;
-        }
+        }*/
 
         // Cabecera desde la primera fila
         $headerRow = $rows[0];

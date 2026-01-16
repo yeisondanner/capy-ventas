@@ -4,7 +4,7 @@
 
   window.addEventListener("DOMContentLoaded", (e) => {
     loadTable();
-    loadReport();
+    loadReportVoucher();
     dowloadPNG();
 
     // Mostrar u ocultar campos de rango personalizado según selección y actualizar comportamiento del campo de fecha
@@ -153,7 +153,7 @@
       resetFilters();
     });
     //cargamos el boton de ingresos
-    loadBtnIncomeTable();
+    loadBtnMovementsTable();
   });
 
   // Función para obtener el número de semana
@@ -508,9 +508,9 @@
   }
 
   //FUNCION PARA CARGAR EL REPORTE DEL COMPROBANTE
-  function loadReport() {
-    $("#table").on("click", ".report-item", function () {
-      const idVoucher = $(this).data("idvoucher");
+  function loadReportVoucher() {
+    $("#table").on("click", ".report-item-income", function () {
+      const idVoucher = $(this).data("id");
       $.ajax({
         url: base_url + "/pos/Movements/getVoucher",
         type: "POST",
@@ -611,11 +611,11 @@
   /**
    * Metodo que se encarga de cargar los registros de movimientos de ingresos o egresos
    */
-  function loadBtnIncomeTable() {
+  function loadBtnMovementsTable() {
     if (document.querySelectorAll(".btn-movement").length === 0) return;
     const dataBtnIncome = document.querySelectorAll(".btn-movement");
     dataBtnIncome.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
+      btn.addEventListener("input", (e) => {
         e.preventDefault();
         //obtenemos el atributo data-type
         const type = btn.getAttribute("value");

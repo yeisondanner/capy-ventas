@@ -16,6 +16,10 @@ class MovementsModel extends Mysql
      */
     public function select_movements(int $businessId, $minDate = null, $maxDate = null, $searchConcept = null, $type_movements = 'income'): array
     {
+        //verificamos que el tipo de movimiento sea income o expense
+        if ($type_movements !== 'income' && $type_movements !== 'expense') {
+            return [];
+        }
         if ($type_movements === 'income') {
             /**
              * Seccion de obtener las ventas de acuerdo a los filtros proporcionados
@@ -76,8 +80,24 @@ class MovementsModel extends Mysql
                     ee.business_id=?
             SQL;
             $arrValues = [$businessId];
+            if ($minDate != null && $maxDate != null) {
+                $sql .= " AND DATE(ee.expense_date) BETWEEN ? AND ?";
+                array_push($arrValues, $minDate, $maxDate);
+            }
+            // Agregar filtro por concepto si se proporciona
+            if ($searchConcept != null && !empty($searchConcept)) {
+                $sql .= " AND (ee.name_expense LIKE ? OR p.names LIKE ? OR p.lastname LIKE ?)";
+                $searchParam = '%' . $searchConcept . '%';
+                array_push($arrValues, $searchParam, $searchParam, $searchParam);
+            }
+            $sql .= " ORDER BY ee.expense_date DESC";
         }
-        return $this->select_all($sql, $arrValues);
+        $arrMovements = $this->select_all($sql, $arrValues);
+        //adicionamos un campo mas para identificar el tipo de movimiento
+        array_walk($arrMovements, function (&$item) use ($type_movements) {
+            $item['type'] = $type_movements;
+        });
+        return $arrMovements;
     }
 
     public function select_voucher(int $voucherId, int $businessId): array
