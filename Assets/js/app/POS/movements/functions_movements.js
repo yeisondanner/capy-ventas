@@ -577,44 +577,161 @@
   //funcion que encarga de cargar el reporte de los gastos
   function loadReportExpense() {
     $("#table").on("click", ".report-item-expense", function () {
-      const idVoucher = $(this).data("id");
-      showAlert(
-        {
-          icon: "info",
-          title: "Información",
-          message: "Funcionalidad en desarrollo",
-          position: "bottom",
+      const idExpense = $(this).data("id");
+
+      $.ajax({
+        url: base_url + "/pos/Movements/getExpense",
+        type: "POST",
+        dataType: "json",
+        data: { idExpense: idExpense },
+        success: function (res) {
+          if (!res.status) {
+            showAlert(
+              {
+                icon: "error",
+                title: "Error",
+                message: res.message || "No se pudo cargar el gasto",
+                position: "bottom",
+              },
+              "float"
+            );
+            return;
+          }
+
+          const d = res.data;
+
+          $("#expense_name_bussines").text(
+            d.name_bussines || "NOMBRE DEL NEGOCIO"
+          );
+          $("#expense_direction_bussines").text(
+            d.direction_bussines || "Dirección no registrada"
+          );
+          $("#expense_document_bussines").text(
+            d.document_bussines || "00000000000"
+          );
+          $("#expense_date").text(d.expense_date);
+          $("#expense_fullname").text(d.fullname);
+          $("#expense_name").text(d.name_expense);
+          $("#expense_description").text(d.description || "Sin descripción");
+          $("#expense_category").text(d.category_name);
+          $("#expense_supplier").text(d.supplier_name || "--");
+          $("#expense_voucher_reference").text(d.voucher_reference || "--");
+
+          let statusBadge = "badge bg-secondary";
+          if (d.status === "pagado")
+            statusBadge = "badge bg-success text-white";
+          else if (d.status === "anulado")
+            statusBadge = "badge bg-danger text-white";
+          else if (d.status === "pendiente")
+            statusBadge = "badge bg-warning text-dark";
+
+          $("#expense_status")
+            .text(d.status.toUpperCase())
+            .attr("class", statusBadge + " border");
+
+          $("#expense_payment_method").text(d.payment_method);
+          $("#expense_total_amount").text(d.amount_formatted);
+
+          if (d.logo) {
+            document.getElementById("logo_expense").src = d.logo;
+          }
+
+          const modalEl = document.getElementById("expenseModal");
+          const modalExpense = bootstrap.Modal.getOrCreateInstance(modalEl);
+          modalExpense.show();
         },
-        "float"
-      );
+        error: function () {
+          showAlert(
+            {
+              icon: "error",
+              title: "Error",
+              message: "Error de comunicación con el servidor",
+              position: "bottom",
+            },
+            "float"
+          );
+        },
+      });
     });
   }
   /**
    * Metodo que se encarga de descargar el comprobante en formato PNG
    */
-  const dowloadPNG = () => {
-    $("#download-png").click(() => {
-      // console.log("descargar png");
-      html2canvas(document.getElementById("voucherContainer"), {
-        scale: 2, // más resolución
-        useCORS: true, // por si usas imágenes externas
-      })
-        .then((canvas) => {
-          // Convertir el canvas a dataURL (PNG)
-          const imgData = canvas.toDataURL("image/png");
+  /* Generar captura completa clonando el nodo en el body para evitar recorte por scroll */
+  const exportToPng = (elementId, filename) => {
+    const originalElement = document.getElementById(elementId);
+    if (!originalElement) return;
 
-          // Crear un enlace "fantasma" para descargar
-          const link = document.createElement("a");
-          link.href = imgData;
-          link.download = "Comprobante.png";
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        })
-        .catch((error) => {
-          console.error("Error al exportar PNG:", error);
-        });
+    // 1. Clonar el elemento
+    const clone = originalElement.cloneNode(true);
+
+    // 2. Estilizar el clon para que se muestre completo
+    Object.assign(clone.style, {
+      position: "fixed",
+      top: "-9999px",
+      left: "-9999px",
+      width: originalElement.offsetWidth + "px", // Mismo ancho que el original
+      height: "auto", // Altura automática para mostrar todo el contenido
+      zIndex: "-1",
+      overflow: "visible", // Asegurar que no haya scroll oculto
     });
+
+    // 3. Insertar el clon en el documento
+    document.body.appendChild(clone);
+
+    // 4. Generar el canvas desde el clon
+    html2canvas(clone, {
+      scale: 2, // Mejor resolución
+      useCORS: true,
+      scrollY: -window.scrollY, // Ajuste para evitar desplazamiento
+    })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((err) => {
+        console.error("Error exporting PNG:", err);
+      })
+      .finally(() => {
+        // 5. Eliminar el clon
+        document.body.removeChild(clone);
+      });
+  };
+
+  const dowloadPNG = () => {
+    // Comprobante de Venta (Ingresos)
+    const btnDownloadPng = document.getElementById("download-png");
+    if (btnDownloadPng) {
+      // Remover listeners anteriores para evitar múltiples descargas
+      const newBtn = btnDownloadPng.cloneNode(true);
+      btnDownloadPng.parentNode.replaceChild(newBtn, btnDownloadPng);
+
+      newBtn.addEventListener("click", () => {
+        exportToPng("voucherContainer", "Comprobante_Venta.png");
+      });
+    }
+
+    // Comprobante de Gasto (Egresos)
+    const btnDownloadPngExpense = document.getElementById(
+      "download-expense-png"
+    );
+    if (btnDownloadPngExpense) {
+      // Remover listeners anteriores
+      const newBtnExpense = btnDownloadPngExpense.cloneNode(true);
+      btnDownloadPngExpense.parentNode.replaceChild(
+        newBtnExpense,
+        btnDownloadPngExpense
+      );
+
+      newBtnExpense.addEventListener("click", () => {
+        exportToPng("expenseContainer", "Comprobante_Egreso.png");
+      });
+    }
   };
   /**
    * Metodo que se encarga de cargar los registros de movimientos de ingresos o egresos

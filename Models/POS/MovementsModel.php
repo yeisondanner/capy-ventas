@@ -225,4 +225,40 @@ class MovementsModel extends Mysql
 
         return $totals;
     }
+
+    public function select_expense(int $expenseId, int $businessId): array
+    {
+        $sql = <<<SQL
+            SELECT
+                ee.idExpense_economic AS id,
+                ee.name_expense,
+                ee.description,
+                ee.amount,
+                ee.expense_date,
+                ee.voucher_reference,
+                ee.status,
+                pm.name AS payment_method,
+                ec.name AS category_name,
+                s.company_name AS supplier_name,
+                CONCAT(p.names, ' ', p.lastname) AS fullname,
+                b.name AS name_bussines,
+                b.direction AS direction_bussines,
+                b.document_number AS document_bussines,
+                b.logo
+            FROM
+                expense_economic ee
+                INNER JOIN business b ON b.idBusiness = ee.business_id
+                INNER JOIN payment_method pm ON pm.idPaymentMethod = ee.PaymentMethod_id
+                INNER JOIN expense_category ec ON ec.idExpense_category = ee.expense_category_id
+                LEFT JOIN supplier s ON s.idSupplier = ee.supplier_id
+                INNER JOIN user_app ua ON ua.idUserApp = ee.userapp_id
+                INNER JOIN people p ON p.idPeople = ua.people_id
+            WHERE
+                ee.idExpense_economic = ?
+                AND ee.business_id = ?
+            LIMIT 1;
+        SQL;
+
+        return $this->select($sql, [$expenseId, $businessId]);
+    }
 }

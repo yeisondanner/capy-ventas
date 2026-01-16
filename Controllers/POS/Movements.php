@@ -214,6 +214,45 @@ class Movements extends Controllers
     }
 
     /**
+     * Devuelve el detalle de un gasto (expense) del negocio activo.
+     *
+     * @return void
+     */
+    public function getExpense(): void
+    {
+        if (!$_POST) {
+            $this->responseError('Solicitud inválida.');
+        }
+
+        $idExpense = intval($_POST['idExpense'] ?? 0);
+
+        if ($idExpense <= 0) {
+            $this->responseError('Identificador de gasto no válido.');
+        }
+
+        // ID del negocio desde la sesión
+        $businessId = $this->getBusinessId();
+
+        $data = $this->model->select_expense($idExpense, $businessId);
+
+        if (empty($data)) {
+            $this->responseError('No se encontraron datos para este gasto.');
+            return;
+        }
+
+        // Formatear datos si es necesario
+        $data['amount_formatted'] = getCurrency() . ' ' . number_format($data['amount'], 2, '.', ',');
+        $data['logo'] = base_url() . '/Loadfile/iconbusiness?f=' . $data['logo'];
+
+        $arrResponse = [
+            'status' => true,
+            'data' => $data,
+        ];
+
+        toJson($arrResponse);
+    }
+
+    /**
      * Obtiene el identificador del negocio activo desde la sesión.
      *
      * @return int
