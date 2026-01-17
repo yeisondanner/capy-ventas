@@ -117,6 +117,7 @@ class MovementsModel extends Mysql
                     vh.tax_percentage,
                     vh.tax_amount,
                     b.logo,
+                    vh.idVoucherHeader AS 'id',
                     CONCAT(p.`names`, ' ', p.lastname) AS fullname
                 FROM
                     voucher_header vh

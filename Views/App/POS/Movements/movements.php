@@ -240,6 +240,10 @@
 
                     <!-- Details Grid -->
                     <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="small text-uppercase text-muted fw-bold">Codigo de Venta:</label>
+                            <div class="fw-bold" id="voucher_code">--</div>
+                        </div>
                         <div class="col-6">
                             <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión:</label>
                             <div class="fw-bold" id="date_time">--</div>
@@ -344,12 +348,16 @@
                     <!-- Title & Date -->
                     <div class="row mb-4">
                         <div class="col-12 text-center">
-                            <h5 class="fw-bold text-decoration-underline text-uppercase">Comprobante de Egreso</h5>
+                            <h5 class="fw-bold text-decoration-underline text-uppercase" id="expense_title">Comprobante de Gasto/Egreso</h5>
                         </div>
                     </div>
 
                     <!-- Details Grid -->
                     <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="small text-uppercase text-muted fw-bold">Codigo de Gasto/Egreso:</label>
+                            <div class="fw-bold" id="expense_code">--</div>
+                        </div>
                         <div class="col-6">
                             <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión:</label>
                             <div class="fw-bold" id="expense_date">--</div>

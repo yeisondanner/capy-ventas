@@ -183,6 +183,7 @@ class Movements extends Controllers
             'tax_name' => $headerRow['tax_name'],
             'tax_percentage' => $headerRow['tax_percentage'],
             'tax_amount' => $headerRow['tax_amount'],
+            'id' => $headerRow['id'],
         ];
         $dataDetails = $rows['detail'];
         // Detalle (todas las filas)

@@ -524,6 +524,11 @@
           $("#direction_customer").text(h.direction_customer);
           $("#fullname").text(h.fullname);
           document.getElementById("logo_voucher").src = h.logo;
+          //hacemos que el id se muestre con ceros a la izquierda
+          const id_voucher = String(h.id).padStart(8, "0");
+          //CV = Comprobante de Venta
+          const voucher_code = `CV-${id_voucher}`;
+          $("#voucher_code").text(voucher_code);
 
           // Totales
           $("#percentage_discount").text(h.percentage_discount);
@@ -600,13 +605,13 @@
 
           const d = res.data;
 
-          $("#expense_name_bussines").text(
+          $("#name_business_expense").text(
             d.name_bussines || "NOMBRE DEL NEGOCIO"
           );
-          $("#expense_direction_bussines").text(
+          $("#direction_business_expense").text(
             d.direction_bussines || "Dirección no registrada"
           );
-          $("#expense_document_bussines").text(
+          $("#document_business_expense").text(
             d.document_bussines || "00000000000"
           );
           $("#expense_date").text(d.expense_date);
@@ -616,7 +621,11 @@
           $("#expense_category").text(d.category_name);
           $("#expense_supplier").text(d.supplier_name || "--");
           $("#expense_voucher_reference").text(d.voucher_reference || "--");
-
+          //hacemos que el id se muestre con ceros a la izquierda
+          const id_expense = String(d.id).padStart(8, "0");
+          //CG = Comprobante de Gasto
+          const expense_code = `CG-${id_expense}`;
+          $("#expense_code").text(expense_code);
           let statusBadge = "badge bg-secondary";
           if (d.status === "pagado")
             statusBadge = "badge bg-success text-white";
