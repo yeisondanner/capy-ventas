@@ -3,7 +3,6 @@
     font-family: 'Inter', sans-serif;
 }
 
-
 /* botón de inicio de chatbot*/
 #chatbot-toggle {
     position: fixed;
@@ -544,6 +543,12 @@
     transform: scale(1.1);
     opacity: 0.8;
 }
+#send-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
 
 /* rating y finalización*/
 .chat-rating {
@@ -763,6 +768,13 @@
 .recording {
     background: #fee2e2;
 }
+#microphone-btn.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+    filter: grayscale(100%);
+}
+
 
 
 /*otros*/
