@@ -7,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Main CSS-->
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css?<?= versionSystem() ?>">
-    <link rel="shortcut icon" href="<?= media() ?>/head-capibara.png?<?= versionSystem() ?>" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= media() ?>/capysm.png?<?= versionSystem() ?>" type="image/x-icon">
     <!-- Font-icon css-->
     <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/toastr.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/app/POS/login/style_login.css?<?= versionSystem() ?>">
-    <title>Capy Login</title>
+    <title>Inicio de Sesion | Capy Ventas</title>
     <script>
         const base_url = "<?= base_url() ?>/pos";
         const currency = "<?= getCurrency() ?>";

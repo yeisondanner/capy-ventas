@@ -9,7 +9,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 <!-- Navbar-->
 <header class="app-header">
     <a class="app-header__logo" href="<?= base_url() ?>/pos/dashboard">
-        <img class="p-1 bg-white rounded-5" style="width: 2rem;" src="<?= media() ?>/carpincho.png" alt="">
+        <img class="p-1 bg-white rounded-5" style="width: 2rem;" src="<?= media() ?>/capysm.png" alt="">
         Capy Ventas
     </a>
     <!-- Sidebar toggle button-->
@@ -17,7 +17,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     <!-- Navbar Right Menu-->
     <ul class="app-nav gap-2">
         <?php if ($validationCreateBox === 1):
-            ?>
+        ?>
             <div class="d-flex gap-2" id="divOpenBox">
             </div>
         <?php endif;

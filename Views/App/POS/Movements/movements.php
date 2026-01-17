@@ -306,6 +306,13 @@
                             </div>
                         </div>
                     </div>
+                    <!-- System Footer -->
+                    <div class="row mt-4">
+                        <div class="col-12 text-center d-flex align-items-center justify-content-center">
+                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
+                            <small class="text-muted fst-italic">Generado por Capy Ventas</small>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -415,6 +422,13 @@
                                 <label class="small text-uppercase text-muted fw-bold d-block">Monto Total</label>
                                 <span class="fs-4 fw-bold text-dark" id="expense_total_amount">--</span>
                             </div>
+                        </div>
+                    </div>
+                    <!-- System Footer -->
+                    <div class="row mt-4">
+                        <div class="col-12 text-center d-flex align-items-center justify-content-center">
+                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
+                            <small class="text-muted fst-italic">Generado por Capy Ventas</small>
                         </div>
                     </div>
 
