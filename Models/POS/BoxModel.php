@@ -24,6 +24,8 @@ class BoxModel extends Mysql
     protected float $amount;
     protected int $customerId;
     protected int $paymentMethodId;
+    protected int $supplierId;
+    protected int $idExpenseCategory;
 
     protected $referenceTable = null;
     protected $referenceId = null;
@@ -164,6 +166,35 @@ class BoxModel extends Mysql
         return $this->select($sql, [$this->businessId, $this->customerId]);
     }
 
+    public function issetSupplier(int $businessId, int $supplierId)
+    {
+        $this->businessId = $businessId;
+        $this->supplierId = $supplierId;
+        $sql = <<<SQL
+            SELECT
+                *
+            FROM supplier
+            WHERE business_id = ? AND idSupplier = ?
+            LIMIT 1;
+        SQL;
+
+        return $this->select($sql, [$this->businessId, $this->supplierId]);
+    }
+
+    public function issetExpenseCategory( int $idExpenseCategory)
+    {
+        $this->idExpenseCategory = $idExpenseCategory;
+        $sql = <<<SQL
+            SELECT
+                *
+            FROM expense_category
+            WHERE idExpenseCategory = ?
+            LIMIT 1;
+        SQL;
+
+        return $this->select($sql, [$this->idExpenseCategory]);
+    }
+
     public function issetPaymentMethod(int $paymentMethodId)
     {
         $this->paymentMethodId = $paymentMethodId;
@@ -206,6 +237,22 @@ class BoxModel extends Mysql
             FROM customer
             WHERE business_id = ?
             ORDER BY idCustomer ASC;
+        SQL;
+
+        return $this->select_all($sql, [$this->businessId]);
+    }
+
+    public function getSupplierByBusiness(int $businessId)
+    {
+        $this->businessId = $businessId;
+        $sql = <<<SQL
+            SELECT
+                idSupplier,
+                company_name,
+                document_number
+            FROM supplier
+            WHERE business_id = ?
+            ORDER BY idSupplier ASC;
         SQL;
 
         return $this->select_all($sql, [$this->businessId]);
@@ -300,6 +347,17 @@ class BoxModel extends Mysql
         SQL;
 
         return $this->select_all($sql, [$this->boxSessionsId]);
+    }
+
+    public function getCategoryExpenses()
+    {
+        $sql = <<<SQL
+            SELECT *
+            FROM expense_category
+            WHERE status = 'Activo';
+        SQL;
+
+        return $this->select_all($sql, []);
     }
 
     // ? Funciones insert

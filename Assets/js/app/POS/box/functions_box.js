@@ -11,6 +11,7 @@ export class Box {
   #chartInstance = null;
   #canvasGraphic = $("#graphic_sales_hour");
   #statusRegisterHeader = null;
+  #statusExpenseHeader = null;
   #valueTax = null;
 
   // ==========================================
@@ -71,11 +72,19 @@ export class Box {
   #btnTypeRetiro = $("#btnTypeRetiro");
   #inputMovementType = $("#movement_type");
   #inputMovementAmount = $("#movement_amount");
+  #inputRetireAmount = $("#retire_amount");
+  #inputRetireDate = $("#retire_date");
   #inputMovementDescription = $("#movement_description");
+  #inputRetireDescription = $("#retire_description");
+  #inputRetireName = $("#retire_name");
   #btnSaveMovement = $("#btnSaveMovement");
+  #btnSaveRetireCash = $("#btnSaveRetireCash");
   #iconMovementWrapper = $("#movement_icon_wrapper");
   #selectMovementCustomer = $("#movement_customer");
+  #selectRetireSupplier = $("#retire_supplier");
+  #selectRetireExpenseCategory = $("#retire_expense_category");
   #selectMovementPaymentMethod = $("#movement_payment_method");
+  #selectRetirePaymentMethod = $("#retire_payment_method");
   #labelTaxName = $("#label_tax_name");
   #spanTax = $("#span_tax");
   #inputTotal = $("#movement_total");
@@ -136,6 +145,9 @@ export class Box {
     this.#btnSaveMovement
       .off("click")
       .on("click", this.#handleClickGuardarMovimiento);
+    this.#btnSaveRetireCash
+      .off("click")
+      .on("click", this.#handleClickGuardarRetiro);
   };
 
   // Configura eventos de elementos DINÁMICOS (Botones generados por JS o dentro de vistas cargadas)
@@ -181,9 +193,9 @@ export class Box {
       .off("click", "#btnOpenModalRetireCash")
       .on("click", "#btnOpenModalRetireCash", async (e) => {
         const reset = $(e.currentTarget).attr("data-header");
-        this.#resetearModalMovimiento(reset);
+        this.#resetearModalRetireMovimiento(reset);
         // Consultamos la data para mostrar en venta rapida
-        const response = await this.apiBox.get("getDataQuickSale");
+        const response = await this.apiBox.get("getDataRetireCash");
         if (!response.status) {
           return this.#mostrarAlerta({
             icon: response.icon,
@@ -191,8 +203,7 @@ export class Box {
             message: response.message,
           });
         }
-        this.#renderQuickSale(response);
-        this.#handleCheckTax();
+        this.#renderRetireCash(response);
         this.#modalRetireMovementBox.modal("show");
       });
 
@@ -263,6 +274,27 @@ export class Box {
     this.#cambiarTipoMovimiento("Ingreso");
   };
 
+  #resetearModalRetireMovimiento = (reload) => {
+    this.#statusExpenseHeader = reload;
+
+    // 1. Limpiar inputs principales
+    this.#inputMovementAmount.val("");
+    this.#inputMovementDescription.val("");
+
+    // 2. Resetear lógica de Impuestos
+    this.#inputCheckTax.prop("checked", false); // Desmarcar check
+    this.#inputTax.val(""); // Limpiar input impuesto
+    this.#inputTotal.val(this.#formatoMoneda(0)); // Limpiar input total
+
+    // 3. Restaurar estilos visuales (volver a gris "desactivado")
+    // Agregamos el gris y quitamos el blanco
+    this.#spanTax.addClass("bg-dark-subtle").removeClass("bg-white");
+    this.#inputTax.addClass("bg-dark-subtle").removeClass("bg-white");
+
+    // 4. Reset a Ingreso por defecto
+    this.#cambiarTipoMovimiento("Ingreso");
+  };
+
   #handleClickGuardarMovimiento = async () => {
     const amount = this.#inputMovementAmount.val();
     let description = this.#inputMovementDescription.val();
@@ -313,6 +345,80 @@ export class Box {
       }
     }
     this.#mostrarAlerta(response);
+  };
+
+  #handleClickGuardarRetiro = async () => {
+    const amount = this.#inputRetireAmount.val();
+    const date = this.#inputRetireDate.val();
+    let description = this.#inputRetireDescription.val();
+    let retire_name = this.#inputRetireName.val();
+    const supplier = this.#selectRetireSupplier.val();
+    const expense_category = this.#selectRetireExpenseCategory.val();
+    const payment_method = this.#selectRetirePaymentMethod.val();
+    const status_expense_header = this.#statusExpenseHeader;
+
+    if (!supplier)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Faltan datos",
+        message: "Seleccione el proveedor.",
+      });
+
+    if (!expense_category)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Faltan datos",
+        message: "Seleccione la categoría de gasto.",
+      });
+
+    if (!amount || amount <= 0)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Monto inválido",
+        message: "Ingrese un monto mayor a 0.",
+      });
+
+    if (!date)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Faltan datos",
+        message: "Seleccione la fecha.",
+      });
+
+    if (!payment_method)
+      return this.#mostrarAlerta({
+        icon: "warning",
+        title: "Faltan datos",
+        message: "Seleccione el metodo de pago.",
+      });
+
+    if (!description) description = null;
+    if (!retire_name) retire_name = "Gasto sin nombre";
+
+    const params = {
+      amount: amount,
+      description: description,
+      expense_name: retire_name,
+      date: date,
+      supplier: supplier,
+      payment_method: payment_method,
+      expense_category: expense_category,
+      status_expense_header: status_expense_header,
+    };
+
+    // Llamada al Backend
+    const response = await this.apiBox.post("setExpense", params);
+
+    console.log(response);
+    
+
+    if (response.status) {
+      // this.#modalMovementBox.modal("hide");
+      // if (response.status_expense_header === 1) {
+      //   this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
+      // }
+    }
+    // this.#mostrarAlerta(response);
   };
 
   // ==========================================
@@ -902,6 +1008,37 @@ export class Box {
     console.log(customers);
     console.log(payment_method);
     console.log(tax_business);
+  };
+
+  #renderRetireCash = ({ category_expences, payment_method, supplier }) => {
+    let html_supplier = "<option disabled>Seleccionar</option>";
+    supplier.forEach((element) => {
+      html_supplier += `<option ${
+        element.document_number === "00000000000" ? "selected" : ""
+      } value="${element.idSupplier}">${element.company_name}</option>`;
+    });
+
+    this.#selectRetireSupplier.html(html_supplier);
+
+    let html_category = "<option disabled selected>Seleccionar</option>";
+    category_expences.forEach((element) => {
+      html_category += `<option value="${element.idExpenseCategory}">${element.name}</option>`;
+    });
+
+    this.#selectRetireExpenseCategory.html(html_category);
+
+    let html_payment_method = "<option disabled>Seleccionar</option>";
+    payment_method.forEach((element) => {
+      html_payment_method += `<option ${
+        element.name === "Efectivo" ? "selected" : ""
+      } value="${element.idPaymentMethod}">${element.name}</option>`;
+    });
+
+    this.#selectRetirePaymentMethod.html(html_payment_method);
+
+    console.log(category_expences);
+    console.log(payment_method);
+    console.log(supplier);
   };
 
   #actualizarUIArqueo() {
