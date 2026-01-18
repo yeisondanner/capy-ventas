@@ -241,7 +241,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         </div>
                         <div class="d-flex flex-column gap-2">
                             <div class="d-flex gap-2 w-100">
-                                <button id="btnOpenModalMovement" class="btn btn-primary w-50 rounded-pill py-2 fw-bold">
+                                <button id="btnOpenModalMovement" data-header="1" class="btn btn-primary w-50 rounded-pill py-2 fw-bold">
                                     <i class="bi bi-arrow-left-right me-2"></i> Ingreso
                                 </button>
                                 <button id="btnOpenModalRetireCash" class="btn btn-danger w-50 rounded-pill py-2 fw-bold">
@@ -599,9 +599,9 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 <div class="modal fade" id="modalMovementBox" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-            <div class="modal-header border-bottom-0 pb-0">
-                <h5 class="fw-bold mb-0">Venta Rapida</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header border-bottom-0 py-3 bg-primary text-white">
+                <h5 class="fw-bold mb-0">Venta Rápida</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
                 <div class="d-flex align-items-center gap-3 p-2 pe-3 border rounded-pill bg-body-tertiary mb-3">
@@ -638,12 +638,39 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <div class="input-group input-group-lg">
                         <span class="input-group-text bg-transparent text-muted ps-5">S/</span>
                         <input type="number" id="movement_amount"
-                            class="form-control fw-bold text-success fs-1 shadow-none" min="0" step="0.1"
+                            class="form-control fw-bold fs-1 shadow-none bg-white text-end" min="0" step="0.1"
                             placeholder="0.0" style="margin-left: -10px;">
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div class="mb-4 item-box">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="movement_check_tax">
+                                <label id="label_tax_name" class="small text-muted fw-bold text-uppercase mb-2">IGV</label>
+                            </div>
+                            <div class="input-group">
+                                <span id="span_tax" class="input-group-text bg-dark-subtle text-muted fw-bold">18%</span>
+                                <input disabled type="text" id="movement_tax"
+                                    class="form-control fw-bold bg-dark-subtle shadow-none text-end" value="S/ 0.00"
+                                    placeholder="0.0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="mb-4 item-box">
+                            <label class="small text-muted fw-bold text-uppercase mb-2">Total</label>
+                            <div class="input-group">
+                                <span class="input-group-text text-muted fw-bold bg-white"></span>
+                                <input disabled type="text" id="movement_total"
+                                    class="form-control fw-bold shadow-none bg-white text-end" value="0.00"
+                                    placeholder="0.0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="mb-3">
-                    <label class="form-label" for="movement_payment_method">Metodo de pago (<span
+                    <label class="small text-muted fw-bold text-uppercase mb-2" for="movement_payment_method">Metodo de pago (<span
                             class="text-danger">*</span>)</label>
                     <select class="form-select" id="movement_payment_method" name="movement_payment_method">
                         <option disabled>Seleccionar</option>
@@ -654,7 +681,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </select>
                 </div>
                 <div class="form-floating mb-3">
-                    <textarea class="form-control bg-light rounded-4" placeholder="Motivo" id="movement_description"
+                    <textarea class="form-control bg-white rounded-4" placeholder="Motivo" id="movement_description"
                         style="height: 100px; resize: none;"></textarea>
                     <label for="movement_description" class="text-muted">Descripción o Motivo</label>
                 </div>
@@ -670,6 +697,115 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <button type="button" id="btnSaveMovement"
                         class="btn btn-success btn-lg rounded-pill fw-bold shadow-sm">
                         <i class="bi bi-check2-circle me-2"></i> Registrar Ingreso
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Retirar movimiento movimiento -->
+<div class="modal fade" id="modalRetireMovementBox" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-bottom-0 py-3 bg-danger text-white">
+                <h5 class="fw-bold mb-0">Retiro Rápido</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="d-flex align-items-center gap-3 p-2 pe-3 border rounded-pill bg-body-tertiary mb-3">
+                    <div class="position-relative">
+                        <img src="<?= $logoBusiness ?>" alt="Avatar"
+                            class="rounded-circle border border-2 border-white shadow-sm"
+                            style="width: 48px; height: 48px; object-fit: cover;">
+                        <span
+                            class="position-absolute bottom-0 end-0 p-1 bg-success border border-2 border-white rounded-circle"></span>
+                    </div>
+                    <div class="flex-fill lh-1">
+                        <h6 class="mb-1 fw-bold text-dark">
+                            <?= ucwords(strtolower($_SESSION[$nameVarLoginInfo]['name'] . " " . $_SESSION[$nameVarLoginInfo]['lastname'])) ?>
+                        </h6>
+                        <small class="text-muted" style="font-size: 0.85rem;">
+                            ID: <?= $_SESSION[$nameVarLoginInfo]['idUser'] ?> <span class="mx-1">•</span> <span
+                                class="text-primary fw-medium">Cajero</span>
+                        </small>
+                    </div>
+                    <div class="text-opacity-75 opacity-50 px-2">
+                        <i class="bi bi-person-badge-fill fs-4"></i>
+                    </div>
+                </div>
+                <h5 class="border-bottom pb-2 border-2 mb-2">Detalle venta rápida</h5>
+                <div class="mb-3">
+                    <label class="form-label" for="movement_customer">Clientes (<span
+                            class="text-danger">*</span>)</label>
+                    <select class="form-select" id="movement_customer" name="movement_customer">
+                    </select>
+                </div>
+                <input type="hidden" id="movement_type" value="Ingreso">
+                <div class="mb-4 item-box">
+                    <label class="small text-muted fw-bold text-uppercase mb-2">Monto del movimiento</label>
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-text bg-transparent text-muted ps-5">S/</span>
+                        <input type="number" id="movement_amount"
+                            class="form-control fw-bold fs-1 shadow-none bg-white text-end" min="0" step="0.1"
+                            placeholder="0.0" style="margin-left: -10px;">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-5">
+                        <div class="mb-4 item-box">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="movement_check_tax">
+                                <label id="label_tax_name" class="small text-muted fw-bold text-uppercase mb-2">IGV</label>
+                            </div>
+                            <div class="input-group">
+                                <span id="span_tax" class="input-group-text bg-dark-subtle text-muted fw-bold">18%</span>
+                                <input disabled type="text" id="movement_tax"
+                                    class="form-control fw-bold bg-dark-subtle shadow-none text-end" value="S/ 0.00"
+                                    placeholder="0.0">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <div class="mb-4 item-box">
+                            <label class="small text-muted fw-bold text-uppercase mb-2">Total</label>
+                            <div class="input-group">
+                                <span class="input-group-text text-muted fw-bold bg-white"></span>
+                                <input disabled type="text" id="movement_total"
+                                    class="form-control fw-bold shadow-none bg-white text-end" value="0.00"
+                                    placeholder="0.0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="small text-muted fw-bold text-uppercase mb-2" for="movement_payment_method">Metodo de pago (<span
+                            class="text-danger">*</span>)</label>
+                    <select class="form-select" id="movement_payment_method" name="movement_payment_method">
+                        <option disabled>Seleccionar</option>
+                        <option value="1" selected>Efectivo</option>
+                        <option value="1">One</option>
+                        <option value="2">Two</option>
+                        <option value="3">Three</option>
+                    </select>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control bg-white rounded-4" placeholder="Motivo" id="movement_description"
+                        style="height: 100px; resize: none;"></textarea>
+                    <label for="movement_description" class="text-muted">Descripción o Motivo</label>
+                </div>
+                <div class="alert alert-light border border-2 rounded-4 d-flex align-items-center gap-3 p-3">
+                    <div class="bg-danger-subtle text-danger py-1 px-2 rounded-circle" id="movement_icon_wrapper">
+                        <i class="bi bi-wallet2 fs-5"></i>
+                    </div>
+                    <div class="small text-muted lh-sm">
+                        Este movimiento afectará el <strong>Arqueo Final</strong> y el saldo actual de la caja.
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <button type="button" id="btnSaveMovement"
+                        class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm">
+                        <i class="bi bi-dash-circle me-2"></i> Registrar Retiro
                     </button>
                 </div>
             </div>
