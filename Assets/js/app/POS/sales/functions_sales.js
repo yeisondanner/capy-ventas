@@ -18,7 +18,7 @@
   const btnBackToStep2 = document.getElementById("btnBackToStep2");
   const btnDesktopToStep3 = document.getElementById("btnDesktopToStep3");
   const btnDesktopBackToStep2 = document.getElementById(
-    "btnDesktopBackToStep2"
+    "btnDesktopBackToStep2",
   );
   const btnEmptyCart = document.getElementById("btnEmptyCart");
 
@@ -36,7 +36,7 @@
     document.getElementById("popularCategories");
   const inputNombreVenta = document.getElementById("nombreVenta");
   const btnGuardarNombreVenta = document.getElementById(
-    "btnGuardarNombreVenta"
+    "btnGuardarNombreVenta",
   );
 
   // Modal de cobro
@@ -525,7 +525,7 @@
             {
               method: "POST",
               body: formdata,
-            }
+            },
           );
 
           if (!response.ok) {
@@ -567,6 +567,42 @@
           btnGuardarNombreVenta.innerHTML = originalText;
           refreshVoucherNameButtonState();
         }
+      });
+    }
+
+    // Botón Ver Comprobante
+    const btnViewVoucher = document.getElementById("btnViewVoucher");
+    if (btnViewVoucher) {
+      btnViewVoucher.addEventListener("click", function () {
+        if (!lastSaleId) {
+          showAlert({
+            icon: "info",
+            title: "Sin venta",
+            message: "No hay una venta reciente para mostrar.",
+          });
+          return;
+        }
+        loadVoucher(lastSaleId);
+      });
+    }
+
+    // Botón Imprimir Comprobante (En desarrollo)
+    const btnPrintVoucher = document.getElementById("btnPrintVoucher");
+    if (btnPrintVoucher) {
+      btnPrintVoucher.addEventListener("click", function () {
+        showAlert({
+          icon: "info",
+          title: "En desarrollo",
+          message: "Esta opción estará disponible muy pronto.",
+        });
+      });
+    }
+
+    // Boton exportar PNG en el modal de voucher
+    const btnDownloadPng = document.getElementById("download-png");
+    if (btnDownloadPng) {
+      btnDownloadPng.addEventListener("click", () => {
+        exportToPng("voucherContainer", "Comprobante_Venta.png");
       });
     }
   }
@@ -709,7 +745,7 @@
       const matchesTerm = matchesProduct(product, lastSearchTerm);
       const matchesPopularCategory = matchesCategory(
         product.category,
-        normalizedCategory
+        normalizedCategory,
       );
 
       return matchesTerm && matchesPopularCategory;
@@ -746,7 +782,7 @@
     if (!popularCategoriesContainer) return;
 
     const buttons = popularCategoriesContainer.querySelectorAll(
-      "button[data-category]"
+      "button[data-category]",
     );
 
     buttons.forEach((button) => {
@@ -786,7 +822,7 @@
 
     popularCategoriesContainer.innerHTML = "";
     popularCategoriesContainer.appendChild(
-      createCategoryButton("Todos", "all")
+      createCategoryButton("Todos", "all"),
     );
 
     const validCategories = Array.isArray(categories) ? categories : [];
@@ -885,7 +921,7 @@
       if (!data.status) return;
 
       renderCustomersOptions(
-        Array.isArray(data.customers) ? data.customers : []
+        Array.isArray(data.customers) ? data.customers : [],
       );
     } catch (error) {
       console.error("No se pudo cargar el listado de clientes", error);
@@ -910,7 +946,7 @@
       if (!data.status) return;
 
       renderPaymentMethodOptions(
-        Array.isArray(data.payment_methods) ? data.payment_methods : []
+        Array.isArray(data.payment_methods) ? data.payment_methods : [],
       );
     } catch (error) {
       console.error("No se pudo cargar el listado de metodos de pago", error);
@@ -1025,7 +1061,7 @@
       "col-6",
       "col-md-4",
       "col-xl-3",
-      "product-card-wrapper"
+      "product-card-wrapper",
     );
     buttonProduct.classList.add("product-card");
     spanCounter.classList.add("product-counter-badge");
@@ -1104,7 +1140,7 @@
       "btn-outline-danger",
       "btn-sm",
       "rounded-circle",
-      "btn-delete-cart"
+      "btn-delete-cart",
     );
     divControls.classList.add("basket-controls");
     divPriceLine.classList.add("basket-price-line", "text-muted", "mt-1");
@@ -1117,7 +1153,7 @@
     inputQty.classList.add(
       "form-control",
       "text-center",
-      "cart-quantity-input"
+      "cart-quantity-input",
     );
     spanPrefix.classList.add("input-group-text");
     inputPrice.classList.add("form-control", "text-end", "cart-price-input");
@@ -1143,7 +1179,7 @@
     inputPrice.readOnly = true;
     inputPrice.setAttribute(
       "aria-label",
-      "Precio total del producto en canasta"
+      "Precio total del producto en canasta",
     );
     inputPrice.setAttribute("tabindex", "-1");
     divPriceLine.innerHTML = `Precio por <span class="fw-semibold">${quantity}</span> ${product.measurement}: <span class="fw-semibold">${getcurrency} ${amount}</span>`;
@@ -1188,7 +1224,7 @@
         "bg-warning",
         "bg-danger",
         "text-white",
-        "text-dark"
+        "text-dark",
       );
       if (isNaN(stock)) return;
 
@@ -1219,7 +1255,7 @@
           counter.textContent = safeValue;
           counter.setAttribute(
             "aria-label",
-            "Productos seleccionados: " + safeValue
+            "Productos seleccionados: " + safeValue,
           );
         }
       }
@@ -1645,4 +1681,136 @@
       });
     }
   }
+
+  /**
+   * Carga los datos del comprobante y muestra el modal.
+   * @param {number|string} idVoucher ID de la venta
+   */
+  function loadVoucher(idVoucher) {
+    showAlert({ title: "Cargando comprobante..." }, "loading");
+    $.ajax({
+      url: base_url + "/pos/Movements/getVoucher",
+      type: "POST",
+      dataType: "json",
+      data: { idVoucherHeader: idVoucher },
+      success: function (res) {
+        Swal.close();
+        if (!res.status) {
+          alert(res.msg || "No se pudo cargar el comprobante");
+          return;
+        }
+
+        const h = res.header;
+        const d = res.details;
+
+        // === Cabecera ===
+        $("#name_bussines").text(h.name_bussines);
+        $("#direction_bussines").text(h.direction_bussines);
+        $("#document_bussines").text(h.document_bussines);
+        $("#date_time").text(h.date_time);
+        $("#name_customer").text(h.name_customer);
+        $("#direction_customer").text(h.direction_customer);
+        $("#fullname").text(h.fullname);
+        document.getElementById("logo_voucher").src = h.logo;
+        //hacemos que el id se muestre con ceros a la izquierda
+        const id_voucher = String(h.id).padStart(8, "0");
+        //CV = Comprobante de Venta
+        const voucher_code = `CV-${id_voucher}`;
+        $("#voucher_code").text(voucher_code);
+
+        // Totales
+        $("#percentage_discount").text(h.percentage_discount);
+        $("#total_amount").text("S/ " + Number(h.amount).toFixed(2));
+
+        // Calculamos subtotal y descuento a partir del detalle
+        let subtotal = 0;
+        d.forEach((item) => {
+          subtotal += Number(item.sales_price_product) * item.stock_product;
+        });
+
+        const descuento = (subtotal * Number(h.percentage_discount || 0)) / 100;
+
+        $("#subtotal_amount").text("S/ " + subtotal.toFixed(2));
+        $("#discount_amount").text("- S/ " + descuento.toFixed(2));
+        $("#tax_name").text(h.tax_name);
+        $("#tax_percentage").text(Number(h.tax_percentage).toFixed(2));
+        $("#tax_amount").text("S/ " + Number(h.tax_amount).toFixed(2));
+
+        // === Detalle ===
+        const $tbody = $("#tbodyVoucherDetails");
+        $tbody.empty();
+
+        d.forEach((item) => {
+          $tbody.append(`
+            <tr>
+              <td>${item.stock_product}</td>
+              <td>${item.name_product} (${item.unit_of_measurement})</td>
+              <td class="text-end">S/ ${Number(
+                item.sales_price_product,
+              ).toFixed(2)}</td>
+              <td class="text-end">S/ ${Number(
+                item.sales_price_product * item.stock_product,
+              ).toFixed(2)}</td>
+            </tr>
+          `);
+        });
+
+        const modalEl = document.getElementById("voucherModal");
+        const modalVoucher = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modalVoucher.show();
+      },
+      error: function () {
+        Swal.close();
+        alert("Error de comunicación con el servidor");
+      },
+    });
+  }
+
+  /**
+   * Metodo que se encarga de descargar el comprobante en formato PNG
+   */
+  const exportToPng = (elementId, filename) => {
+    const originalElement = document.getElementById(elementId);
+    if (!originalElement) return;
+
+    // 1. Clonar el elemento
+    const clone = originalElement.cloneNode(true);
+
+    // 2. Estilizar el clon para que se muestre completo
+    Object.assign(clone.style, {
+      position: "fixed",
+      top: "-9999px",
+      left: "-9999px",
+      width: originalElement.offsetWidth + "px", // Mismo ancho que el original
+      height: "auto", // Altura automática para mostrar todo el contenido
+      zIndex: "-1",
+      overflow: "visible", // Asegurar que no haya scroll oculto
+    });
+
+    // 3. Insertar el clon en el documento
+    document.body.appendChild(clone);
+
+    // 4. Generar el canvas desde el clon
+    html2canvas(clone, {
+      scale: 2, // Mejor resolución
+      useCORS: true,
+      scrollY: -window.scrollY, // Ajuste para evitar desplazamiento
+    })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((err) => {
+        console.error("Error exporting PNG:", err);
+      })
+      .finally(() => {
+        // 5. Eliminar el clon
+        document.body.removeChild(clone);
+      });
+  };
 })();
