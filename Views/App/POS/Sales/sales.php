@@ -325,23 +325,140 @@ headerPos($data); ?>
                 <!--<p class="small text-muted mb-2">Opciones de comprobante / voucher</p>-->
 
                 <!-- Acciones posibles luego de finalizar la venta -->
-                <div class="d-flex flex-wrap gap-2 justify-content-center">
-                    <!--<button type="button" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-printer me-1"></i> Imprimir
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary btn-sm">
-                        <i class="bi bi-file-earmark-arrow-down me-1"></i> Descargar PDF
-                    </button>
-                    <button type="button" class="btn btn-outline-success btn-sm">
-                        <i class="bi bi-whatsapp me-1"></i> WhatsApp
-                    </button>
-                    <button type="button" class="btn btn-outline-primary btn-sm">
-                        <i class="bi bi-envelope me-1"></i> Correo
-                    </button>-->
+                <!-- Acciones posibles luego de finalizar la venta (MOVIDO AL FOOTER) -->
+                <!-- <div class="d-flex flex-wrap gap-2 justify-content-center"> ... </div> -->
+            </div>
+            <div class="modal-footer justify-content-center border-top-0 pt-0 pb-4">
+                <button type="button" class="btn btn-light text-secondary border-0" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i> Cerrar
+                </button>
+                <div class="vr mx-2 text-muted"></div>
+                <button type="button" class="btn btn-outline-dark" id="btnPrintVoucher">
+                    <i class="bi bi-printer me-1"></i> Imprimir
+                </button>
+                <button type="button" class="btn btn-success px-4" id="btnViewVoucher">
+                    <i class="bi bi-receipt me-1"></i> Ver Comprobante
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Comprobante -->
+<div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="voucherModalLabel">Comprobante de Venta</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+
+            <div class="modal-body" id="voucherContainer">
+                <div class="receipt-container report-card-movements p-4 border rounded shadow-sm bg-white">
+                    <!-- Header -->
+                    <div class="row align-items-center mb-4 border-bottom pb-3">
+                        <div class="col-3 text-center">
+                            <img id="logo_voucher" src="" alt="Logo" class="img-fluid"
+                                style="max-height: 80px; filter: grayscale(100%);">
+                        </div>
+                        <div class="col-9 text-end">
+                            <h4 class="fw-bold text-uppercase mb-1" id="name_bussines">--</h4>
+                            <p class="mb-0 text-muted small" id="direction_bussines">--</p>
+                            <p class="mb-0 text-muted small">RUC: <span id="document_bussines">--</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Title & Date -->
+                    <div class="row mb-4">
+                        <div class="col-12 text-center">
+                            <h5 class="fw-bold text-decoration-underline text-uppercase">Comprobante de Venta</h5>
+                        </div>
+                    </div>
+
+                    <!-- Details Grid -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="small text-uppercase text-muted fw-bold">Codigo de Venta:</label>
+                            <div class="fw-bold" id="voucher_code">--</div>
+                        </div>
+                        <div class="col-6">
+                            <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión:</label>
+                            <div class="fw-bold" id="date_time">--</div>
+                        </div>
+                        <div class="col-6 text-end">
+                            <label class="small text-uppercase text-muted fw-bold">Vendedor:</label>
+                            <div class="fw-bold" id="fullname">--</div>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <label class="small text-uppercase text-muted fw-bold">Cliente:</label>
+                            <div class="border-bottom border-dark pb-1 fs-5" id="name_customer">--</div>
+                            <div class="small text-muted" id="direction_customer">--</div>
+                        </div>
+                    </div>
+
+                    <!-- Product Details Table -->
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered border-dark table-sm mb-0">
+                            <thead class="bg-light text-center">
+                                <tr>
+                                    <th style="width: 10%;">Cant.</th>
+                                    <th style="width: 50%;">Descripción</th>
+                                    <th style="width: 20%;">P. Unit</th>
+                                    <th style="width: 20%;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyVoucherDetails">
+                                <!-- Dynamic Items -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Totals Section -->
+                    <div class="row justify-content-end">
+                        <div class="col-8">
+                            <table class="table table-sm table-borderless mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-end fw-bold small py-0">Subtotal:</td>
+                                        <td class="text-end small py-0" style="width: 120px;"><span
+                                                id="subtotal_amount">--</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-end fw-bold small py-0">Descuento (<span
+                                                id="percentage_discount">0</span>%):</td>
+                                        <td class="text-end text-danger small py-0"><span id="discount_amount">--</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-end fw-bold small py-0"><span id="tax_name">IGV</span> (<span
+                                                id="tax_percentage">0</span>%):</td>
+                                        <td class="text-end small py-0"><span id="tax_amount">--</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="p-2 border border-2 border-dark rounded bg-light mt-2 text-end">
+                                <label class="small text-uppercase text-muted fw-bold d-block">Total a Pagar</label>
+                                <span class="fs-4 fw-bold text-dark" id="total_amount">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- System Footer -->
+                    <div class="row mt-4">
+                        <div class="col-12 text-center d-flex align-items-center justify-content-center">
+                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
+                            <small class="text-muted fst-italic">Generado por Capy Ventas</small>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-outline-warning" id="download-png"><i class="bi bi-card-image"></i>
+                    Exportar PNG</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
