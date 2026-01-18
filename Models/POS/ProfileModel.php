@@ -139,39 +139,21 @@ class ProfileModel extends Mysql
         return $request ?? [];
     }
     /**
-     * Actualiza solo los datos básicos del perfil (6 campos del formulario).
+     * Actualiza solo los datos básicos del perfil (campos del formulario).
      *
      * @param int   $userAppId ID del usuario en user_app.
-     * @param array $data      fullname, username, email, phone, country, birthDate.
+     * @param array $data      names, lastnames, email, phone, country, birthDate, username.
      * @return bool
      */
     public function updateUserProfile(int $userAppId, array $data): bool
     {
-        // 1. Separar nombres y apellidos a partir de "Nombre completo"
-        $fullname = trim($data['fullname'] ?? '');
-        $names    = $fullname;
-        $lastname = '';
-
-        if (!empty($fullname)) {
-            $parts = preg_split('/\s+/', $fullname);
-            if (count($parts) > 1) {
-                // último "token" como apellido (simple pero suficiente)
-                $lastname = array_pop($parts);
-                $names    = implode(' ', $parts);
-            }
-        }
-
-        $username  = trim($data['username'] ?? '');
+        $names     = trim($data['names'] ?? '');
+        $lastnames = trim($data['lastnames'] ?? '');
         $email     = trim($data['email'] ?? '');
         $phone     = trim($data['phone'] ?? '');
-        $country   = trim($data['country'] ?? '');
         $birthDate = $data['birthDate'] ?? null;
+        $username  = trim($data['username'] ?? '');
 
-        // CORRECCIÓN REALIZADA: Mantener el prefijo telefónico existente y solo actualizar el número de teléfono
-        // Antes se intentaba separar el prefijo del número, lo cual era incorrecto
-        // Ahora se obtienen los datos actuales para preservar el prefijo existente
-        $currentData = $this->selectUserProfile($userAppId);
-        $telephonePrefix = $currentData['telephone_prefix'] ?? null; // Mantener el prefijo actual de la BD
         $phoneNumber = $phone; // Actualizar solo el número de teléfono
 
         // Encriptar campos que están cifrados en BD
@@ -188,9 +170,7 @@ class ProfileModel extends Mysql
                 p.lastname         = COALESCE(?, p.lastname),
                 p.email            = COALESCE(?, p.email),
                 p.date_of_birth    = COALESCE(?, p.date_of_birth),
-                p.country          = COALESCE(?, p.country),
-                p.telephone_prefix = COALESCE(?, p.telephone_prefix),  -- Mantener el prefijo existente
-                p.phone_number     = COALESCE(?, p.phone_number),      -- Actualizar solo el número
+                p.phone_number     = COALESCE(?, p.phone_number),      
                 p.update_date      = NOW()
             WHERE ua.idUserApp = ?;
         SQL;
@@ -198,16 +178,51 @@ class ProfileModel extends Mysql
         $params = [
             $userEncrypted,
             $names ?: null,
-            $lastname ?: null,
+            $lastnames ?: null,
             $emailEncrypted,
             !empty($birthDate) ? $birthDate : null,
-            $country ?: null,
-            $telephonePrefix,  // Mantener el prefijo existente
-            $phoneNumber ?: null,  // Actualizar solo el número de teléfono
+            $phoneNumber ?: null,
             $userAppId,
         ];
 
         $result = $this->update($sql, $params);
+        return $result > 0;
+    }
+
+    /**
+     * Cambia la contraseña del usuario después de verificar la actual.
+     *
+     * @param int    $userAppId       ID del usuario en user_app.
+     * @param string $currentPassword Contraseña actual en texto plano.
+     * @param string $newPassword     Nueva contraseña en texto plano.
+     * @return bool Verdadero si se actualizó correctamente, falso en caso contrario.
+     */
+    public function changeUserPassword(int $userAppId, string $currentPassword, string $newPassword): bool
+    {
+        //Traigo password encriptado desde user_app
+        $sql = "SELECT password FROM user_app WHERE idUserApp = ? LIMIT 1";
+        $row = $this->select($sql, [$userAppId]);
+
+        if (empty($row) || empty($row['password'])) {
+            return false;
+        }
+
+        $storedEncrypted = (string) $row['password'];
+
+        // Desencriptar y comparar
+        $storedPlain = decryption($storedEncrypted);
+
+        // hash_equals para comparar seguro
+        if (!hash_equals((string) $storedPlain, (string) $currentPassword)) {
+            return false;
+        }
+
+        //Encriptar nueva contraseña y actualizar
+        $newEncrypted = encryption($newPassword);
+
+        $upd = "UPDATE user_app SET password = ?, update_date = NOW() WHERE idUserApp = ? LIMIT 1";
+        $result = $this->update($upd, [$newEncrypted, $userAppId]);
+
         return $result > 0;
     }
 }
