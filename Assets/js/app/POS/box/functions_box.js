@@ -24,6 +24,7 @@ export class Box {
   #modalArqueoBox = $("#modalArqueoBox");
   #modalCloseBox = $("#modalCloseBox");
   #modalMovementBox = $("#modalMovementBox"); // NUEVO: Modal de Movimientos
+  #modalRetireMovementBox = $("#modalRetireMovementBox"); // NUEVO: Retirar movimientos Movimientos
 
   // Vistas Generales
   #divOpenBox = $("#divOpenBox");
@@ -43,7 +44,7 @@ export class Box {
   #lblArqueoTotalGeneral = $("#quick_access_arqueo_total_general");
   #containerArqueoTarjetas = $("#quick_access_arqueo_total_payment_method");
   #containerArqueoInputsDinero = $(
-    "#quick_access_arqueo_currency_denominations"
+    "#quick_access_arqueo_currency_denominations",
   );
   #lblArqueoTotalContado = $("#quick_access_arqueo_count_efectivo");
   #containerArqueoMensaje = $("#quick_access_arqueo_message");
@@ -112,7 +113,7 @@ export class Box {
     this.#containerArqueoInputsDinero.on(
       "input",
       "input[type='number']",
-      this.#handleInputConteoDinero
+      this.#handleInputConteoDinero,
     );
 
     // Botones Arqueo
@@ -132,9 +133,6 @@ export class Box {
     this.#btnTypeIngreso
       .off("click")
       .on("click", () => this.#cambiarTipoMovimiento("Ingreso"));
-    this.#btnTypeRetiro
-      .off("click")
-      .on("click", () => this.#cambiarTipoMovimiento("Egreso"));
     this.#btnSaveMovement
       .off("click")
       .on("click", this.#handleClickGuardarMovimiento);
@@ -158,7 +156,7 @@ export class Box {
       .off("click", "#btnOpenModalCloseBox")
       .on("click", "#btnOpenModalCloseBox", this.#handleClickAbrirModalCierre);
 
-    // --- NUEVO: Botón Azul "Ingreso / Retiro" ---
+    // --- NUEVO: Botón Azul "Ingreso"
     $("body")
       .off("click", "#btnOpenModalMovement")
       .on("click", "#btnOpenModalMovement", async (e) => {
@@ -178,6 +176,26 @@ export class Box {
         this.#modalMovementBox.modal("show");
       });
 
+    // --- NUEVO: Botón Rojo "Retiro"
+    $("body")
+      .off("click", "#btnOpenModalRetireCash")
+      .on("click", "#btnOpenModalRetireCash", async (e) => {
+        const reset = $(e.currentTarget).attr("data-header");
+        this.#resetearModalMovimiento(reset);
+        // Consultamos la data para mostrar en venta rapida
+        const response = await this.apiBox.get("getDataQuickSale");
+        if (!response.status) {
+          return this.#mostrarAlerta({
+            icon: response.icon,
+            title: response.title,
+            message: response.message,
+          });
+        }
+        this.#renderQuickSale(response);
+        this.#handleCheckTax();
+        this.#modalRetireMovementBox.modal("show");
+      });
+
     // Formulario Apertura
     this.#btnOpenBox.off("click").on("click", this.#handleClickGuardarApertura);
   };
@@ -194,9 +212,6 @@ export class Box {
       this.#btnTypeIngreso
         .addClass("btn-primary shadow-sm text-white")
         .removeClass("text-muted btn-transparent");
-      this.#btnTypeRetiro
-        .removeClass("btn-primary shadow-sm text-white")
-        .addClass("text-muted btn-transparent");
 
       // Visual: Input y Botón Guardar (Verde)
       this.#btnSaveMovement
@@ -210,9 +225,6 @@ export class Box {
         .addClass("bg-success-subtle text-success");
     } else {
       // Visual: Botones Switch
-      this.#btnTypeRetiro
-        .addClass("btn-primary shadow-sm text-white")
-        .removeClass("text-muted btn-transparent");
       this.#btnTypeIngreso
         .removeClass("btn-primary shadow-sm text-white")
         .addClass("text-muted btn-transparent");
@@ -240,7 +252,7 @@ export class Box {
     // 2. Resetear lógica de Impuestos
     this.#inputCheckTax.prop("checked", false); // Desmarcar check
     this.#inputTax.val(""); // Limpiar input impuesto
-    this.#inputTotal.val(""); // Limpiar input total
+    this.#inputTotal.val(this.#formatoMoneda(0)); // Limpiar input total
 
     // 3. Restaurar estilos visuales (volver a gris "desactivado")
     // Agregamos el gris y quitamos el blanco
@@ -463,8 +475,8 @@ export class Box {
           tipo === "Efectivo"
             ? "text-success"
             : tipo === "Yape" || tipo === "Plin"
-            ? "text-primary"
-            : "text-info";
+              ? "text-primary"
+              : "text-info";
         htmlPaymentMethod += `
                 <div class="d-flex justify-content-between align-items-center small">
                     <span class="${colorClass} fw-bold"><i class="bi bi-circle-fill me-2" style="font-size: 0.5rem;"></i>${tipo}</span>
@@ -484,7 +496,7 @@ export class Box {
 
     const signoDiff = diferencia > 0 ? "+" : "";
     this.#lblCloseBoxDifference.html(
-      `${signoDiff}${this.#formatoMoneda(diferencia)}`
+      `${signoDiff}${this.#formatoMoneda(diferencia)}`,
     );
     if (diferencia < 0)
       this.#lblCloseBoxDifference
@@ -502,11 +514,11 @@ export class Box {
       htmlStatus = `<div class="alert alert-success py-2 px-3 mb-0 rounded-3 d-flex align-items-center gap-2 small"><i class="bi bi-check-circle-fill fs-5"></i><div><strong>Cuadre Correcto</strong><br>El arqueo coincide con el sistema.</div></div>`;
     } else if (diferencia > 0) {
       htmlStatus = `<div class="alert alert-primary py-2 px-3 mb-0 rounded-3 d-flex align-items-center gap-2 small"><i class="bi bi-graph-up-arrow fs-5"></i><div><strong>Dinero Sobrante</strong><br>Excedente: +${this.#formatoMoneda(
-        diferencia
+        diferencia,
       )}</div></div>`;
     } else {
       htmlStatus = `<div class="alert alert-danger py-2 px-3 mb-0 rounded-3 d-flex align-items-center gap-2 small"><i class="bi bi-exclamation-triangle-fill fs-5"></i><div><strong>Descuadre (Faltante)</strong><br>Diferencia: ${this.#formatoMoneda(
-        diferencia
+        diferencia,
       )}</div></div>`;
     }
 
@@ -608,17 +620,17 @@ export class Box {
 
     let amount_base = parseFloat(this.#datosSesionCaja.amount_base) || 0;
     this.#lblTotalGeneral.html(
-      this.#formatoMoneda(this.#datosSesionCaja.total_general + amount_base)
+      this.#formatoMoneda(this.#datosSesionCaja.total_general + amount_base),
     );
     this.#lblBaseAmount.html(
-      `Base: ${this.#formatoMoneda(this.#datosSesionCaja.amount_base)}`
+      `Base: ${this.#formatoMoneda(this.#datosSesionCaja.amount_base)}`,
     );
 
     let htmlMetodos = "";
     this.#datosSesionCaja.payment_method.forEach((el) => {
       if (this.#datosSesionCaja.total_payment_method[el.name] !== undefined) {
         let totalToShow = parseFloat(
-          this.#datosSesionCaja.total_payment_method[el.name]
+          this.#datosSesionCaja.total_payment_method[el.name],
         );
         if (el.name === "Efectivo") totalToShow += amount_base;
         htmlMetodos += this.#crearCardMetodoPago(el, totalToShow);
@@ -628,10 +640,10 @@ export class Box {
 
     const moves = this.#datosSesionCaja.movements_limit || [];
     this.#lblTituloMovimientos.html(
-      `Últimos <span class="text-primary">${moves.length}</span> Movimientos`
+      `Últimos <span class="text-primary">${moves.length}</span> Movimientos`,
     );
     this.#containerListaMovimientos.html(
-      moves.map((mov) => this.#crearItemMovimiento(mov)).join("")
+      moves.map((mov) => this.#crearItemMovimiento(mov)).join(""),
     );
     // NUEVO: Llamar a la gráfica
     // Pasamos el objeto 'chart_data' que enviamos desde PHP
@@ -645,7 +657,7 @@ export class Box {
     const totalEfectivoEsperado = ventaEfectivo + base;
 
     this.#lblArqueoTotalEfectivo.html(
-      this.#formatoMoneda(totalEfectivoEsperado)
+      this.#formatoMoneda(totalEfectivoEsperado),
     );
     this.#lblArqueoTotalGeneral.html(this.#formatoMoneda(data.total_general));
     this.#totalEfectivoSistema = totalEfectivoEsperado;
@@ -654,7 +666,7 @@ export class Box {
           <div class="flex-fill p-2 rounded-4 bg-primary-subtle border border-primary text-center">
             <small class="d-block text-primary fw-bold mb-1" style="font-size: 0.7rem;">Monto Inicial</small>
             <span class="fw-bold text-primary">${this.#formatoMoneda(
-              base
+              base,
             )}</span>
           </div>`;
 
@@ -667,9 +679,9 @@ export class Box {
               el.name
             }</small>
             <span class="fw-bold text-dark">${this.#formatoMoneda(
-              data.total_payment_method[el.name]
+              data.total_payment_method[el.name],
             )}</span>
-          </div>`
+          </div>`,
       )
       .join("");
 
@@ -716,13 +728,13 @@ export class Box {
           <div class="col-6 item-box">
             <div class="input-group">
               <span class="input-group-text ${config.text} ${
-            config.bg
-          } fw-bold border-end-0" style="width: 85px;">
+                config.bg
+              } fw-bold border-end-0" style="width: 85px;">
                 ${this.#formatoMoneda(el.value)}
               </span>
               <input id="currency_${el.idDenomination}" data-id="${
-            el.idDenomination
-          }" type="number" class="form-control border-start-0 bg-light" placeholder="0" min="0" value="${val}">
+                el.idDenomination
+              }" type="number" class="form-control border-start-0 bg-light" placeholder="0" min="0" value="${val}">
             </div>
           </div>`;
         })
@@ -894,12 +906,12 @@ export class Box {
 
   #actualizarUIArqueo() {
     this.#lblArqueoTotalContado.html(
-      this.#formatoMoneda(this.#totalEfectivoContado)
+      this.#formatoMoneda(this.#totalEfectivoContado),
     );
     const diferencia = this.#totalEfectivoSistema - this.#totalEfectivoContado;
     let uiState = this.#determinarEstadoArqueo(
       this.#totalEfectivoContado,
-      diferencia
+      diferencia,
     );
 
     const alertHtml = uiState.showMsg
@@ -918,7 +930,7 @@ export class Box {
     let htmlDesglose = "";
     Object.entries(desglose).forEach(([tipo, datos]) => {
       htmlDesglose += `<div class="text-center w-50 border-end"><small class="text-muted text-uppercase fw-bold" style="font-size: 0.8rem;">${tipo}</small><div class="fw-bold text-dark">${this.#formatoMoneda(
-        datos.total
+        datos.total,
       )}</div></div>`;
     });
     this.#containerDesgloseFinal.html(htmlDesglose);
@@ -982,8 +994,8 @@ export class Box {
         data.type === "Billete"
           ? "billetes"
           : data.type === "Moneda"
-          ? "monedas"
-          : "otros";
+            ? "monedas"
+            : "otros";
       desglose[key].total += data.total_amount;
     });
     return desglose;
@@ -1065,7 +1077,7 @@ export class Box {
                   el.name
                 }</div>
                 <h6 class="fw-bold mb-0 text-dark">${this.#formatoMoneda(
-                  total
+                  total,
                 )}</h6>
             </div>
         </div>
@@ -1104,13 +1116,13 @@ export class Box {
             <div class="flex-fill lh-1">
                 <h6 class="mb-1 text-dark fw-bold">${element.concept}</h6>
                 <small class="text-muted">${this.#timeAgoModerno(
-                  element.movement_date
+                  element.movement_date,
                 )}</small>
             </div>
             <div class="text-end lh-1">
                 <span class="d-block text-${config.color} fw-bold">${
-      config.sign
-    }${this.#formatoMoneda(element.amount)}</span>
+                  config.sign
+                }${this.#formatoMoneda(element.amount)}</span>
                 <small class="text-muted" style="font-size: 0.75rem;">${
                   element.payment_method
                 }</small>
