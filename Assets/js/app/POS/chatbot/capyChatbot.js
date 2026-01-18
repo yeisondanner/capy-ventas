@@ -16,10 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const micBtn = document.getElementById("microphone-btn");
     const stopBtn = document.getElementById("stop-record-btn");
 
-    let isChatOpen = false;
+    const INACTIVITY_TIME = 5 * 60 * 1000;//1 * 60 * 1000; // 10 minutos
+
     let inactivityTimer = null;
     let isBotBusy = false;
-    let currentView = "closed";
     let activeConversationId = null;
     let conversations = [];
     let chatState = "closed";
@@ -28,78 +28,92 @@ document.addEventListener("DOMContentLoaded", () => {
     let listeningInterval = null;
     let dotCount = 0;
 
-    const INACTIVITY_TIME = 10*1000;//1 * 60 * 1000; // 10 minutos
-
+    //INIT
     initSpeechRecognition();
+    bindUIEvents();
 
-    //botones
-    toggle.addEventListener("click", () => {
-        if (welcomeMessage) welcomeMessage.style.display = "none";
-        if (chatState === "closed") {
-            openChat();
-        } else {
-            closeChat();
-        }
-    });
-
-    closeBtn.addEventListener("click", closeChat);
-
-    backBtn.addEventListener("click", showListView);
-
-    newConversationBtn.addEventListener("click", createNewConversation);
-
-    sendBtn.addEventListener("click", sendMessage);
-
-    input.addEventListener("input", () => {
-        resetInactivityTimer();
-        autoResizeInput();
-    });
-
-    input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-
-    input.addEventListener("input", () => {
-        input.style.height = "auto";
-        input.style.height = Math.min(input.scrollHeight, 120) + "px";
-    });
-
-    input.addEventListener("input", function() {
-        this.style.height = '40px';
-        const scHeight = this.scrollHeight;
-        if (scHeight > 40) {
-            this.style.height = scHeight + 'px';
-            this.style.overflowY = scHeight >= 120 ? 'auto' : 'hidden';
-        } else {
-            this.style.height = '40px';
-            this.style.overflowY = 'hidden';
-        }
-    });
-
-    if (welcomeClose && welcomeMessage) {
-        welcomeClose.addEventListener("click", () => {
-            welcomeMessage.style.display = "none";
+    //funciones
+    function bindUIEvents(){
+        toggle.addEventListener("click", () => {
+            if (welcomeMessage) welcomeMessage.style.display = "none";
+            if (chatState === "closed") {
+                openChat();
+            } else {
+                closeChat();
+            }
         });
+
+        closeBtn.addEventListener("click", closeChat);
+
+        backBtn.addEventListener("click", showListView);
+
+        newConversationBtn.addEventListener("click", createNewConversation);
+
+        sendBtn.addEventListener("click", sendMessage);
+
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        input.addEventListener("input", () => {
+            resetInactivityTimer();
+            autoResizeInput();
+        });
+
+        if (welcomeClose && welcomeMessage) {
+            welcomeClose.addEventListener("click", () => {
+                welcomeMessage.style.display = "none";
+            });
+        }
+
     }
 
+    //funciones de inactividad
     function resetInactivityTimer() {
         clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(handleInactivity, INACTIVITY_TIME);
+        if(chatState !== "closed" && activeConversationId) {
+            inactivityTimer = setTimeout(handleInactivity, INACTIVITY_TIME);
+        }
     }
-    function handleInactivity(){
-        if(chatState === "closed") return;
-        appendBotMessage("Hemos esperado mucho tiempo y no recibimos ninguna respuesta. Si deseas continuar inicia un nuevo mensaje.");
-        disableChatInput();
 
+    function pauseInactivityTimer() {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = null;
+    }
+
+    function resumeInactivityTimer() {
+        if (chatState !== "closed" && activeConversationId) {
+            resetInactivityTimer();
+        }
+    }
+
+    function handleInactivity() {
+        const text = "Hemos esperado mucho tiempo y no recibimos ninguna respuesta. Si deseas continuar inicia un nuevo mensaje.";
+        const convo = conversations.find(c => c.id === activeConversationId);
+
+        if(chatState === "closed") return;
+        if (!convo || convo.ended) return;
+
+        convo.ended = true;
+        convo.messages.push({
+            sender: "bot",
+            text: text
+        });
+        appendBotMessage(text);
+        //handleGlobalClick();
+        disableChatInput();
         setTimeout(() => {
+            enableFullChatInput();
             closeChat();
             activeConversationId = null;
-        }, 3000);
+        }, 4000);
     }
 
+
+    ///funciones speechrecognition /voz----> microfono
     function initSpeechRecognition() {
 
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -123,7 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function starRecording(){
-        resetInactivityTimer();
+        if (isBotBusy) return;
+        const convo = conversations.find(c=> c.id === activeConversationId);
+        if (!convo || convo.ended) return;
+
+        pauseInactivityTimer();
         if(isRecording) return;
         isRecording = true;
         input.disabled = true;
@@ -132,6 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
         startListeningPlaceholder();
         recognition.start();
     }
+
     function stopRecording() {
         if (!isRecording) return;
         recognition.stop();
@@ -159,6 +178,8 @@ document.addEventListener("DOMContentLoaded", () => {
         micBtn.disabled = false;
         input.placeholder = "Escribe tu mensaje"
         input.focus();
+
+        resumeInactivityTimer();
     }
 
     function startListeningPlaceholder(){
@@ -169,26 +190,25 @@ document.addEventListener("DOMContentLoaded", () => {
             input.placeholder = "Escuchando" + ".".repeat(dotCount);
         }, 500);
     }
+
     function stopListeningPlaceholder() {
         clearInterval(listeningInterval);
         listeningInterval = null;
         input.placeholder = "Escribiendo tu mensaje ...";
     }
 
-    function autoResizeInput() {
-        input.style.height = "20px";
-        input.style.height = Math.min(input.scrollHeight, 120) + "px";
-    }
 
-    //funciones
+    ///chat UI
     function openChat() {
         chatbot.style.display = "flex";
+        chatState = "list";
         showListView();
-        hideHeaderButtons();
+        //toggleHeaderButtons(false);
         //toggle.style.display = "none";
         setToggleIcon("bi-chevron-down");
-       // showListView();
-        chatState = "open";
+        // showListView();
+        //chatState = "open";
+        clearTimeout(inactivityTimer);
         resetInactivityTimer();
     }
 
@@ -196,25 +216,16 @@ document.addEventListener("DOMContentLoaded", () => {
         chatbot.style.display = "none";
         //toggle.style.display = "flex";
         setToggleIcon("bi-chat-left-text-fill");
-        hideHeaderButtons();
+        toggleHeaderButtons(false);
         chatState = "closed";
         clearTimeout(inactivityTimer);
-    }
-    function hideHeaderButtons(){
-        backBtn.style.display = "none";
-        closeBtn.style.display = "none"
-    }
-
-    function showHeaderButtons(){
-        backBtn.style.display = "flex";
-        closeBtn.style.display = "flex";
     }
 
     function showListView() {
         listView.style.display = "flex";
         messages.style.display = "none";
         chatbotInputContainer.style.display = "none";
-        hideHeaderButtons();
+        toggleHeaderButtons(false);
         setToggleIcon("bi-chevron-down");
         chatState = "list";
     }
@@ -223,7 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
         listView.style.display = "none";
         messages.style.display = "block";
         chatbotInputContainer.style.display = "flex";
-        showHeaderButtons();
+        toggleHeaderButtons(true);
         setToggleIcon("bi-chevron-down");
         chatState = "chat";
         const inicio = messages.querySelector(".inicio-message");
@@ -232,48 +243,58 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function enableChatInput() {
+    function toggleHeaderButtons(show){
+        backBtn.style.display = show ? "flex" : "none";
+        closeBtn.style.display = show ? "flex" : "none";
+    }
+
+    function enableFullChatInput() {
         input.disabled = false;
         sendBtn.disabled = false;
+
+        micBtn.disabled = false;
+        micBtn.style.opacity = "1";
+        micBtn.style.pointerEvents = "auto";
+        micBtn.style.display = "flex";
+
+        stopBtn.style.display = "none";
+
         input.placeholder = "Escribe tu mensaje...";
         input.classList.remove("input-disabled");
     }
 
-    function setToggleIcon(icon) {
-        const i = toggle.querySelector("i");
-        i.className =  `bi ${icon}`;
+    function disableChatInput() {
+        input.disabled = true;
+        sendBtn.classList.add("disabled");
+        micBtn.disabled = true;
+        micBtn.style.opacity = "0.5";
+        micBtn.style.pointerEvents = "none";
+        input.placeholder = "El chat ha finalizado";
+        input.classList.add("input-disabled");
     }
 
-    function setStartDay() {
-        const timeEl = document.getElementById("inicio-time");
-        if (!timeEl) return;
-
-        const now = new Date();
-        timeEl.textContent = now.toLocaleTimeString("es-PE", {
-            day:"2-digit",
-            month:"2-digit",
-            year:"numeric",
-            hour:"2-digit",
-            minute: "2-digit",
-            hour12: true
-        });
-    }
     function lockInput(){
         isBotBusy = true;
         input.disabled = true;
-        sendBtn.disabled = true;
-        micBtn.disabled = true;
+        sendBtn.classList.add("disabled");
+        micBtn.classList.add("disabled");
         input.placeholder = "Capybot está escribiendo...";
     }
 
     function unlockInput(){
         isBotBusy = false;
         input.disabled = false;
-        sendBtn.disabled = false;
-        micBtn.disabled = false;
+        sendBtn.classList.remove("disabled");
+        micBtn.classList.remove("disabled");
         input.placeholder = "Escribe tu mensaje";
         input.focus();
     }
+
+    function autoResizeInput() {
+        input.style.height = "20px";
+        input.style.height = Math.min(input.scrollHeight, 120) + "px";
+    }
+
 
     //conversaciones
     function createNewConversation() {
@@ -283,19 +304,56 @@ document.addEventListener("DOMContentLoaded", () => {
             id,
             title: "CapyBot",
             messages: [],
-            time: getTime()
+            time: getTime(),
+            ended:false
         };
         conversations.unshift(convo);
         activeConversationId = id;
 
         renderConversationList();
         showChatView();
-        enableChatInput();
+        enableFullChatInput();
 
         messages.querySelectorAll(".message").forEach(m => m.remove());
         setStartDay();
         input.focus();
         resetInactivityTimer();
+    }
+
+    function openConversation(id) {
+        const convo = conversations.find(c => c.id === id);
+        if (!convo) return;
+
+        activeConversationId = id;
+        messages.querySelectorAll(".message").forEach(m => m.remove());
+
+        convo.messages.forEach((m, index) => {
+            if (m.sender === "user") {
+                appendUserMessage(m.text);
+            } else {
+                appendBotMessage(m.text, index === 0);
+            }
+        });
+
+        showChatView();
+        resetInactivityTimer();
+
+        if(convo.ended){
+            disableChatInput();
+        }else{
+            enableFullChatInput();
+            resetInactivityTimer();
+        }
+    }
+
+    function deleteConversation(id) {
+        conversations = conversations.filter(c => c.id !== id);
+
+        if (activeConversationId === id) {
+            activeConversationId = null;
+            showListView();
+        }
+        renderConversationList();
     }
 
     function renderConversationList() {
@@ -341,43 +399,15 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function openConversation(id) {
-        const convo = conversations.find(c => c.id === id);
-        if (!convo) return;
-
-        activeConversationId = id;
-        messages.querySelectorAll(".message").forEach(m => m.remove());
-
-        convo.messages.forEach((m, index) => {
-            if (m.sender === "user") {
-                appendUserMessage(m.text);
-            } else {
-                appendBotMessage(m.text, index === 0);
-            }
-        });
-
-        showChatView();
-    }
-    function deleteConversation(id) {
-        conversations = conversations.filter(c => c.id !== id);
-
-        if (activeConversationId === id) {
-            activeConversationId = null;
-            showListView();
-        }
-        renderConversationList();
-    }
-
-    //mensajes
+    ///messages-API
     async function sendMessage() {
         resetInactivityTimer();
-        if (isBotBusy || !activeConversationId) return;
+        const convo = conversations.find(c => c.id === activeConversationId);
+
+        if (isBotBusy || !activeConversationId || !convo || convo.ended) return;
 
         const text = input.value.trim();
         if (!text) return;
-
-        const convo = conversations.find(c => c.id === activeConversationId);
-        if (!convo) return;
         appendUserMessage(text);
         convo.messages.push({ sender: "user", text });
         convo.time = getTime();
@@ -389,12 +419,19 @@ document.addEventListener("DOMContentLoaded", () => {
         messages.appendChild(typingMsg);
         scrollBottom();
         lockInput();
+        pauseInactivityTimer();
 
         try {
+            const history = convo.messages.map(m =>
+                `${m.sender === "user" ? "Usuario" : "CapyBot"}: ${m.text}`
+            );
             const res = await fetch("https://capy-ai-api.onrender.com/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ question: text })
+                body: JSON.stringify({
+                    question: text,
+                    history:history
+                })
             });
 
             const data = await res.json();
@@ -412,36 +449,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         unlockInput();
         isBotBusy = false;
-    }
-
-    function getTime() {
-        return new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit"
-        });
-    }
-
-    function createTypingMessage() {
-        const msg = document.createElement("div");
-        msg.className = "message bot";
-        msg.dataset.typing = "true";
-        msg.innerHTML = `
-            <div class="avatar">
-                <img src="Assets/icon-chat.jpg">
-            </div>
-            <div class="bot-content">
-                <span class="bot-name">CapyBot</span>
-                <div class="bubble typing">
-                    <span></span><span></span><span></span>
-                </div>
-                <div class="timestamp">${getTimestamp()}</div>
-            </div>
-        `;
-        return msg;
+        resumeInactivityTimer();
     }
 
     function appendUserMessage(text) {
-        addMessage(text, "user");
+        const msg = document.createElement("div");
+        msg.className = "message user";
+        msg.innerHTML = `
+        <div class="bubble-container">
+            <div class="bubble">${text}</div>
+            <div class="timestamp">${getTime()}</div>
+        </div>
+    `;
+        messages.appendChild(msg);
+        scrollBottom();
     }
 
     function appendBotMessage(text) {
@@ -468,7 +489,11 @@ document.addEventListener("DOMContentLoaded", () => {
         lines.forEach((line) => {
             const bubble = document.createElement("div");
             bubble.className = "bubble";
-            bubble.innerHTML = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            const formatted = line
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+            bubble.innerHTML = linkify(formatted);
+
             bubbleContainer.appendChild(bubble);
         });
 
@@ -476,83 +501,32 @@ document.addEventListener("DOMContentLoaded", () => {
         scrollBottom();
     }
 
-    function addMessage(text, sender) {
-        const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
-
-        lines.forEach((line) => {
-            const msg = document.createElement("div");
-            msg.className = `message ${sender}`;
-
-            const timestampHTML = `<div class="timestamp">${getTime()}</div>`;
-            const formattedLine = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-            if (sender === "bot") {
-                msg.innerHTML = `
-                <div class="bot-content">
-                    <span class="bot-name">CapyBot</span>
-                    <div class="bubble">${formattedLine}</div>
-                    ${timestampHTML}
+    function createTypingMessage() {
+        const msg = document.createElement("div");
+        msg.className = "message bot";
+        msg.dataset.typing = "true";
+        msg.innerHTML = `
+            <div class="avatar">
+                <img src="Assets/icon-chat.jpg">
+            </div>
+            <div class="bot-content">
+                <span class="bot-name">CapyBot</span>
+                <div class="bubble typing">
+                    <span></span><span></span><span></span>
                 </div>
-            `;
-            } else {
-                msg.innerHTML = `
-                <div class="bubble-container">
-                    <div class="bubble">${formattedLine}</div>
-                    ${timestampHTML}
-                </div>
-            `;
-            }
-
-            messages.appendChild(msg);
-        });
-
-        scrollBottom();
+                <div class="timestamp">${getTimestamp()}</div>
+            </div>
+        `;
+        return msg;
     }
 
-    /*function addMessage(text, sender, showAvatar = false) {
-        const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
-        let avatarShown = showAvatar;
 
-        lines.forEach((line, index) => {
-            const msg = document.createElement("div");
-            msg.className = `message ${sender}`;
-
-            const timestamp = (index === lines.length - 1) ? `<div class="timestamp">${getTimestamp()}</div>` : '';
-
-            if (sender === "bot") {
-                if (avatarShown) {
-                    msg.innerHTML = `
-                        <div class="avatar">
-                            <img src="Assets/capi_chatbot.png">
-                        </div>
-                        <div class="bot-content">
-                            <span class="bot-name">CapyBot</span>
-                            <div class="bubble">${marked.parse(line)}</div>
-                            ${timestamp}
-                        </div>`;
-                    avatarShown = false;
-                } else {
-                    msg.innerHTML = `
-                        <div class="bot-content no-avatar">
-                            <div class="bubble">${marked.parse(line)}</div>
-                            ${timestamp}
-                        </div>`;
-                }
-            } else {
-                msg.innerHTML = `
-                    <div class="bubble-container">
-                        <div class="bubble">${line}</div>
-                        ${timestamp}
-                    </div>`;
-            }
-
-            messages.appendChild(msg);
-            scrollBottom();
+    //timer
+    function getTime() {
+        return new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
         });
-    }*/
-
-    function scrollBottom() {
-        messages.scrollTop = messages.scrollHeight;
     }
 
     function getTimestamp() {
@@ -564,55 +538,42 @@ document.addEventListener("DOMContentLoaded", () => {
         }).toLowerCase();
     }
 
-    function showChatRatingWithRestart() {
-        if (document.getElementById("chat-rating")) return;
-
-        const rating = document.createElement("div");
-        rating.id = "chat-rating";
-        rating.className = "chat-rating";
-        rating.innerHTML = `
-            <p>¿Te he ayudado?</p>
-            <div class="rating-buttons">
-                <i class="rating-btn bi bi-hand-thumbs-up-fill" data-rate="like"></i>
-                <i class="rating-btn bi bi-hand-thumbs-down-fill" data-rate="dislike"></i>
-            </div>
-        `;
-
-        messages.appendChild(rating);
-        scrollBottom();
-        disableChatInput();
+    //link
+    function linkify (text){
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text.replace(urlRegex, url =>
+            `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+        );
     }
 
-    function disableChatInput() {
-        input.disabled = true;
-        sendBtn.disabled = true;
-        input.placeholder = "El chat ha finalizado";
-        input.classList.add("input-disabled");
+    //others
+    function scrollBottom() {
+        messages.scrollTop = messages.scrollHeight;
     }
 
-    function showChatEnded() {
-        const end = document.createElement("div");
-        end.className = "chat-ended";
-        end.innerHTML = `
-            <p><strong>Tu chat ha terminado.</strong></p>
-            <p>
-                <span class="new-chat-link">Para iniciar un nuevo chat, haz clic aquí</span>.
-            </p>
-        `;
-        messages.appendChild(end);
-        scrollBottom();
+    function setToggleIcon(icon) {
+        const i = toggle.querySelector("i");
+        i.className =  `bi ${icon}`;
     }
-    function handleGlobalClick(e) {
-        if (e.target.classList.contains("rating-btn")) {
-            const rate = e.target.dataset.rate;
-            appendBotMessage(rate === "like" ? "¡Gracias por tu feedback! 💙" : "Gracias, seguiremos mejorando 🙌");
-            document.getElementById("chat-rating")?.remove();
-            showChatEnded();
-        }
 
-        if (e.target.classList.contains("new-chat-link")) {
-            location.reload();
-        }
+    function setStartDay() {
+        const timeEl = document.getElementById("inicio-time");
+        if (!timeEl) return;
+
+        const now = new Date();
+        timeEl.textContent = now.toLocaleTimeString("es-PE", {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute: "2-digit",
+            hour12: true
+        });
     }
+
+
+    //conversaciones
+
+
 
 });
