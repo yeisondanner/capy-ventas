@@ -116,18 +116,18 @@ class Customers extends Controllers
             $isProtected = $this->isProtectedCustomerName($customer['fullname'] ?? '');
 
             $actions  = '<div class="btn-group btn-group-sm" role="group">';
-            $actions .= '<button class="btn btn-outline-secondary view-customer" data-id="'
+            $actions .= '<button class="btn btn-sm btn-outline-secondary view-customer" data-id="'
                 . (int) $customer['idCustomer'] . '" title="Ver detalles del cliente">'
                 . '<i class="bi bi-eye"></i></button>';
 
             if (!$isProtected) {
                 if ($validationUpdate === 1) {
-                    $actions .= '<button class="btn btn-outline-primary edit-customer" data-id="'
+                    $actions .= '<button class="btn btn-sm btn-outline-primary edit-customer" data-id="'
                         . (int) $customer['idCustomer'] . '" title="Editar cliente">'
                         . '<i class="bi bi-pencil-square"></i></button>';
                 }
                 if ($validationDelete === 1) {
-                    $actions .= '<button class="btn btn-outline-danger delete-customer" data-id="'
+                    $actions .= '<button class="btn btn-sm btn-outline-danger delete-customer" data-id="'
                         . (int) $customer['idCustomer'] . '" data-name="' . $name . '" data-token="' . csrf(false) . '"'
                         . ' title="Eliminar cliente"><i class="bi bi-trash"></i></button>';
                 }
@@ -535,6 +535,45 @@ class Customers extends Controllers
         $normalizedSpaces = preg_replace('/\s+/', ' ', $lower ?? '');
 
         return is_string($normalizedSpaces) ? $normalizedSpaces : '';
+    }
+
+    /**
+     * Obtiene el detalle de un cliente para el reporte.
+     *
+     * @return void
+     */
+    public function getCustomer(): void
+    {
+        if (!$_POST) {
+            $this->responseError('Solicitud inválida.');
+        }
+
+        $customerId = intval($_POST['customerId'] ?? 0);
+
+        if ($customerId <= 0) {
+            $this->responseError('Identificador de cliente no válido.');
+        }
+
+        $businessId = $this->getBusinessId();
+
+        $data = $this->model->getCustomerDetail($customerId, $businessId);
+
+        if (empty($data)) {
+            $this->responseError('No se encontraron datos para este cliente.');
+            return;
+        }
+
+        // Formatear datos para la vista
+        if (!empty($data['logo'])) {
+            $data['logo'] = base_url() . '/Loadfile/iconbusiness?f=' . $data['logo'];
+        }
+
+        $arrResponse = [
+            'status' => true,
+            'data' => $data,
+        ];
+
+        toJson($arrResponse);
     }
 
     /**

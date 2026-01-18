@@ -117,7 +117,7 @@
   function updateModalTexts(isEdit) {
     const title = document.getElementById("modalCustomerLabel");
     const submitButton = document.querySelector(
-      "#formCustomer button[type='submit']"
+      "#formCustomer button[type='submit']",
     );
 
     if (title) {
@@ -147,11 +147,11 @@
     }
 
     const documentTypeField = document.getElementById(
-      "txtCustomerDocumentType"
+      "txtCustomerDocumentType",
     );
     if (documentTypeField) {
       documentTypeField.value = String(
-        customer.documenttype_id || customer.document_type_id || ""
+        customer.documenttype_id || customer.document_type_id || "",
       );
     }
 
@@ -207,31 +207,179 @@
   }
 
   /**
-   * Muestra el modal con el detalle del cliente seleccionado.
-   * @param {any} customer Datos del cliente.
+  /**
+   * Muestra el modal con el detalle del cliente seleccionado (Estilo Reporte).
+   * @param {any} customer Datos del cliente (se usa el ID para fetch completo).
    */
-  function showCustomerDetail(customer) {
+  async function showCustomerDetail(customer) {
     if (!customer) return;
 
-    const fields = {
-      detailCustomerName: customer.fullname_raw || customer.fullname || "-",
-      detailCustomerDocumentType:
-        customer.document_type_raw || customer.document_type || "Sin tipo",
-      detailCustomerDocument: customer.document_raw || "Sin documento",
-      detailCustomerPhone: customer.phone_raw || "Sin teléfono",
-      detailCustomerEmail: customer.email_raw || "Sin correo",
-      detailCustomerAddress: customer.direction_raw || "Sin dirección",
-      detailCustomerStatus: customer.status_text || "-",
-    };
+    const customerId = customer.idCustomer || customer.id || 0;
+    if (!customerId) return;
 
-    Object.entries(fields).forEach(([id, value]) => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.textContent = value;
+    try {
+      const formData = new FormData();
+      formData.append("customerId", customerId);
+
+      const response = await fetch(`${base_url}/pos/Customers/getCustomer`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}`);
       }
+
+      const res = await response.json();
+
+      if (!res.status || !res.data) {
+        showAlert({
+          icon: "error",
+          title: "Error",
+          message: res.message || "No se pudo cargar el detalle del cliente",
+        });
+        return;
+      }
+
+      const d = res.data;
+
+      // Header Negocio
+      const logoImg = document.getElementById("report_logo");
+      if (logoImg) {
+        if (d.logo) {
+          logoImg.src = d.logo;
+          logoImg.style.display = "inline-block";
+        } else {
+          logoImg.style.display = "none";
+        }
+      }
+
+      document.getElementById("report_business_name").textContent =
+        d.name_bussines || "--";
+      document.getElementById("report_business_address").textContent =
+        d.direction_bussines || "--";
+      document.getElementById("report_business_document").textContent =
+        d.document_bussines || "--";
+
+      // Detalles Cliente
+      document.getElementById("report_customer_name").textContent =
+        d.fullname || "--";
+      document.getElementById("report_customer_doctype").textContent =
+        d.document_type || "--";
+      document.getElementById("report_customer_document").textContent =
+        d.document_number || "--";
+      document.getElementById("report_customer_phone").textContent =
+        d.phone_number || "--";
+      document.getElementById("report_customer_email").textContent =
+        d.email || "--";
+      document.getElementById("report_customer_address").textContent =
+        d.direction || "--";
+
+      // Estado Badge
+      const statusEl = document.getElementById("report_customer_status");
+      if (statusEl) {
+        let statusBadgeClass = "badge bg-secondary";
+        if (d.status === "Activo") {
+          statusBadgeClass = "badge bg-success text-white";
+        } else if (d.status === "Inactivo") {
+          statusBadgeClass = "badge bg-danger text-white";
+        }
+
+        statusEl.textContent = d.status || "-";
+        statusEl.className = statusBadgeClass + " border";
+      }
+
+      showModal(detailModalElement);
+    } catch (error) {
+      console.error("Error cargando detalle cliente", error);
+      showAlert({
+        icon: "error",
+        title: "Ocurrió un error",
+        message: "No fue posible cargar el detalle del cliente.",
+      });
+    }
+  }
+
+  /**
+   * Genera captura completa clonando el nodo en el body para evitar recorte por scroll
+   * @param {string} elementId ID del elemento a capturar
+   * @param {string} filename Nombre del archivo a descargar
+   */
+  const exportToPng = (elementId, filename) => {
+    const originalElement = document.getElementById(elementId);
+    if (!originalElement) return;
+
+    // 1. Clonar el elemento
+    const clone = originalElement.cloneNode(true);
+
+    // 2. Estilizar el clon para que se muestre completo
+    Object.assign(clone.style, {
+      position: "fixed",
+      top: "-9999px",
+      left: "-9999px",
+      width: originalElement.offsetWidth + "px", // Mismo ancho que el original
+      height: "auto", // Altura automática para mostrar todo el contenido
+      zIndex: "-1",
+      overflow: "visible", // Asegurar que no haya scroll oculto
+      backgroundColor: "#ffffff", // Asegurar fondo blanco
     });
 
-    showModal(detailModalElement);
+    // 3. Insertar el clon en el documento
+    document.body.appendChild(clone);
+
+    // 4. Generar el canvas desde el clon
+    // Asegurarse de tener html2canvas cargado en la vista (generalmente en footer_pos o header_pos)
+    if (typeof html2canvas === "undefined") {
+      console.error("html2canvas no está definido.");
+      document.body.removeChild(clone);
+      return;
+    }
+
+    html2canvas(clone, {
+      scale: 2, // Mejor resolución
+      useCORS: true,
+      scrollY: -window.scrollY, // Ajuste para evitar desplazamiento
+      backgroundColor: "#ffffff",
+    })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((err) => {
+        console.error("Error exporting PNG:", err);
+      })
+      .finally(() => {
+        // 5. Eliminar el clon
+        if (document.body.contains(clone)) {
+          document.body.removeChild(clone);
+        }
+      });
+  };
+
+  function registerExportButton() {
+    const btn = document.getElementById("btnDownloadCustomerPng");
+    if (btn) {
+      // Clonar para eliminar listeners previos si se reinicializa
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+
+      newBtn.addEventListener("click", () => {
+        const name =
+          document.getElementById("report_customer_name")?.textContent ||
+          "Cliente";
+        // Sanitize filename
+        const cleanName = name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+        exportToPng(
+          "customerReportContainer",
+          `Ficha_Cliente_${cleanName}.png`,
+        );
+      });
+    }
   }
 
   /**
@@ -367,7 +515,7 @@
               id: customer.idCustomer || customer.id || 0,
               token,
             }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -483,27 +631,27 @@
         {
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
-          className: "btn btn-secondary",
+          className: "btn btn-sm btn-outline-secondary",
           exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
-          className: "btn btn-success",
+          className: "btn btn-sm btn-outline-success",
           title: "Clientes",
           exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
-          className: "btn btn-info text-white",
+          className: "btn btn-sm btn-outline-info",
           title: "Clientes",
           exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7] },
         },
         {
           extend: "pdfHtml5",
           text: "<i class='bi bi-filetype-pdf'></i> PDF",
-          className: "btn btn-danger",
+          className: "btn btn-sm btn-outline-danger",
           orientation: "portrait",
           pageSize: "A4",
           title: "Clientes",
@@ -517,9 +665,10 @@
         { targets: 7, className: "text-center" },
       ],
       responsive: true,
+      processing: true,
       destroy: true,
       colReorder: true,
-      stateSave: false,
+      stateSave: true,
       autoFill: false,
       iDisplayLength: 10,
       order: [[0, "asc"]],
@@ -542,5 +691,6 @@
 
     registerEvents();
     initCustomersTable();
+    registerExportButton();
   });
 })();

@@ -204,4 +204,40 @@ class CustomersModel extends Mysql
 
         return $this->select_all($sql);
     }
+    /**
+     * Obtiene el detalle completo de un cliente y su negocio asociado.
+     *
+     * @param int $customerId Identificador del cliente.
+     * @param int $businessId Identificador del negocio activo.
+     *
+     * @return array
+     */
+    public function getCustomerDetail(int $customerId, int $businessId): array
+    {
+        $sql = <<<SQL
+            SELECT
+                c.idCustomer,
+                c.fullname,
+                dt.name AS document_type,
+                c.document_number,
+                c.phone_number,
+                c.email,
+                c.direction,
+                c.status,
+                b.name AS name_bussines,
+                b.direction AS direction_bussines,
+                b.document_number AS document_bussines,
+                b.logo
+            FROM customer c
+            INNER JOIN document_type dt ON dt.idDocumentType = c.documenttype_id
+            INNER JOIN business b ON b.idBusiness = c.business_id
+            WHERE c.idCustomer = ?
+              AND c.business_id = ?
+            LIMIT 1;
+        SQL;
+
+        $result = $this->select($sql, [$customerId, $businessId]);
+
+        return is_array($result) ? $result : [];
+    }
 }

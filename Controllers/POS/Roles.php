@@ -75,15 +75,15 @@ class Roles extends Controllers
                 : '<span class="badge bg-secondary"><i class="bi bi-slash-circle"></i> Inactivo</span>';
             $roles[$key]['updated_at']  = $updatedAt;
             if ($validationUpdate === 1) {
-                $btnupdate = '<button class="btn btn-warning update_role" data-id="' . (int) $role['idRoleApp'] . '">'
+                $btnupdate = '<button class="btn btn-sm btn-outline-primary update_role" data-id="' . (int) $role['idRoleApp'] . '">'
                     . '<i class="bi bi-pencil-square"></i></button>';
             }
             if ($validationDelete === 1) {
-                $btnDelete = '<button class="btn btn-danger delete_role" data-id="' . (int) $role['idRoleApp'] . '"'
+                $btnDelete = '<button class="btn btn-sm btn-outline-danger delete_role" data-id="' . (int) $role['idRoleApp'] . '"'
                     . ' data-name="' . $name . '" data-token="' . csrf(false) . '" data-description="' . $role['description'] . '"><i class="bi bi-trash"></i></button>';
             }
             $roles[$key]['actions'] = '<div class="btn-group btn-group-sm" role="group">'
-                . '<button class="btn btn-secondary report_role" data-id="' . (int) $role['idRoleApp'] . '"'
+                . '<button class="btn btn-sm btn-outline-secondary report_role" data-id="' . (int) $role['idRoleApp'] . '"'
                 . ' data-name="' . $name . '" data-description="' . $role['description'] . '" data-status="' . $status . '"'
                 . ' data-updated="' . $updatedAt . '"><i class="bi bi-eye"></i></button>'
                 . $btnupdate

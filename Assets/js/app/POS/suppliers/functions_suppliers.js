@@ -117,7 +117,7 @@
   function updateModalTexts(isEdit) {
     const title = document.getElementById("modalSupplierLabel");
     const submitButton = document.querySelector(
-      "#formSupplier button[type='submit']"
+      "#formSupplier button[type='submit']",
     );
 
     if (title) {
@@ -200,29 +200,172 @@
   }
 
   /**
-   * Muestra el modal con el detalle del proveedor seleccionado.
+   * Muestra el modal con el detalle del proveedor seleccionado (Estilo Reporte).
    * @param {any} supplier Datos del proveedor.
    */
-  function showSupplierDetail(supplier) {
+  async function showSupplierDetail(supplier) {
     if (!supplier) return;
 
-    const fields = {
-      detailSupplierName: supplier.company_raw || supplier.company_name || "-",
-      detailSupplierDocument: supplier.document_raw || "Sin documento",
-      detailSupplierPhone: supplier.phone_raw || "Sin teléfono",
-      detailSupplierEmail: supplier.email_raw || "Sin correo",
-      detailSupplierAddress: supplier.direction_raw || "Sin dirección",
-      detailSupplierStatus: supplier.status_text || "-",
-    };
+    const supplierId = supplier.idSupplier || supplier.id || 0;
+    if (!supplierId) return;
 
-    Object.entries(fields).forEach(([id, value]) => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.textContent = value;
+    try {
+      const formData = new FormData();
+      formData.append("supplierId", supplierId);
+
+      const response = await fetch(`${base_url}/pos/Suppliers/getSupplier`, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}`);
       }
+
+      const res = await response.json();
+
+      if (!res.status || !res.data) {
+        showAlert({
+          icon: "error",
+          title: "Error",
+          message: res.message || "No se pudo cargar el detalle del proveedor",
+        });
+        return;
+      }
+
+      const d = res.data;
+
+      // Header Negocio
+      const logoImg = document.getElementById("report_logo");
+      if (logoImg) {
+        if (d.logo) {
+          logoImg.src = d.logo;
+          logoImg.style.display = "inline-block";
+        } else {
+          logoImg.style.display = "none";
+        }
+      }
+
+      document.getElementById("report_business_name").textContent =
+        d.name_bussines || "--";
+      document.getElementById("report_business_address").textContent =
+        d.direction_bussines || "--";
+      document.getElementById("report_business_document").textContent =
+        d.document_bussines || "--";
+
+      // Detalles Proveedor
+      document.getElementById("report_supplier_name").textContent =
+        d.company_name || "--";
+      document.getElementById("report_supplier_document").textContent =
+        d.document_number || "--";
+      document.getElementById("report_supplier_phone").textContent =
+        d.phone_number || "--";
+      document.getElementById("report_supplier_email").textContent =
+        d.email || "--";
+      document.getElementById("report_supplier_address").textContent =
+        d.direction || "--";
+
+      // Estado Badge
+      const statusEl = document.getElementById("report_supplier_status");
+      if (statusEl) {
+        let statusBadgeClass = "badge bg-secondary";
+        if (d.status === "Activo") {
+          statusBadgeClass = "badge bg-success text-white";
+        } else if (d.status === "Inactivo") {
+          statusBadgeClass = "badge bg-danger text-white";
+        }
+
+        statusEl.textContent = d.status || "-";
+        statusEl.className = statusBadgeClass + " border";
+      }
+
+      showModal(detailModalElement);
+    } catch (error) {
+      console.error("Error cargando detalle proveedor", error);
+      showAlert({
+        icon: "error",
+        title: "Ocurrió un error",
+        message: "No fue posible cargar el detalle del proveedor.",
+      });
+    }
+  }
+
+  /**
+   * Genera captura completa clonando el nodo en el body para evitar recorte por scroll
+   * @param {string} elementId ID del elemento a capturar
+   * @param {string} filename Nombre del archivo a descargar
+   */
+  const exportToPng = (elementId, filename) => {
+    const originalElement = document.getElementById(elementId);
+    if (!originalElement) return;
+
+    // 1. Clonar el elemento
+    const clone = originalElement.cloneNode(true);
+
+    // 2. Estilizar el clon para que se muestre completo
+    Object.assign(clone.style, {
+      position: "fixed",
+      top: "-9999px",
+      left: "-9999px",
+      width: originalElement.offsetWidth + "px",
+      height: "auto",
+      zIndex: "-1",
+      overflow: "visible",
+      backgroundColor: "#ffffff",
     });
 
-    showModal(detailModalElement);
+    // 3. Insertar el clon en el documento
+    document.body.appendChild(clone);
+
+    // 4. Generar el canvas
+    if (typeof html2canvas === "undefined") {
+      console.error("html2canvas no está definido.");
+      document.body.removeChild(clone);
+      return;
+    }
+
+    html2canvas(clone, {
+      scale: 2,
+      useCORS: true,
+      scrollY: -window.scrollY,
+      backgroundColor: "#ffffff",
+    })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((err) => {
+        console.error("Error exporting PNG:", err);
+      })
+      .finally(() => {
+        if (document.body.contains(clone)) {
+          document.body.removeChild(clone);
+        }
+      });
+  };
+
+  function registerExportButton() {
+    const btn = document.getElementById("btnDownloadSupplierPng");
+    if (btn) {
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+
+      newBtn.addEventListener("click", () => {
+        const name =
+          document.getElementById("report_supplier_name")?.textContent ||
+          "Proveedor";
+        const cleanName = name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
+        exportToPng(
+          "supplierReportContainer",
+          `Ficha_Proveedor_${cleanName}.png`,
+        );
+      });
+    }
   }
 
   /**
@@ -310,7 +453,7 @@
 
     if (
       isProtectedSupplierName(
-        supplier.company_raw || supplier.company_name || ""
+        supplier.company_raw || supplier.company_name || "",
       )
     ) {
       showAlert({
@@ -360,7 +503,7 @@
               id: supplier.idSupplier || supplier.id || 0,
               token,
             }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -476,27 +619,27 @@
         {
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
-          className: "btn btn-secondary",
+          className: "btn btn-sm btn-outline-secondary",
           exportOptions: { columns: [0, 2, 3, 4, 5, 6] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
-          className: "btn btn-success",
+          className: "btn btn-sm btn-outline-success",
           title: "Proveedores",
           exportOptions: { columns: [0, 2, 3, 4, 5, 6] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
-          className: "btn btn-info text-white",
+          className: "btn btn-sm btn-outline-info",
           title: "Proveedores",
           exportOptions: { columns: [0, 2, 3, 4, 5, 6] },
         },
         {
           extend: "pdfHtml5",
           text: "<i class='bi bi-filetype-pdf'></i> PDF",
-          className: "btn btn-danger",
+          className: "btn btn-sm btn-outline-danger",
           orientation: "portrait",
           pageSize: "A4",
           title: "Proveedores",
@@ -510,9 +653,10 @@
         { targets: 6, className: "text-center" },
       ],
       responsive: true,
+      processing: true,
       destroy: true,
       colReorder: true,
-      stateSave: false,
+      stateSave: true,
       autoFill: false,
       iDisplayLength: 10,
       order: [[0, "asc"]],
@@ -535,5 +679,6 @@
 
     registerEvents();
     initSuppliersTable();
+    registerExportButton();
   });
 })();

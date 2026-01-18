@@ -61,27 +61,27 @@ export class Roles {
         {
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
-          className: "btn btn-secondary",
+          className: "btn btn-sm btn-outline-secondary",
           exportOptions: { columns: [0, 2, 3, 4, 5] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
-          className: "btn btn-success",
+          className: "btn btn-sm btn-outline-success",
           title: "Roles",
           exportOptions: { columns: [0, 2, 3, 4, 5] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
-          className: "btn btn-info text-white",
+          className: "btn btn-sm btn-outline-info",
           title: "Roles",
           exportOptions: { columns: [0, 2, 3, 4, 5] },
         },
         {
           extend: "pdfHtml5",
           text: "<i class='bi bi-filetype-pdf'></i> PDF",
-          className: "btn btn-danger",
+          className: "btn btn-sm btn-outline-danger",
           orientation: "portrait",
           pageSize: "A4",
           title: "Roles",
@@ -93,9 +93,10 @@ export class Roles {
         { targets: 3, className: "text-wrap" },
       ],
       responsive: true,
+      processing: true,
       destroy: true,
       colReorder: true,
-      stateSave: false,
+      stateSave: true,
       autoFill: false,
       iDisplayLength: 10,
       order: [[0, "asc"]],
@@ -131,18 +132,18 @@ export class Roles {
           if (response.status) {
             // ? cargamos los datos
             $("#modalUpdateRoleLabel").text(
-              `Actualizar Rol #${response.data.role.idRoleApp}`
+              `Actualizar Rol #${response.data.role.idRoleApp}`,
             );
             $("#txtNameUpdate").val(response.data.role.name);
             $("#selectStatusUpdate").val(response.data.role.status);
             $("#txtDescriptionUpdate").val(response.data.role.description);
             this.#btnUpdateRole.attr(
               "data-role-id",
-              response.data.role.idRoleApp
+              response.data.role.idRoleApp,
             );
             this.#loadPermissionsUpdate(
               response.data.permissions_interface,
-              response.data.permissions_app
+              response.data.permissions_app,
             );
             this.#modalUpdateRole.modal("show");
           }
@@ -266,7 +267,7 @@ export class Roles {
       const isChecked = $(event.target).prop("checked");
 
       const allInputs = $(
-        ".checkPermision input[type='checkbox']:not(:disabled)"
+        ".checkPermision input[type='checkbox']:not(:disabled)",
       );
 
       allInputs.prop("checked", isChecked);
@@ -304,7 +305,7 @@ export class Roles {
     let html = "";
     permissionsInterface.forEach((element, index) => {
       let perApp = permissionsApp.find(
-        (item) => item.plan_interface_id === element.plan_interface_id
+        (item) => item.plan_interface_id === element.plan_interface_id,
       );
 
       if (perApp) {
@@ -334,13 +335,15 @@ export class Roles {
                           <div style="cursor: pointer;" data-interface="${
                             element.plan_interface_id
                           }" data-permision="create" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
-        element.create == 1 ? true : "pe-none user-select-none"
-      }">
+                            element.create == 1
+                              ? true
+                              : "pe-none user-select-none"
+                          }">
                               <input ${
                                 perApp && perApp.create == 1 ? "checked" : ""
                               } ${
-        element.create == 1 ? "" : "disabled"
-      } id="create_${element.plan_interface_id}" type="checkbox" value="">
+                                element.create == 1 ? "" : "disabled"
+                              } id="create_${element.plan_interface_id}" type="checkbox" value="">
                               <label class="${
                                 element.create == 1
                                   ? true
@@ -352,13 +355,15 @@ export class Roles {
                           <div style="cursor: pointer;" data-interface="${
                             element.plan_interface_id
                           }" data-permision="read" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
-        element.read == 1 ? true : "pe-none user-select-none"
-      }">
+                            element.read == 1
+                              ? true
+                              : "pe-none user-select-none"
+                          }">
                               <input ${
                                 perApp && perApp.read == 1 ? "checked" : ""
                               } ${
-        element.read == 1 ? "" : "disabled"
-      } id="read_${element.plan_interface_id}" type="checkbox" value="">
+                                element.read == 1 ? "" : "disabled"
+                              } id="read_${element.plan_interface_id}" type="checkbox" value="">
                               <label class="${
                                 element.read == 1
                                   ? true
@@ -370,13 +375,15 @@ export class Roles {
                           <div style="cursor: pointer;" data-interface="${
                             element.plan_interface_id
                           }" data-permision="update" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
-        element.update == 1 ? true : "pe-none user-select-none"
-      }">
+                            element.update == 1
+                              ? true
+                              : "pe-none user-select-none"
+                          }">
                               <input ${
                                 perApp && perApp.update == 1 ? "checked" : ""
                               } ${
-        element.update == 1 ? "" : "disabled"
-      } id="update_${element.plan_interface_id}" type="checkbox" value="">
+                                element.update == 1 ? "" : "disabled"
+                              } id="update_${element.plan_interface_id}" type="checkbox" value="">
                               <label class="${
                                 element.update == 1
                                   ? true
@@ -388,13 +395,15 @@ export class Roles {
                           <div style="cursor: pointer;" data-interface="${
                             element.plan_interface_id
                           }" data-permision="delete" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
-        element.delete == 1 ? true : "pe-none user-select-none"
-      }">
+                            element.delete == 1
+                              ? true
+                              : "pe-none user-select-none"
+                          }">
                               <input ${
                                 perApp && perApp.delete == 1 ? "checked" : ""
                               } ${
-        element.delete == 1 ? "" : "disabled"
-      } id="delete_${element.plan_interface_id}" type="checkbox" value="">
+                                element.delete == 1 ? "" : "disabled"
+                              } id="delete_${element.plan_interface_id}" type="checkbox" value="">
                               <label class="${
                                 element.delete == 1
                                   ? true
@@ -435,13 +444,15 @@ export class Roles {
                           <div style="cursor: pointer;" data-interface="${
                             element.plan_interface_id
                           }" data-permision="create" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
-          element.create == 1 ? true : "pe-none user-select-none"
-        }">
+                            element.create == 1
+                              ? true
+                              : "pe-none user-select-none"
+                          }">
                               <input ${
                                 element.create == 1 ? "" : "disabled"
                               } id="create_${
-          element.plan_interface_id
-        }" type="checkbox" value="">
+                                element.plan_interface_id
+                              }" type="checkbox" value="">
                               <label class="${
                                 element.create == 1
                                   ? true
@@ -453,13 +464,15 @@ export class Roles {
                           <div style="cursor: pointer;" data-interface="${
                             element.plan_interface_id
                           }" data-permision="read" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
-          element.read == 1 ? true : "pe-none user-select-none"
-        }">
+                            element.read == 1
+                              ? true
+                              : "pe-none user-select-none"
+                          }">
                               <input ${
                                 element.read == 1 ? "" : "disabled"
                               } id="read_${
-          element.plan_interface_id
-        }" type="checkbox" value="">
+                                element.plan_interface_id
+                              }" type="checkbox" value="">
                               <label class="${
                                 element.read == 1
                                   ? true
@@ -471,13 +484,15 @@ export class Roles {
                           <div style="cursor: pointer;" data-interface="${
                             element.plan_interface_id
                           }" data-permision="update" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
-          element.update == 1 ? true : "pe-none user-select-none"
-        }">
+                            element.update == 1
+                              ? true
+                              : "pe-none user-select-none"
+                          }">
                               <input ${
                                 element.update == 1 ? "" : "disabled"
                               } id="update_${
-          element.plan_interface_id
-        }" type="checkbox" value="">
+                                element.plan_interface_id
+                              }" type="checkbox" value="">
                               <label class="${
                                 element.update == 1
                                   ? true
@@ -489,13 +504,15 @@ export class Roles {
                           <div style="cursor: pointer;" data-interface="${
                             element.plan_interface_id
                           }" data-permision="delete" class="form-check flex-fill d-flex rounded-2 p-2 gap-1 shadow-sm border checkPermision ${
-          element.delete == 1 ? true : "pe-none user-select-none"
-        }">
+                            element.delete == 1
+                              ? true
+                              : "pe-none user-select-none"
+                          }">
                               <input ${
                                 element.delete == 1 ? "" : "disabled"
                               } id="delete_${
-          element.plan_interface_id
-        }" type="checkbox" value="">
+                                element.plan_interface_id
+                              }" type="checkbox" value="">
                               <label class="${
                                 element.delete == 1
                                   ? true

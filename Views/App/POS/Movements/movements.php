@@ -180,7 +180,7 @@
                 </div>
                 <div class="tile-body">
                     <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
-                        <table class="table table-sm table-hover table-bordered table-striped table-responsive"
+                        <table class="table table-sm table-hover table-bordered table-striped"
                             id="table" data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">
                                 <tr>
@@ -216,8 +216,7 @@
             </div>
 
             <div class="modal-body" id="voucherContainer">
-                <div class="receipt-container p-4 border rounded shadow-sm bg-white"
-                    style="border: 2px solid #ddd; max-width: 100%; margin: 0 auto; font-family: 'Courier New', Courier, monospace;">
+                <div class="receipt-container report-card-movements p-4 border rounded shadow-sm bg-white">
                     <!-- Header -->
                     <div class="row align-items-center mb-4 border-bottom pb-3">
                         <div class="col-3 text-center">
@@ -337,8 +336,7 @@
             </div>
 
             <div class="modal-body" id="expenseContainer">
-                <div class="receipt-container p-4 border rounded shadow-sm bg-white"
-                    style="border: 2px solid #ddd; max-width: 100%; margin: 0 auto; font-family: 'Courier New', Courier, monospace;">
+                <div class="receipt-container report-card-movements p-4 border rounded shadow-sm bg-white">
                     <!-- Header -->
                     <div class="row align-items-center mb-4 border-bottom pb-3">
                         <div class="col-3 text-center">

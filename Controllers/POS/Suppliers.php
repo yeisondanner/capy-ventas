@@ -113,12 +113,12 @@ class Suppliers extends Controllers
 
             if (!$isProtected) {
                 if ($validationUpdate === 1) {
-                    $actions .= '<button class="btn btn-outline-primary edit-supplier" data-id="'
+                    $actions .= '<button class="btn btn-sm btn-outline-primary edit-supplier" data-id="'
                         . (int) $supplier['idSupplier'] . '" title="Editar proveedor">'
                         . '<i class="bi bi-pencil-square"></i></button>';
                 }
                 if ($validationDelete === 1) {
-                    $actions .= '<button class="btn btn-outline-danger delete-supplier" data-id="'
+                    $actions .= '<button class="btn btn-sm btn-outline-danger delete-supplier" data-id="'
                         . (int) $supplier['idSupplier'] . '" data-name="' . $name . '" data-token="' . csrf(false) . '"'
                         . ' title="Eliminar proveedor"><i class="bi bi-trash"></i></button>';
                 }
@@ -522,6 +522,45 @@ class Suppliers extends Controllers
         $normalizedSpaces = preg_replace('/\s+/', ' ', $lower ?? '');
 
         return is_string($normalizedSpaces) ? $normalizedSpaces : '';
+    }
+
+    /**
+     * Obtiene el detalle de un proveedor para el reporte.
+     *
+     * @return void
+     */
+    public function getSupplier(): void
+    {
+        if (!$_POST) {
+            $this->responseError('Solicitud inválida.');
+        }
+
+        $supplierId = intval($_POST['supplierId'] ?? 0);
+
+        if ($supplierId <= 0) {
+            $this->responseError('Identificador de proveedor no válido.');
+        }
+
+        $businessId = $this->getBusinessId();
+
+        $data = $this->model->getSupplierDetail($supplierId, $businessId);
+
+        if (empty($data)) {
+            $this->responseError('No se encontraron datos para este proveedor.');
+            return;
+        }
+
+        // Formatear datos para la vista
+        if (!empty($data['logo'])) {
+            $data['logo'] = base_url() . '/Loadfile/iconbusiness?f=' . $data['logo'];
+        }
+
+        $arrResponse = [
+            'status' => true,
+            'data' => $data,
+        ];
+
+        toJson($arrResponse);
     }
 
     /**

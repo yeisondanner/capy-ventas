@@ -19,6 +19,7 @@
   <link rel="canonical" href="https://capyventas.shaday-pe.com">
   <!--<link rel="stylesheet" href="./../Assets/css/libraries/POS/plugins/feather.css" type="text/css">-->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -30,9 +31,9 @@
 
   <style>
     :root {
-      --color-primary: #23436a;
-      --color-secondary: #1bbf9d;
-      --color-accent: #f7a325;
+      --color-primary: #4369F0;
+      --color-secondary: #FDC346;
+      --color-accent: #FDC346;
       --color-dark: #142235;
       --color-light: #f5f7fb;
       --color-muted: #6c7c8f;
@@ -40,6 +41,7 @@
       --font-sans: "Poppins", "Segoe UI", sans-serif;
       --shadow-soft: 0 18px 40px rgba(19, 47, 76, 0.15);
       --border-radius: 18px;
+      --page-padding: 6%;
     }
 
     @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
@@ -65,7 +67,7 @@
 
     header {
       width: 100% !important;
-      padding: 15px 6%;
+      padding: 15px var(--page-padding);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -244,7 +246,7 @@
 
     main {
       width: 100%;
-      padding: 40px 6% 120px;
+      padding: 40px var(--page-padding) 120px;
     }
 
     .hero {
@@ -771,13 +773,23 @@
       box-shadow: 0 20px 48px rgba(17, 40, 66, 0.18);
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
+      /* Ensures buttons stick to bottom */
       gap: 20px;
       overflow: hidden;
       height: 100%;
     }
 
+    .plan-features {
+      /* flex-grow removed to keep content compact */
+    }
 
-
+    .plan-cta {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
 
     .pricing-card::before {
       content: "";
@@ -832,7 +844,7 @@
 
     .pricing-card.recommended {
       border: 2px solid rgba(27, 191, 157, 0.55);
-      transform: translateY(-10px);
+      /* transform: translateY(-10px); Removed to align buttons perfectly */
       box-shadow: 0 32px 68px rgba(27, 191, 157, 0.28);
     }
 
@@ -965,13 +977,17 @@
     }
 
     footer {
-      padding: 40px 6% 60px;
+      padding: 40px var(--page-padding) 60px;
       text-align: center;
       color: var(--color-muted);
       font-size: 0.9rem;
     }
 
     @media (max-width: 960px) {
+      :root {
+        --page-padding: 5%;
+      }
+
       header {
         width: 100%;
         flex-wrap: wrap;
@@ -979,7 +995,7 @@
         align-items: center;
         justify-content: space-between;
         gap: 18px;
-        padding: 15px 5%;
+        padding: 15px var(--page-padding);
       }
 
       .menu-toggle {
@@ -1083,7 +1099,23 @@
     @media (max-width: 768px) {
       main {
         width: 100%;
-        padding: 20px 4% 80px;
+        padding: 20px var(--page-padding) 80px;
+      }
+
+      .hero-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+
+      .hero-highlights {
+        justify-content: center;
+        text-align: center;
       }
 
       .hero-content h1 {
@@ -1126,7 +1158,7 @@
 
     @media (max-width: 520px) {
       header {
-        padding: 12px 5%;
+        padding: 12px var(--page-padding);
       }
 
       .hero {
@@ -1158,7 +1190,7 @@
       }
 
       footer {
-        padding: 30px 6% 40px;
+        padding: 30px var(--page-padding) 40px;
       }
     }
   </style>
@@ -1200,7 +1232,7 @@
 
   <main>
     <section class="hero" id="solucion">
-      <div class="hero-content">
+      <div class="hero-content" data-aos="fade-right">
         <h1>La plataforma que impulsa tus ventas omnicanal</h1>
         <p>
           Capy Ventas integra punto de venta, inventario, CRM y analítica en un solo ecosistema
@@ -1224,7 +1256,7 @@
         </div>
       </div>
 
-      <aside class="hero-card">
+      <aside class="hero-card" data-aos="zoom-in" data-aos-delay="200">
         <h2>Tablero comercial en vivo</h2>
         <p>Visualiza el rendimiento de tu operación con indicadores que se actualizan cada minuto.</p>
         <div class="hero-metric">
@@ -1252,28 +1284,28 @@
     </section>
 
     <section id="metricas">
-      <h2 class="section-title">Resultados tangibles desde el primer mes</h2>
-      <p class="section-subtitle">
+      <h2 class="section-title" data-aos="fade-up">Resultados tangibles desde el primer mes</h2>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
         Las organizaciones comerciales que migran a Capy Ventas aceleran su ciclo de venta, reducen rupturas
         de inventario y diseñan experiencias coherentes en todos sus canales.
       </p>
       <div class="metrics-grid">
-        <article class="metric-card">
+        <article class="metric-card" data-aos="fade-up" data-aos-delay="200">
           <h3>+43%</h3>
           <span>Crecimiento de ingresos</span>
           <p>Dispara ventas cruzadas gracias a campañas segmentadas y catálogos dinámicos.</p>
         </article>
-        <article class="metric-card">
+        <article class="metric-card" data-aos="fade-up" data-aos-delay="300">
           <h3>-28%</h3>
           <span>Menos quiebres de stock</span>
           <p>Sincroniza existencias entre tiendas físicas, e-commerce y marketplaces en un tablero único.</p>
         </article>
-        <article class="metric-card">
+        <article class="metric-card" data-aos="fade-up" data-aos-delay="400">
           <h3>95%</h3>
           <span>Retención de clientes</span>
           <p>Automatiza recordatorios, programas de lealtad y seguimientos desde nuestro CRM integrado.</p>
         </article>
-        <article class="metric-card">
+        <article class="metric-card" data-aos="fade-up" data-aos-delay="500">
           <h3>24/7</h3>
           <span>Soporte especializado</span>
           <p>Acompañamiento continuo con especialistas comerciales y soporte técnico multicanal.</p>
@@ -1282,37 +1314,37 @@
     </section>
 
     <section id="funcionalidades">
-      <h2 class="section-title">Todo lo que tu fuerza de ventas necesita</h2>
-      <p class="section-subtitle">
+      <h2 class="section-title" data-aos="fade-up">Todo lo que tu fuerza de ventas necesita</h2>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
         Moderniza tu operación con módulos modulares y escalables que se adaptan al tamaño de tu negocio.
       </p>
       <div class="features-grid">
-        <article class="feature-card">
+        <article class="feature-card" data-aos="fade-up" data-aos-delay="100">
           <div class="feature-icon">POS</div>
           <h4>Punto de Venta y Caja</h4>
           <p>Registra ventas en segundos, gestiona aperturas y cierres de caja detallados para un control total del efectivo.</p>
         </article>
-        <article class="feature-card">
+        <article class="feature-card" data-aos="fade-up" data-aos-delay="200">
           <div class="feature-icon">Stock</div>
           <h4>Inventario y Proveedores</h4>
           <p>Control total de tu stock, gestión eficiente de compras y administración centralizada de proveedores.</p>
         </article>
-        <article class="feature-card">
+        <article class="feature-card" data-aos="fade-up" data-aos-delay="300">
           <div class="feature-icon">CRM</div>
           <h4>Gestión de Clientes</h4>
           <p>Base de datos centralizada para conocer mejor a tus compradores y gestionar sus datos de contacto.</p>
         </article>
-        <article class="feature-card">
+        <article class="feature-card" data-aos="fade-up" data-aos-delay="400">
           <div class="feature-icon">Fin</div>
           <h4>Estadísticas y Gastos</h4>
           <p>Monitorea tus ingresos en tiempo real, registra tus gastos operativos y visualiza la rentabilidad del negocio.</p>
         </article>
-        <article class="feature-card">
+        <article class="feature-card" data-aos="fade-up" data-aos-delay="500">
           <div class="feature-icon">Multi</div>
           <h4>Multi-Negocio</h4>
           <p>Crea y administra diferentes negocios independientes desde una sola cuenta de usuario.</p>
         </article>
-        <article class="feature-card">
+        <article class="feature-card" data-aos="fade-up" data-aos-delay="600">
           <div class="feature-icon">User</div>
           <h4>Usuarios y Permisos</h4>
           <p>Crea cuentas para tus trabajadores y asigna permisos específicos para controlar el acceso a los módulos.</p>
@@ -1321,7 +1353,7 @@
     </section>
 
     <section class="clients-section" id="clientes">
-      <div class="clients-header">
+      <div class="clients-header" data-aos="fade-left">
         <span class="clients-eyebrow">Nuestros clientes</span>
         <h2 class="section-title">Marcas que confían en Capy Ventas</h2>
         <p class="section-subtitle">
@@ -1353,7 +1385,7 @@
 
     <section class="pricing-section" id="planes">
       <div class="pricing-wrapper">
-        <div class="pricing-header">
+        <div class="pricing-header" data-aos="fade-up">
           <span class="pricing-eyebrow">Planes Capy Ventas</span>
           <h2 class="section-title">Planes diseñados para tu crecimiento</h2>
           <p class="section-subtitle">
@@ -1362,7 +1394,7 @@
           </p>
         </div>
 
-        <div class="billing-toggle" role="group" aria-label="Selector de modalidad de facturación">
+        <div class="billing-toggle" role="group" aria-label="Selector de modalidad de facturación" data-aos="fade-up" data-aos-delay="100">
           <button class="toggle-button active" data-target="monthly" type="button">
             <span>Pagos mensuales</span>
             <small>Flexibilidad sin contratos</small>
@@ -1375,7 +1407,7 @@
 
         <div class="pricing-grids">
           <div class="pricing-grid" data-plan-group="monthly">
-            <article class="pricing-card">
+            <article class="pricing-card" data-aos="fade-up" data-aos-delay="0">
               <h3 class="plan-name">Gratis</h3>
               <p class="plan-price">S/. 0<span>/mes</span></p>
               <p class="plan-description">Ideal para emprendedores que recién comienzan.</p>
@@ -1402,7 +1434,7 @@
               </div>
             </article>
 
-            <article class="pricing-card recommended">
+            <article class="pricing-card recommended" data-aos="fade-up" data-aos-delay="100">
               <span class="plan-badge">Popular</span>
               <h3 class="plan-name">Pro</h3>
               <p class="plan-price">S/. 60<span>/mes</span></p>
@@ -1436,7 +1468,7 @@
               </div>
             </article>
 
-            <article class="pricing-card">
+            <article class="pricing-card" data-aos="fade-up" data-aos-delay="200">
               <h3 class="plan-name">Empresarial</h3>
               <p class="plan-price">S/. 90<span>/mes</span></p>
               <p class="plan-description">Solución completa para empresas consolidadas.</p>
@@ -1564,7 +1596,7 @@
         </div>
 
         <!-- Comparative Table -->
-        <div class="plans-compare-container">
+        <div class="plans-compare-container" data-aos="fade-up">
           <h3 class="section-title" style="margin-bottom: 30px; font-size: 1.8rem;">Comparativa de Funciones</h3>
           <table class="compare-table">
             <thead>
@@ -1691,7 +1723,7 @@
       </div>
     </section>
 
-    <section class="cta-panel" id="demo">
+    <section class="cta-panel" id="demo" data-aos="zoom-in">
       <div class="cta-content">
         <h3>Inicia gratis con acompañamiento personalizado</h3>
         <p>
@@ -1710,13 +1742,13 @@
       </div>
     </section>
 
-    <section id="contacto" style="margin-top: 80px; padding-bottom: 80px;">
+    <section id="contacto" style="margin-top: 80px; padding-bottom: 80px;" data-aos="fade-up">
       <h2 class="section-title">Estamos listos para ayudarte</h2>
       <p class="section-subtitle">
         Envíanos un mensaje y te responderemos directamente por WhatsApp.
       </p>
 
-      <div class="contact-form-container">
+      <div class="contact-form-container" data-aos="fade-up" data-aos-delay="200">
         <form id="whatsappForm">
           <div class="form-group">
             <label for="contactName" class="form-label">Nombre</label>
@@ -1855,6 +1887,16 @@
         });
       }
 
+    });
+  </script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      duration: 800,
+      once: false,
+      mirror: true,
+      easing: 'ease-out-cubic',
+      offset: 100
     });
   </script>
 </body>
