@@ -474,6 +474,116 @@ class Box extends Controllers
         ]);
     }
 
+    // TODO: Endpoint para registrar un gasto
+    public function setExpense()
+    {
+        // * Validamos que llegue el metodo POST
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        // * Decodificamos la cadena de texto en formato JSON para validar
+        $raw = file_get_contents('php://input');
+        $data = json_decode($raw, true);
+
+        $description = strClean($data["description"]);
+        $date = strClean($data["date"]);
+        $amount = (float) strClean($data["amount"]);
+        $expense_name = strClean($data["expense_name"]);
+        $expense_category = (int) strClean($data["expense_category"]);
+        $supplier = (int) strClean($data["supplier"]);
+        $payment_method = (int) strClean($data["payment_method"]);
+        $status_expense_header = (int) $data["status_expense_header"];
+
+        // * Validamos que no este vacio los campos
+        validateFieldsEmpty(array(
+            "NOMBRE DEL GASTO" => $expense_name,
+            "MONTO DEL GASTO" => $amount,
+            "FECHA DEL GASTO" => $date,
+            "PROVEEDOR" => $supplier,
+            "METODO DE PAGO" => $payment_method,
+            "CATEGORIA DE GASTOS" => $expense_category,
+        ));
+
+        // * Validamos que el monto sea mayor que 0
+        if ($amount <= 0) {
+            $this->responseError("El monto ingresaado debe ser mayor que 0.");
+        }
+        // * Validar TYPE (Debe ser uno de los valores permitidos en tu ENUM)
+        // $allowed_types = ['Ingreso', 'Egreso']; // Los valores de tu base de datos
+        // if (!in_array($type_movement, $allowed_types)) {
+        //     $this->responseError("El tipo de arqueo es inválido. Debe ser 'Ingreso' o 'Egreso'.");
+        // }
+        // * Consultamos el ID del usuario
+        $userId = $this->getUserId();
+        // * Consultamos el ID del negocio
+        $businessId = $this->getBusinessId();
+        // * Consultamos si es necesario contar con caja aperturada para registrar una venta
+        $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
+        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
+        if ($openBox === "Si" && !$boxSessions) {
+            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+        }
+
+        // * Validamos si el usuario haya aperturado una caja
+        if ($boxSessions) {
+            // * Validamos si la caja pertenece al negocio
+            $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
+            if (!$boxs) {
+                $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+            }
+        }
+
+        // * Validamos que el proveedor exista y pertenesca al negocio
+        $issetSupplier = $this->model->issetSupplier($businessId, $supplier);
+        if (!$issetSupplier) {
+            $this->responseError("Seleccione un proveedor valido.");
+        }
+
+        // * Validamos que la categoria de gastos exista
+        $issetExpenseCategory = $this->model->issetExpenseCategory($expense_category);
+        if (!$issetExpenseCategory) {
+            $this->responseError("Seleccione una categoria de gastos valida.");
+        }
+
+        // * Validamos que sea una fecha valida
+        if (!$this->validateDate($date)) {
+            $this->responseError("La fecha ingresada no es valida.");
+        }
+
+        // * Validamos que exista el metodo de pago
+        $issetPaymentMethod = $this->model->issetPaymentMethod($payment_method);
+        if (!$issetPaymentMethod) {
+            $this->responseError("Seleccione un metodo de pago valido.");
+        }
+
+        // * Consultamos la fecha y hora actual
+        $fecha_actual = date('Y-m-d H:i:s');
+
+
+        // TODO: FALTA TERMINAR ESTO, ME FUI PORQUE TENIA SueÑO
+
+        toJson("aqui");
+
+        // * validamos si es necesario abrir caja para registrar la venta
+        if ($boxSessions) {
+            // * Registramos el movimiento
+            $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, $issetPaymentMethod["name"], "voucher_header", $voucher);
+            if (!$movement_box) {
+                $this->responseError('Error al registrar el ' . $type_movement . ' de caja.');
+            }
+        }
+
+        toJson([
+            'title'   => 'Gestión de Caja',
+            'message' => $type_movement . ' de caja registrado correctamente.',
+            'type'    => 'success',
+            'icon'    => 'success',
+            'status'  => true,
+            'status_movement_header' => $status_movement_header
+        ]);
+    }
+
     // TODO: Endpoint que devuelve si el usuario tiene aperturado un caja
     public function getuserCheckedBox()
     {
@@ -729,6 +839,80 @@ class Box extends Controllers
         ]);
     }
 
+    // TODO: Endpoint para obtener los datos necesarios para retiro de dinero
+    public function getDataRetireCash()
+    {
+        // * Validamos que llegue el metodo GET
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+        // * Consultamos el ID del usuario
+        $userId = $this->getUserId();
+        $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
+        // * Consultamos el ID del negocio
+        $businessId = $this->getBusinessId();
+        // * validamos si es necesario abrir caja para registrar la venta
+        // TODO: Falta validar a nivel de permiso
+        if ($openBox === 'Si') {
+            // * Validamos que el usuario haya aperturado una caja
+            $boxSessions = $this->model->getBoxSessionsByUserId($userId);
+            if ($boxSessions) {
+                // * Validamos si la caja pertenece al negocio
+                $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
+                if (!$boxs) {
+                    $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+                }
+            } else {
+                $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+            }
+        }
+
+        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
+        if ($openBox === "Si" && !$boxSessions) {
+            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+        }
+
+        // * Validamos si el usuario haya aperturado una caja
+        if ($boxSessions) {
+            // * Validamos si la caja pertenece al negocio
+            $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
+            if (!$boxs) {
+                $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+            }
+        }
+
+        // * Consultamos todas las categorias de gastos
+        $category_expences = $this->model->getCategoryExpenses();
+        if (!$category_expences || empty($category_expences)) {
+            $this->responseError("No tienes ninguna categoria de gastos registrada.");
+        }
+
+        // * Consultamos todas las categorias de gastos
+        $category_expences = $this->model->getCategoryExpenses();
+        if (!$category_expences || empty($category_expences)) {
+            $this->responseError("No tienes ninguna categoria de gastos registrada.");
+        }
+
+        // * Consultamos todos los proveedor del negocio
+        $supplier = $this->model->getSupplierByBusiness($businessId);
+        if (!$supplier || empty($supplier)) {
+            $this->responseError("No tienes ningun proveedor registrado.");
+        }
+
+        // * Consultamos los metodos de pago
+        $paymentMethod = $this->model->getPaymentMethods();
+        if (!$paymentMethod || empty($paymentMethod)) {
+            $this->responseError("No tienes ningun metodo de pago disponible.");
+        }
+
+        toJson([
+            "status" => true,
+            "category_expences" => $category_expences,
+            "supplier" => $supplier,
+            "payment_method" => $paymentMethod
+        ]);
+    }
+
     // TODO: Consultamos el ID de negocio
     private function getBusinessId(): int
     {
@@ -760,6 +944,13 @@ class Box extends Controllers
             "tax" => $_SESSION[$this->nameVarBusiness]['tax'],
             "taxname" => $_SESSION[$this->nameVarBusiness]['taxname'],
         ];
+    }
+
+    // TODO: Validamos que la fecha sea valida 2026-01-18T00:24
+    private function validateDate(string $date, string $format = 'Y-m-d\TH:i'): bool
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) === $date;
     }
 
     // TODO: Mensaje de respuesta

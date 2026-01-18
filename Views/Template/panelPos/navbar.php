@@ -244,7 +244,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 <button id="btnOpenModalMovement" data-header="1" class="btn btn-primary w-50 rounded-pill py-2 fw-bold">
                                     <i class="bi bi-arrow-left-right me-2"></i> Ingreso
                                 </button>
-                                <button id="btnOpenModalRetireCash" class="btn btn-danger w-50 rounded-pill py-2 fw-bold">
+                                <button id="btnOpenModalRetireCash" data-header="1" class="btn btn-danger w-50 rounded-pill py-2 fw-bold">
                                     <i class="bi bi-dash-circle me-2"></i> Retiro
                                 </button>
                             </div>
@@ -625,16 +625,16 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         <i class="bi bi-person-badge-fill fs-4"></i>
                     </div>
                 </div>
-                <h5 class="border-bottom pb-2 border-2 mb-2">Detalle venta rápida</h5>
                 <div class="mb-3">
-                    <label class="form-label" for="movement_customer">Clientes (<span
+                    <label class="small text-muted fw-bold text-uppercase mb-2" for="movement_customer">Cliente (<span
                             class="text-danger">*</span>)</label>
                     <select class="form-select" id="movement_customer" name="movement_customer">
                     </select>
                 </div>
                 <input type="hidden" id="movement_type" value="Ingreso">
                 <div class="mb-4 item-box">
-                    <label class="small text-muted fw-bold text-uppercase mb-2">Monto del movimiento</label>
+                    <label class="small text-muted fw-bold text-uppercase mb-2">Monto del movimiento (<span
+                            class="text-danger">*</span>)</label>
                     <div class="input-group input-group-lg">
                         <span class="input-group-text bg-transparent text-muted ps-5">S/</span>
                         <input type="number" id="movement_amount"
@@ -734,54 +734,46 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         <i class="bi bi-person-badge-fill fs-4"></i>
                     </div>
                 </div>
-                <h5 class="border-bottom pb-2 border-2 mb-2">Detalle venta rápida</h5>
                 <div class="mb-3">
-                    <label class="form-label" for="movement_customer">Clientes (<span
+                    <label class="small text-muted fw-bold text-uppercase mb-2" for="retire_supplier">Proveedor (<span
                             class="text-danger">*</span>)</label>
-                    <select class="form-select" id="movement_customer" name="movement_customer">
+                    <select class="form-select" id="retire_supplier" name="retire_supplier">
                     </select>
                 </div>
-                <input type="hidden" id="movement_type" value="Ingreso">
-                <div class="mb-4 item-box">
-                    <label class="small text-muted fw-bold text-uppercase mb-2">Monto del movimiento</label>
-                    <div class="input-group input-group-lg">
-                        <span class="input-group-text bg-transparent text-muted ps-5">S/</span>
-                        <input type="number" id="movement_amount"
-                            class="form-control fw-bold fs-1 shadow-none bg-white text-end" min="0" step="0.1"
-                            placeholder="0.0" style="margin-left: -10px;">
-                    </div>
+                <div class="mb-3">
+                    <label class="small text-muted fw-bold text-uppercase mb-2" for="retire_expense_category">Categoría de Gasto (<span
+                            class="text-danger">*</span>)</label>
+                    <select class="form-select" id="retire_expense_category" name="retire_expense_category">
+                    </select>
                 </div>
                 <div class="row">
-                    <div class="col-sm-5">
+                    <div class="col-md-6">
                         <div class="mb-4 item-box">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="movement_check_tax">
-                                <label id="label_tax_name" class="small text-muted fw-bold text-uppercase mb-2">IGV</label>
-                            </div>
+                            <label class="small text-muted fw-bold text-uppercase mb-2">Monto de Gasto (<span
+                            class="text-danger">*</span>)</label>
                             <div class="input-group">
-                                <span id="span_tax" class="input-group-text bg-dark-subtle text-muted fw-bold">18%</span>
-                                <input disabled type="text" id="movement_tax"
-                                    class="form-control fw-bold bg-dark-subtle shadow-none text-end" value="S/ 0.00"
-                                    placeholder="0.0">
+                                <span class="input-group-text bg-transparent text-muted">S/</span>
+                                <input type="number" id="retire_amount"
+                                    class="form-control fw-bold shadow-none bg-white" min="0" step="0.1"
+                                    placeholder="0.0" style="margin-left: -10px;">
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-7">
-                        <div class="mb-4 item-box">
-                            <label class="small text-muted fw-bold text-uppercase mb-2">Total</label>
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label class="small text-muted fw-bold text-uppercase mb-2">Fecha (<span
+                            class="text-danger">*</span>)</label>
                             <div class="input-group">
-                                <span class="input-group-text text-muted fw-bold bg-white"></span>
-                                <input disabled type="text" id="movement_total"
-                                    class="form-control fw-bold shadow-none bg-white text-end" value="0.00"
-                                    placeholder="0.0">
+                                <input type="datetime-local" id="retire_date"
+                                    class="form-control shadow-none bg-white" value="<?= date('Y-m-d\TH:i'); ?>">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="small text-muted fw-bold text-uppercase mb-2" for="movement_payment_method">Metodo de pago (<span
+                    <label class="small text-muted fw-bold text-uppercase mb-2" for="retire_payment_method">Metodo de pago (<span
                             class="text-danger">*</span>)</label>
-                    <select class="form-select" id="movement_payment_method" name="movement_payment_method">
+                    <select class="form-select" id="retire_payment_method" name="retire_payment_method">
                         <option disabled>Seleccionar</option>
                         <option value="1" selected>Efectivo</option>
                         <option value="1">One</option>
@@ -789,10 +781,17 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         <option value="3">Three</option>
                     </select>
                 </div>
+                <div class="mb-4">
+                    <label class="small text-muted fw-bold text-uppercase mb-2">Nombre del gasto</label>
+                    <div class="input-group">
+                        <input placeholder="Gasto en ..." type="text" id="retire_name"
+                            class="form-control shadow-none bg-white">
+                    </div>
+                </div>
                 <div class="form-floating mb-3">
-                    <textarea class="form-control bg-white rounded-4" placeholder="Motivo" id="movement_description"
+                    <textarea class="form-control bg-white rounded-4" placeholder="Descripción o Comentario" id="retire_description"
                         style="height: 100px; resize: none;"></textarea>
-                    <label for="movement_description" class="text-muted">Descripción o Motivo</label>
+                    <label for="retire_description" class="text-muted">Descripción o Comentario</label>
                 </div>
                 <div class="alert alert-light border border-2 rounded-4 d-flex align-items-center gap-3 p-3">
                     <div class="bg-danger-subtle text-danger py-1 px-2 rounded-circle" id="movement_icon_wrapper">
@@ -803,7 +802,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </div>
                 </div>
                 <div class="d-grid">
-                    <button type="button" id="btnSaveMovement"
+                    <button type="button" id="btnSaveRetireCash"
                         class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm">
                         <i class="bi bi-dash-circle me-2"></i> Registrar Retiro
                     </button>
