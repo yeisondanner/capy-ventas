@@ -246,7 +246,7 @@ class Account extends Controllers
 		}
 
 		// * Primero creamos la persona con los datos
-		$people = $this->model->createPeople($names, $lastname, encryption($email), $date_of_birth, $country, $telephone_prefix, $phone_number);
+		$people = $this->model->createPeople(mb_strtoupper($names, 'UTF-8'), mb_strtoupper($lastname, 'UTF-8'), encryption($email), $date_of_birth, $country, $telephone_prefix, $phone_number);
 		if ($people <= 0) {
 			$this->responseError("No se pudo registrar tus datos personales. Por favor intente nuevamente.");
 		}

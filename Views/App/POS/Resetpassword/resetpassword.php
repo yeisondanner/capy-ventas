@@ -7,12 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Main CSS-->
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css?<?= versionSystem() ?>">
-    <link rel="shortcut icon" href="<?= media() ?>/head-capibara.png?<?= versionSystem() ?>" type="image/x-icon">
+    <link rel="shortcut icon" href="<?= media() ?>/capysm.png?<?= versionSystem() ?>" type="image/x-icon">
     <!-- Font-icon css-->
     <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/toastr.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/app/POS/account/style_account.css?<?= versionSystem() ?>">
-    <title>Capy Login</title>
+    <title>Recuperar contraseña | Capy Ventas</title>
     <script>
         const base_url = "<?= base_url() ?>/pos";
         const media_url = "<?= media() ?>";
@@ -31,8 +31,8 @@
         </div>
     </section>
 
-    <a target="_blank" href="https://wa.me/51910367611?text=Hola,%20tengo%20problemas%20con%20el%20registro%20en%20Capy%20Ventas" class="btn-whatsapp-float">
-        <i class="bi bi-whatsapp me-2"></i> ¿Tienes problemas con el registro?
+    <a target="_blank" href="https://wa.me/51910367611?text=Hola,%20tengo%20problemas%20con%20la%20recuperación%20de%20contraseña%20en%20Capy%20Ventas" class="btn-whatsapp-float">
+        <i class="bi bi-whatsapp me-2"></i> ¿Tienes problemas con la recuperación?
     </a>
     <!-- TODO: Essential javascripts for application to work-->
     <script src="<?= media() ?>/js/libraries/POS/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>

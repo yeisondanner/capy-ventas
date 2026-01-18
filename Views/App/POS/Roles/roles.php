@@ -12,12 +12,12 @@
     </div>
     <div class="row">
         <div class="col-12">
-            <div class="tile">
+            <div class="tile rounded-3">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
                     $createRole = (int) (validate_permission_app(6, "c", false)) ? (int)validate_permission_app(6, "c", false)['create'] : 0;
                     if ($createRole === 1): ?>
-                        <button class="btn btn-primary" type="button" id="btnOpenModalAddRole">
+                        <button class="btn btn-sm btn-outline-primary" type="button" id="btnOpenModalAddRole">
                             <i class="bi bi-plus-lg"></i> Registrar rol
                         </button>
                     <?php endif; ?>
@@ -25,10 +25,10 @@
             </div>
         </div>
         <div class="col-12">
-            <div class="tile">
+            <div class="tile rounded-3">
                 <div class="tile-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover table-bordered" id="rolesTable" data-token="<?= csrf(false); ?>">
+                    <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
+                        <table class="table table-sm table-hover table-bordered table-striped" id="rolesTable" data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>

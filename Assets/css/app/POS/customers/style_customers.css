@@ -2,10 +2,17 @@
 
 .table#customerTable td,
 .table#customerTable th {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 .list-group-item-protected {
-    opacity: 0.7;
-    cursor: not-allowed;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.report-card-customers {
+  border: 2px solid #ddd;
+  max-width: 100%;
+  margin: 0 auto;
+  font-family: "Courier New", Courier, monospace;
 }

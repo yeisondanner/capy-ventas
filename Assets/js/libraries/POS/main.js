@@ -374,19 +374,8 @@ function showAlert(data = {}, type = "float") {
         timerProgressBar: true,
       });
       break;
-    // 5. Snackbar abajo
-    case "bottom":
-      Swal.fire({
-        icon: data.icon ?? "info",
-        text: data.message ?? "",
-        toast: true,
-        position: "bottom",
-        showConfirmButton: false,
-        timer: data.timer ?? 3000,
-      });
-      break;
 
-    // 6. Input (para pedir un dato)
+    // 5. Input (para pedir un dato)
     case "input":
       return Swal.fire({
         title: data.title ?? "Ingresa un valor",

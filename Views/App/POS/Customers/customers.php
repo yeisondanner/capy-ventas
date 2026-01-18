@@ -12,12 +12,12 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="tile">
+            <div class="tile rounded-3">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
                     $createCustomer = (int) (validate_permission_app(4, "c", false)) ? (int)validate_permission_app(4, "c", false)['create'] : 0;
                     if ($createCustomer === 1): ?>
-                        <button class="btn btn-primary" type="button" id="btnOpenCustomerModal">
+                        <button class="btn btn-sm btn-outline-primary" type="button" id="btnOpenCustomerModal">
                             <i class="bi bi-plus-lg"></i> Registrar cliente
                         </button>
                     <?php endif; ?>
@@ -25,10 +25,10 @@
             </div>
         </div>
         <div class="col-md-12">
-            <div class="tile">
+            <div class="tile rounded-3">
                 <div class="tile-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover table-bordered" id="customerTable" data-token="<?= csrf(false); ?>">
+                    <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
+                        <table class="table table-sm table-hover table-bordered table-striped table-responsive" id="customerTable" data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
@@ -94,10 +94,10 @@
                         <input type="email" class="form-control" id="txtCustomerEmail" name="txtCustomerEmail" maxlength="255"
                             placeholder="correo@ejemplo.com">
                     </div>
-                    <div class="col-12">
+                    <div class="col-6">
                         <label for="txtCustomerAddress" class="form-label">Dirección</label>
-                        <textarea class="form-control" id="txtCustomerAddress" name="txtCustomerAddress" rows="3"
-                            placeholder="Dirección o información adicional del cliente"></textarea>
+                        <input type="text" class="form-control" id="txtCustomerAddress" name="txtCustomerAddress"
+                            placeholder="Dirección o información adicional del cliente">
                     </div>
                 </div>
             </div>
@@ -109,33 +109,88 @@
     </div>
 </div>
 
-<!-- Modal: Detalle del cliente -->
+<!-- Modal: Detalle del cliente (Estilo Reporte) -->
 <div class="modal fade" id="modalCustomerDetail" tabindex="-1" aria-labelledby="modalCustomerDetailLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header bg-secondary text-white">
-                <h5 class="modal-title" id="modalCustomerDetailLabel">Detalle del cliente</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="modalCustomerDetailLabel">Ficha del Cliente</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-            <div class="modal-body">
-                <dl class="row mb-0">
-                    <dt class="col-sm-4">Nombre</dt>
-                    <dd class="col-sm-8" id="detailCustomerName">-</dd>
-                    <dt class="col-sm-4">Tipo de documento</dt>
-                    <dd class="col-sm-8" id="detailCustomerDocumentType">-</dd>
-                    <dt class="col-sm-4">Número de documento</dt>
-                    <dd class="col-sm-8" id="detailCustomerDocument">-</dd>
-                    <dt class="col-sm-4">Teléfono</dt>
-                    <dd class="col-sm-8" id="detailCustomerPhone">-</dd>
-                    <dt class="col-sm-4">Correo</dt>
-                    <dd class="col-sm-8" id="detailCustomerEmail">-</dd>
-                    <dt class="col-sm-4">Dirección</dt>
-                    <dd class="col-sm-8" id="detailCustomerAddress">-</dd>
-                    <dt class="col-sm-4">Estado</dt>
-                    <dd class="col-sm-8" id="detailCustomerStatus">-</dd>
-                </dl>
+
+            <div class="modal-body" id="customerReportContainer">
+                <div class="receipt-container report-card-customers p-4 border rounded shadow-sm bg-white">
+
+                    <!-- Header Negocio -->
+                    <div class="row align-items-center mb-4 border-bottom pb-3">
+                        <div class="col-3 text-center">
+                            <img id="report_logo" src="" alt="Logo" class="img-fluid"
+                                style="max-height: 80px; filter: grayscale(100%);">
+                        </div>
+                        <div class="col-9 text-end">
+                            <h4 class="fw-bold text-uppercase mb-1" id="report_business_name">--</h4>
+                            <p class="mb-0 text-muted small" id="report_business_address">--</p>
+                            <p class="mb-0 text-muted small">RUC: <span id="report_business_document">--</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <div class="row mb-4">
+                        <div class="col-12 text-center">
+                            <h5 class="fw-bold text-decoration-underline text-uppercase">Información del Cliente</h5>
+                        </div>
+                    </div>
+
+                    <!-- Client Details -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="small text-uppercase text-muted fw-bold">Nombre Completo:</label>
+                            <div class="border-bottom border-dark pb-1 fs-5" id="report_customer_name">--</div>
+                        </div>
+
+                        <div class="col-6">
+                            <label class="small text-uppercase text-muted fw-bold">Tipo Documento:</label>
+                            <div class="fw-bold" id="report_customer_doctype">--</div>
+                        </div>
+                        <div class="col-6 text-end">
+                            <label class="small text-uppercase text-muted fw-bold">Nro. Documento:</label>
+                            <div class="fw-bold" id="report_customer_document">--</div>
+                        </div>
+
+                        <div class="col-6 mt-3">
+                            <label class="small text-uppercase text-muted fw-bold">Teléfono:</label>
+                            <div class="fw-bold" id="report_customer_phone">--</div>
+                        </div>
+                        <div class="col-6 mt-3 text-end">
+                            <label class="small text-uppercase text-muted fw-bold">Estado:</label>
+                            <div><span id="report_customer_status" class="badge bg-light text-dark border">--</span></div>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <label class="small text-uppercase text-muted fw-bold">Correo Electrónico:</label>
+                            <div class="border-bottom border-dark pb-1" id="report_customer_email">--</div>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <label class="small text-uppercase text-muted fw-bold">Dirección:</label>
+                            <div class="border-bottom border-dark pb-1" id="report_customer_address">--</div>
+                        </div>
+                    </div>
+
+                    <!-- System Footer -->
+                    <div class="row mt-4">
+                        <div class="col-12 text-center d-flex align-items-center justify-content-center">
+                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
+                            <small class="text-muted fst-italic">Generado por Capy Ventas</small>
+                        </div>
+                    </div>
+
+                </div>
             </div>
+
             <div class="modal-footer">
+                <button type="button" class="btn btn-outline-warning" id="btnDownloadCustomerPng"><i class="bi bi-card-image"></i>
+                    Exportar PNG</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>

@@ -149,25 +149,23 @@ export class Resetpassword {
 
       showAlert({ message: "Actualizando contraseña, espere." }, "loading");
 
-      this.ApiResetpassword
-        .post("updatePassword", {
-          email: email,
-          code: code,
-          password: password,
-          confirmPassword: confirmPassword,
-        })
-        .then((response) => {
-          if (response.status) {
-            setTimeout(() => {
-              window.location.href = "./login";
-            }, 3000);
-          }
-          showAlert({
-            icon: response.type,
-            title: response.title,
-            message: response.message,
-          });
+      this.ApiResetpassword.post("updatePassword", {
+        email: email,
+        code: code,
+        password: password,
+        confirmPassword: confirmPassword,
+      }).then((response) => {
+        if (response.status) {
+          setTimeout(() => {
+            window.location.href = "./login";
+          }, 3000);
+        }
+        showAlert({
+          icon: response.type,
+          title: response.title,
+          message: response.message,
         });
+      });
     });
   };
 
@@ -176,7 +174,7 @@ export class Resetpassword {
                 <div class="d-none d-md-block col-md-5 bg-warning-subtle p-5 d-flex flex-column justify-content-between">
                     <div>
                         <div class="mb-5 d-flex align-items-center gap-2">
-                            <div class="bg-info text-white rounded py-1 px-2"><i class="bi bi-patch-check"></i></div>
+                            <div class="text-white" style="width: 50px; height: 50px;"><img src="${media_url}/capysm.png" alt="Logo" class="img-fluid rounded-circle"></div>
                             <h3 class="fw-bold m-0 text-dark">Capy Ventas</h3>
                         </div>
                         <div class="stepper-container ms-2">
@@ -224,7 +222,7 @@ export class Resetpassword {
                 <div class="col-md-7 bg-white p-4">
                     <div class="text-center mb-4 mt-lg-5">
                         <div class="login-head">
-                            <img src="${media_url}/carpincho.png" alt="">
+                            <img src="${media_url}/capymd.png" alt="">
                         </div>
                         <h2 class="fw-bold">Recuperar contraseña</h2>
                     </div>
@@ -268,7 +266,7 @@ export class Resetpassword {
                 <div class="d-none d-md-block col-md-5 bg-warning-subtle p-5 d-flex flex-column justify-content-between">
                     <div>
                         <div class="mb-5 d-flex align-items-center gap-2">
-                            <div class="bg-info text-white rounded py-1 px-2"><i class="bi bi-patch-check"></i></div>
+                            <div class="text-white" style="width: 50px; height: 50px;"><img src="${media_url}/capysm.png" alt="Logo" class="img-fluid rounded-circle"></div>
                             <h3 class="fw-bold m-0 text-dark">Capy Ventas</h3>
                         </div>
                         <div class="stepper-container ms-2">
@@ -316,7 +314,7 @@ export class Resetpassword {
                 <div class="col-md-7 bg-white p-4">
                     <div class="text-center mb-4 mt-lg-5">
                         <div class="login-head">
-                            <img src="${media_url}/carpincho.png" alt="">
+                            <img src="${media_url}/capysm.png" alt="">
                         </div>
                         <h2 class="fw-bold">Verificación del código</h2>
                     </div>
@@ -358,7 +356,7 @@ export class Resetpassword {
                 <div class="d-none d-md-block col-md-5 bg-warning-subtle p-5 d-flex flex-column justify-content-between">
                     <div>
                         <div class="mb-5 d-flex align-items-center gap-2">
-                            <div class="bg-info text-white rounded py-1 px-2"><i class="bi bi-patch-check"></i></div>
+                            <div class="text-white" style="width: 50px; height: 50px;"><img src="${media_url}/capysm.png" alt="Logo" class="img-fluid rounded-circle"></div>
                             <h3 class="fw-bold m-0 text-dark">Capy Ventas</h3>
                         </div>
                         <div class="stepper-container ms-2">
@@ -406,7 +404,7 @@ export class Resetpassword {
                 <div class="col-md-7 bg-white p-4">
                     <div class="text-center mb-2 mt-lg-2">
                         <div class="login-head">
-                            <img src="${media_url}/carpincho.png" alt="">
+                            <img src="${media_url}/capysm.png" alt="">
                         </div>
                         <h2 class="fw-bold">Cambia tu contraseña</h2>
                     </div>

@@ -46,3 +46,10 @@
 .card-enhanced .fw-semibold.fs-5 {
   font-size: 1.25rem;
 }
+
+.report-card-movements {
+  border: 2px solid #ddd;
+  max-width: 100%;
+  margin: 0 auto;
+  font-family: "Courier New", Courier, monospace;
+}

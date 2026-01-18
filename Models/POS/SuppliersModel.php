@@ -220,4 +220,38 @@ class SuppliersModel extends Mysql
 
         return isset($result['total']) ? (int) $result['total'] : 0;
     }
+    /**
+     * Obtiene el detalle completo de un proveedor y su negocio asociado.
+     *
+     * @param int $supplierId Identificador del proveedor.
+     * @param int $businessId Identificador del negocio activo.
+     *
+     * @return array
+     */
+    public function getSupplierDetail(int $supplierId, int $businessId): array
+    {
+        $sql = <<<SQL
+            SELECT
+                s.idSupplier,
+                s.company_name,
+                s.document_number,
+                s.phone_number,
+                s.email,
+                s.direction,
+                s.status,
+                b.name AS name_bussines,
+                b.direction AS direction_bussines,
+                b.document_number AS document_bussines,
+                b.logo
+            FROM supplier s
+            INNER JOIN business b ON b.idBusiness = s.business_id
+            WHERE s.idSupplier = ?
+              AND s.business_id = ?
+            LIMIT 1;
+        SQL;
+
+        $result = $this->select($sql, [$supplierId, $businessId]);
+
+        return is_array($result) ? $result : [];
+    }
 }

@@ -12,12 +12,12 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="tile">
+            <div class="tile rounded-3">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
                     $createEmployee = (int) (validate_permission_app(5, "c", false)) ? (int)validate_permission_app(5, "c", false)['create'] : 0;
                     if ($createEmployee === 1): ?>
-                        <button class="btn btn-primary" type="button" id="btnOpenEmployeeModal">
+                        <button class="btn btn-sm btn-outline-primary" type="button" id="btnOpenEmployeeModal">
                             <i class="bi bi-plus-lg"></i> Agregar nuevo empleado
                         </button>
                     <?php endif; ?>
@@ -25,10 +25,10 @@
             </div>
         </div>
         <div class="col-md-12">
-            <div class="tile">
+            <div class="tile rounded-3">
                 <div class="tile-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm table-hover table-bordered" id="table" data-token="<?= csrf(false); ?>">
+                    <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
+                        <table class="table table-sm table-hover table-bordered table-striped" id="table" data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
@@ -55,7 +55,7 @@
         <form class="modal-content" id="formSaveEmployee" autocomplete="off">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="modalEmployeeLabel">Registrar empleado</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <?= csrf(); ?>
@@ -113,7 +113,7 @@
         <div class="modal-content">
             <div class="modal-header bg-secondary text-white">
                 <h5 class="modal-title" id="modalEmployeeReportLabel">Reporte del empleado</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
@@ -146,7 +146,7 @@
         <form class="modal-content" id="formUpdateEmployee" autocomplete="off">
             <div class="modal-header bg-success text-white">
                 <h5 class="modal-title" id="modalUpdateEmployeeLabel">Actualizar empleado</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <?= csrf(); ?>

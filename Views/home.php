@@ -12,26 +12,28 @@
   <meta name="keywords" content="punto de venta, POS, CRM, inventario, ventas omnicanal, gestión de negocios, plataforma comercial, Capy Ventas, analítica de ventas, software para retail">
   <meta name="author" content="Capy Ventas">
   <meta name="robots" content="index, follow">
+  <link rel="shortcut icon" href="https://capyventas.shaday-pe.com/Assets/capysm.png" type="image/x-icon">
 
   <!-- Canonical URL -->
   <!-- Asegúrate de reemplazar 'https://www.capyventas.com' con tu dominio real -->
-  <link rel="canonical" href="https://www.capyventas.com/">
-    <!--<link rel="stylesheet" href="./../Assets/css/libraries/POS/plugins/feather.css" type="text/css">-->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="canonical" href="https://capyventas.shaday-pe.com">
+  <!--<link rel="stylesheet" href="./../Assets/css/libraries/POS/plugins/feather.css" type="text/css">-->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-    <!-- Open Graph / Facebook -->
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://www.capyventas.com/">
+  <meta property="og:url" content="https://capyventas.shaday-pe.com">
   <meta property="og:title" content="Capy Ventas | Plataforma Comercial Integral">
   <meta property="og:description" content="La plataforma todo en uno para gestionar y escalar tus ventas omnicanal. Integra POS, inventario y CRM fácilmente.">
   <!-- Asegúrate de reemplazar 'URL_DE_TU_IMAGEN_OG.png' con la URL de una imagen representativa (ej. 1200x630px) -->
-  <meta property="og:image" content="https://www.capyventas.com/assets/images/URL_DE_TU_IMAGEN_OG.png">
+  <meta property="og:image" content="https://capyventas.shaday-pe.com/Assets/capylg.png">
 
   <style>
     :root {
-      --color-primary: #23436a;
-      --color-secondary: #1bbf9d;
-      --color-accent: #f7a325;
+      --color-primary: #4369F0;
+      --color-secondary: #FDC346;
+      --color-accent: #FDC346;
       --color-dark: #142235;
       --color-light: #f5f7fb;
       --color-muted: #6c7c8f;
@@ -39,6 +41,7 @@
       --font-sans: "Poppins", "Segoe UI", sans-serif;
       --shadow-soft: 0 18px 40px rgba(19, 47, 76, 0.15);
       --border-radius: 18px;
+      --page-padding: 6%;
     }
 
     @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
@@ -58,9 +61,13 @@
       overflow-x: hidden;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     header {
       width: 100% !important;
-      padding: 15px 6%;
+      padding: 15px var(--page-padding);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -72,7 +79,29 @@
       border-bottom: 1px solid rgba(35, 67, 106, 0.08);
     }
 
-    .logo {
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .logo-img {
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease, filter 0.3s ease;
+      box-shadow: 0 4px 12px rgba(35, 67, 106, 0.1);
+    }
+
+    .logo-img:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 6px 12px rgba(35, 67, 106, 0.15));
+    }
+
+    .brand-name {
       font-weight: 700;
       font-size: 1.35rem;
       color: var(--color-primary);
@@ -147,10 +176,23 @@
       color: var(--color-dark);
       font-weight: 500;
       transition: color 0.3s ease;
+      position: relative;
     }
 
-    nav a:hover {
+    nav a:hover,
+    nav a.active {
       color: var(--color-secondary);
+    }
+
+    nav a.active::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--color-secondary);
+      border-radius: 99px;
     }
 
     .btn {
@@ -204,7 +246,7 @@
 
     main {
       width: 100%;
-      padding: 40px 6% 120px;
+      padding: 40px var(--page-padding) 120px;
     }
 
     .hero {
@@ -529,6 +571,138 @@
       margin-bottom: 0;
     }
 
+    /* Contact Form Styles */
+    .contact-form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--color-card);
+      padding: 40px;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(35, 67, 106, 0.06);
+      border: 1px solid rgba(35, 67, 106, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: var(--color-primary);
+      font-size: 0.95rem;
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid rgba(35, 67, 106, 0.1);
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--color-dark);
+      transition: all 0.3s ease;
+      background: var(--color-light);
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--color-secondary);
+      background: #fff;
+      box-shadow: 0 0 0 4px rgba(27, 191, 157, 0.15);
+      transform: translateY(-1px);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 140px;
+    }
+
+    /* Plans Compare Table */
+    .plans-compare-container {
+      margin-top: 60px;
+      overflow-x: auto;
+      background: var(--color-card);
+      border-radius: 24px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(35, 67, 106, 0.08);
+      padding: 30px;
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 16px 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(35, 67, 106, 0.08);
+      font-size: 0.95rem;
+    }
+
+    .compare-table th:first-child,
+    .compare-table td:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: var(--color-dark);
+      width: 30%;
+    }
+
+    .compare-table tr:hover td {
+      background-color: rgba(27, 191, 157, 0.04);
+    }
+
+    .compare-table th {
+      font-weight: 700;
+      color: var(--color-primary);
+      font-size: 1.1rem;
+      padding-bottom: 24px;
+      position: sticky;
+      top: 0;
+      background: var(--color-card);
+      z-index: 10;
+    }
+
+    .compare-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .feature-category {
+      background-color: rgba(235, 243, 250, 0.7);
+      font-weight: 700;
+      color: var(--color-secondary);
+      text-transform: uppercase;
+      font-size: 0.8rem;
+      letter-spacing: 1.2px;
+      padding: 16px 20px;
+      text-align: left;
+    }
+
+    .bi-check-circle-fill {
+      color: var(--color-secondary);
+      font-size: 1.25rem;
+      filter: drop-shadow(0 2px 4px rgba(27, 191, 157, 0.2));
+    }
+
+    .bi-x-lg {
+      color: #cbd5e1;
+      font-size: 1.1rem;
+    }
+
+    .text-muted-icon {
+      color: #cbd5e1;
+    }
+
+
     .billing-toggle {
       display: flex;
       justify-content: center;
@@ -597,9 +771,24 @@
       padding: 40px 34px 44px;
       border: 1px solid rgba(35, 67, 106, 0.08);
       box-shadow: 0 20px 48px rgba(17, 40, 66, 0.18);
-      display: grid;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      /* Ensures buttons stick to bottom */
       gap: 20px;
       overflow: hidden;
+      height: 100%;
+    }
+
+    .plan-features {
+      /* flex-grow removed to keep content compact */
+    }
+
+    .plan-cta {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
 
     .pricing-card::before {
@@ -655,7 +844,7 @@
 
     .pricing-card.recommended {
       border: 2px solid rgba(27, 191, 157, 0.55);
-      transform: translateY(-10px);
+      /* transform: translateY(-10px); Removed to align buttons perfectly */
       box-shadow: 0 32px 68px rgba(27, 191, 157, 0.28);
     }
 
@@ -694,6 +883,34 @@
       color: var(--color-muted);
       font-weight: 500;
       margin-left: 6px;
+    }
+
+    .plan-features {
+      list-style: none;
+      margin: 24px 0 32px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .plan-features li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      color: var(--color-muted);
+    }
+
+    .plan-features li i {
+      color: var(--color-secondary);
+      font-size: 1.1rem;
+    }
+
+    .original-price {
+      text-decoration: line-through;
+      color: var(--color-muted);
+      font-size: 1.1rem;
+      display: block;
+      margin-bottom: -8px;
     }
 
     .plan-cta {
@@ -760,20 +977,25 @@
     }
 
     footer {
-      padding: 40px 6% 60px;
+      padding: 40px var(--page-padding) 60px;
       text-align: center;
       color: var(--color-muted);
       font-size: 0.9rem;
     }
 
     @media (max-width: 960px) {
+      :root {
+        --page-padding: 5%;
+      }
+
       header {
         width: 100%;
         flex-wrap: wrap;
-        flex-direction: column;
-        align-items: stretch;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
         gap: 18px;
-        padding: 15px 5%;
+        padding: 15px var(--page-padding);
       }
 
       .menu-toggle {
@@ -877,7 +1099,23 @@
     @media (max-width: 768px) {
       main {
         width: 100%;
-        padding: 20px 4% 80px;
+        padding: 20px var(--page-padding) 80px;
+      }
+
+      .hero-content {
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .hero-buttons {
+        justify-content: center;
+      }
+
+      .hero-highlights {
+        justify-content: center;
+        text-align: center;
       }
 
       .hero-content h1 {
@@ -920,7 +1158,7 @@
 
     @media (max-width: 520px) {
       header {
-        padding: 12px 5%;
+        padding: 12px var(--page-padding);
       }
 
       .hero {
@@ -952,7 +1190,7 @@
       }
 
       footer {
-        padding: 30px 6% 40px;
+        padding: 30px var(--page-padding) 40px;
       }
     }
   </style>
@@ -960,7 +1198,10 @@
 
 <body>
   <header>
-    <span class="logo">Capy Ventas</span>
+    <div class="brand-container">
+      <img src="Assets/capymd.png" alt="Capy Ventas" class="logo-img">
+      <span class="brand-name">Capy Ventas</span>
+    </div>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation">
       <span class="menu-icon" aria-hidden="true">
         <span></span>
@@ -973,8 +1214,8 @@
       <a href="#solucion">Solución</a>
       <a href="#metricas">Impacto</a>
       <a href="#funcionalidades">Funcionalidades</a>
-      <a href="#planes">Planes</a>
       <a href="#clientes">Clientes</a>
+      <a href="#planes">Planes</a>
       <a href="#contacto">Contacto</a>
     </nav>
     <div class="header-actions">
@@ -991,7 +1232,7 @@
 
   <main>
     <section class="hero" id="solucion">
-      <div class="hero-content">
+      <div class="hero-content" data-aos="fade-right">
         <h1>La plataforma que impulsa tus ventas omnicanal</h1>
         <p>
           Capy Ventas integra punto de venta, inventario, CRM y analítica en un solo ecosistema
@@ -1015,7 +1256,7 @@
         </div>
       </div>
 
-      <aside class="hero-card">
+      <aside class="hero-card" data-aos="zoom-in" data-aos-delay="200">
         <h2>Tablero comercial en vivo</h2>
         <p>Visualiza el rendimiento de tu operación con indicadores que se actualizan cada minuto.</p>
         <div class="hero-metric">
@@ -1043,28 +1284,28 @@
     </section>
 
     <section id="metricas">
-      <h2 class="section-title">Resultados tangibles desde el primer mes</h2>
-      <p class="section-subtitle">
+      <h2 class="section-title" data-aos="fade-up">Resultados tangibles desde el primer mes</h2>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
         Las organizaciones comerciales que migran a Capy Ventas aceleran su ciclo de venta, reducen rupturas
         de inventario y diseñan experiencias coherentes en todos sus canales.
       </p>
       <div class="metrics-grid">
-        <article class="metric-card">
+        <article class="metric-card" data-aos="fade-up" data-aos-delay="200">
           <h3>+43%</h3>
           <span>Crecimiento de ingresos</span>
           <p>Dispara ventas cruzadas gracias a campañas segmentadas y catálogos dinámicos.</p>
         </article>
-        <article class="metric-card">
+        <article class="metric-card" data-aos="fade-up" data-aos-delay="300">
           <h3>-28%</h3>
           <span>Menos quiebres de stock</span>
           <p>Sincroniza existencias entre tiendas físicas, e-commerce y marketplaces en un tablero único.</p>
         </article>
-        <article class="metric-card">
+        <article class="metric-card" data-aos="fade-up" data-aos-delay="400">
           <h3>95%</h3>
           <span>Retención de clientes</span>
           <p>Automatiza recordatorios, programas de lealtad y seguimientos desde nuestro CRM integrado.</p>
         </article>
-        <article class="metric-card">
+        <article class="metric-card" data-aos="fade-up" data-aos-delay="500">
           <h3>24/7</h3>
           <span>Soporte especializado</span>
           <p>Acompañamiento continuo con especialistas comerciales y soporte técnico multicanal.</p>
@@ -1073,46 +1314,46 @@
     </section>
 
     <section id="funcionalidades">
-      <h2 class="section-title">Todo lo que tu fuerza de ventas necesita</h2>
-      <p class="section-subtitle">
+      <h2 class="section-title" data-aos="fade-up">Todo lo que tu fuerza de ventas necesita</h2>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
         Moderniza tu operación con módulos modulares y escalables que se adaptan al tamaño de tu negocio.
       </p>
       <div class="features-grid">
-        <article class="feature-card">
+        <article class="feature-card" data-aos="fade-up" data-aos-delay="100">
           <div class="feature-icon">POS</div>
-          <h4>Punto de venta inteligente</h4>
-          <p>Procesa cobros rápidos, aplica promociones combinadas y genera facturas en segundos.</p>
+          <h4>Punto de Venta y Caja</h4>
+          <p>Registra ventas en segundos, gestiona aperturas y cierres de caja detallados para un control total del efectivo.</p>
         </article>
-        <article class="feature-card">
+        <article class="feature-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="feature-icon">Stock</div>
+          <h4>Inventario y Proveedores</h4>
+          <p>Control total de tu stock, gestión eficiente de compras y administración centralizada de proveedores.</p>
+        </article>
+        <article class="feature-card" data-aos="fade-up" data-aos-delay="300">
           <div class="feature-icon">CRM</div>
-          <h4>Gestión de clientes</h4>
-          <p>Segmenta prospectos, asigna seguimientos automáticos y mide la efectividad de tus campañas.</p>
+          <h4>Gestión de Clientes</h4>
+          <p>Base de datos centralizada para conocer mejor a tus compradores y gestionar sus datos de contacto.</p>
         </article>
-        <article class="feature-card">
-          <div class="feature-icon">BI</div>
-          <h4>Analítica de ventas</h4>
-          <p>Accede a dashboards de rentabilidad, proyecciones y pronósticos de demanda.</p>
+        <article class="feature-card" data-aos="fade-up" data-aos-delay="400">
+          <div class="feature-icon">Fin</div>
+          <h4>Estadísticas y Gastos</h4>
+          <p>Monitorea tus ingresos en tiempo real, registra tus gastos operativos y visualiza la rentabilidad del negocio.</p>
         </article>
-        <article class="feature-card">
-          <div class="feature-icon">Ops</div>
-          <h4>Operación centralizada</h4>
-          <p>Controla inventarios, transferencias, compras y logística desde una sola consola.</p>
-        </article>
-        <article class="feature-card">
-          <div class="feature-icon">API</div>
-          <h4>Integraciones abiertas</h4>
-          <p>Conecta tu ERP, tienda en línea o apps móviles con nuestra API segura y documentada.</p>
-        </article>
-        <article class="feature-card">
+        <article class="feature-card" data-aos="fade-up" data-aos-delay="500">
           <div class="feature-icon">Multi</div>
-          <h4>Administración multi-negocio</h4>
-          <p>Crea nuevos negocios en segundos y gestiona catálogos, usuarios y métricas de cada uno desde un mismo lugar.</p>
+          <h4>Multi-Negocio</h4>
+          <p>Crea y administra diferentes negocios independientes desde una sola cuenta de usuario.</p>
+        </article>
+        <article class="feature-card" data-aos="fade-up" data-aos-delay="600">
+          <div class="feature-icon">User</div>
+          <h4>Usuarios y Permisos</h4>
+          <p>Crea cuentas para tus trabajadores y asigna permisos específicos para controlar el acceso a los módulos.</p>
         </article>
       </div>
     </section>
 
     <section class="clients-section" id="clientes">
-      <div class="clients-header">
+      <div class="clients-header" data-aos="fade-left">
         <span class="clients-eyebrow">Nuestros clientes</span>
         <h2 class="section-title">Marcas que confían en Capy Ventas</h2>
         <p class="section-subtitle">
@@ -1122,35 +1363,29 @@
       </div>
       <div class="clients-grid">
         <article class="client-card">
-          <div class="client-logo">RV</div>
-          <h3 class="client-name">Retail Vision</h3>
-          <span class="client-field">Retail multiformato</span>
-          <p class="client-quote">“Duplicamos nuestras ventas online integrando tiendas físicas y ecommerce en un solo flujo.”</p>
+          <div class="client-logo">RS</div>
+          <h3 class="client-name">Raby Shaday</h3>
+          <span class="client-field">Tienda de hilos y textilería</span>
+          <p class="client-quote">“Controlar el stock de miles de referencias de hilos y accesorios ahora es posible de forma rápida y sencilla.”</p>
         </article>
         <article class="client-card">
-          <div class="client-logo">GF</div>
-          <h3 class="client-name">Gourmet Factory</h3>
-          <span class="client-field">Restaurantes y dark kitchens</span>
-          <p class="client-quote">“Creamos nuevos negocios digitales y controlamos cada operación en un panel único para todo el grupo.”</p>
+          <div class="client-logo">SV</div>
+          <h3 class="client-name">LEJIAS SUPER VALENTINA</h3>
+          <span class="client-field">Productos de limpieza</span>
+          <p class="client-quote">“Nuestros procesos de venta de productos de limpieza y cuidado personal son más ágiles y organizados.”</p>
         </article>
         <article class="client-card">
-          <div class="client-logo">LM</div>
-          <h3 class="client-name">Luna Moda</h3>
-          <span class="client-field">Moda omnicanal</span>
-          <p class="client-quote">“La segmentación automática nos permitió personalizar campañas y aumentar la recompra.”</p>
-        </article>
-        <article class="client-card">
-          <div class="client-logo">TC</div>
-          <h3 class="client-name">TechCare</h3>
-          <span class="client-field">Servicios técnicos</span>
-          <p class="client-quote">“Integramos CRM y soporte para dar seguimiento a cada ticket y cerrar contratos recurrentes.”</p>
+          <div class="client-logo">DA</div>
+          <h3 class="client-name">DALUMY</h3>
+          <span class="client-field">Perfumería y moda femenina</span>
+          <p class="client-quote">“La gestión de fidelización para nuestra boutique de perfumería ha mejorado la recompra y satisfacción de las clientas.”</p>
         </article>
       </div>
     </section>
 
     <section class="pricing-section" id="planes">
       <div class="pricing-wrapper">
-        <div class="pricing-header">
+        <div class="pricing-header" data-aos="fade-up">
           <span class="pricing-eyebrow">Planes Capy Ventas</span>
           <h2 class="section-title">Planes diseñados para tu crecimiento</h2>
           <p class="section-subtitle">
@@ -1159,7 +1394,7 @@
           </p>
         </div>
 
-        <div class="billing-toggle" role="group" aria-label="Selector de modalidad de facturación">
+        <div class="billing-toggle" role="group" aria-label="Selector de modalidad de facturación" data-aos="fade-up" data-aos-delay="100">
           <button class="toggle-button active" data-target="monthly" type="button">
             <span>Pagos mensuales</span>
             <small>Flexibilidad sin contratos</small>
@@ -1172,11 +1407,15 @@
 
         <div class="pricing-grids">
           <div class="pricing-grid" data-plan-group="monthly">
-            <article class="pricing-card">
+            <article class="pricing-card" data-aos="fade-up" data-aos-delay="0">
               <h3 class="plan-name">Gratis</h3>
               <p class="plan-price">S/. 0<span>/mes</span></p>
-              <p class="plan-description">Prueba Capy Ventas en tu negocio con el plan gratuito. </p>
-
+              <p class="plan-description">Ideal para emprendedores que recién comienzan.</p>
+              <ul class="plan-features">
+                <li><i class="bi bi-check-circle-fill"></i> Ventas Ilimitadas</li>
+                <li><i class="bi bi-check-circle-fill"></i> Inventario Ilimitado</li>
+                <li><i class="bi bi-check-circle-fill"></i> Gestión de Negocios Ilimitados</li>
+              </ul>
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
@@ -1195,32 +1434,22 @@
               </div>
             </article>
 
-            <!-- <article class="pricing-card">
-              <h3 class="plan-name">Basic</h3>
-              <p class="plan-price">S/. 10<span>/mes</span></p>
-              <div class="plan-cta">
-                <a
-                  class="btn btn-primary"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Basic%20mensual"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  Crear cuenta
-                </a>
-                <a
-                  class="btn btn-outline"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Basic%20mensual"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  Inicia gratis
-                </a>
-              </div>
-            </article>-->
-
-            <article class="pricing-card recommended">
+            <article class="pricing-card recommended" data-aos="fade-up" data-aos-delay="100">
               <span class="plan-badge">Popular</span>
               <h3 class="plan-name">Pro</h3>
               <p class="plan-price">S/. 60<span>/mes</span></p>
-              <p class="plan-description">Prueba Capy Ventas en tu negocio con el plan Pro. </p>
+              <p class="plan-description">Para negocios en crecimiento que necesitan más control.</p>
+              <ul class="plan-features">
+                <li><i class="bi bi-check-circle-fill"></i> Fotos de Productos Ilimitadas</li>
+                <li><i class="bi bi-check-circle-fill"></i> Catálogo Público Web Estándar</li>
+                <li><i class="bi bi-check-circle-fill"></i> Registro de Ingresos, Egresos y Gastos</li>
+                <li><i class="bi bi-check-circle-fill"></i> Gestión de Caja (Arqueo/Cierre)</li>
+                <li><i class="bi bi-check-circle-fill"></i> Gestión de Créditos y Fiados</li>
+                <li><i class="bi bi-check-circle-fill"></i> 1 sola Caja</li>
+                <li><i class="bi bi-check-circle-fill"></i> Clientes, Proveedores y Roles</li>
+                <li><i class="bi bi-check-circle-fill"></i> Atención Prioritaria (Soporte)</li>
+                <li><i class="bi bi-check-circle-fill"></i> <strong>Todo lo del Plan Gratis</strong></li>
+              </ul>
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
@@ -1239,87 +1468,94 @@
               </div>
             </article>
 
-            <!-- <article class="pricing-card">
-              <h3 class="plan-name">Business</h3>
-              <p class="plan-price">S/. 30<span>/mes</span></p>
+            <article class="pricing-card" data-aos="fade-up" data-aos-delay="200">
+              <h3 class="plan-name">Empresarial</h3>
+              <p class="plan-price">S/. 90<span>/mes</span></p>
+              <p class="plan-description">Solución completa para empresas consolidadas.</p>
+              <ul class="plan-features">
+                <li><i class="bi bi-check-circle-fill"></i> Catálogo Web Personalizable</li>
+                <li><i class="bi bi-check-circle-fill"></i> Creación de Cajas Ilimitadas</li>
+                <li><i class="bi bi-check-circle-fill"></i> Configuración de Colores/Widgets</li>
+                <li><i class="bi bi-check-circle-fill"></i> Atención Prioritaria (Soporte)</li>
+                <li><i class="bi bi-check-circle-fill"></i> Acceso a Funciones Beta</li>
+                <li><i class="bi bi-check-circle-fill"></i> <strong>Todo lo del Plan Pro</strong></li>
+              </ul>
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Business%20mensual"
-                  target="_blank"
+                  href="/pos/account"
+                  target="_self"
                   rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Business%20mensual"
-                  target="_blank"
+                  href="/pos/account"
+                  target="_self"
                   rel="noopener noreferrer">
                   Inicia gratis
                 </a>
               </div>
             </article>
-
-            <article class="pricing-card">
-              <h3 class="plan-name">Premium</h3>
-              <p class="plan-price">S/. 40<span>/mes</span></p>
-              <div class="plan-cta">
-                <a
-                  class="btn btn-primary"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Premium%20mensual"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  Crear cuenta
-                </a>
-                <a
-                  class="btn btn-outline"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Premium%20mensual"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  Inicia gratis
-                </a>
-              </div>
-            </article>
-
-            <article class="pricing-card">
-              <h3 class="plan-name">Full Max</h3>
-              <p class="plan-price">S/. 50<span>/mes</span></p>
-              <div class="plan-cta">
-                <a
-                  class="btn btn-primary"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Full%20Max%20mensual"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  Crear cuenta
-                </a>
-                <a
-                  class="btn btn-outline"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Full%20Max%20mensual"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  Inicia gratis
-                </a>
-              </div>
-            </article>-->
           </div>
 
           <div class="pricing-grid is-hidden" data-plan-group="yearly">
-            <article class="pricing-card recommended">
-              <span class="plan-badge">Recomendado</span>
-              <h3 class="plan-name">Pro Anual</h3>
-              <p class="plan-price">S/. 520<span>/año</span></p>
+            <article class="pricing-card">
+              <h3 class="plan-name">Gratis</h3>
+              <p class="plan-price">S/. 0<span>/año</span></p>
+              <p class="plan-description">Ideal para emprendedores que recién comienzan.</p>
+              <ul class="plan-features">
+                <li><i class="bi bi-check-circle-fill"></i> Ventas Ilimitadas</li>
+                <li><i class="bi bi-check-circle-fill"></i> Inventario Ilimitado</li>
+                <li><i class="bi bi-check-circle-fill"></i> Gestión de Negocios Ilimitados</li>
+              </ul>
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Pro%20anual"
-                  target="_blank"
+                  href="/pos/account"
+                  target="_self"
                   rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Pro%20anual"
-                  target="_blank"
+                  href="/pos/account"
+                  target="_self"
+                  rel="noopener noreferrer">
+                  Inicia gratis
+                </a>
+              </div>
+            </article>
+
+            <article class="pricing-card recommended">
+              <span class="plan-badge">Recomendado</span>
+              <h3 class="plan-name">Pro Anual</h3>
+              <span class="original-price">S/. 576.00</span>
+              <p class="plan-price">S/. 461.00<span>/año</span></p>
+              <p class="plan-description">Ahorra más del 20% con facturación anual.</p>
+              <ul class="plan-features">
+                <li><i class="bi bi-check-circle-fill"></i> Fotos de Productos Ilimitadas</li>
+                <li><i class="bi bi-check-circle-fill"></i> Catálogo Público Web Estándar</li>
+                <li><i class="bi bi-check-circle-fill"></i> Registro de Ingresos, Egresos y Gastos</li>
+                <li><i class="bi bi-check-circle-fill"></i> Gestión de Caja (Arqueo/Cierre)</li>
+                <li><i class="bi bi-check-circle-fill"></i> Gestión de Créditos y Fiados</li>
+                <li><i class="bi bi-check-circle-fill"></i> 1 sola Caja</li>
+                <li><i class="bi bi-check-circle-fill"></i> Clientes, Proveedores y Roles</li>
+                <li><i class="bi bi-check-circle-fill"></i> Atención Prioritaria (Soporte)</li>
+                <li><i class="bi bi-check-circle-fill"></i> <strong>Todo lo del Plan Gratis</strong></li>
+              </ul>
+              <div class="plan-cta">
+                <a
+                  class="btn btn-primary"
+                  href="/pos/account"
+                  target="_self"
+                  rel="noopener noreferrer">
+                  Crear cuenta
+                </a>
+                <a
+                  class="btn btn-outline"
+                  href="/pos/account"
+                  target="_self"
                   rel="noopener noreferrer">
                   Inicia gratis
                 </a>
@@ -1327,62 +1563,30 @@
             </article>
 
             <article class="pricing-card">
-              <h3 class="plan-name">Business Anual</h3>
-              <p class="plan-price">S/. 620<span>/año</span></p>
+              <h3 class="plan-name">Empresarial Anual</h3>
+              <span class="original-price">S/. 864.00</span>
+              <p class="plan-price">S/. 691.00<span>/año</span></p>
+              <p class="plan-description">Ahorra más del 20% con facturación anual.</p>
+              <ul class="plan-features">
+                <li><i class="bi bi-check-circle-fill"></i> Catálogo Web Personalizable</li>
+                <li><i class="bi bi-check-circle-fill"></i> Creación de Cajas Ilimitadas</li>
+                <li><i class="bi bi-check-circle-fill"></i> Configuración de Colores/Widgets</li>
+                <li><i class="bi bi-check-circle-fill"></i> Atención Prioritaria (Soporte)</li>
+                <li><i class="bi bi-check-circle-fill"></i> Acceso a Funciones Beta</li>
+                <li><i class="bi bi-check-circle-fill"></i> <strong>Todo lo del Plan Pro</strong></li>
+              </ul>
               <div class="plan-cta">
                 <a
                   class="btn btn-primary"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Business%20anual"
-                  target="_blank"
+                  href="/pos/account"
+                  target="_self"
                   rel="noopener noreferrer">
                   Crear cuenta
                 </a>
                 <a
                   class="btn btn-outline"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Business%20anual"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  Inicia gratis
-                </a>
-              </div>
-            </article>
-
-            <article class="pricing-card" style="display: none;">
-              <h3 class="plan-name">Premium Anual</h3>
-              <p class="plan-price">S/. 384<span>/año</span></p>
-              <div class="plan-cta">
-                <a
-                  class="btn btn-primary"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Premium%20anual"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  Crear cuenta
-                </a>
-                <a
-                  class="btn btn-outline"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Premium%20anual"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  Inicia gratis
-                </a>
-              </div>
-            </article>
-
-            <article class="pricing-card" style="display: none;">
-              <h3 class="plan-name">Full Max Anual</h3>
-              <p class="plan-price">S/. 480<span>/año</span></p>
-              <div class="plan-cta">
-                <a
-                  class="btn btn-primary"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20crear%20mi%20cuenta%20con%20el%20plan%20Full%20Max%20anual"
-                  target="_blank"
-                  rel="noopener noreferrer">
-                  Crear cuenta
-                </a>
-                <a
-                  class="btn btn-outline"
-                  href="https://wa.me/51910367611?text=Hola%2C%20quiero%20iniciar%20gratis%20con%20el%20plan%20Full%20Max%20anual"
-                  target="_blank"
+                  href="/pos/account"
+                  target="_self"
                   rel="noopener noreferrer">
                   Inicia gratis
                 </a>
@@ -1390,10 +1594,136 @@
             </article>
           </div>
         </div>
+
+        <!-- Comparative Table -->
+        <div class="plans-compare-container" data-aos="fade-up">
+          <h3 class="section-title" style="margin-bottom: 30px; font-size: 1.8rem;">Comparativa de Funciones</h3>
+          <table class="compare-table">
+            <thead>
+              <tr>
+                <th>Funciones</th>
+                <th>Plan Gratis</th>
+                <th>Plan Pro</th>
+                <th>Plan Empresarial</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Ventas e Inventario -->
+              <tr>
+                <td colspan="4" class="feature-category">Ventas e Inventario</td>
+              </tr>
+              <tr>
+                <td>Ventas Ilimitadas</td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+              </tr>
+              <tr>
+                <td>Inventario de Productos</td>
+                <td><i class="bi bi-check-circle-fill"></i> Ilimitado</td>
+                <td><i class="bi bi-check-circle-fill"></i> Ilimitado</td>
+                <td><i class="bi bi-check-circle-fill"></i> Ilimitado</td>
+              </tr>
+              <tr>
+                <td>Fotos de Productos</td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i> Ilimitadas</td>
+                <td><i class="bi bi-check-circle-fill"></i> Ilimitadas</td>
+              </tr>
+              <tr>
+                <td>Catálogo Público Web</td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i> Estándar</td>
+                <td><i class="bi bi-check-circle-fill"></i> Personalizable</td>
+              </tr>
+
+              <!-- Finanzas y Caja -->
+              <tr>
+                <td colspan="4" class="feature-category">Finanzas y Caja</td>
+              </tr>
+              <tr>
+                <td>Registro de Ingresos</td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+              </tr>
+              <tr>
+                <td>Registro de Egresos y Gastos</td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+              </tr>
+              <tr>
+                <td>Gestión de Caja (Arqueo/Cierre)</td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+              </tr>
+              <tr>
+                <td>Gestión de Créditos y Fiados</td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+              </tr>
+              <tr>
+                <td>Creación de Cajas</td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i> 1 sola</td>
+                <td><i class="bi bi-check-circle-fill"></i> Ilimitadas</td>
+              </tr>
+
+              <!-- Administración -->
+              <tr>
+                <td colspan="4" class="feature-category">Administración</td>
+              </tr>
+              <tr>
+                <td>Gestión de Negocios</td>
+                <td><i class="bi bi-check-circle-fill"></i> Ilimitados</td>
+                <td><i class="bi bi-check-circle-fill"></i> Ilimitados</td>
+                <td><i class="bi bi-check-circle-fill"></i> Ilimitados</td>
+              </tr>
+              <tr>
+                <td>Gestión de Clientes y Proveedores</td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+              </tr>
+              <tr>
+                <td>Gestión de Empleados y Roles</td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+              </tr>
+
+              <!-- Soporte y Exclusivos -->
+              <tr>
+                <td colspan="4" class="feature-category">Soporte y Exclusivos</td>
+              </tr>
+              <tr>
+                <td>Configuración de Colores y Widgets</td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+              </tr>
+              <tr>
+                <td>Atención Prioritaria (Soporte)</td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+              </tr>
+              <tr>
+                <td>Acceso a Funciones Beta</td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-x-lg"></i></td>
+                <td><i class="bi bi-check-circle-fill"></i></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
-    <section class="cta-panel" id="demo">
+    <section class="cta-panel" id="demo" data-aos="zoom-in">
       <div class="cta-content">
         <h3>Inicia gratis con acompañamiento personalizado</h3>
         <p>
@@ -1412,12 +1742,27 @@
       </div>
     </section>
 
-    <section id="contacto" style="margin-top: 80px;">
+    <section id="contacto" style="margin-top: 80px; padding-bottom: 80px;" data-aos="fade-up">
       <h2 class="section-title">Estamos listos para ayudarte</h2>
       <p class="section-subtitle">
-        Escríbenos a <a href="mailto:soporte@capyventas.com">soporte@capyventas.com</a> o llámanos al
-        <strong>+52 (55) 8000 1234</strong>. También puedes agendar una sesión estratégica con nuestro equipo comercial.
+        Envíanos un mensaje y te responderemos directamente por WhatsApp.
       </p>
+
+      <div class="contact-form-container" data-aos="fade-up" data-aos-delay="200">
+        <form id="whatsappForm">
+          <div class="form-group">
+            <label for="contactName" class="form-label">Nombre</label>
+            <input type="text" id="contactName" class="form-input" placeholder="Tu nombre" required>
+          </div>
+          <div class="form-group">
+            <label for="contactMessage" class="form-label">Mensaje</label>
+            <textarea id="contactMessage" class="form-textarea" placeholder="¿En qué podemos ayudarte?" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+            <i class="bi bi-whatsapp"></i>&nbsp; Enviar a WhatsApp
+          </button>
+        </form>
+      </div>
     </section>
   </main>
 
@@ -1426,10 +1771,10 @@
   </footer>
 
   <footer>
-     <link rel = "stylesheet" href="Assets/css/app/POS/chatbot/style_chatbot.css">
-      <?php include __DIR__ . '/../Views/App/POS/chatbot/capyChatbot.php'; ?>
-      <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-      <script src="Assets/js/app/POS/chatbot/capyChatbot.js"></script>
+    <link rel="stylesheet" href="Assets/css/app/POS/chatbot/style_chatbot.css">
+    <?php include __DIR__ . '/../Views/App/POS/chatbot/capyChatbot.php'; ?>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="Assets/js/app/POS/chatbot/capyChatbot.js"></script>
   </footer>
 
   <script>
@@ -1483,6 +1828,75 @@
           });
         });
       }
+
+      /* Active menu tracking */
+      const observerOptions = {
+        root: null,
+        rootMargin: '-50% 0px -50% 0px', // Activate when section is in the middle
+        threshold: 0
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            if (id) {
+              const activeLink = document.querySelector(`nav a[href="#${id}"]`);
+              if (activeLink) {
+                // Remove active class from all links
+                document.querySelectorAll('nav a').forEach(link => link.classList.remove('active'));
+                // Add active class to current link
+                activeLink.classList.add('active');
+              }
+            }
+          }
+        });
+      }, observerOptions);
+
+      // Observe all sections that are linked in the menu
+      document.querySelectorAll('section[id]').forEach(section => {
+        observer.observe(section);
+      });
+
+      // Also handle click to set active immediately
+      if (navigation) {
+        navigation.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+          });
+        });
+      }
+
+      // WhatsApp Form Handler
+      const whatsappForm = document.getElementById('whatsappForm');
+      if (whatsappForm) {
+        whatsappForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const name = document.getElementById('contactName').value.trim();
+          const message = document.getElementById('contactMessage').value.trim();
+
+          if (!name || !message) return;
+
+          const phoneNumber = "51910367611";
+          const text = encodeURIComponent(`Hola, mi nombre es ${name}. ${message}`);
+          const url = `https://wa.me/${phoneNumber}?text=${text}`;
+
+          window.open(url, '_blank');
+        });
+      }
+
+    });
+  </script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      duration: 800,
+      once: false,
+      mirror: true,
+      easing: 'ease-out-cubic',
+      offset: 100
     });
   </script>
 </body>

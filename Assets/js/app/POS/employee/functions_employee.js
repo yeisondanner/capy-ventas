@@ -90,7 +90,7 @@
     const currentPrefix = prefix === "update" ? "update_" : "";
     const displayPrefix = prefix === "update" ? "update_" : "";
     const userInput = document.getElementById(
-      `${currentPrefix}txtEmployeeUserappId`
+      `${currentPrefix}txtEmployeeUserappId`,
     );
     if (userInput) {
       userInput.value = "";
@@ -105,16 +105,16 @@
         : "Busca un usuario para mostrar sus datos antes de guardar.";
 
     const fullNameElement = document.getElementById(
-      `${displayPrefix}displayEmployeeFullName`
+      `${displayPrefix}displayEmployeeFullName`,
     );
     const emailElement = document.getElementById(
-      `${displayPrefix}displayEmployeeEmail`
+      `${displayPrefix}displayEmployeeEmail`,
     );
     const userElement = document.getElementById(
-      `${displayPrefix}displayEmployeeUser`
+      `${displayPrefix}displayEmployeeUser`,
     );
     const noteElement = document.getElementById(
-      `${displayPrefix}displayEmployeeNote`
+      `${displayPrefix}displayEmployeeNote`,
     );
 
     if (fullNameElement) fullNameElement.textContent = defaultName;
@@ -133,10 +133,10 @@
     const displayPrefix = prefix === "update" ? "update_" : "";
 
     const idInput = document.getElementById(
-      `${currentPrefix}txtEmployeeUserappId`
+      `${currentPrefix}txtEmployeeUserappId`,
     );
     const searchInput = document.getElementById(
-      `${currentPrefix}txtEmployeeUserSearch`
+      `${currentPrefix}txtEmployeeUserSearch`,
     );
 
     const fullName = `${user.names || ""} ${user.lastname || ""}`.trim();
@@ -147,16 +147,16 @@
     }
 
     const fullNameElement = document.getElementById(
-      `${displayPrefix}displayEmployeeFullName`
+      `${displayPrefix}displayEmployeeFullName`,
     );
     const emailElement = document.getElementById(
-      `${displayPrefix}displayEmployeeEmail`
+      `${displayPrefix}displayEmployeeEmail`,
     );
     const userElement = document.getElementById(
-      `${displayPrefix}displayEmployeeUser`
+      `${displayPrefix}displayEmployeeUser`,
     );
     const noteElement = document.getElementById(
-      `${displayPrefix}displayEmployeeNote`
+      `${displayPrefix}displayEmployeeNote`,
     );
 
     if (fullNameElement)
@@ -202,7 +202,7 @@
     async (prefix, excludeEmployeeId = null) => {
       const currentPrefix = prefix === "update" ? "update_" : "";
       const input = document.getElementById(
-        `${currentPrefix}txtEmployeeUserSearch`
+        `${currentPrefix}txtEmployeeUserSearch`,
       );
       if (!input) return;
 
@@ -219,7 +219,7 @@
         }
 
         const response = await fetch(
-          `${base_url}/pos/Employee/suggestUserApps?${params.toString()}`
+          `${base_url}/pos/Employee/suggestUserApps?${params.toString()}`,
         );
 
         const data = await response.json();
@@ -234,7 +234,7 @@
         renderSuggestions(prefix, []);
       }
     },
-    350
+    350,
   );
 
   /**
@@ -245,7 +245,7 @@
   async function searchUser(prefix, excludeEmployeeId = null) {
     const currentPrefix = prefix === "update" ? "update_" : "";
     const input = document.getElementById(
-      `${currentPrefix}txtEmployeeUserSearch`
+      `${currentPrefix}txtEmployeeUserSearch`,
     );
 
     if (!input) return;
@@ -267,7 +267,7 @@
       }
 
       const response = await fetch(
-        `${base_url}/pos/Employee/findUserApp?${params.toString()}`
+        `${base_url}/pos/Employee/findUserApp?${params.toString()}`,
       );
 
       if (!response.ok) {
@@ -312,7 +312,7 @@
   function setupPredictiveSearch(prefix) {
     const currentPrefix = prefix === "update" ? "update_" : "";
     const input = document.getElementById(
-      `${currentPrefix}txtEmployeeUserSearch`
+      `${currentPrefix}txtEmployeeUserSearch`,
     );
 
     if (!input) return;
@@ -359,7 +359,7 @@
   async function loadSelectors() {
     try {
       const roleAppsResponse = await fetch(
-        `${base_url}/pos/Employee/getRoleApps`
+        `${base_url}/pos/Employee/getRoleApps`,
       );
 
       if (!roleAppsResponse.ok) {
@@ -371,7 +371,7 @@
       if (!roleAppsJson.status) {
         throw new Error(
           roleAppsJson.message ||
-            "No fue posible cargar los roles de aplicación"
+            "No fue posible cargar los roles de aplicación",
         );
       }
 
@@ -383,12 +383,12 @@
       populateSelect(
         document.getElementById("txtEmployeeRolapp"),
         cachedRoleApps,
-        "Selecciona un rol"
+        "Selecciona un rol",
       );
       populateSelect(
         document.getElementById("update_txtEmployeeRolapp"),
         cachedRoleApps,
-        "Selecciona un rol"
+        "Selecciona un rol",
       );
     } catch (error) {
       console.error("Error cargando selectores", error);
@@ -423,27 +423,27 @@
         {
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
-          className: "btn btn-secondary",
+          className: "btn btn-sm btn-outline-secondary",
           exportOptions: { columns: [0, 2, 3, 4, 5] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
-          className: "btn btn-success",
+          className: "btn btn-sm btn-outline-success",
           title: "Empleados",
           exportOptions: { columns: [0, 2, 3, 4, 5] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
-          className: "btn btn-info text-white",
+          className: "btn btn-sm btn-outline-info",
           title: "Empleados",
           exportOptions: { columns: [0, 2, 3, 4, 5] },
         },
         {
           extend: "pdfHtml5",
           text: "<i class='bi bi-filetype-pdf'></i> PDF",
-          className: "btn btn-danger",
+          className: "btn btn-sm btn-outline-danger",
           orientation: "portrait",
           pageSize: "A4",
           title: "Empleados",
@@ -456,9 +456,10 @@
         { targets: 5, className: "text-center" },
       ],
       responsive: true,
+      processing: true,
       destroy: true,
       colReorder: true,
-      stateSave: false,
+      stateSave: true,
       autoFill: false,
       iDisplayLength: 10,
       order: [[0, "asc"]],
@@ -500,7 +501,7 @@
     populateSelect(
       document.getElementById("txtEmployeeRolapp"),
       cachedRoleApps,
-      "Selecciona un rol"
+      "Selecciona un rol",
     );
     resetUserInfo("create");
 
@@ -558,7 +559,7 @@
           populateSelect(
             document.getElementById("txtEmployeeRolapp"),
             cachedRoleApps,
-            "Selecciona un rol"
+            "Selecciona un rol",
           );
           resetUserInfo("create");
           hideModal(modalCreate);
@@ -604,7 +605,7 @@
           {
             method: "POST",
             body: formData,
-          }
+          },
         );
 
         if (!response.ok) {
@@ -714,7 +715,7 @@
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: employeeId, token }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -756,7 +757,7 @@
   async function loadEmployeeForEdition(employeeId) {
     try {
       const response = await fetch(
-        `${base_url}/pos/Employee/getEmployee?id=${employeeId}`
+        `${base_url}/pos/Employee/getEmployee?id=${employeeId}`,
       );
       if (!response.ok) {
         throw new Error(`Error ${response.status}`);
@@ -786,7 +787,7 @@
       populateSelect(
         document.getElementById("update_txtEmployeeRolapp"),
         cachedRoleApps,
-        "Selecciona un rol"
+        "Selecciona un rol",
       );
 
       document.getElementById("update_txtEmployeeId").value =
@@ -826,7 +827,7 @@
   async function loadEmployeeForReport(employeeId) {
     try {
       const response = await fetch(
-        `${base_url}/pos/Employee/getEmployee?id=${employeeId}`
+        `${base_url}/pos/Employee/getEmployee?id=${employeeId}`,
       );
       if (!response.ok) {
         throw new Error(`Error ${response.status}`);
@@ -858,7 +859,7 @@
         employee.role_app_description || "Sin descripción registrada.";
 
       const statusBadgeElement = document.getElementById(
-        "reportEmployeeStatusBadge"
+        "reportEmployeeStatusBadge",
       );
       const statusElement = document.getElementById("reportEmployeeStatus");
 
@@ -903,7 +904,7 @@
         event.preventDefault();
         const id = Number.parseInt(
           editButton.getAttribute("data-id") || "0",
-          10
+          10,
         );
         loadEmployeeForEdition(id);
         return;
@@ -914,7 +915,7 @@
         event.preventDefault();
         const id = Number.parseInt(
           reportButton.getAttribute("data-id") || "0",
-          10
+          10,
         );
         loadEmployeeForReport(id);
         return;
@@ -925,7 +926,7 @@
         event.preventDefault();
         const id = Number.parseInt(
           deleteButton.getAttribute("data-id") || "0",
-          10
+          10,
         );
         const name = deleteButton.getAttribute("data-full-name") || "";
         const token = deleteButton.getAttribute("data-token") || "";
@@ -948,7 +949,7 @@
     setupPredictiveSearch("update");
 
     const btnOpenEmployeeModal = document.getElementById(
-      "btnOpenEmployeeModal"
+      "btnOpenEmployeeModal",
     );
     if (btnOpenEmployeeModal) {
       btnOpenEmployeeModal.addEventListener("click", () => {
@@ -962,7 +963,7 @@
     }
 
     const btnSearchUpdate = document.getElementById(
-      "btnSearchEmployeeUserUpdate"
+      "btnSearchEmployeeUserUpdate",
     );
     if (btnSearchUpdate) {
       btnSearchUpdate.addEventListener("click", () => {

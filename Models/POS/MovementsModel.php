@@ -16,26 +16,33 @@ class MovementsModel extends Mysql
      */
     public function select_movements(int $businessId, $minDate = null, $maxDate = null, $searchConcept = null, $type_movements = 'income'): array
     {
+        //verificamos que el tipo de movimiento sea income o expense
+        if ($type_movements !== 'income' && $type_movements !== 'expense') {
+            return [];
+        }
         if ($type_movements === 'income') {
-            $sql = "SELECT
-                    vh.idVoucherHeader,
-                    CASE
-                        WHEN vh.voucher_name IS NULL
-                            THEN CONCAT('Venta del dia ', DATE(vh.date_time))
-                        ELSE vh.voucher_name
-                    END AS voucher_name,
-                    vh.amount,
-                    pm.name,
-                    vh.date_time,
-                    CONCAT(p.`names`, ' ', p.lastname) AS fullname
-                FROM voucher_header vh
-                INNER JOIN payment_method pm
-                    ON vh.payment_method_id = pm.idPaymentMethod
-                INNER JOIN user_app ua
-                ON vh.user_app_id = ua.idUserApp
-                INNER JOIN people p
-                ON ua.people_id = p.idPeople
-                WHERE vh.business_id = ?";
+            /**
+             * Seccion de obtener las ventas de acuerdo a los filtros proporcionados
+             */
+            $sql = <<<SQL
+                SELECT
+                    vh.idVoucherHeader AS 'id',
+                    CASE WHEN vh.voucher_name IS NULL THEN CONCAT(
+                        'Venta del dia ',
+                        DATE(vh.date_time)
+                    ) ELSE vh.voucher_name END AS 'name',
+                    vh.amount AS 'amount',
+                    pm.name AS 'method_payment',
+                    vh.date_time AS 'date_time',
+                    CONCAT(p.`names`, ' ', p.lastname) AS 'fullname'
+                FROM
+                    voucher_header vh
+                    INNER JOIN payment_method pm ON vh.payment_method_id = pm.idPaymentMethod
+                    INNER JOIN user_app ua ON vh.user_app_id = ua.idUserApp
+                    INNER JOIN people p ON ua.people_id = p.idPeople
+                    WHERE 
+                    vh.business_id = ?
+            SQL;
 
             $arrValues = [$businessId];
             if ($minDate != null && $maxDate != null) {
@@ -50,15 +57,79 @@ class MovementsModel extends Mysql
             }
             $sql .= " ORDER BY vh.date_time DESC";
         } else if ($type_movements === 'expense') {
-            $sql = "";
+            /**
+             * Seccion de obtener los gastos de acuerdo a los filtros proporcionados
+             */
+            $sql = <<<SQL
+                SELECT
+                    ee.idExpense_economic AS 'id',
+                    CASE WHEN ee.name_expense IS NULL THEN CONCAT(
+                        'Gastos del dia ',
+                        DATE(ee.expense_date)
+                    ) ELSE ee.name_expense END AS 'name',
+                    ee.amount AS 'amount',
+                    pm.`name` AS 'method_payment',
+                    ee.expense_date AS 'date_time',
+                    CONCAT(p.`names`, ' ', p.lastname) AS 'fullname'
+                FROM
+                    expense_economic AS ee
+                    INNER JOIN payment_method AS pm ON pm.idPaymentMethod = ee.PaymentMethod_id
+                    INNER JOIN user_app AS ua ON ua.idUserApp = ee.userapp_id
+                    INNER JOIN people AS p ON p.idPeople = ua.people_id
+                    WHERE 
+                    ee.business_id=?
+            SQL;
             $arrValues = [$businessId];
+            if ($minDate != null && $maxDate != null) {
+                $sql .= " AND DATE(ee.expense_date) BETWEEN ? AND ?";
+                array_push($arrValues, $minDate, $maxDate);
+            }
+            // Agregar filtro por concepto si se proporciona
+            if ($searchConcept != null && !empty($searchConcept)) {
+                $sql .= " AND (ee.name_expense LIKE ? OR p.names LIKE ? OR p.lastname LIKE ?)";
+                $searchParam = '%' . $searchConcept . '%';
+                array_push($arrValues, $searchParam, $searchParam, $searchParam);
+            }
+            $sql .= " ORDER BY ee.expense_date DESC";
         }
-        return $this->select_all($sql, $arrValues);
+        $arrMovements = $this->select_all($sql, $arrValues);
+        //adicionamos un campo mas para identificar el tipo de movimiento
+        array_walk($arrMovements, function (&$item) use ($type_movements) {
+            $item['type'] = $type_movements;
+        });
+        return $arrMovements;
     }
 
     public function select_voucher(int $voucherId, int $businessId): array
     {
-        $sql = <<<SQL
+        $sqlHeader = <<<SQL
+            SELECT
+                    vh.name_bussines,
+                    vh.direction_bussines,
+                    vh.document_bussines,
+                    vh.date_time,
+                    vh.name_customer,
+                    vh.direction_customer,
+                    vh.amount,
+                    vh.percentage_discount,
+                    vh.voucher_name,
+                    vh.tax_name,
+                    vh.tax_percentage,
+                    vh.tax_amount,
+                    b.logo,
+                    vh.idVoucherHeader AS 'id',
+                    CONCAT(p.`names`, ' ', p.lastname) AS fullname
+                FROM
+                    voucher_header vh
+                    INNER JOIN business AS b ON b.idBusiness = vh.business_id
+                    INNER JOIN user_app ua ON vh.user_app_id = ua.idUserApp
+                    INNER JOIN people p ON ua.people_id = p.idPeople
+                WHERE
+                    vh.idVoucherHeader = ?
+                    AND vh.business_id = ?
+                LIMIT 1;
+        SQL;
+        $sqlDetail = <<<SQL
                 SELECT
                     vh.name_bussines,
                     vh.direction_bussines,
@@ -85,7 +156,12 @@ class MovementsModel extends Mysql
                 ORDER BY vd.name_product ASC;
             SQL;
 
-        return $this->select_all($sql, [$voucherId, $businessId]);
+        $header = $this->select($sqlHeader, [$voucherId, $businessId]);
+        $detail = $this->select_all($sqlDetail, [$voucherId, $businessId]);
+        return [
+            'header' => $header,
+            'detail' => $detail
+        ];
     }
 
     /**
@@ -149,5 +225,41 @@ class MovementsModel extends Mysql
         $totals['balance'] = $totals['total_sales'] - $totals['total_expenses'];
 
         return $totals;
+    }
+
+    public function select_expense(int $expenseId, int $businessId): array
+    {
+        $sql = <<<SQL
+            SELECT
+                ee.idExpense_economic AS id,
+                ee.name_expense,
+                ee.description,
+                ee.amount,
+                ee.expense_date,
+                ee.voucher_reference,
+                ee.status,
+                pm.name AS payment_method,
+                ec.name AS category_name,
+                s.company_name AS supplier_name,
+                CONCAT(p.names, ' ', p.lastname) AS fullname,
+                b.name AS name_bussines,
+                b.direction AS direction_bussines,
+                b.document_number AS document_bussines,
+                b.logo
+            FROM
+                expense_economic ee
+                INNER JOIN business b ON b.idBusiness = ee.business_id
+                INNER JOIN payment_method pm ON pm.idPaymentMethod = ee.PaymentMethod_id
+                INNER JOIN expense_category ec ON ec.idExpense_category = ee.expense_category_id
+                LEFT JOIN supplier s ON s.idSupplier = ee.supplier_id
+                INNER JOIN user_app ua ON ua.idUserApp = ee.userapp_id
+                INNER JOIN people p ON p.idPeople = ua.people_id
+            WHERE
+                ee.idExpense_economic = ?
+                AND ee.business_id = ?
+            LIMIT 1;
+        SQL;
+
+        return $this->select($sql, [$expenseId, $businessId]);
     }
 }

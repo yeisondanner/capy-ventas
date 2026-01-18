@@ -70,6 +70,10 @@ class Movements extends Controllers
         $filterType = (isset($_GET["filterType"]) && !empty($_GET["filterType"])) ? strClean($_GET['filterType']) : 'daily';
         $searchConcept = (isset($_GET["searchConcept"]) && !empty($_GET["searchConcept"])) ? strClean($_GET['searchConcept']) : null;
         $type = (isset($_GET["type"]) && !empty($_GET["type"])) ? strClean($_GET['type']) : 'income';
+        //verificamos que el tipo de movimiento sea income o expense
+        if ($type !== 'income' && $type !== 'expense') {
+            $type = 'income';
+        }
 
         // Calcular fechas según el tipo de filtro SI NO se han enviado fechas específicas
         if ($filterType !== 'custom') {
@@ -105,27 +109,30 @@ class Movements extends Controllers
 
 
         foreach ($arrData as $key => $value) {
-
-            $idVoucher = $value['idVoucherHeader'];
-
             $arrData[$key]['cont'] = $cont;
             $arrData[$key]['date_time'] = dateFormat($value['date_time']);
-            $arrData[$key]['actions'] = '
-                <div class="btn-group">
-                    <button
-                        class="btn btn-outline-info btn-sm  report-item"
-                        title="Ver reporte"
-                        type="button"
-                        data-idvoucher="' . $idVoucher . '">
-                        <i class="bi bi-clipboard2-data-fill"></i>
-                    </button>
-                </div>
-            ';
+            $arrData[$key]['actions'] = $this->renderGroupButtons($value);
 
             $cont++;
         }
 
         toJson($arrData);
+    }
+    protected function renderGroupButtons($data)
+    {
+        $type = $data['type'];
+        $id = $data['id'];
+        return <<<HTML
+                <div class="btn-group">
+                    <button
+                        class="btn btn-outline-info btn-sm  report-item-{$type}"
+                        title="Ver reporte"
+                        type="button"
+                        data-id="$id">
+                        <i class="bi bi-clipboard2-data-fill"></i>
+                    </button>
+                </div>
+        HTML;
     }
 
     /**
@@ -160,7 +167,7 @@ class Movements extends Controllers
         }
 
         // Cabecera desde la primera fila
-        $headerRow = $rows[0];
+        $headerRow = $rows['header'];
 
         $header = [
             'name_bussines' => $headerRow['name_bussines'],
@@ -173,23 +180,74 @@ class Movements extends Controllers
             'amount' => $headerRow['amount'],
             'percentage_discount' => $headerRow['percentage_discount'],
             'logo' => base_url() . '/Loadfile/iconbusiness?f=' . $headerRow['logo'],
+            'tax_name' => $headerRow['tax_name'],
+            'tax_percentage' => $headerRow['tax_percentage'],
+            'tax_amount' => $headerRow['tax_amount'],
+            'id' => $headerRow['id'],
         ];
-
+        $dataDetails = $rows['detail'];
         // Detalle (todas las filas)
         $details = [];
-        foreach ($rows as $row) {
+        if ($dataDetails) {
+            foreach ($dataDetails as $row) {
+                $details[] = [
+                    'name_product' => $row['name_product'],
+                    'unit_of_measurement' => $row['unit_of_measurement'],
+                    'sales_price_product' => $row['sales_price_product'],
+                    'stock_product' => $row['stock_product'],
+                ];
+            }
+        } else {
             $details[] = [
-                'name_product' => $row['name_product'],
-                'unit_of_measurement' => $row['unit_of_measurement'],
-                'sales_price_product' => $row['sales_price_product'],
-                'stock_product' => $row['stock_product'],
+                'sales_price_product' => $headerRow['amount'],
+                'name_product' => $headerRow['voucher_name'] ?? 'Venta rápida',
+                'unit_of_measurement' => 'Servicio',
+                'stock_product' => 1,
             ];
         }
-
         $arrResponse = [
             'status' => true,
             'header' => $header,
             'details' => $details,
+        ];
+
+        toJson($arrResponse);
+    }
+
+    /**
+     * Devuelve el detalle de un gasto (expense) del negocio activo.
+     *
+     * @return void
+     */
+    public function getExpense(): void
+    {
+        if (!$_POST) {
+            $this->responseError('Solicitud inválida.');
+        }
+
+        $idExpense = intval($_POST['idExpense'] ?? 0);
+
+        if ($idExpense <= 0) {
+            $this->responseError('Identificador de gasto no válido.');
+        }
+
+        // ID del negocio desde la sesión
+        $businessId = $this->getBusinessId();
+
+        $data = $this->model->select_expense($idExpense, $businessId);
+
+        if (empty($data)) {
+            $this->responseError('No se encontraron datos para este gasto.');
+            return;
+        }
+
+        // Formatear datos si es necesario
+        $data['amount_formatted'] = getCurrency() . ' ' . number_format($data['amount'], 2, '.', ',');
+        $data['logo'] = base_url() . '/Loadfile/iconbusiness?f=' . $data['logo'];
+
+        $arrResponse = [
+            'status' => true,
+            'data' => $data,
         ];
 
         toJson($arrResponse);

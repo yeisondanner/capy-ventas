@@ -4,7 +4,8 @@
 
   window.addEventListener("DOMContentLoaded", (e) => {
     loadTable();
-    loadReport();
+    loadReportVoucher();
+    loadReportExpense();
     dowloadPNG();
 
     // Mostrar u ocultar campos de rango personalizado según selección y actualizar comportamiento del campo de fecha
@@ -14,7 +15,7 @@
         const filterType = this.value;
         const dateContainer = document.getElementById("date-container");
         const dateRangeContainer = document.getElementById(
-          "date-range-container"
+          "date-range-container",
         );
         const dateToContainer = document.getElementById("date-to-container");
         const dateLabel = document.getElementById("date-label");
@@ -153,7 +154,7 @@
       resetFilters();
     });
     //cargamos el boton de ingresos
-    loadBtnIncomeTable();
+    loadBtnMovementsTable();
   });
 
   // Función para obtener el número de semana
@@ -161,7 +162,7 @@
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
     var yearStart = new Date(Date.UTC(d.getFullYear(), 0, 1));
     var weekNo = Math.ceil(
-      ((d - yearStart) / 86400000 + yearStart.getUTCDay() + 1) / 7
+      ((d - yearStart) / 86400000 + yearStart.getUTCDay() + 1) / 7,
     );
     return weekNo;
   }
@@ -278,7 +279,7 @@
             const endDate = new Date(
               today.getFullYear(),
               today.getMonth() + 1,
-              0
+              0,
             ).getDate();
             minDate = startDate;
             maxDate =
@@ -332,17 +333,6 @@
         filterType: filterType,
         searchConcept: searchConcept,
       },
-      //ponemos un load
-      beforeSend: function () {
-        showAlert(
-          {
-            title: "Cargando",
-            message: "Cargando totales...",
-            icon: "info",
-          },
-          "loading"
-        );
-      },
       dataType: "json",
       success: function (res) {
         if (res.status) {
@@ -360,7 +350,7 @@
             message: "Error al cargar los totales",
             icon: "error",
           },
-          "float"
+          "float",
         );
       },
       complete: function () {
@@ -371,7 +361,7 @@
             message: "Información cargada correctamente",
             icon: "success",
           },
-          "float"
+          "float",
         );
       },
     });
@@ -386,7 +376,7 @@
         url: base_url + "/pos/Movements/getMovements",
         data: function (d) {
           const type = document.querySelector(
-            'input[name="movementType"]:checked'
+            'input[name="movementType"]:checked',
           ).value;
           d.type = type;
           d.filterType = document.getElementById("filter-type").value;
@@ -401,7 +391,7 @@
           // Calcular fechas usando la función centralizada
           const { minDate, maxDate } = calculateDateRange(
             d.filterType,
-            filterValue
+            filterValue,
           );
           d.minDate = minDate;
           d.maxDate = maxDate;
@@ -411,14 +401,14 @@
       columns: [
         { data: "cont" },
         { data: "actions" },
-        { data: "voucher_name" },
+        { data: "name" },
         {
           data: "amount",
           render: function (data) {
             return getcurrency + " " + data;
           },
         },
-        { data: "name" },
+        { data: "method_payment" },
         { data: "fullname" },
         { data: "date_time" },
       ],
@@ -488,9 +478,10 @@
       ],
       responsive: true,
       processing: true,
+      destroy: true,
       colReorder: true,
       stateSave: true,
-      destroy: true,
+      autoFill: false,
       iDisplayLength: 10,
       order: [[0, "asc"]],
       language: {
@@ -508,9 +499,9 @@
   }
 
   //FUNCION PARA CARGAR EL REPORTE DEL COMPROBANTE
-  function loadReport() {
-    $("#table").on("click", ".report-item", function () {
-      const idVoucher = $(this).data("idvoucher");
+  function loadReportVoucher() {
+    $("#table").on("click", ".report-item-income", function () {
+      const idVoucher = $(this).data("id");
       $.ajax({
         url: base_url + "/pos/Movements/getVoucher",
         type: "POST",
@@ -534,6 +525,11 @@
           $("#direction_customer").text(h.direction_customer);
           $("#fullname").text(h.fullname);
           document.getElementById("logo_voucher").src = h.logo;
+          //hacemos que el id se muestre con ceros a la izquierda
+          const id_voucher = String(h.id).padStart(8, "0");
+          //CV = Comprobante de Venta
+          const voucher_code = `CV-${id_voucher}`;
+          $("#voucher_code").text(voucher_code);
 
           // Totales
           $("#percentage_discount").text(h.percentage_discount);
@@ -549,7 +545,10 @@
             (subtotal * Number(h.percentage_discount || 0)) / 100;
 
           $("#subtotal_amount").text("S/ " + subtotal.toFixed(2));
-          $("#discount_amount").text("S/ " + descuento.toFixed(2));
+          $("#discount_amount").text("- S/ " + descuento.toFixed(2));
+          $("#tax_name").text(h.tax_name);
+          $("#tax_percentage").text(Number(h.tax_percentage).toFixed(2));
+          $("#tax_amount").text(getcurrency + Number(h.tax_amount).toFixed(2));
 
           // === Detalle ===
           const $tbody = $("#tbodyVoucherDetails");
@@ -561,10 +560,10 @@
               <td>${item.stock_product}</td>
               <td>${item.name_product} (${item.unit_of_measurement})</td>
               <td class="text-end">S/ ${Number(
-                item.sales_price_product
+                item.sales_price_product,
               ).toFixed(2)}</td>
               <td class="text-end">S/ ${Number(
-                item.sales_price_product * item.stock_product
+                item.sales_price_product * item.stock_product,
               ).toFixed(2)}</td>
 |            </tr>
           `);
@@ -581,41 +580,177 @@
       });
     });
   }
+  //funcion que encarga de cargar el reporte de los gastos
+  function loadReportExpense() {
+    $("#table").on("click", ".report-item-expense", function () {
+      const idExpense = $(this).data("id");
+
+      $.ajax({
+        url: base_url + "/pos/Movements/getExpense",
+        type: "POST",
+        dataType: "json",
+        data: { idExpense: idExpense },
+        success: function (res) {
+          if (!res.status) {
+            showAlert(
+              {
+                icon: "error",
+                title: "Error",
+                message: res.message || "No se pudo cargar el gasto",
+                position: "bottom",
+              },
+              "float",
+            );
+            return;
+          }
+
+          const d = res.data;
+
+          $("#name_business_expense").text(
+            d.name_bussines || "NOMBRE DEL NEGOCIO",
+          );
+          $("#direction_business_expense").text(
+            d.direction_bussines || "Dirección no registrada",
+          );
+          $("#document_business_expense").text(
+            d.document_bussines || "00000000000",
+          );
+          $("#expense_date").text(d.expense_date);
+          $("#expense_fullname").text(d.fullname);
+          $("#expense_name").text(d.name_expense);
+          $("#expense_description").text(d.description || "Sin descripción");
+          $("#expense_category").text(d.category_name);
+          $("#expense_supplier").text(d.supplier_name || "--");
+          $("#expense_voucher_reference").text(d.voucher_reference || "--");
+          //hacemos que el id se muestre con ceros a la izquierda
+          const id_expense = String(d.id).padStart(8, "0");
+          //CG = Comprobante de Gasto
+          const expense_code = `CG-${id_expense}`;
+          $("#expense_code").text(expense_code);
+          let statusBadge = "badge bg-secondary";
+          if (d.status === "pagado")
+            statusBadge = "badge bg-success text-white";
+          else if (d.status === "anulado")
+            statusBadge = "badge bg-danger text-white";
+          else if (d.status === "pendiente")
+            statusBadge = "badge bg-warning text-dark";
+
+          $("#expense_status")
+            .text(d.status.toUpperCase())
+            .attr("class", statusBadge + " border");
+
+          $("#expense_payment_method").text(d.payment_method);
+          $("#expense_total_amount").text(d.amount_formatted);
+
+          if (d.logo) {
+            document.getElementById("logo_expense").src = d.logo;
+          }
+
+          const modalEl = document.getElementById("expenseModal");
+          const modalExpense = bootstrap.Modal.getOrCreateInstance(modalEl);
+          modalExpense.show();
+        },
+        error: function () {
+          showAlert(
+            {
+              icon: "error",
+              title: "Error",
+              message: "Error de comunicación con el servidor",
+              position: "bottom",
+            },
+            "float",
+          );
+        },
+      });
+    });
+  }
   /**
    * Metodo que se encarga de descargar el comprobante en formato PNG
    */
-  const dowloadPNG = () => {
-    $("#download-png").click(() => {
-      // console.log("descargar png");
-      html2canvas(document.getElementById("voucherContainer"), {
-        scale: 2, // más resolución
-        useCORS: true, // por si usas imágenes externas
-      })
-        .then((canvas) => {
-          // Convertir el canvas a dataURL (PNG)
-          const imgData = canvas.toDataURL("image/png");
+  /* Generar captura completa clonando el nodo en el body para evitar recorte por scroll */
+  const exportToPng = (elementId, filename) => {
+    const originalElement = document.getElementById(elementId);
+    if (!originalElement) return;
 
-          // Crear un enlace "fantasma" para descargar
-          const link = document.createElement("a");
-          link.href = imgData;
-          link.download = "Comprobante.png";
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        })
-        .catch((error) => {
-          console.error("Error al exportar PNG:", error);
-        });
+    // 1. Clonar el elemento
+    const clone = originalElement.cloneNode(true);
+
+    // 2. Estilizar el clon para que se muestre completo
+    Object.assign(clone.style, {
+      position: "fixed",
+      top: "-9999px",
+      left: "-9999px",
+      width: originalElement.offsetWidth + "px", // Mismo ancho que el original
+      height: "auto", // Altura automática para mostrar todo el contenido
+      zIndex: "-1",
+      overflow: "visible", // Asegurar que no haya scroll oculto
     });
+
+    // 3. Insertar el clon en el documento
+    document.body.appendChild(clone);
+
+    // 4. Generar el canvas desde el clon
+    html2canvas(clone, {
+      scale: 2, // Mejor resolución
+      useCORS: true,
+      scrollY: -window.scrollY, // Ajuste para evitar desplazamiento
+    })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((err) => {
+        console.error("Error exporting PNG:", err);
+      })
+      .finally(() => {
+        // 5. Eliminar el clon
+        document.body.removeChild(clone);
+      });
+  };
+
+  const dowloadPNG = () => {
+    // Comprobante de Venta (Ingresos)
+    const btnDownloadPng = document.getElementById("download-png");
+    if (btnDownloadPng) {
+      // Remover listeners anteriores para evitar múltiples descargas
+      const newBtn = btnDownloadPng.cloneNode(true);
+      btnDownloadPng.parentNode.replaceChild(newBtn, btnDownloadPng);
+
+      newBtn.addEventListener("click", () => {
+        exportToPng("voucherContainer", "Comprobante_Venta.png");
+      });
+    }
+
+    // Comprobante de Gasto (Egresos)
+    const btnDownloadPngExpense = document.getElementById(
+      "download-expense-png",
+    );
+    if (btnDownloadPngExpense) {
+      // Remover listeners anteriores
+      const newBtnExpense = btnDownloadPngExpense.cloneNode(true);
+      btnDownloadPngExpense.parentNode.replaceChild(
+        newBtnExpense,
+        btnDownloadPngExpense,
+      );
+
+      newBtnExpense.addEventListener("click", () => {
+        exportToPng("expenseContainer", "Comprobante_Egreso.png");
+      });
+    }
   };
   /**
    * Metodo que se encarga de cargar los registros de movimientos de ingresos o egresos
    */
-  function loadBtnIncomeTable() {
+  function loadBtnMovementsTable() {
     if (document.querySelectorAll(".btn-movement").length === 0) return;
     const dataBtnIncome = document.querySelectorAll(".btn-movement");
     dataBtnIncome.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
+      btn.addEventListener("input", (e) => {
         e.preventDefault();
         //obtenemos el atributo data-type
         const type = btn.getAttribute("value");
@@ -627,7 +762,7 @@
             message: "Cargando registros de " + typeTranslate + "...",
             icon: "info",
           },
-          "float"
+          "float",
         );
         table.ajax.reload();
         loadTotals();
