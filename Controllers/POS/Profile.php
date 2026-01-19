@@ -83,7 +83,8 @@ class Profile extends Controllers
 
         $email   = !empty($profileData['email']) ? decryption($profileData['email']) : ($sessionData['email'] ?? '');
         $user    = !empty($profileData['user']) ? decryption($profileData['user']) : ($sessionData['user'] ?? '');
-        $phone   = trim(($profileData['telephone_prefix'] ?? '') . ' ' . ($profileData['phone_number'] ?? ''));
+        $prefix  = $profileData['telephone_prefix'] ?? '';
+        $phone   = $profileData['phone_number'] ?? '';
 
         return [
             'fullname'      => trim(($profileData['names'] ?? '') . ' ' . ($profileData['lastname'] ?? '')),
@@ -91,7 +92,9 @@ class Profile extends Controllers
             'user'          => $user,
             'status'        => $profileData['user_status'] ?? ($profileData['people_status'] ?? ''),
             'planExpiresAt' => $profileData['plan_expiration_date'] ?? null,
+            'prefix'        => $prefix,
             'phone'         => $phone,
+            'phone_full' => trim($prefix . ' ' . $phone),
             'country'       => $profileData['country'] ?? null,
             'registeredAt'  => $profileData['user_registered_at'] ?? null,
             'updatedAt'     => $profileData['user_updated_at'] ?? null,
@@ -210,7 +213,7 @@ class Profile extends Controllers
         return $formatted;
     }
     /**
-     * Actualiza el perfil del usuario autenticado (6 campos del formulario).
+     * Actualiza el perfil del usuario autenticado (campos del formulario).
      */
     public function updateProfile(): void
     {
@@ -225,53 +228,58 @@ class Profile extends Controllers
             $this->responseError("No se pudo identificar al usuario.");
         }
 
-        // Solo los 6 campos del formulario
-        $fullname  = trim($_POST['fullname'] ?? '');
-        $username  = trim($_POST['username'] ?? '');
+        $names     = trim($_POST['names'] ?? '');
+        $lastnames = trim($_POST['lastnames'] ?? '');
         $email     = trim($_POST['email'] ?? '');
         $phone     = trim($_POST['phone'] ?? '');
-        $country   = trim($_POST['country'] ?? '');
         $birthDate = $_POST['birthDate'] ?? null;
+        $username  = trim($_POST['username'] ?? '');
 
-        if ($fullname === '' || $username === '' || $email === '') {
-            $this->responseError('Nombre completo, usuario y correo son obligatorios.');
+        if ($names === '' || $lastnames === '' || $email === '' || $username === '') {
+            $this->responseError('Nombres, apellidos, usuario y correo son obligatorios.');
         }
 
         $dataUpdate = [
-            'fullname'  => $fullname,
-            'username'  => $username,
+            'names'     => $names,
+            'lastnames' => $lastnames,
             'email'     => $email,
             'phone'     => $phone,
-            'country'   => $country,
             'birthDate' => $birthDate,
+            'username'  => $username,
         ];
 
         $requestUpdate = $this->model->updateUserProfile($userAppId, $dataUpdate);
 
         if ($requestUpdate) {
-            // Actualizar todos los campos relevantes en la sesión para reflejar los cambios inmediatamente
-            $_SESSION[$this->nameVarLoginInfo]['name']      = $fullname;
+            // Actualizar sesión
+            $_SESSION[$this->nameVarLoginInfo]['name']      = $names;
+            $_SESSION[$this->nameVarLoginInfo]['lastname']  = $lastnames;
             $_SESSION[$this->nameVarLoginInfo]['user']      = $username;
             $_SESSION[$this->nameVarLoginInfo]['email']     = $email;
             $_SESSION[$this->nameVarLoginInfo]['phone']     = $phone;
-            $_SESSION[$this->nameVarLoginInfo]['country']   = $country;
             $_SESSION[$this->nameVarLoginInfo]['birthDate'] = $birthDate;
 
-            // Preparar respuesta con los datos actualizados para que el frontend pueda actualizar la vista
-            // CAMBIO REALIZADO: Se incluyen los datos actualizados en la respuesta para actualizar la vista sin recargar la página
+            // Traer country/prefix reales de BD para que no se pierdan en la vista
+            $profileData = $this->model->selectUserProfile($userAppId) ?? [];
+            $prefix  = $profileData['telephone_prefix'] ?? '';
+            $country = $profileData['country'] ?? null;
+            $phoneDb = $profileData['phone_number'] ?? $phone;
+
             $data = [
-                'title'     => 'Información actualizada',
-                'message'   => 'Perfil actualizado correctamente.',
-                'type'      => 'success',
-                'icon'      => 'success',
-                'status'    => true,
+                'title'   => 'Información actualizada',
+                'message' => 'Perfil actualizado correctamente.',
+                'type'    => 'success',
+                'icon'    => 'success',
+                'status'  => true,
                 'updatedData' => [
-                    'fullname'  => $fullname,
-                    'username'  => $username,
-                    'email'     => $email,
-                    'phone'     => $phone,
-                    'country'   => $country,
-                    'birthDate' => $birthDate
+                    'fullname'   => $names . ' ' . $lastnames,
+                    'username'   => $username,
+                    'email'      => $email,
+                    'phone'      => $phoneDb,
+                    'phone_full' => trim($prefix . ' ' . $phoneDb),
+                    'prefix'     => $prefix,
+                    'country'    => $country,
+                    'birthDate'  => $birthDate
                 ]
             ];
 
@@ -291,5 +299,49 @@ class Profile extends Controllers
         ];
 
         toJson($data);
+    }
+
+
+    public function updatePassword(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        $userInfo  = $_SESSION[$this->nameVarLoginInfo] ?? [];
+        $userAppId = (int) ($userInfo['idUser'] ?? 0);
+
+        if ($userAppId <= 0) {
+            $this->responseError("No se pudo identificar al usuario.");
+        }
+
+        $currentPassword = trim((string) ($_POST['currentPassword'] ?? ''));
+        $newPassword     = trim((string) ($_POST['newPassword'] ?? ''));
+
+        if ($currentPassword === '' || $newPassword === '') {
+            $this->responseError('Completa la contraseña actual y la nueva contraseña.');
+        }
+
+        if (strlen($newPassword) < 8) {
+            $this->responseError('La nueva contraseña debe tener al menos 8 caracteres.');
+        }
+
+        if ($currentPassword === $newPassword) {
+            $this->responseError('La nueva contraseña no puede ser igual a la actual.');
+        }
+
+        $ok = $this->model->changeUserPassword($userAppId, $currentPassword, $newPassword);
+
+        if ($ok) {
+            toJson([
+                'title'  => 'Contraseña actualizada',
+                'message' => 'Tu contraseña se actualizó correctamente.',
+                'type'   => 'success',
+                'icon'   => 'success',
+                'status' => true,
+            ]);
+        }
+
+        $this->responseError('La contraseña actual no es correcta o no se pudo actualizar.');
     }
 }
