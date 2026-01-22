@@ -30,7 +30,12 @@ export class Boxmanagement {
       ajax: { url: `${base_url}/pos/Boxmanagement/getBoxes`, dataSrc: "" },
       columns: [
         { data: "cont", className: "text-center" },
-        { data: "actions", orderable: false, searchable: false, className: "text-center" },
+        {
+          data: "actions",
+          orderable: false,
+          searchable: false,
+          className: "text-center",
+        },
         { data: "name", className: "text-center" },
         { data: "description", className: "text-center" },
         {
@@ -49,12 +54,46 @@ export class Boxmanagement {
         },
         { data: "registrationDate", className: "text-center" },
       ],
+      dom: "lBfrtip",
+      buttons: [
+        {
+          extend: "copyHtml5",
+          text: "<i class='bi bi-clipboard'></i> Copiar",
+          className: "btn btn-sm btn-outline-secondary my-2",
+          exportOptions: { columns: [0, 2, 3, 4, 5] },
+        },
+        {
+          extend: "excelHtml5",
+          text: "<i class='bi bi-file-earmark-excel'></i> Excel",
+          className: "btn btn-sm btn-outline-success my-2",
+          title: "Cajas",
+          exportOptions: { columns: [0, 2, 3, 4, 5] },
+        },
+        {
+          extend: "csvHtml5",
+          text: "<i class='bi bi-filetype-csv'></i> CSV",
+          className: "btn btn-sm btn-outline-info my-2",
+          title: "Cajas",
+          exportOptions: { columns: [0, 2, 3, 4, 5] },
+        },
+        {
+          extend: "pdfHtml5",
+          text: "<i class='bi bi-filetype-pdf'></i> PDF",
+          className: "btn btn-sm btn-outline-danger my-2",
+          orientation: "portrait",
+          pageSize: "A4",
+          title: "Cajas",
+          exportOptions: { columns: [0, 2, 3, 4, 5] },
+        },
+      ],
       responsive: true,
       processing: true,
       destroy: true,
       iDisplayLength: 10,
       order: [[0, "asc"]],
-      language: { url: `${base_url}/Assets/js/libraries/POS/Spanish-datatables.json` },
+      language: {
+        url: `${base_url}/Assets/js/libraries/POS/Spanish-datatables.json`,
+      },
       drawCallback: () => {
         document
           .querySelectorAll(".dataTables_paginate > .pagination")
@@ -79,7 +118,8 @@ export class Boxmanagement {
             message: data.message || "",
           });
 
-          if (data.url) setTimeout(() => (window.location.href = data.url), 1000);
+          if (data.url)
+            setTimeout(() => (window.location.href = data.url), 1000);
 
           if (data.status) {
             $("#formBox")[0].reset();
@@ -97,7 +137,7 @@ export class Boxmanagement {
     });
   };
 
-  //Update: nombre y descripción 
+  //Update: nombre y descripción
   #update = () => {
     $("#formUpdateBox").on("submit", (e) => {
       e.preventDefault();
@@ -114,7 +154,8 @@ export class Boxmanagement {
             message: data.message || "",
           });
 
-          if (data.url) setTimeout(() => (window.location.href = data.url), 1000);
+          if (data.url)
+            setTimeout(() => (window.location.href = data.url), 1000);
 
           if (data.status) {
             $("#modalUpdateBox").modal("hide");
@@ -232,7 +273,8 @@ export class Boxmanagement {
                 title: res.title || "Error",
                 message: res.message || "No fue posible obtener la caja.",
               });
-              if (res.url) setTimeout(() => (window.location.href = res.url), 1000);
+              if (res.url)
+                setTimeout(() => (window.location.href = res.url), 1000);
               return;
             }
 
@@ -267,11 +309,12 @@ export class Boxmanagement {
           return showAlert({
             icon: "error",
             title: "Token ausente",
-            message: "No fue posible validar la solicitud. Actualiza la página e inténtalo nuevamente.",
+            message:
+              "No fue posible validar la solicitud. Actualiza la página e inténtalo nuevamente.",
           });
         }
 
-        //Confirmación SOLO para eliminar 
+        //Confirmación SOLO para eliminar
         Swal.fire({
           title: "¿Eliminar caja?",
           html: `Se procesará la eliminación de <strong>${name}</strong>.`,

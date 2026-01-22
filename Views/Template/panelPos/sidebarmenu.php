@@ -83,13 +83,13 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                 <div class="list-group list-group-flush">
                     <?php
                     if ($data_menu(8) && $data_menu(8)['update'] === '1'):
-                        ?>
+                    ?>
                         <a href="<?= base_url() ?>/pos/business/configuration"
                             class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0">
                             <i class="bi bi-gear"></i>
                             <span>Configuraciones</span>
                         </a>
-                        <?php
+                    <?php
                     endif;
                     ?>
                     <?php
@@ -153,7 +153,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         class="app-menu__label"><?= $data_menu(6) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?>
                         <?= $data_menu(6) ? $data_menu(6)['Interface'] : 'Roles' ?></span></a></li>
             <li><a class="app-menu__item <?= $data['page_id'] === 13 ? 'active' : '' ?>"
-                    href="<?= $data_menu(13) ? base_url() . '/pos/undefined' : $linkestadointerfaz ?>"><i
+                    href="<?= $data_menu(13) ? base_url() . '/pos/boxmanagement' : $linkestadointerfaz ?>"><i
                         class="app-menu__icon bi bi-inboxes"></i><span class="app-menu__label">
                         <?= $data_menu(13) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?>
                         <?= $data_menu(13) ? $data_menu(13)['Interface'] : 'Gestionar Cajas' ?>
@@ -258,7 +258,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                 <li>
                     <a <?= $data_menu_employee(13) ? '' : 'style="cursor: no-drop;"' ?>
                         class="app-menu__item <?= $data['page_id'] === 13 ? 'active' : '' ?>"
-                        href="<?= $data_menu_employee(13) ? base_url() . '/pos/undefined' : base_url() . '/pos/Errors/no_permisos' ?>">
+                        href="<?= $data_menu_employee(13) ? base_url() . '/pos/boxmanagement' : base_url() . '/pos/Errors/no_permisos' ?>">
                         <i class="app-menu__icon bi bi-inboxes"></i>
                         <span
                             class="app-menu__label"><?= $data_menu_employee(13) ? $data_menu_employee(13)['Interface'] : 'Gestionar Cajas' ?></span>

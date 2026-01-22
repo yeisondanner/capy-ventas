@@ -33,7 +33,7 @@ class LogOut extends Controllers
             header("Location: " . $urlReturn);
             die();
         }
-        echo "Session expirada";
+        header("Location: " . base_url() . "/errors/sessionexpired");
         die();
     }
 }

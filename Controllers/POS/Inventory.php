@@ -469,12 +469,14 @@ class Inventory extends Controllers
         }
         //consultamos si el producto no esta relacionado con una venta
         $sale = $this->model->selectSaleProduct($productId);
+        $files = $this->model->selectProductFiles($productId);
         if (!empty($sale)) {
+            $deleted = $this->model->updateProductStatus($productId, 'Inactivo');
+        } else if ($files) {
             $deleted = $this->model->updateProductStatus($productId, 'Inactivo');
         } else {
             $deleted = $this->model->deleteProduct($productId);
         }
-
 
         if (!$deleted) {
             $this->responseError('No fue posible eliminar el producto, inténtalo nuevamente.');

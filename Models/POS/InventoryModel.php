@@ -1,6 +1,7 @@
 <?php
 class InventoryModel extends Mysql
 {
+    private int $idProduct;
     public function __construct()
     {
         parent::__construct();
@@ -166,7 +167,7 @@ class InventoryModel extends Mysql
      */
     public function deleteProduct(int $productId): bool
     {
-        $sql = 'DELETE FROM product WHERE idProduct = ? LIMIT 1;';
+        $sql = 'DELETE FROM product WHERE idProduct = ?;';
         return (bool) $this->delete($sql, [$productId]);
     }
 
@@ -579,6 +580,20 @@ class InventoryModel extends Mysql
 
         $result = $this->select_all($sql, [$idproduct]);
 
+        return $result;
+    }
+    /**
+     * Metodo que se encarga de obtener las imagenes asociadas al producto
+     * @param int $id
+     * @return array
+     */
+    public function selectProductFiles(int $id)
+    {
+        $this->idProduct = $id;
+        $sql = <<<SQL
+                SELECT*FROM product_file AS pf WHERE pf.product_id=?;
+        SQL;
+        $result = $this->select_all($sql, [$this->idProduct]);
         return $result;
     }
 }

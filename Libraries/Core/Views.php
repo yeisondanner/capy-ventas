@@ -17,8 +17,10 @@ class Views
 			} else {
 				$view = "Views/App/POS/" . $controller . "/" . $view . ".php";
 			}
+		} else if ($type === "out") {
+			$view = "Views/App/" . $controller . "/" . $view . ".php";
 		} else {
-			//aqui debe mostrar un vista de error
+			echo "Error: Tipo de vista no encontrado";
 			die();
 		}
 		require_once($view);

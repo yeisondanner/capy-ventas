@@ -53,7 +53,7 @@ class BoxManagement extends Controllers
                 ? (int) validate_permission_app(13, "d", false)['delete']
                 : 0;
 
-           
+
             $isCajaPrincipal = (mb_strtolower(trim($boxNameRaw), 'UTF-8') === mb_strtolower('Caja Principal', 'UTF-8'));
 
             if ($isCajaPrincipal) {
