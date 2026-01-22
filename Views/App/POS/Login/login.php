@@ -25,17 +25,11 @@
     </section>
 
     <section class="login-content">
-        <!--        <div class="logo">-->
-        <!--            <h1>CapyVentas</h1>-->
-        <!--        </div>-->
-
-        <div class="login-box">
+        <div class="login-box shadow">
             <form class="login-form" id="formLogin" autocomplete="off">
                 <div class="login-head">
                     <img src="<?= media() ?>/capysm.png" alt="" class="img-fluid rounded-circle" style="width: 50px; height: 50px;">
                     <h3>
-                        <!--                    <i class="bi bi-person me-2"></i>-->
-
                         Capy Ventas
                     </h3>
                 </div>

@@ -1974,7 +1974,9 @@ function saveSessionVerification($correo, $codigo)
     $_SESSION['verificacion_tiempo'] = time(); // Timestamp actual
     $_SESSION['verificacion_status'] = false; // Timestamp actual
 }
-
+/**
+ * Valida el codigo de verificacion
+ */
 function validateVerificationCode($codigoInput)
 {
     if (session_status() === PHP_SESSION_NONE) {

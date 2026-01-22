@@ -38,7 +38,6 @@
                                     <th>Número de documento</th>
                                     <th>Teléfono</th>
                                     <th>Correo</th>
-                                    <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

@@ -129,7 +129,7 @@ class Movements extends Controllers
                         title="Ver reporte"
                         type="button"
                         data-id="$id">
-                        <i class="bi bi-clipboard2-data-fill"></i>
+                        <i class="bi bi-file-earmark-text"></i>
                     </button>
                 </div>
         HTML;

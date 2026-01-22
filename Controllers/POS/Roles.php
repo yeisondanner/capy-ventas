@@ -85,7 +85,7 @@ class Roles extends Controllers
             $roles[$key]['actions'] = '<div class="btn-group btn-group-sm" role="group">'
                 . '<button class="btn btn-sm btn-outline-secondary report_role" data-id="' . (int) $role['idRoleApp'] . '"'
                 . ' data-name="' . $name . '" data-description="' . $role['description'] . '" data-status="' . $status . '"'
-                . ' data-updated="' . $updatedAt . '"><i class="bi bi-eye"></i></button>'
+                . ' data-updated="' . $updatedAt . '"><i class="bi bi-file-earmark-text"></i></button>'
                 . $btnupdate
                 . $btnDelete
                 . '</div>';

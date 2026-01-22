@@ -118,7 +118,7 @@ class Customers extends Controllers
             $actions  = '<div class="btn-group btn-group-sm" role="group">';
             $actions .= '<button class="btn btn-sm btn-outline-secondary view-customer" data-id="'
                 . (int) $customer['idCustomer'] . '" title="Ver detalles del cliente">'
-                . '<i class="bi bi-eye"></i></button>';
+                . '<i class="bi bi-file-earmark-text"></i></button>';
 
             if (!$isProtected) {
                 if ($validationUpdate === 1) {
