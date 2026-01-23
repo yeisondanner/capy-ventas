@@ -55,7 +55,7 @@ class Sales extends Controllers
             'page_view'        => 'sales',
             'page_js_css'      => 'sales',
             'taxname'          => $_SESSION[$this->nameVarBusiness]['taxname'] ?? '',
-            'tax'         => $_SESSION[$this->nameVarBusiness]['tax'] ?? '',
+            'tax'              => $_SESSION[$this->nameVarBusiness]['tax'] ?? '',
         ];
 
         $this->views->getView($this, 'sales', $data, 'POS');
@@ -83,7 +83,7 @@ class Sales extends Controllers
      */
     public function getPopularCategories(): void
     {
-        validate_permission_app(1, "r");
+        validate_permission_app(1, "r", false, false, false);
         $businessId = $this->getBusinessId();
         $categories = $this->model->selectPopularCategories($businessId, 5);
         if (!is_array($categories) || count($categories) === 0) {
@@ -151,7 +151,7 @@ class Sales extends Controllers
     public function addCart(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(1, "c", false)['status']) ? toJson(validate_permission_app(1, "c", false)) : '';
+        validate_permission_app(1, "c", false, false, false);
         //VALIDACION DE METODO POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
@@ -253,7 +253,7 @@ class Sales extends Controllers
     public function getCart(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(1, "r", false)['status']) ? toJson(validate_permission_app(1, "r", false)) : '';
+        validate_permission_app(1, "r", false, false, false);
         $cart = $this->normalizeCart();
         $subtotal = $this->calculateSubtotal($cart);
         toJson([
@@ -270,7 +270,7 @@ class Sales extends Controllers
      */
     public function updateCartItem(): void
     {
-        validate_permission_app(1, "u");
+        validate_permission_app(1, "u", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -345,7 +345,7 @@ class Sales extends Controllers
     public function deleteCartItem(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(1, "d", false)['status']) ? toJson(validate_permission_app(1, "d", false)) : '';
+        validate_permission_app(1, "d", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -379,7 +379,7 @@ class Sales extends Controllers
     public function clearCart(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(1, "d", false)['status']) ? toJson(validate_permission_app(1, "d", false)) : '';
+        validate_permission_app(1, "d", false, false, false);
         if (isset($_SESSION[$this->nameVarCart])) {
             unset($_SESSION[$this->nameVarCart]);
         }
@@ -400,7 +400,7 @@ class Sales extends Controllers
      */
     private function getBusinessId(): int
     {
-        validate_permission_app(1, "r");
+        validate_permission_app(1, "r", false, false, false);
         if (!isset($_SESSION[$this->nameVarBusiness]['idBusiness'])) {
             $this->responseError('No se encontró el negocio activo en la sesión.');
         }
@@ -512,7 +512,7 @@ class Sales extends Controllers
     public function finalizeSale(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(1, "c", false)['status']) ? toJson(validate_permission_app(1, "c", false)) : '';
+        toJson(validate_permission_app(1, "c", false));
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
@@ -714,7 +714,7 @@ class Sales extends Controllers
     public function updateVoucherName(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(1, "u", false)['status']) ? toJson(validate_permission_app(1, "u", false)) : '';
+        toJson(validate_permission_app(1, "u", false));
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -759,7 +759,7 @@ class Sales extends Controllers
      */
     public function getPaymentMethods(): void
     {
-        validate_permission_app(1, "r");
+        validate_permission_app(1, "r", false, false, false);
         $paymentMethods = $this->model->selectPaymentMethods();
         toJson(['status' => true, 'payment_methods' => $paymentMethods]);
     }

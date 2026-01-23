@@ -49,7 +49,7 @@ class Boxhistory extends Controllers
      */
     public function loadBoxHistory()
     {
-        (!validate_permission_app(12, "r", false)['status']) ? toJson(validate_permission_app(12, "r", false)) : '';
+        toJson(validate_permission_app(12, "r", false));
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -119,7 +119,7 @@ class Boxhistory extends Controllers
      */
     public function getBoxSession()
     {
-        (!validate_permission_app(12, "r", false)['status']) ? toJson(validate_permission_app(12, "r", false)) : '';
+        toJson(validate_permission_app(12, "r", false));
 
         if (!$_POST) {
             $this->responseError('Solicitud inválida.');
