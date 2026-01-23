@@ -1583,6 +1583,12 @@
           inputQty.focus();
         }, 200);
       }
+      //validamos si hay un redireccionamiento
+      if (data.url) {
+        setTimeout(() => {
+          window.location.href = data.url;
+        }, 1000);
+      }
     } catch (error) {
       showAlert({
         title: "Ocurrio un error inesperado",

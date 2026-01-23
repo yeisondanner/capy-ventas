@@ -453,7 +453,6 @@ class Sales extends Controllers
         foreach ($cart as $item) {
             $subtotal += (float) $item['price'] * (int) $item['selected'];
         }
-
         return round($subtotal, 2);
     }
 
@@ -512,7 +511,7 @@ class Sales extends Controllers
     public function finalizeSale(): void
     {
         //VALIDACION DE PERMISOS
-        toJson(validate_permission_app(1, "c", false));
+        validate_permission_app(1, "c", false, false, false);
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
