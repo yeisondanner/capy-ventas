@@ -1655,7 +1655,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
 {
     /**
      * Validamos que el usuario no sea dueño del negocio
-     * si fuere dueño del negocio tiene todos los permisos poer defecto
+     * si fuere dueño del negocio tiene todos los permisos por defecto
      * lo unico que se deberia validar es los permisos del plan nada mas
      */
     /**
@@ -1701,7 +1701,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                     'title'  => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
                     'icon'   => 'error',
-                    'url' => $no_permisos
+                    'url' => $no_permisos,
                 ];
             }
         }
@@ -1724,7 +1724,8 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                     'message' => 'No tienes permisos para realizar esta accion.',
                     'icon'   => 'error',
                     'url' => $no_permisos,
-                    'interface_status' => $result['interface_status']
+                    'interface_status' => $result['interface_status'],
+
                 ];
             }
         }
@@ -1831,6 +1832,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
      * a la seccion segun el plan
      */
     $result = $objPermission->get_permission_interface_owner($iduser, $idinterface);
+    //validacion de cuando el resultado es vacio
     if (!$result) {
         $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
 
@@ -1856,9 +1858,9 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             ];
         }
     }
+    //verificacion de cuando la interface app esta inactiva
     if ($result['ia_status'] !== 'Activo') {
         $no_permisos = base_url() . "/pos/errors/estado_interfaz";
-
         if ($redirect) {
             echo <<<HTML
                         <script>
@@ -1881,6 +1883,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             ];
         }
     }
+    //verificacion de cuando el plan de la interface app esta inactiva
     if ($result['pia_status'] !== 'Activo') {
         $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
 
@@ -1909,7 +1912,6 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
     /**
      * Validamos los permisos del crud general
      */
-
     if ((int)$result[$crudpermission[$permission]] === 0) {
         if (isset($_SESSION[$nameVarMessagePermission])) {
             unset($_SESSION[$nameVarMessagePermission]);
