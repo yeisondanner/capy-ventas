@@ -126,17 +126,16 @@ class Movements extends Controllers
      */
     protected function renderGroupButtons($data)
     {
+        $validationReport = (int) validate_permission_app(2, "r", false)['read'];
         $type = $data['type'];
         $id = $data['id'];
+        $btnReport = '';
+        if ($validationReport === 1) {
+            $btnReport = '<button class="btn btn-outline-info btn-sm  report-item-' . $type . '"' . 'title="Ver reporte"' . 'type="button"' . 'data-id="' . $id . '">' . '<i class="bi bi-file-earmark-text"></i></button>';
+        }
         return <<<HTML
                 <div class="btn-group">
-                    <button
-                        class="btn btn-outline-info btn-sm  report-item-{$type}"
-                        title="Ver reporte"
-                        type="button"
-                        data-id="$id">
-                        <i class="bi bi-file-earmark-text"></i>
-                    </button>
+                    $btnReport
                 </div>
         HTML;
     }

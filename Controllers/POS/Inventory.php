@@ -54,7 +54,7 @@ class Inventory extends Controllers
      */
     public function getProducts(): void
     {
-        validate_permission_app(3, "r");
+        validate_permission_app(3, "r", false, false, false);
         $validationUpdate = (int) validate_permission_app(3, "u", false)['update'];
         $validationDelete = (int) validate_permission_app(3, "d", false)['delete'];
         $businessId = $this->getBusinessId();
@@ -83,7 +83,9 @@ class Inventory extends Controllers
             $products[$key]['status']         = $product['status'] === 'Activo'
                 ? '<span class="badge badge-success bg-success"><i class="bi bi-check-circle"></i> Activo</span>'
                 : '<span class="badge badge-secondary bg-secondary"><i class="bi bi-slash-circle"></i> Inactivo</span>';
-
+            //definimos los botones de accion
+            $btnupdate = '';
+            $btnDelete = '';
             if ($validationUpdate === 1) {
                 $btnupdate = '<button class="btn btn-outline-primary edit-product" data-id="' . (int) $product['idProduct'] . '">'
                     . '<i class="bi bi-pencil-square"></i></button>';
@@ -113,7 +115,7 @@ class Inventory extends Controllers
     public function setProduct(): void
     {
         //VALIDACION DE PERMISOS
-        toJson(validate_permission_app(3, "c", false));
+        validate_permission_app(3, "c", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -240,7 +242,7 @@ class Inventory extends Controllers
     public function getProduct(): void
     {
         //VALIDACION DE PERMISOS
-        toJson(validate_permission_app(3, "r", false));
+        validate_permission_app(3, "r", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -300,7 +302,7 @@ class Inventory extends Controllers
     public function updateProduct(): void
     {
         //VALIDACION DE PERMISOS
-        toJson(validate_permission_app(3, "u", false));
+        validate_permission_app(3, "u", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -446,7 +448,7 @@ class Inventory extends Controllers
     public function deleteProduct(): void
     {
         //VALIDACION DE PERMISOS
-        toJson(validate_permission_app(3, "d", false));
+        validate_permission_app(3, "d", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -517,7 +519,7 @@ class Inventory extends Controllers
     public function getCategoryList(): void
     {
         //VALIDACION DE PERMISOS
-        toJson(validate_permission_app(10, "r", false));
+        validate_permission_app(10, "r", false, false, false);
         $businessId = $this->getBusinessId();
         $data       = $this->model->selectCategoryList($businessId);
         toJson([
@@ -534,7 +536,7 @@ class Inventory extends Controllers
     public function setCategory(): void
     {
         //VALIDACION DE PERMISOS
-        toJson(validate_permission_app(10, "c", false));
+        validate_permission_app(10, "c", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -578,7 +580,7 @@ class Inventory extends Controllers
     public function updateCategory(): void
     {
         //VALIDACION DE PERMISOS
-        toJson(validate_permission_app(10, "u", false));
+        validate_permission_app(10, "u", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -639,7 +641,7 @@ class Inventory extends Controllers
     public function deleteCategory(): void
     {
         //VALIDACION DE PERMISOS
-        toJson(validate_permission_app(10, "d", false));
+        validate_permission_app(10, "d", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             $this->responseError('Método de solicitud no permitido.');
         }
