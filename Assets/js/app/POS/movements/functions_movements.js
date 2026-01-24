@@ -342,6 +342,11 @@
           $("#totalSales").text(totals.total_sales);
           $("#totalExpenses").text(totals.total_expenses);
         }
+        if (res.url) {
+          setTimeout(() => {
+            window.location.href = res.url;
+          }, 1000);
+        }
       },
       error: function () {
         showAlert(
@@ -370,8 +375,7 @@
   // Función que carga la tabla con los datos
   function loadTable() {
     table = $("#table").DataTable({
-      aProcessing: true,
-      aServerSide: true,
+      processing: true,
       ajax: {
         url: base_url + "/pos/Movements/getMovements",
         data: function (d) {
@@ -396,7 +400,15 @@
           d.minDate = minDate;
           d.maxDate = maxDate;
         },
-        dataSrc: "",
+        dataSrc: function (json) {
+          if (json.url) {
+            setTimeout(() => {
+              window.location.href = json.url;
+            }, 1000);
+          }
+          // Importante: serverSide espera que los datos vengan en json.data
+          return json;
+        },
       },
       columns: [
         { data: "cont" },
@@ -476,7 +488,7 @@
           className: "text-center",
         },
       ],
-      responsive: true,
+      keyTable: true,
       processing: true,
       destroy: true,
       colReorder: true,
@@ -509,13 +521,23 @@
         data: { idVoucherHeader: idVoucher },
         success: function (res) {
           if (!res.status) {
-            alert(res.msg || "No se pudo cargar el comprobante");
+            showAlert(
+              {
+                title: res.title,
+                message: res.message || "No se pudo cargar el comprobante",
+                icon: res.icon,
+              },
+              "float",
+            );
+            if (res.url) {
+              setTimeout(() => {
+                window.location.href = res.url;
+              }, 1000);
+            }
             return;
           }
-
           const h = res.header;
           const d = res.details;
-
           // === Cabecera ===
           $("#name_bussines").text(h.name_bussines);
           $("#direction_bussines").text(h.direction_bussines);
@@ -594,13 +616,17 @@
           if (!res.status) {
             showAlert(
               {
-                icon: "error",
-                title: "Error",
-                message: res.message || "No se pudo cargar el gasto",
-                position: "bottom",
+                title: res.title,
+                message: res.message || "No se pudo cargar el comprobante",
+                icon: res.icon,
               },
               "float",
             );
+            if (res.url) {
+              setTimeout(() => {
+                window.location.href = res.url;
+              }, 1000);
+            }
             return;
           }
 

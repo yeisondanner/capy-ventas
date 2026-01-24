@@ -163,7 +163,7 @@ import ReadBox from "./read_box.js";
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
     var yearStart = new Date(Date.UTC(d.getFullYear(), 0, 1));
     var weekNo = Math.ceil(
-      ((d - yearStart) / 86400000 + yearStart.getUTCDay() + 1) / 7
+      ((d - yearStart) / 86400000 + yearStart.getUTCDay() + 1) / 7,
     );
     return weekNo;
   }
@@ -201,7 +201,19 @@ import ReadBox from "./read_box.js";
         data: { idBoxSession: idBoxSession },
         success: function (res) {
           if (!res.status) {
-            alert(res.msg || "No se pudo cargar el reporte");
+            showAlert(
+              {
+                title: res.title,
+                message: res.message || "No se pudo cargar el comprobante",
+                icon: res.icon,
+              },
+              "float",
+            );
+            if (res.url) {
+              setTimeout(() => {
+                window.location.href = res.url;
+              }, 1000);
+            }
             return;
           }
 
@@ -407,7 +419,7 @@ import ReadBox from "./read_box.js";
             });
           } else {
             countsContainer.append(
-              '<div class="text-center text-muted small p-3">No hay historial disponible</div>'
+              '<div class="text-center text-muted small p-3">No hay historial disponible</div>',
             );
           }
 
@@ -446,8 +458,8 @@ import ReadBox from "./read_box.js";
                      </div>
                      <div class="text-end">
                         <span class="fw-bold small ${color}">${getcurrency} ${
-                mov.amount
-              }</span>
+                          mov.amount
+                        }</span>
                         <div class="text-muted" style="font-size: 0.7rem;">${
                           mov.created_at
                         }</div>
