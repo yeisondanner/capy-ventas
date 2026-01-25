@@ -489,7 +489,6 @@
         },
       ],
       keyTable: true,
-      processing: true,
       destroy: true,
       colReorder: true,
       stateSave: true,

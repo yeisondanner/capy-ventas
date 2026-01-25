@@ -934,7 +934,6 @@
         { targets: 1, className: "text-center" },
       ],
       keyTable: true,
-      processing: true,
       destroy: true,
       colReorder: true,
       stateSave: true,

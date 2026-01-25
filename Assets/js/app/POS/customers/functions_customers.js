@@ -612,18 +612,42 @@
    */
   function initCustomersTable() {
     customersTable = $("#customerTable").DataTable({
+      processing: true,
       ajax: {
         url: `${base_url}/pos/Customers/getCustomers`,
-        dataSrc: "",
+        dataSrc: function (json) {
+          if (json.url) {
+            setTimeout(() => {
+              window.location.href = json.url;
+            }, 1000);
+          }
+          // Importante: serverSide espera que los datos vengan en json.data
+          return json;
+        },
       },
       columns: [
         { data: "cont" },
         { data: "actions", orderable: false, searchable: false },
         { data: "fullname" },
-        { data: "document_type" },
+        {
+          data: "document_type",
+          className: "text-center",
+        },
         { data: "document_number" },
-        { data: "phone_number" },
-        { data: "email" },
+        {
+          data: "phone_number",
+          render: function (data, type, row) {
+            return (
+              `<i class="bi bi-telephone text-success"></i> ${data}` || "-"
+            );
+          },
+        },
+        {
+          data: "email",
+          render: function (data, type, row) {
+            return `<i class="bi bi-envelope text-primary"></i> ${data}` || "-";
+          },
+        },
       ],
       dom: "lBfrtip",
       buttons: [
@@ -662,8 +686,7 @@
         { targets: 1, className: "text-center" },
         { targets: [4, 5, 6], className: "text-nowrap" },
       ],
-      responsive: true,
-      processing: true,
+      keyTable: true,
       destroy: true,
       colReorder: true,
       stateSave: true,
