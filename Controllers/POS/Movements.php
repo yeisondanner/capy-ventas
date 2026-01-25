@@ -61,7 +61,7 @@ class Movements extends Controllers
      */
     public function getMovements(): void
     {
-        validate_permission_app(2, "r");
+        validate_permission_app(2, "r", false, false, false);
         // ID del negocio desde la sesión
         $businessId = $this->getBusinessId();
         // Filtros de fecha
@@ -118,19 +118,24 @@ class Movements extends Controllers
 
         toJson($arrData);
     }
+    /**
+     * Renderiza los botones de acción para cada fila de la tabla.
+     *
+     * @param array $data Datos de la fila.
+     * @return string HTML con los botones de acción.
+     */
     protected function renderGroupButtons($data)
     {
+        $validationReport = (int) validate_permission_app(2, "r", false)['read'];
         $type = $data['type'];
         $id = $data['id'];
+        $btnReport = '';
+        if ($validationReport === 1) {
+            $btnReport = '<button class="btn btn-outline-info btn-sm  report-item-' . $type . '"' . 'title="Ver reporte"' . 'type="button"' . 'data-id="' . $id . '">' . '<i class="bi bi-file-earmark-text"></i></button>';
+        }
         return <<<HTML
                 <div class="btn-group">
-                    <button
-                        class="btn btn-outline-info btn-sm  report-item-{$type}"
-                        title="Ver reporte"
-                        type="button"
-                        data-id="$id">
-                        <i class="bi bi-clipboard2-data-fill"></i>
-                    </button>
+                    $btnReport
                 </div>
         HTML;
     }
@@ -142,6 +147,8 @@ class Movements extends Controllers
      */
     public function getVoucher(): void
     {
+        validate_permission_app(2, "r", false, false, false);
+
         if (!$_POST) {
             $this->responseError('Solicitud inválida.');
         }
@@ -221,6 +228,8 @@ class Movements extends Controllers
      */
     public function getExpense(): void
     {
+        validate_permission_app(2, "r", false, false, false);
+
         if (!$_POST) {
             $this->responseError('Solicitud inválida.');
         }
@@ -274,8 +283,8 @@ class Movements extends Controllers
      */
     public function getTotals(): void
     {
+        validate_permission_app(2, "r", false, false, false);
         $businessId = $this->getBusinessId();
-
         // Filtros de fecha
         $minDate = (isset($_GET["minDate"]) && !empty($_GET["minDate"])) ? strClean($_GET['minDate']) : null;
         $maxDate = (isset($_GET["maxDate"]) && !empty($_GET["maxDate"])) ? strClean($_GET['maxDate']) : null;

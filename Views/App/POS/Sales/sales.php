@@ -107,8 +107,8 @@ headerPos($data); ?>
                                         class="btn btn-outline-secondary w-50 btn-nav btn-nav-small">
                                         <i class="bi bi-arrow-left-circle me-1"></i> Productos
                                     </button>
-                                    <button id="btnToStep3" class="btn btn-success w-50 btn-nav btn-nav-small">
-                                        Cobrar <i class="bi bi-arrow-right-circle ms-1"></i>
+                                    <button id="btnToStep3" class="btn btn-success w-50 btn-nav btn-nav">
+                                        Pagar <i class="bi bi-arrow-right-circle ms-1"></i>
                                     </button>
                                 </div>
 
@@ -209,7 +209,7 @@ headerPos($data); ?>
                             <div class="mt-3 d-lg-none d-flex justify-content-between gap-2">
                                 <button id="btnBackToStep2"
                                     class="btn btn-outline-secondary w-50 btn-nav btn-nav-small">
-                                    <i class="bi bi-arrow-left-circle me-1"></i> Atras: Canasta
+                                    <i class="bi bi-arrow-left-circle me-1"></i> Canasta
                                 </button>
                                 <!-- Botón de cobrar en móvil -->
                                 <button class="btn btn-success w-50 btn-cobrar btn-nav">
@@ -218,11 +218,11 @@ headerPos($data); ?>
                             </div>
 
                             <!-- Botón grande de cobro y navegación para pantallas grandes -->
-                            <div class="mt-3 d-none d-lg-flex gap-2">
-                                <button id="btnDesktopBackToStep2" class="btn btn-outline-secondary w-50 btn-nav">
+                            <div class="mt-3 d-none d-lg-flex justify-content-between gap-2">
+                                <button id="btnDesktopBackToStep2" class="btn btn-outline-secondary btn-nav">
                                     <i class="bi bi-arrow-left-circle me-1"></i> Atras:Canasta
                                 </button>
-                                <button class="btn btn-success w-50 btn-cobrar btn-nav">
+                                <button class="btn btn-success btn-cobrar btn-nav">
                                     <i class="bi bi-cash-stack me-1"></i> Cobrar
                                 </button>
                             </div>

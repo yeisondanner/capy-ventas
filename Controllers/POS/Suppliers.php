@@ -109,7 +109,7 @@ class Suppliers extends Controllers
             $actions  = '<div class="btn-group btn-group-sm" role="group">';
             $actions .= '<button class="btn btn-outline-secondary view-supplier" data-id="'
                 . (int) $supplier['idSupplier'] . '" title="Ver detalles del proveedor">'
-                . '<i class="bi bi-eye"></i></button>';
+                . '<i class="bi bi-file-earmark-text"></i></button>';
 
             if (!$isProtected) {
                 if ($validationUpdate === 1) {

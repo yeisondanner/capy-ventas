@@ -18,6 +18,7 @@ export default class ReadBox {
     const filterDate = this.#filterDate.value;
     //cargamos la tabla
     this.table.DataTable({
+      responsive: true,
       ajax: {
         url: `${base_url}/pos/Boxhistory/loadBoxHistory`,
         data: function (d) {
@@ -26,7 +27,15 @@ export default class ReadBox {
           d.maxDate = maxDate;
           d.filterDate = filterDate;
         },
-        dataSrc: "",
+        dataSrc: function (json) {
+          if (json.url) {
+            setTimeout(() => {
+              window.location.href = json.url;
+            }, 1000);
+          }
+          // Importante: serverSide espera que los datos vengan en json.data
+          return json;
+        },
       },
       columns: [
         { data: "cont" },
@@ -113,7 +122,6 @@ export default class ReadBox {
           exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
         },
       ],
-      responsive: true,
       keyTable: true,
       processing: true,
       destroy: true,
@@ -178,7 +186,7 @@ export default class ReadBox {
             const endDate = new Date(
               today.getFullYear(),
               today.getMonth() + 1,
-              0
+              0,
             ).getDate();
             minDate = startDate;
             maxDate =

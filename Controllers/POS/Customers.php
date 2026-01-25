@@ -61,12 +61,12 @@ class Customers extends Controllers
      */
     public function getCustomers(): void
     {
-        validate_permission_app(4, "r");
+        validate_permission_app(4, "r", false, false, false);
         $businessId = $this->getBusinessId();
         $customers  = $this->model->selectCustomers($businessId);
         $counter    = 1;
-        $validationUpdate = (validate_permission_app(4, "u", false)) ? (int) validate_permission_app(4, "u", false)['update'] : 0;
-        $validationDelete = (validate_permission_app(4, "d", false)) ? (int) validate_permission_app(4, "d", false)['delete'] : 0;
+        $validationUpdate = (int) validate_permission_app(4, "u", false)['update'];
+        $validationDelete = (int) validate_permission_app(4, "d", false)['delete'];
         foreach ($customers as $key => $customer) {
             $rawName          = (string) ($customer['fullname'] ?? '');
             $rawDocumentType  = (string) ($customer['document_type'] ?? '');
@@ -118,7 +118,7 @@ class Customers extends Controllers
             $actions  = '<div class="btn-group btn-group-sm" role="group">';
             $actions .= '<button class="btn btn-sm btn-outline-secondary view-customer" data-id="'
                 . (int) $customer['idCustomer'] . '" title="Ver detalles del cliente">'
-                . '<i class="bi bi-eye"></i></button>';
+                . '<i class="bi bi-file-earmark-text"></i></button>';
 
             if (!$isProtected) {
                 if ($validationUpdate === 1) {
@@ -150,7 +150,7 @@ class Customers extends Controllers
     public function setCustomer(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(4, "c", false)['status']) ? toJson(validate_permission_app(4, "c", false)) : '';
+        validate_permission_app(4, "c", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -177,6 +177,23 @@ class Customers extends Controllers
 
         if ($name === '') {
             $this->responseError('El nombre del cliente es obligatorio.');
+        }
+
+        // Validacion de Formatos
+        if (verifyData("^\d{8,15}$", $document)) {
+            $this->responseError('El número de documento no es válido. Debe contener entre 8 y 15 dígitos numéricos.');
+        }
+
+        if (verifyData("[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+(\s[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+)*", $name)) {
+            $this->responseError('El nombre del cliente contiene caracteres no permitidos. Solo se aceptan letras y espacios.');
+        }
+
+        if (!empty($phone) && verifyData("^\d{9,15}$", $phone)) {
+            $this->responseError('El número de teléfono no es válido. Debe contener entre 9 y 15 dígitos numéricos.');
+        }
+
+        if (!empty($email) && verifyData("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", $email)) {
+            $this->responseError('El correo electrónico no tiene un formato válido.');
         }
 
         if ($this->isProtectedCustomerName($name)) {
@@ -218,7 +235,7 @@ class Customers extends Controllers
     public function updateCustomer(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(4, "u", false)['status']) ? toJson(validate_permission_app(4, "u", false)) : '';
+        validate_permission_app(4, "u", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -243,9 +260,9 @@ class Customers extends Controllers
         }
 
         $documentTypeId = (int) ($_POST['txtCustomerDocumentType'] ?? 0);
-        $document       = $this->sanitizeNumeric($_POST['txtCustomerDocument'] ?? '', 11);
+        $document       = $this->sanitizeNumeric($_POST['txtCustomerDocument'] ?? '', 15);
         $name           = ucwords(strClean($_POST['txtCustomerName'] ?? ''));
-        $phone          = $this->sanitizeNumeric($_POST['txtCustomerPhone'] ?? '', 11);
+        $phone          = $this->sanitizeNumeric($_POST['txtCustomerPhone'] ?? '', 15);
         $email          = $this->sanitizeEmail($_POST['txtCustomerEmail'] ?? '');
         $address        = strClean($_POST['txtCustomerAddress'] ?? '');
 
@@ -259,6 +276,23 @@ class Customers extends Controllers
 
         if ($name === '') {
             $this->responseError('El nombre del cliente es obligatorio.');
+        }
+
+        // Validacion de Formatos
+        if (verifyData("^\d{8,15}$", $document)) {
+            $this->responseError('El número de documento no es válido. Debe contener entre 8 y 15 dígitos numéricos.');
+        }
+
+        if (verifyData("[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+(\s[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+)*", $name)) {
+            $this->responseError('El nombre del cliente contiene caracteres no permitidos. Solo se aceptan letras y espacios.');
+        }
+
+        if (!empty($phone) && verifyData("^\d{9,15}$", $phone)) {
+            $this->responseError('El número de teléfono no es válido. Debe contener entre 9 y 15 dígitos numéricos.');
+        }
+
+        if (!empty($email) && verifyData("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", $email)) {
+            $this->responseError('El correo electrónico no tiene un formato válido.');
         }
 
         $existing = $this->model->selectCustomerByDocument($businessId, $documentTypeId, $document, $customerId);
@@ -296,7 +330,7 @@ class Customers extends Controllers
     public function deleteCustomer(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(4, "d", false)['status']) ? toJson(validate_permission_app(4, "d", false)) : '';
+        validate_permission_app(4, "d", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             $this->responseError('Método de solicitud no permitido.');
         }

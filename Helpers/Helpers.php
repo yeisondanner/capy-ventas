@@ -1646,16 +1646,21 @@ function get_widget_plan(string $plan)
     return $arrWidgetPlan[$plan];
 }
 /**
- * Funcion que valida el permiso del usuario en la visa
- * de acuerdo al rol
+ * Funcion que valida el permiso del usuario en la vista u opcion, 
+ * esta funcion te pide la interfaz, el permiso, si se redirige y si se retorna o se imprimen los permisos
+ * isPrintResult es un parametro si quieres que se imprima el resultado cuando la validacion sea true
  * @param int $idinterface
+ * @param string $permission
+ * @param bool $redirect
+ * @param bool $return
+ * @param bool $isPrintResult
  * @return 
  */
-function validate_permission_app(int $idinterface, string $permission, bool $redirect = true)
+function validate_permission_app(int $idinterface, string $permission, bool $redirect = true, bool $return = true, bool $isPrintResult = true)
 {
     /**
      * Validamos que el usuario no sea dueño del negocio
-     * si fuere dueño del negocio tiene todos los permisos poer defecto
+     * si fuere dueño del negocio tiene todos los permisos por defecto
      * lo unico que se deberia validar es los permisos del plan nada mas
      */
     /**
@@ -1696,13 +1701,17 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 HTML;
                 die();
             } else {
-                return [
+                $arrReturn = [
                     'status' => false,
                     'title'  => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
                     'icon'   => 'error',
-                    'url' => $no_permisos
+                    'url' => $no_permisos,
                 ];
+                if (!$return) {
+                    toJson($arrReturn);
+                }
+                return $arrReturn;
             }
         }
         /**
@@ -1718,14 +1727,19 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 HTML;
                 die();
             } else {
-                return [
+                $arrReturn = [
                     'status' => false,
                     'title'  => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
                     'icon'   => 'error',
                     'url' => $no_permisos,
-                    'interface_status' => $result['interface_status']
+                    'interface_status' => $result['interface_status'],
+
                 ];
+                if (!$return) {
+                    toJson($arrReturn);
+                }
+                return $arrReturn;
             }
         }
         if ($result['plans_interface_status'] !== 'Activo') {
@@ -1738,7 +1752,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 HTML;
                 die();
             } else {
-                return [
+                $arrReturn = [
                     'status' => false,
                     'title'  => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
@@ -1746,6 +1760,10 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                     'url' => $no_permisos,
                     'plans_interface_status' => $result['plans_interface_status']
                 ];
+                if (!$return) {
+                    toJson($arrReturn);
+                }
+                return $arrReturn;
             }
         }
         if ($result['permission_status'] !== 'Activo') {
@@ -1758,7 +1776,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 HTML;
                 die();
             } else {
-                return [
+                $arrReturn = [
                     'status' => false,
                     'title'  => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
@@ -1766,6 +1784,10 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                     'url' => $no_permisos,
                     'permission_status' => $result['permission_status']
                 ];
+                if (!$return) {
+                    toJson($arrReturn);
+                }
+                return $arrReturn;
             }
         }
         /**
@@ -1785,7 +1807,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 HTML;
                 die();
             } else {
-                return [
+                $arrReturn = [
                     'status' => false,
                     'title'  => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
@@ -1793,6 +1815,10 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                     'url' => $no_permisos,
                     $crudpermissionpia[$permission] => $result[$crudpermissionpia[$permission]]
                 ];
+                if (!$return) {
+                    toJson($arrReturn);
+                }
+                return $arrReturn;
             }
         }
         /**
@@ -1808,7 +1834,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 HTML;
                 die();
             } else {
-                return [
+                $arrReturn = [
                     'status' => false,
                     'title'  => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
@@ -1816,21 +1842,30 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                     'url' => $no_permisos,
                     $crudpermission[$permission] => $result[$crudpermission[$permission]]
                 ];
+                if (!$return) {
+                    toJson($arrReturn);
+                }
+                return $arrReturn;
             }
         }
-        return [
+        $arrReturn = [
             'status' => true,
             'title'  => 'Permisos validados',
             'message' => 'Tienes permisos para realizar esta accion.',
             'icon'   => 'success',
             $crudpermission[$permission] => $result[$crudpermission[$permission]]
         ];
+        if (!$return) {
+            toJson($arrReturn);
+        }
+        return $arrReturn;
     }
     /**
      * validamos que el usuario tenga permisos de acceso 
      * a la seccion segun el plan
      */
     $result = $objPermission->get_permission_interface_owner($iduser, $idinterface);
+    //validacion de cuando el resultado es vacio
     if (!$result) {
         $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
 
@@ -1842,7 +1877,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 HTML;
             die();
         } else {
-            return [
+            $arrReturn = [
                 'status' => false,
                 'title'  => 'Interfaz inactiva',
                 'message' => 'La interfaz no se encuentra activa.',
@@ -1854,11 +1889,15 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 'update' => 0,
                 'delete' => 0
             ];
+            if (!$return) {
+                toJson($arrReturn);
+            }
+            return $arrReturn;
         }
     }
+    //verificacion de cuando la interface app esta inactiva
     if ($result['ia_status'] !== 'Activo') {
         $no_permisos = base_url() . "/pos/errors/estado_interfaz";
-
         if ($redirect) {
             echo <<<HTML
                         <script>
@@ -1867,7 +1906,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 HTML;
             die();
         } else {
-            return [
+            $arrReturn = [
                 'status' => false,
                 'title'  => 'Interfaz inactiva',
                 'message' => 'La interfaz no se encuentra activa.',
@@ -1879,8 +1918,13 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 'update' => 0,
                 'delete' => 0
             ];
+            if (!$return) {
+                toJson($arrReturn);
+            }
+            return $arrReturn;
         }
     }
+    //verificacion de cuando el plan de la interface app esta inactiva
     if ($result['pia_status'] !== 'Activo') {
         $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
 
@@ -1892,7 +1936,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 HTML;
             die();
         } else {
-            return [
+            $arrReturn = [
                 'status' => false,
                 'title'  => 'Interfaz inactiva',
                 'message' => 'La interfaz no se encuentra activa.',
@@ -1904,12 +1948,15 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 'update' => 0,
                 'delete' => 0
             ];
+            if (!$return) {
+                toJson($arrReturn);
+            }
+            return $arrReturn;
         }
     }
     /**
      * Validamos los permisos del crud general
      */
-
     if ((int)$result[$crudpermission[$permission]] === 0) {
         if (isset($_SESSION[$nameVarMessagePermission])) {
             unset($_SESSION[$nameVarMessagePermission]);
@@ -1924,7 +1971,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 HTML;
             die();
         } else {
-            return [
+            $arrReturn = [
                 'status' => false,
                 'title'  => 'Permisos insuficientes',
                 'message' => 'No tienes permisos para realizar esta accion.',
@@ -1932,15 +1979,26 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 'url' => $no_permisos,
                 $crudpermission[$permission] => $result[$crudpermission[$permission]]
             ];
+            if (!$return) {
+                toJson($arrReturn);
+            }
+            return $arrReturn;
         }
     }
-    return [
+
+    $arrReturn = [
         'status' => true,
         'title'  => 'Permisos validados',
         'message' => 'Tienes permisos para realizar esta accion.',
         'icon'   => 'success',
         $crudpermission[$permission] => $result[$crudpermission[$permission]]
     ];
+    if ($isPrintResult) {
+        if (!$return) {
+            toJson($arrReturn);
+        }
+        return $arrReturn;
+    }
 }
 
 // Funciones samuel
@@ -1974,7 +2032,9 @@ function saveSessionVerification($correo, $codigo)
     $_SESSION['verificacion_tiempo'] = time(); // Timestamp actual
     $_SESSION['verificacion_status'] = false; // Timestamp actual
 }
-
+/**
+ * Valida el codigo de verificacion
+ */
 function validateVerificationCode($codigoInput)
 {
     if (session_status() === PHP_SESSION_NONE) {

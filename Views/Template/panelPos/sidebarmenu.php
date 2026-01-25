@@ -29,7 +29,9 @@ $data_menu_employee = function (int $interface): array {
         return $item['idInterface'] == $interface;
     })));
 };
+//link de la pagina de error cuando la interface app esta inactiva
 $linkestadointerfaz = base_url() . '/pos/Errors/estado_plan_interfaz';
+//validamos el logo del negocio
 if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     $logoBusiness = GENERAR_PERFIL . htmlspecialchars($_SESSION[$nameVarBusiness]['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8');
 } else {

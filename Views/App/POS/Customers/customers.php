@@ -38,7 +38,6 @@
                                     <th>Número de documento</th>
                                     <th>Teléfono</th>
                                     <th>Correo</th>
-                                    <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -65,39 +64,57 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="txtCustomerDocumentType" class="form-label">Tipo de documento <span class="text-danger">*</span></label>
-                        <select class="form-select" id="txtCustomerDocumentType" name="txtCustomerDocumentType" required>
-                            <option value="" selected disabled>Selecciona un tipo de documento</option>
-                            <?php foreach (($data['document_types'] ?? []) as $type): ?>
-                                <option value="<?= (int) ($type['id'] ?? 0); ?>">
-                                    <?= htmlspecialchars($type['name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-file-earmark-text"></i></span>
+                            <select class="form-select" id="txtCustomerDocumentType" name="txtCustomerDocumentType" required>
+                                <option value="" selected disabled>Selecciona un tipo de documento</option>
+                                <?php foreach (($data['document_types'] ?? []) as $type): ?>
+                                    <option value="<?= (int) ($type['id'] ?? 0); ?>">
+                                        <?= htmlspecialchars($type['name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="txtCustomerDocument" class="form-label">Número de documento <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="txtCustomerDocument" name="txtCustomerDocument" maxlength="11"
-                            required placeholder="Número de documento">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                            <input type="text" class="form-control" id="txtCustomerDocument" name="txtCustomerDocument" maxlength="15"
+                                required placeholder="Número de documento" pattern="[0-9]{8,15}" title="Solo se permiten números (8-15 dígitos)">
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="txtCustomerName" class="form-label">Nombre completo <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="txtCustomerName" name="txtCustomerName" maxlength="255" required
-                            placeholder="Nombre completo del cliente">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control" id="txtCustomerName" name="txtCustomerName" maxlength="255" required
+                                placeholder="Nombre completo del cliente" pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+" title="Solo se permiten letras y espacios">
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="txtCustomerPhone" class="form-label">Teléfono</label>
-                        <input type="text" class="form-control" id="txtCustomerPhone" name="txtCustomerPhone" maxlength="11"
-                            placeholder="Número de contacto">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                            <input type="text" class="form-control" id="txtCustomerPhone" name="txtCustomerPhone" maxlength="15"
+                                placeholder="Número de contacto" pattern="[0-9]{9,15}" title="Solo se permiten números (9-15 dígitos)">
+                        </div>
                     </div>
                     <div class="col-md-6">
                         <label for="txtCustomerEmail" class="form-label">Correo electrónico</label>
-                        <input type="email" class="form-control" id="txtCustomerEmail" name="txtCustomerEmail" maxlength="255"
-                            placeholder="correo@ejemplo.com">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input type="email" class="form-control" id="txtCustomerEmail" name="txtCustomerEmail" maxlength="255"
+                                placeholder="correo@ejemplo.com" title="Ingrese un correo electrónico válido">
+                        </div>
                     </div>
                     <div class="col-6">
                         <label for="txtCustomerAddress" class="form-label">Dirección</label>
-                        <input type="text" class="form-control" id="txtCustomerAddress" name="txtCustomerAddress"
-                            placeholder="Dirección o información adicional del cliente">
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                            <input type="text" class="form-control" id="txtCustomerAddress" name="txtCustomerAddress"
+                                placeholder="Dirección o información adicional del cliente">
+                        </div>
                     </div>
                 </div>
             </div>

@@ -2,6 +2,8 @@
 
 class Login extends Controllers
 {
+	protected string $user;
+	protected string $password;
 	public function __construct()
 	{
 		//inicializacmos la sesion pasamos el param 1 para inicializar la sesion de la app
@@ -9,7 +11,10 @@ class Login extends Controllers
 		existLogin(1);
 		parent::__construct("POS");
 	}
-
+	/**
+	 * Funcion que renderiza la vista de login
+	 * @return void
+	 */
 	public function login()
 	{
 		$data['page_id'] = 1;
@@ -165,10 +170,10 @@ class Login extends Controllers
 			toJson($data);
 		}
 		//limpieza de los inputs
-		$txtUser = strClean($_POST["txtUser"]);
-		$txtPassword = strClean($_POST["txtPassword"]);
+		$this->user = strClean($_POST["txtUser"]);
+		$this->password = strClean($_POST["txtPassword"]);
 		//validamos que los campos no esten vacios de manera individual
-		if (empty($txtUser)) {
+		if (empty($this->user)) {
 			$data = array(
 				"title" => "Ocurrió un error inesperado",
 				"message" => "El usuario o Email no puede estar vacio",
@@ -178,7 +183,7 @@ class Login extends Controllers
 			);
 			toJson($data);
 		}
-		if (empty($txtPassword)) {
+		if (empty($this->password)) {
 			$data = array(
 				"title" => "Ocurrió un error inesperado",
 				"message" => "La contraseña no puede estar vacio",
@@ -190,7 +195,7 @@ class Login extends Controllers
 		}
 
 		//Validacion de usuario, solo debe soporte minimo 3 caracteres
-		if (strlen($txtUser) < 4) {
+		if (strlen($this->user) < 4) {
 			$data = array(
 				"title" => "Ocurrió un error inesperado",
 				"message" => "El usuario debe tener al menos 4 caracteres",
@@ -202,7 +207,7 @@ class Login extends Controllers
 			return;
 		}
 		//validacion que la contraseña pueda ingresar minimo 8 caracteres
-		if (strlen($txtPassword) < 8) {
+		if (strlen($this->password) < 8) {
 			$data = array(
 				"title" => "Ocurrió un error inesperado",
 				"message" => "La contraseña debe tener al menos 8 caracteres",
@@ -214,9 +219,9 @@ class Login extends Controllers
 			return;
 		}
 		//encriptamos el usuario
-		$txtUser = encryption($txtUser);
+		$this->user = encryption($this->user);
 		//verificamos si el usuario existe
-		$request = $this->model->selectUserLogin($txtUser);
+		$request = $this->model->selectUserLogin($this->user);
 		if (!$request) {
 			$data = array(
 				"title" => "Ocurrió un error inesperado",
@@ -229,9 +234,9 @@ class Login extends Controllers
 			toJson($data);
 		}
 		//encriptamos el usuario
-		$txtPassword = encryption($txtPassword);
+		$this->password = encryption($this->password);
 		//validamos si la contraseña coinciden
-		if (($txtPassword !== $request['password'])) {
+		if (($this->password !== $request['password'])) {
 			$data = array(
 				"title" => "Ocurrió un error inesperado",
 				"message" => "Usuario o contraseña inválidos",

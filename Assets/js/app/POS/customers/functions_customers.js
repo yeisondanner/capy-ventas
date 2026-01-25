@@ -612,19 +612,42 @@
    */
   function initCustomersTable() {
     customersTable = $("#customerTable").DataTable({
+      processing: true,
       ajax: {
         url: `${base_url}/pos/Customers/getCustomers`,
-        dataSrc: "",
+        dataSrc: function (json) {
+          if (json.url) {
+            setTimeout(() => {
+              window.location.href = json.url;
+            }, 1000);
+          }
+          // Importante: serverSide espera que los datos vengan en json.data
+          return json;
+        },
       },
       columns: [
         { data: "cont" },
         { data: "actions", orderable: false, searchable: false },
         { data: "fullname" },
-        { data: "document_type" },
+        {
+          data: "document_type",
+          className: "text-center",
+        },
         { data: "document_number" },
-        { data: "phone_number" },
-        { data: "email" },
-        { data: "status", orderable: false },
+        {
+          data: "phone_number",
+          render: function (data, type, row) {
+            return (
+              `<i class="bi bi-telephone text-success"></i> ${data}` || "-"
+            );
+          },
+        },
+        {
+          data: "email",
+          render: function (data, type, row) {
+            return `<i class="bi bi-envelope text-primary"></i> ${data}` || "-";
+          },
+        },
       ],
       dom: "lBfrtip",
       buttons: [
@@ -632,21 +655,21 @@
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
           className: "btn btn-sm btn-outline-secondary",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
           className: "btn btn-sm btn-outline-success",
           title: "Clientes",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
           className: "btn btn-sm btn-outline-info",
           title: "Clientes",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6] },
         },
         {
           extend: "pdfHtml5",
@@ -655,17 +678,15 @@
           orientation: "portrait",
           pageSize: "A4",
           title: "Clientes",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6] },
         },
       ],
       columnDefs: [
         { targets: 0, className: "text-center" },
         { targets: 1, className: "text-center" },
         { targets: [4, 5, 6], className: "text-nowrap" },
-        { targets: 7, className: "text-center" },
       ],
-      responsive: true,
-      processing: true,
+      keyTable: true,
       destroy: true,
       colReorder: true,
       stateSave: true,

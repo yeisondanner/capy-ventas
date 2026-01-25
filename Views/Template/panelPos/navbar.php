@@ -1,5 +1,5 @@
 <?php
-$validationCreateBox = (validate_permission_app(11, "c", false)) ? (int) (isset(validate_permission_app(11, "c", false)['create']) ? validate_permission_app(11, "c", false)['create'] : 0) : 0;
+$validationCreateBox = (int) validate_permission_app(11, "c", false)['create'];
 if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     $logoBusiness = GENERAR_PERFIL . htmlspecialchars($_SESSION[$nameVarBusiness]['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8');
 } else {
@@ -750,7 +750,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <div class="col-md-6">
                         <div class="mb-4 item-box">
                             <label class="small text-muted fw-bold text-uppercase mb-2">Monto de Gasto (<span
-                            class="text-danger">*</span>)</label>
+                                    class="text-danger">*</span>)</label>
                             <div class="input-group">
                                 <span class="input-group-text bg-transparent text-muted">S/</span>
                                 <input type="number" id="retire_amount"
@@ -762,7 +762,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     <div class="col-md-6">
                         <div class="mb-4">
                             <label class="small text-muted fw-bold text-uppercase mb-2">Fecha (<span
-                            class="text-danger">*</span>)</label>
+                                    class="text-danger">*</span>)</label>
                             <div class="input-group">
                                 <input type="datetime-local" id="retire_date"
                                     class="form-control shadow-none bg-white" value="<?= date('Y-m-d\TH:i'); ?>">

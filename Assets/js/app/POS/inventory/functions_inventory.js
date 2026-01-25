@@ -864,9 +864,18 @@
    */
   function initTable() {
     productsTable = $("#table").DataTable({
+      processing: true,
       ajax: {
         url: `${base_url}/pos/Inventory/getProducts`,
-        dataSrc: "",
+        dataSrc: function (json) {
+          if (json.url) {
+            setTimeout(() => {
+              window.location.href = json.url;
+            }, 1000);
+          }
+          // Importante: serverSide espera que los datos vengan en json.data
+          return json;
+        },
       },
       columns: [
         { data: "cont" },
@@ -924,8 +933,7 @@
         { targets: 0, className: "text-center" },
         { targets: 1, className: "text-center" },
       ],
-      responsive: true,
-      processing: true,
+      keyTable: true,
       destroy: true,
       colReorder: true,
       stateSave: true,
@@ -1210,6 +1218,11 @@
 
         if (data.status) {
           productsTable.ajax.reload(null, false);
+        }
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1000);
         }
       } catch (error) {
         console.error("Error al eliminar producto", error);

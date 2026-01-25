@@ -7,9 +7,4 @@ import Login from "./login.js";
     loginInstance.login(); // Funcion que se encarga de enviar los datos del formulario de login
     loginInstance.togglePasswordVisibility();
   });
-  // Login Page Flipbox control
-  $('.login-content [data-toggle="flip"]').click(function () {
-    $(".login-box").toggleClass("flipped");
-    return false;
-  });
 })();
