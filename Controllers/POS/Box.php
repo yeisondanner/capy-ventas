@@ -486,14 +486,20 @@ class Box extends Controllers
         $raw = file_get_contents('php://input');
         $data = json_decode($raw, true);
 
+        if(!$data){
+            $this->responseError("JSON inválido");
+        }
+
         $description = strClean($data["description"]);
         $date = strClean($data["date"]);
         $amount = (float) strClean($data["amount"]);
-        $expense_name = strClean($data["expense_name"]);
+        $expense_name = trim (strClean($data["expense_name"] ?? ''));
         $expense_category = (int) strClean($data["expense_category"]);
         $supplier = (int) strClean($data["supplier"]);
         $payment_method = (int) strClean($data["payment_method"]);
         $status_expense_header = (int) $data["status_expense_header"];
+
+        $type_movement = "Egreso";
 
         // * Validamos que no este vacio los campos
         validateFieldsEmpty(array(
@@ -518,6 +524,12 @@ class Box extends Controllers
         $userId = $this->getUserId();
         // * Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
+
+        //validamos que las funciones no devuelvan null
+        if(!$userId || !$businessId){
+            $this->responseError("Sesión inválida o expirada");
+        }
+
         // * Consultamos si es necesario contar con caja aperturada para registrar una venta
         $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
         $boxSessions = $this->model->getBoxSessionsByUserId($userId);
@@ -551,6 +563,14 @@ class Box extends Controllers
             $this->responseError("La fecha ingresada no es valida.");
         }
 
+        if ($expense_name === '' || $expense_name === null) {
+            $expense_name = "Sin nombre - " . date("d/m/Y", strtotime($date));
+        } else {
+            // Siempre agregar la fecha al final
+            $expense_name = $expense_name . " - " . date("d/m/Y", strtotime($date));
+        }
+
+
         // * Validamos que exista el metodo de pago
         $issetPaymentMethod = $this->model->issetPaymentMethod($payment_method);
         if (!$issetPaymentMethod) {
@@ -562,26 +582,41 @@ class Box extends Controllers
 
 
         // TODO: FALTA TERMINAR ESTO, ME FUI PORQUE TENIA SueÑO
-
         // toJson("aqui");
-        toJson($data);
+        //obtenemos el nombre del metodo de pago
+        $pm = $issetPaymentMethod;
+
+        //reistramos el egreso en caja
+
+        $movement = $this->model->insertBoxMovement(
+            $boxSessions["idBoxSessions"],
+        "Egreso",
+        $expense_name,
+        $amount, $issetPaymentMethod["name"],
+        "expense",
+        null
+        );
+
+        if(!$movement){
+            $this->responseError("Error al registrar el gasto");
+        }
 
         // * validamos si es necesario abrir caja para registrar la venta
-        if ($boxSessions) {
+       /* if ($boxSessions) {
             // * Registramos el movimiento
             $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, $issetPaymentMethod["name"], "voucher_header", $voucher);
             if (!$movement_box) {
                 $this->responseError('Error al registrar el ' . $type_movement . ' de caja.');
             }
-        }
+        }*/
 
         toJson([
             'title'   => 'Gestión de Caja',
-            'message' => $type_movement . ' de caja registrado correctamente.',
+            'message' => 'Gasto registrado correctamente.',
             'type'    => 'success',
             'icon'    => 'success',
             'status'  => true,
-            'status_movement_header' => $status_movement_header
+            'status_expense_header' => $status_expense_header
         ]);
     }
 

@@ -100,13 +100,25 @@ export class Box {
     this.#verificarEstadoCaja();
     this.#iniciarReloj();
     this.#configurarEventosEstaticos();
+    this.#conectbuttonSales();
   }
+
+  //conectar con el modal sales
+
+    #conectbuttonSales = () => {
+        $(document).on("click", "#btnSaveRetireCash", () => {
+            this.#statusExpenseHeader = 0;
+            // se abre el modal de gasto de caja
+            this.#modalRetireMovementBox.modal("show");
+        });
+    };
 
   // ==========================================
   // 3. INICIALIZACIÓN Y CONFIGURACIÓN
   // ==========================================
 
-  #verificarEstadoCaja = async () => {
+
+    #verificarEstadoCaja = async () => {
     const response = await this.apiBox.get("getuserCheckedBox");
     const htmlBoton = response.status
       ? this.#generarBotonAperturaHtml()
@@ -393,7 +405,7 @@ export class Box {
       });
 
     if (!description) description = null;
-    if (!retire_name) retire_name = "Gasto sin nombre - "; // falta agregar la fecha
+    if (!retire_name) retire_name = "Gasto sin nombre"; // falta agregar la fecha
 
     const params = {
       amount: amount,
@@ -410,15 +422,26 @@ export class Box {
     const response = await this.apiBox.post("setExpense", params);
 
     console.log(response);
-    
 
     if (response.status) {
-      // this.#modalRetireMovementBox.modal("hide");
-      // if (response.status_expense_header === 1) {
-      //   this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
-      // }
+        //LIMPIAMOS los campos
+        this.#inputRetireAmount.val("");
+        this.#inputRetireDate.val("");
+        this.#inputRetireDescription.val("");
+        this.#inputRetireName.val("");
+
+        this.#selectRetireSupplier.val("").trigger("change");
+        this.#selectRetireExpenseCategory.val("").trigger("change");
+        this.#selectRetirePaymentMethod.val("").trigger("change");
+
+        //cierra el modal
+       this.#modalRetireMovementBox.modal("hide");
+
+       if (response.status_expense_header === 1) {
+       this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
+      }
     }
-    // this.#mostrarAlerta(response);
+    this.#mostrarAlerta(response);
   };
 
   // ==========================================
