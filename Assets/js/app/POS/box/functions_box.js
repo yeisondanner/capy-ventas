@@ -393,7 +393,7 @@ export class Box {
       });
 
     if (!description) description = null;
-    if (!retire_name) retire_name = "Gasto sin nombre";
+    if (!retire_name) retire_name = "Gasto sin nombre - "; // falta agregar la fecha
 
     const params = {
       amount: amount,
@@ -413,7 +413,7 @@ export class Box {
     
 
     if (response.status) {
-      // this.#modalMovementBox.modal("hide");
+      // this.#modalRetireMovementBox.modal("hide");
       // if (response.status_expense_header === 1) {
       //   this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
       // }

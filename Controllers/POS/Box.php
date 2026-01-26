@@ -563,7 +563,8 @@ class Box extends Controllers
 
         // TODO: FALTA TERMINAR ESTO, ME FUI PORQUE TENIA SueÑO
 
-        toJson("aqui");
+        // toJson("aqui");
+        toJson($data);
 
         // * validamos si es necesario abrir caja para registrar la venta
         if ($boxSessions) {
