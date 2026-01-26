@@ -256,21 +256,23 @@
         return;
 
       const subtotal = parseFloat(lblSubtotal.dataset.valor) || 0;
-      let monto = parseFloat(inputDescuentoMonto.value) || 0;
+      // Permitimos que el usuario escriba libremente. Usamos el valor numérico para cálculos.
+      let monto = parseFloat(inputDescuentoMonto.value);
+      if (isNaN(monto)) monto = 0;
 
-      // Evitar negativos y que el descuento supere al subtotal
-      if (monto < 0) monto = 0;
-      if (monto > subtotal) monto = subtotal;
+      // Para el cálculo interno restringimos, pero NO cambiamos el input mientras escribe
+      let montoCalculo = monto;
+      if (montoCalculo < 0) montoCalculo = 0;
+      if (montoCalculo > subtotal) montoCalculo = subtotal;
 
       // Calculamos el porcentaje equivalente
-      const porcentaje = subtotal > 0 ? (monto / subtotal) * 100 : 0;
+      const porcentaje = subtotal > 0 ? (montoCalculo / subtotal) * 100 : 0;
 
-      // Formateamos con 2 decimales
-      inputDescuentoMonto.value = monto.toFixed(2);
+      // NO sobrescribimos inputDescuentoMonto.value aquí para no bloquear la escritura
       inputDescuentoPorc.value = porcentaje.toFixed(2);
 
       // Total nunca menor que cero
-      const subTotal = Math.max(subtotal - monto, 0);
+      const subTotal = Math.max(subtotal - montoCalculo, 0);
       //calculamos el inpuesto
       const Tax = subTotal * (parseFloat(tax.value) / 100);
       const total = subTotal + Tax;
@@ -291,16 +293,18 @@
         return;
 
       const subtotal = parseFloat(lblSubtotal.dataset.valor) || 0;
-      let porcentaje = parseFloat(inputDescuentoPorc.value) || 0;
+      let porcentaje = parseFloat(inputDescuentoPorc.value);
+      if (isNaN(porcentaje)) porcentaje = 0;
 
-      // Limitar porcentaje entre 0 y 100
-      if (porcentaje < 0) porcentaje = 0;
-      if (porcentaje > 100) porcentaje = 100;
+      // Restricción para cálculo interno
+      let porcentajeCalculo = porcentaje;
+      if (porcentajeCalculo < 0) porcentajeCalculo = 0;
+      if (porcentajeCalculo > 100) porcentajeCalculo = 100;
 
       // Monto equivalente al porcentaje
-      const monto = subtotal * (porcentaje / 100);
+      const monto = subtotal * (porcentajeCalculo / 100);
 
-      inputDescuentoPorc.value = porcentaje.toFixed(2);
+      // NO sobrescribimos inputDescuentoPorc.value aquí
       inputDescuentoMonto.value = monto.toFixed(2);
 
       const subTotal = Math.max(subtotal - monto, 0);
@@ -314,11 +318,26 @@
     // Escuchamos cambios en el input de monto
     if (inputDescuentoMonto) {
       inputDescuentoMonto.addEventListener("input", actualizarDesdeMonto);
+      inputDescuentoMonto.addEventListener("blur", function () {
+        const subtotal = parseFloat(lblSubtotal.dataset.valor) || 0;
+        let val = parseFloat(this.value) || 0;
+        if (val < 0) val = 0;
+        if (val > subtotal) val = subtotal;
+        this.value = val.toFixed(2);
+        actualizarDesdeMonto(); // Actualizar cruzado para asegurar consistencia final
+      });
     }
 
     // Escuchamos cambios en el input de porcentaje
     if (inputDescuentoPorc) {
       inputDescuentoPorc.addEventListener("input", actualizarDesdePorcentaje);
+      inputDescuentoPorc.addEventListener("blur", function () {
+        let val = parseFloat(this.value) || 0;
+        if (val < 0) val = 0;
+        if (val > 100) val = 100;
+        this.value = val.toFixed(2);
+        actualizarDesdePorcentaje(); // Actualizar cruzado para asegurar consistencia final
+      });
     }
 
     // Inicializamos el total al cargar la página
@@ -627,6 +646,63 @@
         exportToPng("voucherContainer", "Comprobante_Venta.png");
       });
     }
+
+    /**
+     * Listener Global para la tecla Enter.
+     * Agiliza el flujo secuencial en PC: Canasta -> Pago -> Cobrar -> Finalizar.
+     * Se evita disparar si el usuario está buscando productos.
+     */
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        // Verificamos si el modal de cobro está visible (clase 'show' de Bootstrap)
+        const isModalCobroOpen =
+          modalCobroEl && modalCobroEl.classList.contains("show");
+        const isSearchFocused = document.activeElement === productSearchInput;
+
+        // Si el foco está en el buscador, no hacemos nada (permitir buscar)
+        if (isSearchFocused) return;
+
+        if (isModalCobroOpen) {
+          // Caso: Modal abierto -> Finalizar venta
+          event.preventDefault(); // Prevenir doble envío si aplica
+          if (btnFinalizarVenta && !btnFinalizarVenta.disabled) {
+            btnFinalizarVenta.click();
+          }
+        } else {
+          // Modal cerrado: Navegación por pasos
+          if (!isMobile()) {
+            // --- Lógica de PC ---
+            if (desktopStep === 2) {
+              // Si estamos en Paso 2 (Canasta) -> Ir a Paso 3 (Pago)
+              event.preventDefault();
+              showDesktopStep(3);
+            } else if (desktopStep === 3) {
+              // Si estamos en Paso 3 (Pago) -> Abrir Modal Cobrar
+              // Buscamos el botón de cobrar visible en el paso 3
+              // Generalmente es uno de la clase .btn-cobrar
+              const btnCobrarVisible = Array.from(botonesCobrar).find(
+                (b) => b.offsetParent !== null,
+              );
+              if (btnCobrarVisible) {
+                event.preventDefault();
+                btnCobrarVisible.click();
+              }
+            }
+          } else {
+            // --- Lógica Móvil ---
+            // Mantenemos comportamiento directo a cobrar o navegación simple
+            // Buscamos si hay un botón de cobrar visible
+            const btnCobrarVisible = Array.from(botonesCobrar).find(
+              (b) => b.offsetParent !== null,
+            );
+            if (btnCobrarVisible) {
+              event.preventDefault();
+              btnCobrarVisible.click();
+            }
+          }
+        }
+      }
+    });
   }
   // Esperamos a que todo el DOM esté cargado antes de manipular elementos
   document.addEventListener("DOMContentLoaded", function () {
