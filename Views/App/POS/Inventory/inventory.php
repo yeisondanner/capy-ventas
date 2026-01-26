@@ -15,14 +15,14 @@
             <div class="tile rounded-3">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
-                    $inventory = (int) (validate_permission_app(3, "c", false)) ? (int) validate_permission_app(3, "c", false)['create'] : 0;
+                    $inventory = (int) validate_permission_app(3, "c", false)['create'];
                     if ($inventory === 1): ?>
                         <button class="btn btn-outline-primary btn-sm" type="button" id="btnOpenProductModal">
                             <i class="bi bi-plus-lg"></i> Agregar nuevo producto
                         </button>
                     <?php endif; ?>
                     <?php
-                    $category = (int) (validate_permission_app(10, "r", false)) ? (int)validate_permission_app(10, "r", false)['read'] : 0;
+                    $category = (int)validate_permission_app(10, "r", false)['read'];
                     if ($category === 1): ?>
                         <button class="btn btn-outline-info btn-sm" type="button" id="btnOpenCategoryModal">
                             <i class="bi bi-collection"></i> Categorías

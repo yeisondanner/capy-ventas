@@ -406,9 +406,18 @@
    */
   function initTable() {
     employeesTable = $("#table").DataTable({
+      processing: true,
       ajax: {
         url: `${base_url}/pos/Employee/getEmployees`,
-        dataSrc: "",
+        dataSrc: function (json) {
+          if (json.url) {
+            setTimeout(() => {
+              window.location.href = json.url;
+            }, 1000);
+          }
+          // Importante: serverSide espera que los datos vengan en json.data
+          return json;
+        },
       },
       columns: [
         { data: "cont" },
@@ -416,7 +425,6 @@
         { data: "full_name" },
         { data: "user_app_display" },
         { data: "role_app_name" },
-        { data: "status", orderable: false },
       ],
       dom: "lBfrtip",
       buttons: [
@@ -424,21 +432,21 @@
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
           className: "btn btn-sm btn-outline-secondary",
-          exportOptions: { columns: [0, 2, 3, 4, 5] },
+          exportOptions: { columns: [0, 2, 3, 4] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
           className: "btn btn-sm btn-outline-success",
           title: "Empleados",
-          exportOptions: { columns: [0, 2, 3, 4, 5] },
+          exportOptions: { columns: [0, 2, 3, 4] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
           className: "btn btn-sm btn-outline-info",
           title: "Empleados",
-          exportOptions: { columns: [0, 2, 3, 4, 5] },
+          exportOptions: { columns: [0, 2, 3, 4] },
         },
         {
           extend: "pdfHtml5",
@@ -447,16 +455,15 @@
           orientation: "portrait",
           pageSize: "A4",
           title: "Empleados",
-          exportOptions: { columns: [0, 2, 3, 4, 5] },
+          exportOptions: { columns: [0, 2, 3, 4] },
         },
       ],
       columnDefs: [
         { targets: 0, className: "text-center" },
         { targets: 1, className: "text-center" },
-        { targets: 5, className: "text-center" },
+        { targets: 4, className: "text-center" },
       ],
-      responsive: true,
-      processing: true,
+      keyTable: true,
       destroy: true,
       colReorder: true,
       stateSave: true,

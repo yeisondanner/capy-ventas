@@ -15,7 +15,7 @@
             <div class="tile rounded-3">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
-                    $createCustomer = (int) (validate_permission_app(4, "c", false)) ? (int)validate_permission_app(4, "c", false)['create'] : 0;
+                    $createCustomer = (int)validate_permission_app(4, "c", false)['create'];
                     if ($createCustomer === 1): ?>
                         <button class="btn btn-sm btn-outline-primary" type="button" id="btnOpenCustomerModal">
                             <i class="bi bi-plus-lg"></i> Registrar cliente
