@@ -28,7 +28,7 @@ class SuppliersModel extends Mysql
             FROM supplier
             WHERE business_id = ?
               AND status = 'Activo'
-            ORDER BY company_name ASC;
+            ORDER BY idSupplier DESC;
         SQL;
 
         return $this->select_all($sql, [$businessId]);
