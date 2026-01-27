@@ -60,12 +60,12 @@ class Suppliers extends Controllers
      */
     public function getSuppliers(): void
     {
-        validate_permission_app(7, "r");
+        validate_permission_app(7, "r", false, false, false);
         $businessId = $this->getBusinessId();
         $suppliers  = $this->model->selectSuppliers($businessId);
         $counter    = 1;
-        $validationUpdate = (validate_permission_app(7, "u", false)) ? (int) validate_permission_app(7, "u", false)['update'] : 0;
-        $validationDelete = (validate_permission_app(7, "d", false)) ? (int) validate_permission_app(7, "d", false)['delete'] : 0;
+        $validationUpdate = (int) validate_permission_app(7, "u", false)['update'];
+        $validationDelete = (int) validate_permission_app(7, "d", false)['delete'];
         foreach ($suppliers as $key => $supplier) {
             $rawName      = (string) ($supplier['company_name'] ?? '');
             $rawDocument  = (string) ($supplier['document_number'] ?? '');
@@ -141,7 +141,7 @@ class Suppliers extends Controllers
     public function setSupplier(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(7, "c", false)['status']) ? toJson(validate_permission_app(7, "c", false)) : '';
+        validate_permission_app(7, "c", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -159,6 +159,23 @@ class Suppliers extends Controllers
 
         if ($name === '') {
             $this->responseError('El nombre del proveedor es obligatorio.');
+        }
+
+        // Validacion de Formatos
+        if (!empty($document) && verifyData("^\d{8,15}$", $document)) {
+            $this->responseError('El número de documento no es válido. Debe contener entre 8 y 15 dígitos numéricos.');
+        }
+
+        if (verifyData("[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+(\s[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+)*", $name)) {
+            $this->responseError('El nombre del proveedor contiene caracteres no permitidos. Solo se aceptan letras y espacios.');
+        }
+
+        if (!empty($phone) && verifyData("^\d{9,15}$", $phone)) {
+            $this->responseError('El número de teléfono no es válido. Debe contener entre 9 y 15 dígitos numéricos.');
+        }
+
+        if (!empty($email) && verifyData("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", $email)) {
+            $this->responseError('El correo electrónico no tiene un formato válido.');
         }
 
         if ($this->isProtectedSupplierName($name)) {
@@ -199,7 +216,7 @@ class Suppliers extends Controllers
     public function updateSupplier(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(7, "u", false)['status']) ? toJson(validate_permission_app(7, "u", false)) : '';
+        validate_permission_app(7, "u", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -224,13 +241,30 @@ class Suppliers extends Controllers
         }
 
         $name     = ucwords(strClean($_POST['txtSupplierName'] ?? ''));
-        $document = $this->sanitizeNumeric($_POST['txtSupplierDocument'] ?? '', 11);
-        $phone    = $this->sanitizeNumeric($_POST['txtSupplierPhone'] ?? '', 11);
+        $document = $this->sanitizeNumeric($_POST['txtSupplierDocument'] ?? '', 15);
+        $phone    = $this->sanitizeNumeric($_POST['txtSupplierPhone'] ?? '', 15);
         $email    = $this->sanitizeEmail($_POST['txtSupplierEmail'] ?? '');
         $address  = strClean($_POST['txtSupplierAddress'] ?? '');
 
         if ($name === '') {
             $this->responseError('El nombre del proveedor es obligatorio.');
+        }
+
+        // Validacion de Formatos
+        if (!empty($document) && verifyData("^\d{8,15}$", $document)) {
+            $this->responseError('El número de documento no es válido. Debe contener entre 8 y 15 dígitos numéricos.');
+        }
+
+        if (verifyData("[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+(\s[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+)*", $name)) {
+            $this->responseError('El nombre del proveedor contiene caracteres no permitidos. Solo se aceptan letras y espacios.');
+        }
+
+        if (!empty($phone) && verifyData("^\d{9,15}$", $phone)) {
+            $this->responseError('El número de teléfono no es válido. Debe contener entre 9 y 15 dígitos numéricos.');
+        }
+
+        if (!empty($email) && verifyData("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", $email)) {
+            $this->responseError('El correo electrónico no tiene un formato válido.');
         }
 
         $existing = $this->model->selectSupplierByName($businessId, $name, $supplierId);
@@ -267,7 +301,7 @@ class Suppliers extends Controllers
     public function deleteSupplier(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(7, "d", false)['status']) ? toJson(validate_permission_app(7, "d", false)) : '';
+        validate_permission_app(7, "d", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             $this->responseError('Método de solicitud no permitido.');
         }

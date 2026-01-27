@@ -51,7 +51,7 @@ class Employee extends Controllers
      */
     public function getEmployees(): void
     {
-        validate_permission_app(5, "r");
+        validate_permission_app(5, "r", false, false, false);
         $businessId = $this->getBusinessId();
         $employees  = $this->model->selectEmployees($businessId);
         $counter    = 1;
@@ -68,7 +68,7 @@ class Employee extends Controllers
             $employees[$key]['cont']           = $counter;
             $employees[$key]['full_name']       = $fullNameEscaped;
             $employees[$key]['user_app_display'] = $hasUserApp
-                ? ($userAppUserEscaped . " (" . $fullNameEscaped . ")")
+                ? ($userAppUserEscaped)
                 : '<span class="text-muted">Sin usuario asignado</span>';
             $employees[$key]['role_app_name']   = $roleNameEscaped;
             $employees[$key]['status']         = $employee['status'] === 'Activo'
@@ -105,7 +105,7 @@ class Employee extends Controllers
     public function setEmployee(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(5, "c", false)['status']) ? toJson(validate_permission_app(5, "c", false)) : '';
+        validate_permission_app(5, "c", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -217,7 +217,7 @@ class Employee extends Controllers
     public function updateEmployee(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(5, "u", false)['status']) ? toJson(validate_permission_app(5, "u", false)) : '';
+        validate_permission_app(5, "u", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -302,7 +302,7 @@ class Employee extends Controllers
     public function deleteEmployee(): void
     {
         //VALIDACION DE PERMISOS
-        (!validate_permission_app(5, "d", false)['status']) ? toJson(validate_permission_app(5, "d", false)) : '';
+        validate_permission_app(5, "d", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             $this->responseError('Método de solicitud no permitido.');
         }

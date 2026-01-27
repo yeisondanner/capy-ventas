@@ -15,7 +15,7 @@
             <div class="tile rounded-3">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
-                    $createEmployee = (int) (validate_permission_app(5, "c", false)) ? (int)validate_permission_app(5, "c", false)['create'] : 0;
+                    $createEmployee = (int)validate_permission_app(5, "c", false)['create'];
                     if ($createEmployee === 1): ?>
                         <button class="btn btn-sm btn-outline-primary" type="button" id="btnOpenEmployeeModal">
                             <i class="bi bi-plus-lg"></i> Agregar nuevo empleado
@@ -36,7 +36,6 @@
                                     <th>Empleado</th>
                                     <th>Usuario App</th>
                                     <th>Rol</th>
-                                    <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
