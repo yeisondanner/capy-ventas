@@ -18,7 +18,7 @@
   const btnBackToStep2 = document.getElementById("btnBackToStep2");
   const btnDesktopToStep3 = document.getElementById("btnDesktopToStep3");
   const btnDesktopBackToStep2 = document.getElementById(
-    "btnDesktopBackToStep2",
+    "btnDesktopBackToStep2"
   );
   const btnEmptyCart = document.getElementById("btnEmptyCart");
 
@@ -36,8 +36,9 @@
     document.getElementById("popularCategories");
   const inputNombreVenta = document.getElementById("nombreVenta");
   const btnGuardarNombreVenta = document.getElementById(
-    "btnGuardarNombreVenta",
+    "btnGuardarNombreVenta"
   );
+  const divMontoPaga = document.getElementById("divMontoPaga");
 
   // Modal de cobro
   const btnFinalizarVenta = document.getElementById("btnFinalizarVenta");
@@ -403,6 +404,14 @@
         // Tomamos el total actual (texto tipo "S/ 209.70") y lo convertimos a número
         const totalTexto = lblTotal.textContent.replace("S/", "").trim();
         const total = parseFloat(totalTexto) || 0;
+        //limpiamos el input
+        inputMontoPaga.value = "0";
+        spanVuelto.textContent = "0.00";
+        if (paymentMethod.value == 1) {
+          divMontoPaga.classList.remove("d-none");
+        } else {
+          divMontoPaga.classList.add("d-none");
+        }
         spanModalTotal.textContent = total.toFixed(2);
 
         // Limpiamos inputs del modal de cobro
@@ -566,7 +575,7 @@
             {
               method: "POST",
               body: formdata,
-            },
+            }
           );
 
           if (!response.ok) {
@@ -681,7 +690,7 @@
               // Buscamos el botón de cobrar visible en el paso 3
               // Generalmente es uno de la clase .btn-cobrar
               const btnCobrarVisible = Array.from(botonesCobrar).find(
-                (b) => b.offsetParent !== null,
+                (b) => b.offsetParent !== null
               );
               if (btnCobrarVisible) {
                 event.preventDefault();
@@ -693,7 +702,7 @@
             // Mantenemos comportamiento directo a cobrar o navegación simple
             // Buscamos si hay un botón de cobrar visible
             const btnCobrarVisible = Array.from(botonesCobrar).find(
-              (b) => b.offsetParent !== null,
+              (b) => b.offsetParent !== null
             );
             if (btnCobrarVisible) {
               event.preventDefault();
@@ -845,7 +854,7 @@
       const matchesTerm = matchesProduct(product, lastSearchTerm);
       const matchesPopularCategory = matchesCategory(
         product.category,
-        normalizedCategory,
+        normalizedCategory
       );
 
       return matchesTerm && matchesPopularCategory;
@@ -882,7 +891,7 @@
     if (!popularCategoriesContainer) return;
 
     const buttons = popularCategoriesContainer.querySelectorAll(
-      "button[data-category]",
+      "button[data-category]"
     );
 
     buttons.forEach((button) => {
@@ -922,7 +931,7 @@
 
     popularCategoriesContainer.innerHTML = "";
     popularCategoriesContainer.appendChild(
-      createCategoryButton("Todos", "all"),
+      createCategoryButton("Todos", "all")
     );
 
     const validCategories = Array.isArray(categories) ? categories : [];
@@ -1022,7 +1031,7 @@
       if (!data.status) return;
 
       renderCustomersOptions(
-        Array.isArray(data.customers) ? data.customers : [],
+        Array.isArray(data.customers) ? data.customers : []
       );
     } catch (error) {
       console.error("No se pudo cargar el listado de clientes", error);
@@ -1047,7 +1056,7 @@
       if (!data.status) return;
 
       renderPaymentMethodOptions(
-        Array.isArray(data.payment_methods) ? data.payment_methods : [],
+        Array.isArray(data.payment_methods) ? data.payment_methods : []
       );
     } catch (error) {
       console.error("No se pudo cargar el listado de metodos de pago", error);
@@ -1167,7 +1176,7 @@
       "col-6",
       "col-md-4",
       "col-xl-3",
-      "product-card-wrapper",
+      "product-card-wrapper"
     );
     buttonProduct.classList.add("product-card");
     spanCounter.classList.add("product-counter-badge");
@@ -1251,7 +1260,7 @@
       "btn-outline-danger",
       "btn-sm",
       "rounded-circle",
-      "btn-delete-cart",
+      "btn-delete-cart"
     );
     divControls.classList.add("basket-controls");
     divPriceLine.classList.add("basket-price-line", "text-muted", "mt-1");
@@ -1264,7 +1273,7 @@
     inputQty.classList.add(
       "form-control",
       "text-center",
-      "cart-quantity-input",
+      "cart-quantity-input"
     );
     spanPrefix.classList.add("input-group-text");
     inputPrice.classList.add("form-control", "text-end", "cart-price-input");
@@ -1290,7 +1299,7 @@
     inputPrice.readOnly = true;
     inputPrice.setAttribute(
       "aria-label",
-      "Precio total del producto en canasta",
+      "Precio total del producto en canasta"
     );
     inputPrice.setAttribute("tabindex", "-1");
     divPriceLine.innerHTML = `Precio por <span class="fw-semibold">${quantity}</span> ${product.measurement}: <span class="fw-semibold">${getcurrency} ${amount}</span>`;
@@ -1338,7 +1347,7 @@
         "bg-warning",
         "bg-danger",
         "text-white",
-        "text-dark",
+        "text-dark"
       );
       if (isNaN(stock)) return;
 
@@ -1372,7 +1381,7 @@
           counter.textContent = safeValue;
           counter.setAttribute(
             "aria-label",
-            "Productos seleccionados: " + safeValue,
+            "Productos seleccionados: " + safeValue
           );
         }
       }
@@ -1869,10 +1878,10 @@
               <td>${item.stock_product}</td>
               <td>${item.name_product} (${item.unit_of_measurement})</td>
               <td class="text-end">S/ ${Number(
-                item.sales_price_product,
+                item.sales_price_product
               ).toFixed(2)}</td>
               <td class="text-end">S/ ${Number(
-                item.sales_price_product * item.stock_product,
+                item.sales_price_product * item.stock_product
               ).toFixed(2)}</td>
             </tr>
           `);

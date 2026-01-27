@@ -254,7 +254,7 @@ headerPos($data); ?>
                 </div>
 
                 <!-- Monto con el que paga el cliente -->
-                <div class="mb-3">
+                <div class="mb-3" id="divMontoPaga">
                     <label class="form-label small">Con cuánto está pagando</label>
                     <div class="input-group">
                         <span class="input-group-text">S/</span>
@@ -447,7 +447,8 @@ headerPos($data); ?>
                     <!-- System Footer -->
                     <div class="row mt-4">
                         <div class="col-12 text-center d-flex align-items-center justify-content-center">
-                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
+                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo"
+                                style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
                             <small class="text-muted fst-italic">Generado por Capy Ventas</small>
                         </div>
                     </div>
