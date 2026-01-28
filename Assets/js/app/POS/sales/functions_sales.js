@@ -1214,6 +1214,7 @@
     buttonProduct.dataset.supplier = product.supplier;
     buttonProduct.dataset.category = product.category;
     buttonProduct.dataset.measurement = product.measurement;
+    buttonProduct.dataset.photo = product.photo;
     //asignacion de valores
     spanCounter.textContent = "0";
     divImg.innerHTML = `<img class="emoji" src="${base_url}/Loadfile/iconproducts?f=${product.photo}" alt="${product.product}">`;
@@ -1298,7 +1299,7 @@
     divProduct.dataset.stock = product.stock;
     divProduct.dataset.price = price.toFixed(2);
     //llenamos la data
-    divIcon.innerHTML = `<i class="bi bi-bag"></i>`;
+    divIcon.innerHTML = `<img src="${product.photo}" class="img-fluid basket-icon" alt="${product.product}">`;
     spanName.textContent = product.product;
     spanStock.textContent = `${parseFloat(product.stock)} Disponibles`;
     btnDelete.innerHTML = `<i class="bi bi-trash"></i>`;
@@ -1422,6 +1423,7 @@
         formdata.append("category", card.dataset.category);
         formdata.append("selected", card.dataset.selected);
         formdata.append("measurement", card.dataset.measurement);
+        formdata.append("photo", card.dataset.photo);
         const url = base_url + "/pos/Sales/addCart";
         const config = {
           method: "POST",
