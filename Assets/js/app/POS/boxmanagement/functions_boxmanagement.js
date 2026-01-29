@@ -38,20 +38,6 @@ export class Boxmanagement {
         },
         { data: "name", className: "text-center" },
         { data: "description", className: "text-center" },
-        {
-          data: "status",
-          className: "text-center",
-          render: (data) => {
-            const status = (data || "").toString().trim();
-            if (status === "Activo") {
-              return '<span class="badge bg-success"><i class="bi bi-check-circle"></i> Activo</span>';
-            }
-            if (status === "Inactivo") {
-              return '<span class="badge bg-danger"><i class="bi bi-slash-circle"></i> Inactivo</span>';
-            }
-            return `<span class="badge bg-secondary">${status || "Sin estado"}</span>`;
-          },
-        },
         { data: "registrationDate", className: "text-center" },
       ],
       dom: "lBfrtip",
@@ -60,21 +46,21 @@ export class Boxmanagement {
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
           className: "btn btn-sm btn-outline-secondary my-2",
-          exportOptions: { columns: [0, 2, 3, 4, 5] },
+          exportOptions: { columns: [0, 2, 3, 4] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
           className: "btn btn-sm btn-outline-success my-2",
           title: "Cajas",
-          exportOptions: { columns: [0, 2, 3, 4, 5] },
+          exportOptions: { columns: [0, 2, 3, 4] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
           className: "btn btn-sm btn-outline-info my-2",
           title: "Cajas",
-          exportOptions: { columns: [0, 2, 3, 4, 5] },
+          exportOptions: { columns: [0, 2, 3, 4] },
         },
         {
           extend: "pdfHtml5",
@@ -83,7 +69,7 @@ export class Boxmanagement {
           orientation: "portrait",
           pageSize: "A4",
           title: "Cajas",
-          exportOptions: { columns: [0, 2, 3, 4, 5] },
+          exportOptions: { columns: [0, 2, 3, 4] },
         },
       ],
       responsive: true,
@@ -137,7 +123,7 @@ export class Boxmanagement {
     });
   };
 
-  //Update: nombre y descripción
+  // Actualizar caja
   #update = () => {
     $("#formUpdateBox").on("submit", (e) => {
       e.preventDefault();
@@ -172,6 +158,7 @@ export class Boxmanagement {
     });
   };
 
+  // Eliminar caja
   #delete = (id, token) => {
     showAlert({ title: "Procesando..." }, "loading");
 
@@ -197,7 +184,7 @@ export class Boxmanagement {
       });
   };
 
-  //Reporte de caja
+  // Reporte de caja
   #report = (id) => {
     this.#api
       .get("getBox", { id })
@@ -246,6 +233,7 @@ export class Boxmanagement {
       });
   };
 
+  // Acciones de los botones
   #actions = () => {
     document.addEventListener("click", (event) => {
       const reportBtn = event.target.closest(".report-box");
@@ -314,7 +302,7 @@ export class Boxmanagement {
           });
         }
 
-        //Confirmación SOLO para eliminar
+        // Confirmar eliminación de la caja
         Swal.fire({
           title: "¿Eliminar caja?",
           html: `Se procesará la eliminación de <strong>${name}</strong>.`,

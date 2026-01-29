@@ -190,16 +190,14 @@ class ProfileModel extends Mysql
     }
 
     /**
-     * Cambia la contraseña del usuario después de verificar la actual.
+     * Verifica si la contraseña actual ingresada coincide con la del usuario.
      *
-     * @param int    $userAppId       ID del usuario en user_app.
+     * @param int    $userAppId ID del usuario en user_app.
      * @param string $currentPassword Contraseña actual en texto plano.
-     * @param string $newPassword     Nueva contraseña en texto plano.
-     * @return bool Verdadero si se actualizó correctamente, falso en caso contrario.
+     * @return bool
      */
-    public function changeUserPassword(int $userAppId, string $currentPassword, string $newPassword): bool
+    public function verifyUserPassword(int $userAppId, string $currentPassword): bool
     {
-        //Traigo password encriptado desde user_app
         $sql = "SELECT password FROM user_app WHERE idUserApp = ? LIMIT 1";
         $row = $this->select($sql, [$userAppId]);
 
@@ -208,16 +206,38 @@ class ProfileModel extends Mysql
         }
 
         $storedEncrypted = (string) $row['password'];
+        $storedPlain     = (string) decryption($storedEncrypted);
 
-        // Desencriptar y comparar
-        $storedPlain = decryption($storedEncrypted);
+        return hash_equals($storedPlain, (string) $currentPassword);
+    }
 
-        // hash_equals para comparar seguro
-        if (!hash_equals((string) $storedPlain, (string) $currentPassword)) {
+    /**
+     * Cambia la contraseña del usuario después de verificar la actual.
+     *
+     * @param int    $userAppId       ID del usuario en user_app.
+     * @param string $currentPassword Contraseña actual en texto plano.
+     * @param string $newPassword     Nueva contraseña en texto plano.
+     * @return bool
+     */
+    public function changeUserPassword(int $userAppId, string $currentPassword, string $newPassword): bool
+    {
+        // Verificar la contraseña actual
+        $sql = "SELECT password FROM user_app WHERE idUserApp = ? LIMIT 1";
+        $row = $this->select($sql, [$userAppId]);
+
+        if (empty($row) || empty($row['password'])) {
             return false;
         }
 
-        //Encriptar nueva contraseña y actualizar
+        $storedEncrypted = (string) $row['password'];
+        $storedPlain     = (string) decryption($storedEncrypted);
+
+        // Comparar contraseñas
+        if (!hash_equals($storedPlain, (string) $currentPassword)) {
+            return false;
+        }
+
+        // Actualizar a la nueva contraseña
         $newEncrypted = encryption($newPassword);
 
         $upd = "UPDATE user_app SET password = ?, update_date = NOW() WHERE idUserApp = ? LIMIT 1";

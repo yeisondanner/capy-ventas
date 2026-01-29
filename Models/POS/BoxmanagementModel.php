@@ -7,7 +7,7 @@ class BoxmanagementModel extends Mysql
         parent::__construct();
     }
 
-    //Solo mostrar las cajas activas
+    //Listar cajas
     public function select_boxes(int $businessId): array
     {
         $sql = "SELECT
@@ -98,10 +98,10 @@ class BoxmanagementModel extends Mysql
         return (bool) $this->update($sql, [$idBox, $businessId]);
     }
 
-    //Detecta si la caja está referenciada por CUALQUIER tabla (FK) sin lanzar error 1451
+    // Verificar si la caja tiene referencias en otras tablas
     public function box_has_references(int $idBox): bool
     {
-        // Tablas que apuntan (FK) a box(idBox)
+        // Obtener todas las tablas y columnas que referencian a box.idBox
         $sql = "SELECT TABLE_NAME, COLUMN_NAME
                 FROM information_schema.KEY_COLUMN_USAGE
                 WHERE REFERENCED_TABLE_SCHEMA = DATABASE()
@@ -120,7 +120,7 @@ class BoxmanagementModel extends Mysql
 
             if ($table === '' || $col === '') continue;
 
-            // Evitar inyección por nombres: solo permitir [a-zA-Z0-9_]
+            // Validar nombres de tabla y columna para evitar inyección SQL
             if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) continue;
             if (!preg_match('/^[a-zA-Z0-9_]+$/', $col)) continue;
 

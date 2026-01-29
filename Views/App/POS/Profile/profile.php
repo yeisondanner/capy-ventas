@@ -255,163 +255,294 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
         </div>
     </div>
 </main>
-<!-- Modal Editar Perfil -->
+
+<!-- GEMINASO, DISEÑO DE EDITAR PERIL :) -->
 <div class="modal fade" id="modalEditProfile" tabindex="-1" aria-labelledby="modalEditProfileLabel" aria-hidden="true" data-bs-focus="false">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalEditProfileLabel">
-                    <i class="bi bi-pencil-square"></i> Editar perfil
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
+
+            <!-- Encabezado -->
+            <div class="modal-header bg-success text-white py-3 border-0">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                        <i class="bi bi-person-bounding-box fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold" id="modalEditProfileLabel">Mi Perfil</h5>
+                        <p class="mb-0 text-white-50 small">Actualiza tus datos y privacidad</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
-            <form id="formEditProfile"
-                method="post"
-                action="<?= base_url() ?>/pos/profile/updateProfile"
-                autocomplete="off">
+            <form id="formEditProfile" method="post" action="<?= base_url() ?>/pos/profile/updateProfile" autocomplete="off">
+                <div class="modal-body p-4 bg-light bg-opacity-25">
 
-                <div class="modal-body">
-                    <!-- Sección de Datos Personales -->
-                    <div class="mb-4">
-                        <h5 class="mb-3"><i class="bi bi-person-lines-fill me-2"></i>Datos Personales</h5>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="names" class="form-label fw-semibold">Nombres</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                    <input type="text"
-                                        class="form-control"
-                                        id="names"
-                                        name="names"
-                                        value="<?= htmlspecialchars(explode(' ', $user['fullname'] ?? '')[0] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <label for="lastnames" class="form-label fw-semibold">Apellidos</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-person-vcard"></i></span>
-                                    <input type="text"
-                                        class="form-control"
-                                        id="lastnames"
-                                        name="lastnames"
-                                        value="<?= htmlspecialchars(isset($user['fullname']) ? implode(' ', array_slice(explode(' ', $user['fullname']), 1)) : '', ENT_QUOTES, 'UTF-8'); ?>">
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-                                <label for="email" class="form-label fw-semibold">Correo electrónico</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                    <input type="email"
-                                        class="form-control"
-                                        id="email"
-                                        name="email"
-                                        value="<?= htmlspecialchars($user['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label for="birthDate" class="form-label fw-semibold">Fecha de nacimiento</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-                                    <input type="date"
-                                        class="form-control"
-                                        id="birthDate"
-                                        name="birthDate"
-                                        value="<?= !empty($user['birthDate']) ? date('Y-m-d', strtotime($user['birthDate'])) : ''; ?>">
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label for="country" class="form-label fw-semibold">País</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-globe"></i></span>
-                                    <input type="text"
-                                        class="form-control"
-                                        id="country"
-                                        name="country"
-                                        value="<?= htmlspecialchars($user['country'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                                        disabled>
-                                </div>
-                            </div>
-
-                            <div class="col-md-2">
-                                <label for="prefix" class="form-label fw-semibold">Prefijo</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                    <input type="text"
-                                        class="form-control"
-                                        id="prefix"
-                                        name="prefix"
-                                        value="<?= htmlspecialchars($user['prefix']); ?>"
-                                        disabled>
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label for="phone" class="form-label fw-semibold">Teléfono</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-phone"></i></span>
-                                    <input type="text"
-                                        class="form-control"
-                                        id="phone"
-                                        name="phone"
-                                        value="<?= htmlspecialchars($user['phone']); ?>">
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Navegación-->
+                    <div class="d-flex justify-content-center mb-4">
+                        <ul class="nav nav-pills bg-white rounded-pill p-1 shadow-sm border" id="profileTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal-content" type="button" role="tab">
+                                    <i class="bi bi-person me-2"></i>Datos Personales
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account-content" type="button" role="tab">
+                                    <i class="bi bi-shield-lock me-2"></i>Seguridad
+                                </button>
+                            </li>
+                        </ul>
                     </div>
 
-                    <!-- Sección de Datos de la Cuenta -->
-                    <div class="mb-4">
-                        <h5 class="mb-3"><i class="bi bi-shield-lock me-2"></i>Datos de la Cuenta</h5>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="username" class="form-label fw-semibold">Usuario</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-person-circle"></i></span>
-                                    <input type="text"
-                                        class="form-control"
-                                        id="username"
-                                        name="username"
-                                        value="<?= htmlspecialchars($user['user'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
-                                </div>
-                            </div>
+                    <div class="tab-content" id="profileTabsContent">
 
-                            <div class="col-md-6">
-                                <label for="password" class="form-label fw-semibold">Contraseña</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-key"></i></span>
-                                    <input type="password"
-                                        class="form-control"
-                                        id="password"
-                                        name="password"
-                                        placeholder="********"
-                                        readonly
-                                        onclick="this.removeAttribute('readonly'); this.focus();">
-                                </div>
-                                <div class="mt-2">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" id="btnChangePassword">
-                                        <i class="bi bi-arrow-repeat me-1"></i>Cambiar contraseña
-                                    </button>
+                        <!-- DATOS PERSONALES -->
+                        <div class="tab-pane fade show active" id="personal-content" role="tabpanel">
+                            <div class="bg-white p-4 rounded-4 shadow-sm border border-light">
+                                <h6 class="text-success fw-bold text-uppercase small mb-3 ls-1">Información Básica</h6>
+
+                                <div class="row g-3">
+                                    <!-- Nombres -->
+                                    <div class="col-md-6">
+                                        <label for="names" class="form-label fw-semibold text-dark small ps-2">Nombres</label>
+                                        <div class="input-group custom-input-group">
+                                            <span class="input-group-text ps-3"><i class="bi bi-person-fill"></i></span>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                id="names"
+                                                name="names"
+                                                placeholder="Ej: Juan Carlos"
+                                                value="<?= htmlspecialchars(explode(' ', $user['fullname'] ?? '')[0] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                        </div>
+                                    </div>
+
+                                    <!-- Apellidos -->
+                                    <div class="col-md-6">
+                                        <label for="lastnames" class="form-label fw-semibold text-dark small ps-2">Apellidos</label>
+                                        <div class="input-group custom-input-group">
+                                            <span class="input-group-text ps-3"><i class="bi bi-person-vcard-fill"></i></span>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                id="lastnames"
+                                                name="lastnames"
+                                                placeholder="Ej: Pérez Díaz"
+                                                value="<?= htmlspecialchars(isset($user['fullname']) ? implode(' ', array_slice(explode(' ', $user['fullname']), 1)) : '', ENT_QUOTES, 'UTF-8'); ?>">
+                                        </div>
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="col-12">
+                                        <label for="email" class="form-label fw-semibold text-dark small ps-2">Correo Electrónico</label>
+                                        <div class="input-group custom-input-group">
+                                            <span class="input-group-text ps-3"><i class="bi bi-envelope-fill"></i></span>
+                                            <input
+                                                type="email"
+                                                class="form-control"
+                                                id="email"
+                                                name="email"
+                                                placeholder="correo@dominio.com"
+                                                value="<?= htmlspecialchars($user['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <hr class="text-muted opacity-25 my-2">
+                                    </div>
+
+
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <label for="birthDate" class="form-label fw-semibold text-dark small ps-2">Fecha de Nacimiento</label>
+                                        <div class="input-group custom-input-group">
+                                            <span class="input-group-text ps-3"><i class="bi bi-calendar-event-fill"></i></span>
+                                            <input
+                                                type="date"
+                                                class="form-control"
+                                                id="birthDate"
+                                                name="birthDate"
+                                                value="<?= !empty($user['birthDate']) ? date('Y-m-d', strtotime($user['birthDate'])) : ''; ?>">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6 col-lg-3">
+                                        <label for="country" class="form-label fw-semibold text-dark small ps-2">País</label>
+                                        <div class="input-group custom-input-group">
+                                            <span class="input-group-text ps-3"><i class="bi bi-geo-alt-fill"></i></span>
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                id="country"
+                                                name="country"
+                                                value="<?= htmlspecialchars($user['country'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                                                disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6 col-lg-2">
+                                        <label for="prefix" class="form-label fw-semibold text-dark small ps-2">Prefijo</label>
+                                        <div class="input-group custom-input-group">
+                                            <span class="input-group-text ps-3"><i class="bi bi-telephone-plus-fill"></i></span>
+                                            <input
+                                                type="text"
+                                                class="form-control text-center"
+                                                id="prefix"
+                                                name="prefix"
+                                                value="<?= htmlspecialchars($user['prefix'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                                                disabled>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6 col-lg-3">
+                                        <label for="phone" class="form-label fw-semibold text-dark small ps-2">Número de Teléfono</label>
+                                        <div class="input-group custom-input-group">
+                                            <span class="input-group-text ps-3"><i class="bi bi-phone-fill"></i></span>
+                                            <input
+                                                type="text"
+                                                class="form-control fw-bold"
+                                                id="phone"
+                                                name="phone"
+                                                placeholder="Ej: 987654321"
+                                                value="<?= htmlspecialchars($user['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
+
+                        <!-- SEGURIDAD -->
+                        <div class="tab-pane fade" id="account-content" role="tabpanel">
+                            <div class="row g-4">
+
+                                <!-- Tarjeta de Info  -->
+                                <div class="col-lg-4">
+                                    <div class="card border-0 text-white h-100 rounded-4 shadow-sm" style="background: linear-gradient(160deg, #198754 0%, #0f5132 100%);">
+                                        <div class="card-body p-4 text-center d-flex flex-column justify-content-center align-items-center">
+                                            <div class="bg-white bg-opacity-25 rounded-circle p-3 mb-3">
+                                                <i class="bi bi-shield-check fs-1"></i>
+                                            </div>
+                                            <h5 class="fw-bold">Zona Segura</h5>
+                                            <p class="small text-white-50 mb-0">Protege tu cuenta con una contraseña segura.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Formulario de Cambio-->
+                                <div class="col-lg-8">
+                                    <div class="bg-white p-4 rounded-4 shadow-sm border border-light h-100">
+
+                                        <!-- Alerta Mensajes -->
+                                        <div id="msg-container-pass" class="d-none mb-3">
+                                            <div id="msg-alert-pass" class="alert border-0 rounded-3 py-2 px-3 d-flex align-items-center" role="alert">
+                                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                                <span id="msg-text-pass" class="small fw-semibold"></span>
+                                            </div>
+                                        </div>
+
+                                        <!-- USUARIO -->
+                                        <div class="mb-4">
+                                            <label for="username" class="form-label fw-bold text-dark small">Usuario</label>
+                                            <div class="input-group custom-input-group">
+                                                <span class="input-group-text ps-3"><i class="bi bi-person-circle"></i></span>
+                                                <input
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="username"
+                                                    name="username"
+                                                    value="<?= htmlspecialchars($user['user'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                                                    placeholder="Nombre de usuario">
+                                            </div>
+                                        </div>
+
+                                        <hr class="text-muted opacity-25 my-4">
+
+                                        <!-- Paso 1 -->
+                                        <div class="mb-4">
+                                            <label for="currentPassword" class="form-label fw-bold text-dark small">1. Validar Contraseña Actual</label>
+                                            <div class="input-group custom-input-group">
+                                                <span class="input-group-text ps-3"><i class="bi bi-key-fill"></i></span>
+                                                <input
+                                                    type="password"
+                                                    class="form-control"
+                                                    id="currentPassword"
+                                                    name="currentPassword"
+                                                    placeholder="••••••••">
+                                                <button class="btn btn-light text-success fw-bold px-3" type="button" id="btnVerifyPassword">VALIDAR</button>
+                                                <button class="btn btn-light text-danger px-3 d-none" type="button" id="btnCancelPasswordChange">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Paso 2 -->
+                                        <div id="newPasswordSection" style="transition: all 0.3s ease;">
+                                            <label class="form-label fw-bold text-dark small">2. Crear Nueva Contraseña</label>
+
+                                            <div class="row g-2">
+                                                <div class="col-md-6">
+                                                    <div class="input-group custom-input-group bg-light">
+                                                        <span class="input-group-text ps-3"><i class="bi bi-lock-fill"></i></span>
+                                                        <input
+                                                            type="password"
+                                                            class="form-control bg-light"
+                                                            id="newPassword"
+                                                            name="newPassword"
+                                                            placeholder="Nueva Clave"
+                                                            disabled>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="input-group custom-input-group bg-light">
+                                                        <span class="input-group-text ps-3"><i class="bi bi-check-circle-fill"></i></span>
+                                                        <input
+                                                            type="password"
+                                                            class="form-control bg-light"
+                                                            id="confirmNewPassword"
+                                                            name="confirmNewPassword"
+                                                            placeholder="Confirmar"
+                                                            disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Mensaje de coincidencia-->
+                                            <div id="matchPassWrap" class="mt-2 d-none">
+                                                <div id="matchPassAlert" class="alert py-2 px-3 mb-0 small rounded-3 d-flex align-items-center" role="alert">
+                                                    <i id="matchPassIcon" class="bi me-2"></i>
+                                                    <span id="matchPassText" class="fw-semibold"></span>
+                                                </div>
+                                            </div>
+
+                                            <div class="mt-2 text-end">
+                                                <small class="text-muted" style="font-size: 0.75rem;">Mínimo 8 caracteres</small>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save me-1"></i>Guardar cambios
+                <div class="modal-footer border-0 pt-0 pb-4 px-4 bg-light bg-opacity-25 rounded-bottom-4 justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold border-0" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-success rounded-pill px-5 fw-bold shadow-sm">
+                        <i class="bi bi-floppy2-fill me-2"></i>Guardar Cambios
                     </button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
+
+
 
 
 <?= footerPos($data) ?>
