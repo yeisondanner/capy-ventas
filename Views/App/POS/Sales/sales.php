@@ -238,11 +238,11 @@ headerPos($data); ?>
 <div class="modal fade" id="modalCobro" tabindex="-1" aria-labelledby="modalCobroLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalCobroLabel">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title text-white" id="modalCobroLabel">
                     <i class="bi bi-cash-stack me-2"></i> Confirmar cobro
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <!-- Total que viene del paso 3 -->
@@ -255,12 +255,13 @@ headerPos($data); ?>
 
                 <!-- Monto con el que paga el cliente -->
                 <div class="mb-3" id="divMontoPaga">
-                    <label class="form-label small">Con cuánto está pagando</label>
+                    <label class="form-label small fw-semibold">Con cuánto está pagando</label>
                     <div class="input-group">
                         <span class="input-group-text">S/</span>
                         <input type="number" class="form-control text-end" id="montoPaga" min="0" step="0.10"
                             placeholder="0.00">
                     </div>
+                    <span class="small text-muted"><i class="bi bi-info-circle"></i> Ingrese un el monto que el cliente está pagando, para calcular el vuelto.</span>
                 </div>
 
                 <!-- Cálculo del vuelto -->
@@ -286,9 +287,15 @@ headerPos($data); ?>
 <div class="modal fade" id="modalPostVenta" tabindex="-1" aria-labelledby="modalPostVentaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-success">
                 <!-- Encabezado visual tipo comprobante/voucher -->
-                <h5 class="modal-title w-100 text-center" id="modalPostVentaLabel">
+                <h5 class="modal-title text-white" id="modalPostVentaLabel">
+                    <i class="bi bi-check-circle me-2"></i> Venta completada
+                </h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <h5 class="text-center fw-semibold mb-3">
                     <div class="mb-2">
                         <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
                             <i class="bi bi-check-circle-fill me-1"></i> Venta completada
@@ -296,13 +303,10 @@ headerPos($data); ?>
                     </div>
                     <div class="fw-semibold text-dark mt-1">Comprobante de pago</div>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <p class="mb-2">¿Quieres darle un nombre a esta venta?</p>
+                <p class="mb-2 fw-semibold">¿Quieres darle un nombre a esta venta?</p>
 
                 <!-- Nombre opcional para identificar la venta luego -->
-                <div class="mb-3">
+                <div class="mb-5">
                     <label class="form-label form-label-sm small">Nombre de la venta (opcional)</label>
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control" id="nombreVenta"
@@ -329,10 +333,6 @@ headerPos($data); ?>
                 <!-- <div class="d-flex flex-wrap gap-2 justify-content-center"> ... </div> -->
             </div>
             <div class="modal-footer justify-content-center border-top-0 pt-0 pb-4">
-                <button type="button" class="btn btn-light text-secondary border-0" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i> Cerrar
-                </button>
-                <div class="vr mx-2 text-muted"></div>
                 <button type="button" class="btn btn-outline-dark" id="btnPrintVoucher">
                     <i class="bi bi-printer me-1"></i> Imprimir
                 </button>
