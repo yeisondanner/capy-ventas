@@ -660,7 +660,7 @@ export class Account {
                                         <span class="input-group-text text-muted">
                                             <i class="bi bi-person-fill"></i>
                                         </span>
-                                        <input id="username" name="username" type="text" class="form-control" placeholder="Ingrese un nombre de usuario" required minlength="6" maxlength="10" pattern="[a-zA-Z0-9_-]">
+                                        <input id="username" name="username" type="text" class="form-control" placeholder="Ingrese un nombre de usuario" required minlength="6" maxlength="10">
                                     </div>
                                     <div class="form-text">El nombre de usuario debe tener entre <b>6</b> y <b>10</b> caracteres y solo <b>puede contener letras, números, guiones bajos y guiones medios.</b></div>
                                 </div>

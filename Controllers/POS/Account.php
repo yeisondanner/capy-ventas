@@ -244,7 +244,6 @@ class Account extends Controllers
 				"status" => false
 			]);
 		}
-		die();
 		// * Primero creamos la persona con los datos
 		$people = $this->model->createPeople(mb_strtoupper($names, 'UTF-8'), mb_strtoupper($lastname, 'UTF-8'), encryption($email), $date_of_birth, $country, $telephone_prefix, $phone_number);
 		if ($people <= 0) {
