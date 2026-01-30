@@ -53,7 +53,6 @@ class Roles extends Controllers
      */
     public function getRoles(): void
     {
-        validate_permission_app(6, "r", false, false, false);
         $businessId = $this->getBusinessId();
         $roles      = $this->model->selectRoles($businessId);
         $counter    = 1;
@@ -107,7 +106,7 @@ class Roles extends Controllers
     public function setRole(): void
     {
         //VALIDACION DE PERMISOS
-        validate_permission_app(6, "c", false, false, false);
+        (!validate_permission_app(6, "c", false)['status']) ? toJson(validate_permission_app(6, "c", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -345,7 +344,7 @@ class Roles extends Controllers
     public function updateRole(): void
     {
         //VALIDACION DE PERMISOS
-        validate_permission_app(6, "u", false, false, false);
+        (!validate_permission_app(6, "u", false)['status']) ? toJson(validate_permission_app(6, "u", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -442,7 +441,7 @@ class Roles extends Controllers
     public function deleteRole(): void
     {
         //VALIDACION DE PERMISOS
-        validate_permission_app(6, "d", false, false, false);
+        (!validate_permission_app(6, "d", false)['status']) ? toJson(validate_permission_app(6, "d", false)) : '';
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }

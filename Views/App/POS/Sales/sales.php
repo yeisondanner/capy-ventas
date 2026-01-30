@@ -19,12 +19,7 @@ headerPos($data); ?>
                     <button class="btn btn-primary btn-nav" data-header="0" id="btnOpenModalMovement">
                         <i class="bi bi-rocket"></i> Venta rápida <i class="bi bi-cash-coin ms-1"></i>
                     </button>
-                    <button class="btn btn-danger btn-nav" id="" onclick="showAlert({
-                        icon: 'info',
-                        title: 'Información',
-                        message: 'Funcionalidad en desarrollo',
-                        position: 'bottom',
-                    }, 'float')">
+                    <button class="btn btn-danger btn-nav"  data-header="0" id="btnOpenModalRetireCash">
                         <i class="bi bi-trash"></i> Gasto <i class="bi bi-cash-coin ms-1"></i>
                     </button>
                 </div>

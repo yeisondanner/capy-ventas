@@ -48,7 +48,7 @@ class BoxModel extends Mysql
     // ? Funciones get
     public function getUsingBox(int $boxId, string $status)
     {
-        $this->boxId = $boxId;
+       $this->boxId = $boxId;
         $this->status = $status;
         $sql = <<<SQL
             SELECT
@@ -59,6 +59,7 @@ class BoxModel extends Mysql
         SQL;
 
         return $this->select($sql, [$this->boxId, $this->status]);
+
     }
 
     public function getBox(int $boxId)
@@ -449,6 +450,7 @@ class BoxModel extends Mysql
         SQL;
         return (int) $this->insert($sql, [$this->nameCustomer, $this->directionCustomer, $this->nameBussines, $this->documentBussines, $this->directionBussines, $this->dateTime, $this->amount, $this->taxName, $this->taxPercentage , $this->tax_amount, $this->voucherName, $this->paymentMethod, $this->businessId, $this->userId]);
     }
+
 
     // ? Funciones update
     public function updateCloseSession(int $boxSessionsId, string $closingDate, $notes, string $status): bool

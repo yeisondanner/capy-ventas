@@ -100,17 +100,37 @@ export class Box {
     this.#verificarEstadoCaja();
     this.#iniciarReloj();
     this.#configurarEventosEstaticos();
+
   }
 
   // ==========================================
   // 3. INICIALIZACIÓN Y CONFIGURACIÓN
   // ==========================================
 
-  #verificarEstadoCaja = async () => {
-    const response = await this.apiBox.get("getuserCheckedBox");
-    const htmlBoton = response.status
-      ? this.#generarBotonAperturaHtml()
-      : this.#generarBotonGestionHtml();
+
+    #verificarEstadoCaja = async () => {
+      //limpiamos el contenedor antes de la consulta
+      this.#divOpenBox.html("");
+
+      const response = await this.apiBox.get("getuserCheckedBox");
+
+      let htmlBoton = "";
+
+    //const htmlBoton = response.status
+    /*  ? this.#generarBotonAperturaHtml()
+      : this.#generarBotonGestionHtml();*/
+
+        //si el negocio requiere aperturar caja es pro entonces requiresbox es true
+        if(response.requiresbox){
+            //si el negocio es true, el usuario puede abrir una caja
+            //si el negocio es false, el usuario ya tiene abierta una caja
+            htmlBoton = response.status
+                ? this.#generarBotonAperturaHtml()
+                : this.#generarBotonGestionHtml();
+        }else{
+            //si el negocio es free no muestra nada
+            htmlBoton = "";
+        }
 
     this.#divOpenBox.html(htmlBoton);
     this.#activarListenersDinamicos();
@@ -393,7 +413,7 @@ export class Box {
       });
 
     if (!description) description = null;
-    if (!retire_name) retire_name = "Gasto sin nombre";
+    if (!retire_name) retire_name = "Gasto sin nombre"; // falta agregar la fecha
 
     const params = {
       amount: amount,
@@ -410,15 +430,26 @@ export class Box {
     const response = await this.apiBox.post("setExpense", params);
 
     console.log(response);
-    
 
     if (response.status) {
-      // this.#modalMovementBox.modal("hide");
-      // if (response.status_expense_header === 1) {
-      //   this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
-      // }
+        //LIMPIAMOS los campos
+        this.#inputRetireAmount.val("");
+        this.#inputRetireDate.val("");
+        this.#inputRetireDescription.val("");
+        this.#inputRetireName.val("");
+
+        this.#selectRetireSupplier.val("").trigger("change");
+        this.#selectRetireExpenseCategory.val("").trigger("change");
+        this.#selectRetirePaymentMethod.val("").trigger("change");
+
+        //cierra el modal
+       this.#modalRetireMovementBox.modal("hide");
+
+       if (response.status_expense_header === 1) {
+       this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
+      }
     }
-    // this.#mostrarAlerta(response);
+    this.#mostrarAlerta(response);
   };
 
   // ==========================================

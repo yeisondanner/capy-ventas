@@ -35,7 +35,6 @@ export class Roles {
   // TODO: Funcion para mostrar los roles
   #initTable = () => {
     this.#rolesTable = $("#rolesTable").DataTable({
-      processing: true,
       ajax: (data, callback, settings) => {
         this.apiRoles
           .get("getRoles")
@@ -54,6 +53,8 @@ export class Roles {
         { data: "actions", orderable: false, searchable: false },
         { data: "name" },
         { data: "description" },
+        { data: "status", orderable: false },
+        { data: "updated_at" },
       ],
       dom: "lBfrtip",
       buttons: [
@@ -61,21 +62,21 @@ export class Roles {
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
           className: "btn btn-sm btn-outline-secondary",
-          exportOptions: { columns: [0, 2, 3] },
+          exportOptions: { columns: [0, 2, 3, 4, 5] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
           className: "btn btn-sm btn-outline-success",
           title: "Roles",
-          exportOptions: { columns: [0, 2, 3] },
+          exportOptions: { columns: [0, 2, 3, 4, 5] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
           className: "btn btn-sm btn-outline-info",
           title: "Roles",
-          exportOptions: { columns: [0, 2, 3] },
+          exportOptions: { columns: [0, 2, 3, 4, 5] },
         },
         {
           extend: "pdfHtml5",
@@ -84,14 +85,15 @@ export class Roles {
           orientation: "portrait",
           pageSize: "A4",
           title: "Roles",
-          exportOptions: { columns: [0, 2, 3] },
+          exportOptions: { columns: [0, 2, 3, 4, 5] },
         },
       ],
       columnDefs: [
-        { targets: [0, 1], className: "text-center" },
+        { targets: [0, 1, 4, 5], className: "text-center" },
         { targets: 3, className: "text-wrap" },
       ],
-      keyTable: true,
+      responsive: true,
+      processing: true,
       destroy: true,
       colReorder: true,
       stateSave: true,
@@ -563,15 +565,10 @@ export class Roles {
             this.#modalAddRole.modal("hide");
           }
           showAlert({
-            icon: response.type ?? response.icon,
+            icon: response.type,
             title: response.title,
             message: response.message,
           });
-          if (response.url) {
-            setTimeout(() => {
-              window.location.href = response.url;
-            }, 1000);
-          }
         });
     });
   };

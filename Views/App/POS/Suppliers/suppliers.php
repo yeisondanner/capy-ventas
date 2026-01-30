@@ -37,6 +37,7 @@
                                     <th>Documento</th>
                                     <th>Teléfono</th>
                                     <th>Correo</th>
+                                    <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -63,43 +64,28 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="txtSupplierDocument" class="form-label">Documento</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                            <input type="text" class="form-control" id="txtSupplierDocument" name="txtSupplierDocument" maxlength="15"
-                                placeholder="Número de documento" pattern="[0-9]{8,15}" title="Solo se permiten números (8-15 dígitos)">
-                        </div>
+                        <input type="text" class="form-control" id="txtSupplierDocument" name="txtSupplierDocument" maxlength="11"
+                            placeholder="Número de documento">
                     </div>
                     <div class="col-md-6">
                         <label for="txtSupplierName" class="form-label">Nombre <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-building"></i></span>
-                            <input type="text" class="form-control" id="txtSupplierName" name="txtSupplierName" maxlength="255" required
-                                placeholder="Nombre comercial del proveedor" pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+" title="Solo se permiten letras y espacios">
-                        </div>
+                        <input type="text" class="form-control" id="txtSupplierName" name="txtSupplierName" maxlength="255" required
+                            placeholder="Nombre comercial del proveedor">
                     </div>
                     <div class="col-md-6">
                         <label for="txtSupplierPhone" class="form-label">Teléfono</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                            <input type="text" class="form-control" id="txtSupplierPhone" name="txtSupplierPhone" maxlength="15"
-                                placeholder="Número de contacto" pattern="[0-9]{9,15}" title="Solo se permiten números (9-15 dígitos)">
-                        </div>
+                        <input type="text" class="form-control" id="txtSupplierPhone" name="txtSupplierPhone" maxlength="11"
+                            placeholder="Número de contacto">
                     </div>
                     <div class="col-md-6">
                         <label for="txtSupplierEmail" class="form-label">Correo electrónico</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                            <input type="email" class="form-control" id="txtSupplierEmail" name="txtSupplierEmail" maxlength="255"
-                                placeholder="correo@ejemplo.com" title="Ingrese un correo electrónico válido">
-                        </div>
+                        <input type="email" class="form-control" id="txtSupplierEmail" name="txtSupplierEmail" maxlength="255"
+                            placeholder="correo@ejemplo.com">
                     </div>
                     <div class="col-12">
                         <label for="txtSupplierAddress" class="form-label">Dirección</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                            <input type="text" class="form-control" id="txtSupplierAddress" name="txtSupplierAddress" maxlength="255"
-                                placeholder="Dirección o información adicional del proveedor">
-                        </div>
+                        <textarea class="form-control" id="txtSupplierAddress" name="txtSupplierAddress" rows="3"
+                            placeholder="Dirección o información adicional del proveedor"></textarea>
                     </div>
                 </div>
             </div>
