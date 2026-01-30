@@ -29,11 +29,6 @@ class Box extends Controllers
     // TODO: funcion para validar
     private function validateBoxIfRequired(): ?array  //si retorna null o array
     {
-        // Validamos que no que no sea un plan free
-        $idPlan = 1;
-        if($idPlan === 1){
-            return null; // no se requiere caja
-        }
 
         //si el plan es free no se requiere caja abierta
         //validamos si desde el inicio de sesión se requiere una caja aperturada
@@ -45,6 +40,16 @@ class Box extends Controllers
 
         $userId = $this->getUserId(); //id del usuario logueado
         $businessId = $this->getBusinessId(); //id del negocio activo
+
+        //validamos que el negocio exista
+        $business = $this->model->select(
+            "SELECT idBusiness FROM business WHERE idBusiness = ? LIMIT 1",
+            [$businessId]
+        );
+
+        if (empty($business)) {
+            $this->responseError("El negocio no existe.");
+        }
 
         $boxSessions = $this->model->getBoxSessionsByUserId($userId); //buscamos en la bd si el uuario tiene una caja abierta
 
@@ -63,6 +68,7 @@ class Box extends Controllers
         $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
         return null;
     }
+
 
     // TODO: Endpoint para mostrar todas las cajas diponibles del negocio
     public function getBoxs()

@@ -473,4 +473,24 @@ class BoxModel extends Mysql
     }
 
     // ? Funciones delete
+
+    public function getBusinessPlan(int $businessId)
+    {
+        $sql = "SELECT 
+                s.plan_id,
+                p.name,
+                p.description,
+                s.status as subscription_status
+            FROM business b
+            INNER JOIN subscriptions s ON s.user_app_id = b.userapp_id 
+            INNER JOIN plans p ON p.idPlan = s.plan_id
+            WHERE b.idBusiness = ? AND s.status = 'active'
+            LIMIT 1";
+
+
+        return $this->select($sql, [$businessId]);
+    }
+
+
 }
+
