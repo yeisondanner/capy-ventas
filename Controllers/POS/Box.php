@@ -505,33 +505,20 @@ class Box extends Controllers
         $raw = file_get_contents('php://input');
         $data = json_decode($raw, true);
 
-<<<<<<< HEAD
-        if(!$data){
-=======
+
         if (!$data) {
->>>>>>> main
             $this->responseError("JSON inválido");
         }
 
         $description = strClean($data["description"]);
         $date = strClean($data["date"]);
-<<<<<<< HEAD
-        $amount = (float) strClean($data["amount"]);
-        $expense_name = trim (strClean($data["expense_name"] ?? ''));
-        $expense_category = (int) strClean($data["expense_category"]);
-        $supplier = (int) strClean($data["supplier"]);
-        $payment_method = (int) strClean($data["payment_method"]);
-        $status_expense_header = (int) $data["status_expense_header"];
-=======
+
         $amount = (float)strClean($data["amount"]);
         $expense_name = trim(strClean($data["expense_name"] ?? ''));
         $expense_category = (int)strClean($data["expense_category"]);
         $supplier = (int)strClean($data["supplier"]);
         $payment_method = (int)strClean($data["payment_method"]);
         $status_expense_header = (int)$data["status_expense_header"];
-
-        $type_movement = "Egreso";
->>>>>>> main
 
         $type_movement = "Egreso";
 
@@ -559,7 +546,6 @@ class Box extends Controllers
         $userId = $this->getUserId();
         // * Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
-<<<<<<< HEAD
 
         //validamos que las funciones no devuelvan null
         if(!$userId || !$businessId){
@@ -572,8 +558,6 @@ class Box extends Controllers
         if ($openBox === "Si" && !$boxSessions) {
             $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
         }
-=======
->>>>>>> main
 
         //validación de bloqueo
         $boxSessions = $this->validateBoxIfRequired();
@@ -613,9 +597,7 @@ class Box extends Controllers
         // * Consultamos la fecha y hora actual
         $fecha_actual = date('Y-m-d H:i:s');
 
-
         // TODO: FALTA TERMINAR ESTO, ME FUI PORQUE TENIA SueÑO
-<<<<<<< HEAD
         // toJson("aqui");
         //obtenemos el nombre del metodo de pago
         $pm = $issetPaymentMethod;
@@ -641,7 +623,7 @@ class Box extends Controllers
             $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, $issetPaymentMethod["name"], "voucher_header", $voucher);
             if (!$movement_box) {
                 $this->responseError('Error al registrar el ' . $type_movement . ' de caja.');
-=======
+
         //obtenemos el nombre del metodo de pago
 
         if ($boxSessions) {
@@ -662,7 +644,6 @@ class Box extends Controllers
 
             if (!$movement) {
                 $this->responseError("Error al registrar el movimiento en la caja.");
->>>>>>> main
             }
         }*/
 
