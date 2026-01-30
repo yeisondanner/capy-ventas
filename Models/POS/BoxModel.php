@@ -48,7 +48,7 @@ class BoxModel extends Mysql
     // ? Funciones get
     public function getUsingBox(int $boxId, string $status)
     {
-        $this->boxId = $boxId;
+       $this->boxId = $boxId;
         $this->status = $status;
         $sql = <<<SQL
             SELECT
@@ -59,6 +59,7 @@ class BoxModel extends Mysql
         SQL;
 
         return $this->select($sql, [$this->boxId, $this->status]);
+
     }
 
     public function getBox(int $boxId)

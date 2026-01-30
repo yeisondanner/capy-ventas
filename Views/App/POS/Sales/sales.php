@@ -19,7 +19,11 @@ headerPos($data); ?>
                     <button class="btn btn-primary btn-nav" data-header="0" id="btnOpenModalMovement">
                         <i class="bi bi-rocket"></i> Venta rápida <i class="bi bi-cash-coin ms-1"></i>
                     </button>
+<<<<<<< HEAD
                     <button class="btn btn-danger btn-nav"  data-header="0" id="btnSaveRetireCash">
+=======
+                    <button class="btn btn-danger btn-nav"  data-header="0" id="btnOpenModalRetireCash">
+>>>>>>> main
                         <i class="bi bi-trash"></i> Gasto <i class="bi bi-cash-coin ms-1"></i>
                     </button>
                 </div>
