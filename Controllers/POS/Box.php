@@ -26,9 +26,15 @@ class Box extends Controllers
         $this->nameVarLoginInfo = $sessionName . 'login_info';
     }
 
-    //funcion para validar
+    // TODO: funcion para validar
     private function validateBoxIfRequired(): ?array  //si retorna null o array
     {
+        // Validamos que no que no sea un plan free
+        $idPlan = 1;
+        if($idPlan === 1){
+            return null; // no se requiere caja
+        }
+
         //si el plan es free no se requiere caja abierta
         //validamos si desde el inicio de sesión se requiere una caja aperturada
         $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
@@ -57,6 +63,7 @@ class Box extends Controllers
         $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
         return null;
     }
+
     // TODO: Endpoint para mostrar todas las cajas diponibles del negocio
     public function getBoxs()
     {
