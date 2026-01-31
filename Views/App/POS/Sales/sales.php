@@ -174,14 +174,27 @@ headerPos($data); ?>
                                 </div>
                                 <!-- Datos básicos de la venta -->
                                 <div class="row g-2 align-items-end">
-                                    <div class="col-12 col-sm-6">
+                                    <div class="col-12">
+                                        <label class="form-label form-label-sm mb-1 small d-block">Tipo de venta</label>
+                                        <div class="btn-group w-100" role="group">
+                                            <input type="radio" class="btn-check" name="saleType" id="saleTypeContado" value="Contado" checked autocomplete="off">
+                                            <label class="btn btn-outline-success" for="saleTypeContado">
+                                                <i class="bi bi-cash-stack me-1"></i> Contado
+                                            </label>
+                                            <input type="radio" class="btn-check" name="saleType" id="saleTypeCredito" value="Credito" autocomplete="off">
+                                            <label class="btn btn-outline-danger" for="saleTypeCredito">
+                                                <i class="bi bi-credit-card me-1"></i> Crédito
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-sm-6" id="fechaVentaContainer">
                                         <label class="form-label form-label-sm mb-1 small">Fecha de venta</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-calendar"></i></span>
                                             <input type="date" id="fechaVenta" class="form-control">
                                         </div>
                                     </div>
-                                    <div class="col-12 col-sm-6">
+                                    <div class="col-12 col-sm-6" id="paymentMethodContainer">
                                         <label class="form-label form-label-sm mb-1 small">Medio de pago</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-cash-stack"></i></span>
@@ -233,11 +246,11 @@ headerPos($data); ?>
 <div class="modal fade" id="modalCobro" tabindex="-1" aria-labelledby="modalCobroLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalCobroLabel">
+            <div class="modal-header bg-info">
+                <h5 class="modal-title text-white" id="modalCobroLabel">
                     <i class="bi bi-cash-stack me-2"></i> Confirmar cobro
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
                 <!-- Total que viene del paso 3 -->
@@ -249,13 +262,14 @@ headerPos($data); ?>
                 </div>
 
                 <!-- Monto con el que paga el cliente -->
-                <div class="mb-3">
-                    <label class="form-label small">Con cuánto está pagando</label>
+                <div class="mb-3" id="divMontoPaga">
+                    <label class="form-label small fw-semibold">Con cuánto está pagando</label>
                     <div class="input-group">
                         <span class="input-group-text">S/</span>
                         <input type="number" class="form-control text-end" id="montoPaga" min="0" step="0.10"
                             placeholder="0.00">
                     </div>
+                    <span class="small text-muted"><i class="bi bi-info-circle"></i> Ingrese un el monto que el cliente está pagando, para calcular el vuelto.</span>
                 </div>
 
                 <!-- Cálculo del vuelto -->
@@ -281,9 +295,15 @@ headerPos($data); ?>
 <div class="modal fade" id="modalPostVenta" tabindex="-1" aria-labelledby="modalPostVentaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-success">
                 <!-- Encabezado visual tipo comprobante/voucher -->
-                <h5 class="modal-title w-100 text-center" id="modalPostVentaLabel">
+                <h5 class="modal-title text-white" id="modalPostVentaLabel">
+                    <i class="bi bi-check-circle me-2"></i> Venta completada
+                </h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <h5 class="text-center fw-semibold mb-3">
                     <div class="mb-2">
                         <span class="badge rounded-pill bg-success-subtle text-success px-3 py-2">
                             <i class="bi bi-check-circle-fill me-1"></i> Venta completada
@@ -291,13 +311,10 @@ headerPos($data); ?>
                     </div>
                     <div class="fw-semibold text-dark mt-1">Comprobante de pago</div>
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body">
-                <p class="mb-2">¿Quieres darle un nombre a esta venta?</p>
+                <p class="mb-2 fw-semibold">¿Quieres darle un nombre a esta venta?</p>
 
                 <!-- Nombre opcional para identificar la venta luego -->
-                <div class="mb-3">
+                <div class="mb-5">
                     <label class="form-label form-label-sm small">Nombre de la venta (opcional)</label>
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control" id="nombreVenta"
@@ -324,10 +341,6 @@ headerPos($data); ?>
                 <!-- <div class="d-flex flex-wrap gap-2 justify-content-center"> ... </div> -->
             </div>
             <div class="modal-footer justify-content-center border-top-0 pt-0 pb-4">
-                <button type="button" class="btn btn-light text-secondary border-0" data-bs-dismiss="modal">
-                    <i class="bi bi-x-circle me-1"></i> Cerrar
-                </button>
-                <div class="vr mx-2 text-muted"></div>
                 <button type="button" class="btn btn-outline-dark" id="btnPrintVoucher">
                     <i class="bi bi-printer me-1"></i> Imprimir
                 </button>
@@ -442,7 +455,8 @@ headerPos($data); ?>
                     <!-- System Footer -->
                     <div class="row mt-4">
                         <div class="col-12 text-center d-flex align-items-center justify-content-center">
-                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
+                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo"
+                                style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
                             <small class="text-muted fst-italic">Generado por Capy Ventas</small>
                         </div>
                     </div>
