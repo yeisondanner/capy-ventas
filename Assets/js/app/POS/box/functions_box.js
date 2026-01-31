@@ -100,37 +100,28 @@ export class Box {
     this.#verificarEstadoCaja();
     this.#iniciarReloj();
     this.#configurarEventosEstaticos();
-
   }
 
   // ==========================================
   // 3. INICIALIZACIÓN Y CONFIGURACIÓN
   // ==========================================
 
-
-    #verificarEstadoCaja = async () => {
-      //limpiamos el contenedor antes de la consulta
-      this.#divOpenBox.html("");
-
-      const response = await this.apiBox.get("getuserCheckedBox");
-
-      let htmlBoton = "";
-
-    //const htmlBoton = response.status
-    /*  ? this.#generarBotonAperturaHtml()
-      : this.#generarBotonGestionHtml();*/
-
-        //si el negocio requiere aperturar caja es pro entonces requiresbox es true
-        if(response.requiresbox){
-            //si el negocio es true, el usuario puede abrir una caja
-            //si el negocio es false, el usuario ya tiene abierta una caja
-            htmlBoton = response.status
-                ? this.#generarBotonAperturaHtml()
-                : this.#generarBotonGestionHtml();
-        }else{
-            //si el negocio es free no muestra nada
-            htmlBoton = "";
-        }
+  #verificarEstadoCaja = async () => {
+    //limpiamos el contenedor antes de la consulta
+    this.#divOpenBox.html("");
+    const response = await this.apiBox.get("getuserCheckedBox");
+    let htmlBoton = "";
+    //si el negocio requiere aperturar caja es pro entonces requiresbox es true
+    if (response.requiresbox) {
+      //si el negocio es true, el usuario puede abrir una caja
+      //si el negocio es false, el usuario ya tiene abierta una caja
+      htmlBoton = response.status_box
+        ? this.#generarBotonGestionHtml()
+        : this.#generarBotonAperturaHtml();
+    } else {
+      //si el negocio es free no muestra nada
+      htmlBoton = "";
+    }
 
     this.#divOpenBox.html(htmlBoton);
     this.#activarListenersDinamicos();
@@ -432,21 +423,21 @@ export class Box {
     console.log(response);
 
     if (response.status) {
-        //LIMPIAMOS los campos
-        this.#inputRetireAmount.val("");
-        this.#inputRetireDate.val("");
-        this.#inputRetireDescription.val("");
-        this.#inputRetireName.val("");
+      //LIMPIAMOS los campos
+      this.#inputRetireAmount.val("");
+      this.#inputRetireDate.val("");
+      this.#inputRetireDescription.val("");
+      this.#inputRetireName.val("");
 
-        this.#selectRetireSupplier.val("").trigger("change");
-        this.#selectRetireExpenseCategory.val("").trigger("change");
-        this.#selectRetirePaymentMethod.val("").trigger("change");
+      this.#selectRetireSupplier.val("").trigger("change");
+      this.#selectRetireExpenseCategory.val("").trigger("change");
+      this.#selectRetirePaymentMethod.val("").trigger("change");
 
-        //cierra el modal
-       this.#modalRetireMovementBox.modal("hide");
+      //cierra el modal
+      this.#modalRetireMovementBox.modal("hide");
 
-       if (response.status_expense_header === 1) {
-       this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
+      if (response.status_expense_header === 1) {
+        this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
       }
     }
     this.#mostrarAlerta(response);
