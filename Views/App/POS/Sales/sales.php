@@ -13,15 +13,17 @@ headerPos($data); ?>
     </div>
 
     <div class="row g-2 p-0 pos-steps-row">
-        <div class="col-12 row justify-content-end p-0">
-            <div class="col-12 col-md-4">
-                <div class="btn-group w-100 p-0">
-                    <button class="btn btn-primary btn-nav" data-header="0" id="btnOpenModalMovement">
-                        <i class="bi bi-rocket"></i> Venta rápida <i class="bi bi-cash-coin ms-1"></i>
-                    </button>
-                    <button class="btn btn-danger btn-nav"  data-header="0" id="btnOpenModalRetireCash">
-                        <i class="bi bi-trash"></i> Gasto <i class="bi bi-cash-coin ms-1"></i>
-                    </button>
+        <div class="col-12 container">
+            <div class="row justify-content-md-end p-0">
+                <div class="col-12 col-lg-4">
+                    <div class=" btn-group w-100">
+                        <button class="btn btn-primary btn-nav" data-header="0" id="btnOpenModalMovement">
+                            <i class="bi bi-rocket"></i> Venta rápida <i class="bi bi-cash-coin ms-1"></i>
+                        </button>
+                        <button class="btn btn-danger btn-nav" data-header="0" id="btnOpenModalRetireCash">
+                            <i class="bi bi-trash"></i> Gasto <i class="bi bi-cash-coin ms-1"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -183,7 +185,7 @@ headerPos($data); ?>
                                             </label>
                                             <input type="radio" class="btn-check" name="saleType" id="saleTypeCredito" value="Credito" autocomplete="off">
                                             <label class="btn btn-outline-danger" for="saleTypeCredito">
-                                                <i class="bi bi-credit-card me-1"></i> Crédito
+                                                <i class="bi bi-wallet2 me-1"></i> Crédito
                                             </label>
                                         </div>
                                     </div>

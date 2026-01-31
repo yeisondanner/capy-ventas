@@ -51,6 +51,8 @@
   const paymentMethodContainer = document.getElementById(
     "paymentMethodContainer",
   );
+  //obtenemos el todos los botones con la clase btn-cobrar
+  const btnCobrar = document.querySelectorAll(".btn-cobrar");
   let actualizarDesdeMonto = null;
   let actualizarDesdePorcentaje = null;
   let lastSaleId = null;
@@ -255,6 +257,11 @@
         if (saleTypeContado.checked) {
           paymentMethodContainer.classList.remove("d-none");
           fechaVentaContainer.classList.add("col-sm-6");
+          btnCobrar.forEach((btn) => {
+            btn.classList.remove("btn-danger");
+            btn.classList.add("btn-success");
+            btn.innerHTML = `<i class="bi bi-cash-stack me-1"></i> Cobrar`;
+          });
         }
       });
     }
@@ -263,6 +270,11 @@
         if (saleTypeCredito.checked) {
           paymentMethodContainer.classList.add("d-none");
           fechaVentaContainer.classList.remove("col-sm-6");
+          btnCobrar.forEach((btn) => {
+            btn.classList.remove("btn-success");
+            btn.classList.add("btn-danger");
+            btn.innerHTML = `<i class="bi bi-wallet2 me-1"></i> Guardar credito`;
+          });
         }
       });
     }
