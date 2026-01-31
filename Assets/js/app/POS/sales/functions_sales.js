@@ -43,7 +43,14 @@
   // Modal de cobro
   const btnFinalizarVenta = document.getElementById("btnFinalizarVenta");
   const spanResumenTotal = document.getElementById("resumenTotalVenta");
-
+  //variables de tipo de venta
+  const saleTypeContado = document.getElementById("saleTypeContado");
+  const saleTypeCredito = document.getElementById("saleTypeCredito");
+  //contenedores de los inputs
+  const fechaVentaContainer = document.getElementById("fechaVentaContainer");
+  const paymentMethodContainer = document.getElementById(
+    "paymentMethodContainer",
+  );
   let actualizarDesdeMonto = null;
   let actualizarDesdePorcentaje = null;
   let lastSaleId = null;
@@ -241,6 +248,23 @@
       const dd = String(hoy.getDate()).padStart(2, "0");
       // Usamos formato YYYY-MM-DD compatible con inputs type="date"
       inputFechaVenta.value = yyyy + "-" + mm + "-" + dd;
+    }
+    //--camibamos el comportamiento de acuerdo al tipo de venta
+    if (saleTypeContado) {
+      saleTypeContado.addEventListener("input", function () {
+        if (saleTypeContado.checked) {
+          paymentMethodContainer.classList.remove("d-none");
+          fechaVentaContainer.classList.add("col-sm-6");
+        }
+      });
+    }
+    if (saleTypeCredito) {
+      saleTypeCredito.addEventListener("input", function () {
+        if (saleTypeCredito.checked) {
+          paymentMethodContainer.classList.add("d-none");
+          fechaVentaContainer.classList.remove("col-sm-6");
+        }
+      });
     }
 
     /**
