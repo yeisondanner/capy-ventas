@@ -111,16 +111,13 @@ export class Box {
     this.#divOpenBox.html("");
     const response = await this.apiBox.get("getuserCheckedBox");
     let htmlBoton = "";
-    //const htmlBoton = response.status
-    /*  ? this.#generarBotonAperturaHtml()
-      : this.#generarBotonGestionHtml();*/
     //si el negocio requiere aperturar caja es pro entonces requiresbox es true
     if (response.requiresbox) {
       //si el negocio es true, el usuario puede abrir una caja
       //si el negocio es false, el usuario ya tiene abierta una caja
-      htmlBoton = response.status
-        ? this.#generarBotonAperturaHtml()
-        : this.#generarBotonGestionHtml();
+      htmlBoton = response.status_box
+        ? this.#generarBotonGestionHtml()
+        : this.#generarBotonAperturaHtml();
     } else {
       //si el negocio es free no muestra nada
       htmlBoton = "";

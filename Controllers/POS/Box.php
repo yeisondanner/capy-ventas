@@ -26,30 +26,91 @@ class Box extends Controllers
         $this->nameVarLoginInfo = $sessionName . 'login_info';
     }
 
+    public function getPlanOfBusiness()
+    {
+        // TODO: FALTA AGREGAR PERMISO
+        // * Consultamos el ID del usuario
+        $userId = $this->getUserId();
+
+        // * Consultamos el ID del negocio
+        $businessId = $this->getBusinessId();
+
+        // * Validamos si el usuario el dueño del negocio
+        $isOwner = $this->model->isUserOwnerOfBusiness($userId, $businessId);
+        $userIdOwner = $isOwner["userapp_id"] ?? null;
+
+        if (!$isOwner) {
+            // * Verificamos quien es el dueño del negocio
+            $ownerInfo = $this->model->getOwnerInfoByBusinessId($businessId);
+            $userIdOwner = $ownerInfo["userapp_id"] ?? null;
+        }
+
+        if (is_null($userIdOwner)) {
+            $this->responseError("Error de sistema"); // No se pudo validar el dueño del negocio.
+        }
+
+        // * Consultamos la fecha y hora del servidor
+        $fecha_actual = date('Y-m-d H:i:s');
+
+        // * Verificamos el plan del dueño del negocio
+        $planInfo = $this->model->getPlanInfoByUserId($userIdOwner, $fecha_actual);
+        // toJson($planInfo);
+        $planId = 1;
+        if (!empty($planInfo)) {
+            foreach ($planInfo as $key => $value) {
+                if ($value["plan_id"] > $planId) {
+                    $planId = $value["plan_id"];
+                }
+            }
+        }
+        // * Retornamos el ID del plan
+        // ? Recordemos que el plan 1 es el plan Free
+        return [
+            "status" => true,
+            'message' => 'Plan consultado correctamente.',
+            'plan_id' => $planId,
+            'user_id_owner' => $userIdOwner
+        ];
+    }
+
     // TODO: funcion para validar
-    private function validateBoxIfRequired(): ?array  //si retorna null o array
+    public function validateBoxIfRequired(): ?array  //si retorna null o array
     {
 
-        //si el plan es free no se requiere caja abierta
-        //validamos si desde el inicio de sesión se requiere una caja aperturada
+        // * validamos si desde el inicio de sesión se requiere una caja aperturada
         $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
 
         if ($openBox !== 'Si') {
-            return null; // no se requiere caja
+            toJson("no se requiere caja");
+            return null; // ? no se requiere caja
         }
 
         $userId = $this->getUserId(); //id del usuario logueado
         $businessId = $this->getBusinessId(); //id del negocio activo
 
-        //validamos que el negocio exista
-        $business = $this->model->select(
-            "SELECT idBusiness FROM business WHERE idBusiness = ? LIMIT 1",
-            [$businessId]
-        );
-
-        if (empty($business)) {
-            $this->responseError("El negocio no existe.");
+        // * Consultamos las cajas existentes del negocio
+        $boxs = $this->model->getBoxs($businessId);
+        if (empty($boxs)) {
+            $this->responseError("Este negocio no tiene ninguna caja habilitada, porfavor comunicate con tu capy administrador para habilitar una caja.");
         }
+
+        foreach ($boxs as $key => $value) {
+            // * buscamos en la bd si el uuario tiene una caja abierta
+            $boxSessions = $this->model->getBoxSessionsByUserId($userId, $value['idBox']);
+
+            toJson($boxSessions);
+
+            if ($boxSessions) {
+                return $boxSessions; // caja activa en este negocio
+            }
+
+
+
+            if ($value['status'] === 'Inactivo') {
+                unset($boxs[$key]);
+            }
+        }
+        tojson("llego acaaaa");
 
         $boxSessions = $this->model->getBoxSessionsByUserId($userId); //buscamos en la bd si el uuario tiene una caja abierta
 
@@ -57,12 +118,10 @@ class Box extends Controllers
             $box = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
             if ($box) {
                 return $boxSessions; // caja activa en este negocio
-            }else
-            {
+            } else {
                 // valida si la caja aperturada pertenece al negocio, lanzamos error
                 $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
             }
-
         }
         // muestra error si el plan es Pro pero no ha abierto turno todavía
         $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
@@ -73,17 +132,26 @@ class Box extends Controllers
     // TODO: Endpoint para mostrar todas las cajas diponibles del negocio
     public function getBoxs()
     {
+        // * Validamos si es una cuenta free o pro
+        $planInfo = $this->getPlanOfBusiness();
+        $planId = (int)$planInfo["plan_id"] ?? 1;
+
+        if ($planId === 1) {
+            $this->responseError("Usted cuenta con un plan Free, por lo tanto no puede aperturar caja.");
+        }
+
         // * Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
 
         // * Consultamos las cajas habilitadas del negocio
         $boxs = $this->model->getBoxs($businessId);
 
-        // * Mantenlo si el status NO es Inactivo
-        $boxesActivas = array_filter($boxs, fn($box) => $box['status'] !== 'Inactivo');
+        if (empty($boxs)) {
+            $this->responseError("Este negocio no tiene ninguna caja habilitada, porfavor comunicate con tu capy administrador para habilitar una caja.");
+        }
 
         // * IMPORTANTE: Re-indexar los números (0, 1, 2...)
-        $boxesActivas = array_values($boxesActivas);
+        $boxesActivas = array_values($boxs);
         if (empty($boxesActivas)) {
             $this->responseError('Este negocio no tiene ninguna caja habilitada, porfavor comunicate con tu capy administrador para habilitar una caja.');
         }
@@ -115,6 +183,14 @@ class Box extends Controllers
     // TODO: Endpoint para aperturar un caja
     public function setOpenBox()
     {
+        // * Validamos si es una cuenta free o pro
+        $planInfo = $this->getPlanOfBusiness();
+        $planId = (int)$planInfo["plan_id"] ?? 1;
+
+        if ($planId === 1) {
+            $this->responseError("Usted cuenta con un plan Free, por lo tanto no puede aperturar caja.");
+        }
+
         // * Validamos que llegue el metodo POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
@@ -139,15 +215,16 @@ class Box extends Controllers
         // * Consultamos el ID del usuario
         $userId = $this->getUserId();
 
-        // * Validamos que el usuario no haya aperturado una caja
-        $exisUserOpenBox = $this->model->getBoxSessionsByUserId($userId);
-        if ($exisUserOpenBox) {
-            // * Consultamos el ID del negocio
-            $businessId = $this->getBusinessId();
+        // * Consultamos las cajas existentes del negocio
+        $boxs = $this->model->getBoxs($businessId);
+        if (empty($boxs)) {
+            $this->responseError("Este negocio no tiene ninguna caja habilitada, porfavor comunicate con tu capy administrador para habilitar una caja.");
+        }
 
-            // * Validamos si la caja pertenece al negocio
-            $boxs = $this->model->getBoxsById($exisUserOpenBox["box_id"], $businessId);
-            if ($boxs) {
+        foreach ($boxs as $key => $value) {
+            // * buscamos en la bd si el uuario tiene una caja abierta
+            $boxSessions = $this->model->getBoxSessionsByUserId($userId, $value['idBox']);
+            if ($boxSessions) {
                 $this->responseError("Ya cuentas con una caja aperturada en este negocio.");
             }
         }
@@ -554,7 +631,7 @@ class Box extends Controllers
         $businessId = $this->getBusinessId();
 
         //validamos que las funciones no devuelvan null
-        if(!$userId || !$businessId){
+        if (!$userId || !$businessId) {
             $this->responseError("Sesión inválida o expirada");
         }
 
@@ -612,19 +689,20 @@ class Box extends Controllers
 
         $movement = $this->model->insertBoxMovement(
             $boxSessions["idBoxSessions"],
-        "Egreso",
-        $expense_name,
-        $amount, $issetPaymentMethod["name"],
-        "expense",
-        null
+            "Egreso",
+            $expense_name,
+            $amount,
+            $issetPaymentMethod["name"],
+            "expense",
+            null
         );
 
-        if(!$movement){
+        if (!$movement) {
             $this->responseError("Error al registrar el gasto");
         }
 
         // * validamos si es necesario abrir caja para registrar la venta
-       /* if ($boxSessions) {
+        /* if ($boxSessions) {
             // * Registramos el movimiento
             $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, $issetPaymentMethod["name"], "voucher_header", $voucher);
             if (!$movement_box) {
@@ -671,64 +749,60 @@ class Box extends Controllers
             $this->responseError('Método de solicitud no permitido.');
         }
 
-        // validamos si el negocio no requiere caja aperturada, entonces puede abrir sin problema
-        $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
-        //si el negocio es pro
-        if ($openBox !== 'Si') {
-            toJson([
-                'title'   => 'Apertura de Caja',
-                'message' => 'Este negocio no requiere caja.',
-                'type'    => 'success',
-                'icon'    => 'success',
-                'status'  => true,
-                'requiresbox' => false
-            ]);
-            return;
-        }
+        // * Validamos si es una cuenta free o pro
+        $planInfo = $this->getPlanOfBusiness();
+        $planId = (int)$planInfo["plan_id"] ?? 1;
 
-        $userId = $this->getUserId();
-        $businessId = $this->getBusinessId();
-
-        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
-
-        // valideación de caja aperturada pero no hay una abierta
-        if (!$boxSessions) {
+        if ($planId === 1) {
             toJson([
                 'status'      => true,
-                'requiresbox' => true,
-                'message'     => 'Cajas disponibles',
+                'requiresbox' => false,
+                'message'     => 'No requiere caja aperturada',
                 'status_box'  => false // no hay sesión
             ]);
-            return;
         }
 
-        // validamos si la caja pertenece al negocio
-        $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
+        $userId = $this->getUserId(); //id del usuario logueado
+        $businessId = $this->getBusinessId(); //id del negocio activo
 
-        if ($boxs) {
-            // validamos si ya hay una caja abierta
-            toJson([
-                'status'      => false, //falso
-                'requiresbox' => true,
-                'message'     => 'Ya cuentas con una caja aperturada.',
-               // 'box_opened'  => true
-            ]);
-        } else {
-            // validamos si ya existe caja abierta pero en otro negocio
-            toJson([
-                'status'      => true,
-                'requiresbox' => true,
-                'message'     => 'Debes abrir caja en este negocio.',
-               // 'box_opened'  => false
-            ]);
+        // * Consultamos las cajas existentes del negocio
+        $boxs = $this->model->getBoxs($businessId);
+        if (empty($boxs)) {
+            $this->responseError("Este negocio no tiene ninguna caja habilitada, porfavor comunicate con tu capy administrador para habilitar una caja.");
         }
 
-        // $this->responseError("Ya cuentas con una caja aperturada.");
+        foreach ($boxs as $key => $value) {
+            // * buscamos en la bd si el uuario tiene una caja abierta
+            $boxSessions = $this->model->getBoxSessionsByUserId($userId, $value['idBox']);
+            if ($boxSessions) {
+                toJson([
+                    'status'      => true,
+                    'requiresbox' => true,
+                    'message'     => 'Ya cuentas con una caja aperturada.',
+                    'status_box'  => true // hay sesión
+                ]);
+            }
+        }
+
+        toJson([
+            'status'      => true,
+            'requiresbox' => true,
+            'message'     => 'No cuentas con una caja aperturada.',
+            'status_box'  => false // no hay sesión
+        ]);
     }
 
     // TODO: Endopoint que devuelve los movimientos y gestion de caja
     public function getManagementBox()
     {
+        // * Validamos si es una cuenta free o pro
+        $planInfo = $this->getPlanOfBusiness();
+        $planId = (int)$planInfo["plan_id"] ?? 1;
+
+        if ($planId === 1) {
+            $this->responseError("Usted cuenta con un plan Free, por lo tanto no puede aperturar caja.");
+        }
+        
         // * Validamos que llegue el metodo GET
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->responseError('Método de solicitud no permitido.');
@@ -865,7 +939,7 @@ class Box extends Controllers
         }
 
         // * Consultamos si tiene un arqueo de caja realizado y trael el ultimo realizado
-       $cashCount = $this->model->getLastCashCount($boxSessions["idBoxSessions"]);
+        $cashCount = $this->model->getLastCashCount($boxSessions["idBoxSessions"]);
 
         toJson([
             'status'  => true,
@@ -1024,6 +1098,4 @@ class Box extends Controllers
 
         toJson($data);
     }
-
-
 }

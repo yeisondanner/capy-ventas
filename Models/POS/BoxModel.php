@@ -62,6 +62,7 @@ class BoxModel extends Mysql
 
     }
 
+
     public function getBox(int $boxId)
     {
         $this->boxId = $boxId;
@@ -123,18 +124,19 @@ class BoxModel extends Mysql
         return $this->select($sql, [$this->status, $this->boxId]);
     }
 
-    public function getBoxSessionsByUserId(int $userId)
+    public function getBoxSessionsByUserId(int $userId, int $boxId = null)
     {
         $this->userId = $userId;
+        $this->boxId = $boxId;
         $sql = <<<SQL
             SELECT
                 *
             FROM box_sessions
-            WHERE userapp_id = ? AND `status` != "Cerrada"
-            ORDER BY box_id ASC;
+            WHERE userapp_id = ? AND box_id = ? AND `status` != "Cerrada"
+            LIMIT 1;
         SQL;
 
-        return $this->select($sql, [$this->userId]);
+        return $this->select($sql, [$this->userId, $this->boxId]);
     }
 
     public function getLastCashCount(int $boxSessionsId)
@@ -210,21 +212,62 @@ class BoxModel extends Mysql
         return $this->select($sql, [$this->paymentMethodId]);
     }
 
-    // ? Funciones getAll
+    public function isUserOwnerOfBusiness(int $userId, int $businessId) {
+        $sql = <<<SQL
+            SELECT
+                *
+            FROM business
+            WHERE userapp_id = ? AND idBusiness = ?
+            LIMIT 1;
+        SQL;
+
+        return $this->select($sql, [$userId, $businessId]);
+    }
+
+    public function getOwnerInfoByBusinessId(int $businessId)
+    {
+        $sql = <<<SQL
+            SELECT
+                idBusiness,
+                userapp_id,
+                `status`
+            FROM business
+            WHERE idBusiness = ?
+            LIMIT 1;
+        SQL;
+
+        return $this->select($sql, [$businessId]);
+    }
+
+    // ? Funciones get_all
+
     public function getBoxs(int $businessId)
     {
         $this->businessId = $businessId;
         $sql = <<<SQL
             SELECT
                 idBox,
-                `name`,
-                `status`
+                name,
+                business_id,
+                status
             FROM `box`
-            WHERE business_id = ?
+            WHERE business_id = ? && status = 'Activo'
             ORDER BY idBox ASC;
         SQL;
 
         return $this->select_all($sql, [$this->businessId]);
+    }
+
+    public function getPlanInfoByUserId(int $userId, string $dateTime) {
+        $sql = <<<SQL
+            SELECT
+                *
+            FROM subscriptions
+            WHERE user_app_id = ? AND start_date <= ? AND end_date >= ? AND status = 'active'
+            ORDER BY plan_id DESC;
+        SQL;
+
+        return $this->select_all($sql, [$userId, $dateTime, $dateTime]);
     }
 
     public function getCustomersByBusiness(int $businessId)
