@@ -57,10 +57,12 @@ class BoxManagement extends Controllers
             $isCajaPrincipal = (mb_strtolower(trim($boxNameRaw), 'UTF-8') === mb_strtolower('Caja Principal', 'UTF-8'));
 
             if ($isCajaPrincipal) {
-                $arrData[$key]['actions'] = '<span class="text-muted"></span>';
+                $arrData[$key]['actions'] = '<div class="btn-group btn-group-sm" role="group">'
+                    . '<button class="btn btn-outline-info btn-sm report-box" data-id="' . $idBox . '" data-name="' . $boxName . '" title="Ver reporte de la caja">'
+                    . '<i class="bi bi-file-earmark-text"></i></button>';
             } else {
                 $arrData[$key]['actions'] = '<div class="btn-group btn-group-sm" role="group">'
-                    . '<button class="btn btn-outline-secondary report-box" data-id="' . $idBox . '" data-name="' . $boxName . '" title="Ver reporte de la caja">'
+                    . '<button class="btn btn-outline-info btn-sm report-box" data-id="' . $idBox . '" data-name="' . $boxName . '" title="Ver reporte de la caja">'
                     . '<i class="bi bi-file-earmark-text"></i></button>';
 
                 if ($validationUpdate === 1) {
@@ -145,7 +147,7 @@ class BoxManagement extends Controllers
         $userId = $this->getUserId();
         $this->validateCsrfToken($_POST['token'] ?? '', $userId);
 
-        // SOLO nombre requerido (estado NO)
+        // Validar campos obligatorios
         $requiredFields = ['nameBox'];
         validateFields($requiredFields);
 
@@ -261,7 +263,7 @@ class BoxManagement extends Controllers
             $this->responseError('La caja seleccionada no existe o no pertenece a tu negocio.');
         }
 
-        // Si está referenciada por cualquier tabla (FK), se inactiva.
+        // Si está referenciada en otras tablas, se inactiva en lugar de eliminar
         if ($this->model->box_has_references($idBox)) {
             $ok = $this->model->inactivate_box($idBox, $businessId);
             if (!$ok) {
@@ -277,7 +279,7 @@ class BoxManagement extends Controllers
             ]);
         }
 
-        // Si NO está referenciada, se elimina normal
+        // Proceder a eliminar la caja si no tiene referencias
         $deleted = $this->model->delete_box($idBox, $businessId);
 
         if (!$deleted) {

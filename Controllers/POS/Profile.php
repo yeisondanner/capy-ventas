@@ -259,7 +259,6 @@ class Profile extends Controllers
             $_SESSION[$this->nameVarLoginInfo]['phone']     = $phone;
             $_SESSION[$this->nameVarLoginInfo]['birthDate'] = $birthDate;
 
-            // Traer country/prefix reales de BD para que no se pierdan en la vista
             $profileData = $this->model->selectUserProfile($userAppId) ?? [];
             $prefix  = $profileData['telephone_prefix'] ?? '';
             $country = $profileData['country'] ?? null;
@@ -300,6 +299,41 @@ class Profile extends Controllers
 
         toJson($data);
     }
+
+    public function verifyPassword(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+
+        $userInfo  = $_SESSION[$this->nameVarLoginInfo] ?? [];
+        $userAppId = (int) ($userInfo['idUser'] ?? 0);
+
+        if ($userAppId <= 0) {
+            $this->responseError("No se pudo identificar al usuario.");
+        }
+
+        $currentPassword = trim((string) ($_POST['currentPassword'] ?? ''));
+
+        if ($currentPassword === '') {
+            $this->responseError('Ingresa tu contraseña actual.');
+        }
+
+        $ok = $this->model->verifyUserPassword($userAppId, $currentPassword);
+
+        if ($ok) {
+            toJson([
+                'title'  => 'Contraseña verificada',
+                'message' => 'La contraseña actual es correcta.',
+                'type'   => 'success',
+                'icon'   => 'success',
+                'status' => true,
+            ]);
+        }
+
+        $this->responseError('La contraseña actual no es correcta.');
+    }
+
 
 
     public function updatePassword(): void

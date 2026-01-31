@@ -6,6 +6,11 @@
   const billingBadge = document.querySelector(".tile .badge.bg-info");
   //modal del edit
   const modalEditProfile = document.getElementById("modalEditProfile");
+
+  // Estado de verificación de contraseña
+  let passwordVerified = false;
+  let storedCurrentPassword = ""; // almacena la contraseña actual verificada
+
   document.addEventListener("DOMContentLoaded", () => {
     if (billingBadge) {
       billingBadge.title = "Estado de la suscripción y forma de renovación";
@@ -16,7 +21,7 @@
     // Agregar evento para actualizar los valores del formulario cuando se abra el modal
     setupModalEventHandlers();
 
-    // Cambiar contraseña
+    // Cambiar contraseña 
     setupChangePassword();
   });
 
@@ -24,28 +29,120 @@
    * Configura los manejadores de eventos para el modal de edición
    */
   function setupModalEventHandlers() {
-    // Actualizar los valores del formulario cuando se muestre el modal
-    /*$(modalEditProfile).on('show.bs.modal', function () {
-      // Actualizar los valores del formulario con los datos mostrados actualmente en la página
-      document.getElementById('fullname').value = document.getElementById('profile-fullname').textContent;
-      document.getElementById('username').value = document.getElementById('profile-username').textContent;
-      document.getElementById('email').value = document.getElementById('profile-email').textContent;
-      document.getElementById('phone').value = document.getElementById('profile-phone').textContent !== 'Sin teléfono' ? document.getElementById('profile-phone').textContent : '';
-      document.getElementById('country').value = document.getElementById('profile-country').textContent !== 'Sin país' ? document.getElementById('profile-country').textContent : '';
-
-      // Para la fecha de nacimiento, necesitamos extraer solo la fecha sin el formato adicional
-      const birthDateText = document.getElementById('profile-birthdate').textContent;
-      if (birthDateText && birthDateText !== 'Sin registrar') {
-        // Intentar convertir el formato DD/MM/AAAA a AAAA-MM-DD para el input date
-        const dateParts = birthDateText.split(' ')[0].split('/'); // Tomar solo la parte de la fecha si hay hora
-        if (dateParts.length === 3) {
-          document.getElementById('birthDate').value = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
-        }
-      } else {
-        document.getElementById('birthDate').value = '';
-      }
-    });*/
+    
   }
+
+  /**
+   * Muestra un mensaje inline relacionado con la contraseña
+   */
+  function showPassMsg(type, text) {
+    const container = document.getElementById("msg-container-pass");
+    const alertEl = document.getElementById("msg-alert-pass");
+    const textEl = document.getElementById("msg-text-pass");
+
+    if (!container || !alertEl || !textEl) return;
+
+    container.classList.remove("d-none");
+    alertEl.className = `alert alert-${type} py-2 px-3 small mb-0`;
+    textEl.innerText = text;
+  }
+
+  function hidePassMsg() {
+    const container = document.getElementById("msg-container-pass");
+    if (container) container.classList.add("d-none");
+  }
+
+  function resetPasswordBlock() {
+    passwordVerified = false;
+    storedCurrentPassword = "";
+    hidePassMsg();
+
+    const current = document.getElementById("currentPassword");
+    const p1 = document.getElementById("newPassword");
+    const p2 = document.getElementById("confirmNewPassword");
+
+    if (current) {
+      current.value = "";
+      current.readOnly = false;
+      current.classList.remove("is-valid", "is-invalid");
+    }
+    if (p1) {
+      p1.value = "";
+      p1.disabled = true;
+      p1.classList.remove("is-valid", "is-invalid");
+    }
+    if (p2) {
+      p2.value = "";
+      p2.disabled = true;
+      p2.classList.remove("is-valid", "is-invalid");
+    }
+
+    // Limpiar mensaje de confirmación de contraseña
+    const wrap = document.getElementById("matchPassWrap");
+    const alertEl = document.getElementById("matchPassAlert");
+    const textEl = document.getElementById("matchPassText");
+    if (wrap) wrap.classList.add("d-none");
+    if (alertEl)
+      alertEl.className =
+        "alert py-2 px-3 mb-0 small rounded-3 d-flex align-items-center";
+    if (textEl) textEl.innerText = "";
+  }
+
+  /**
+   * Verifica si las contraseñas coinciden y actualiza el estado visual
+   */
+  function checkPasswords(p1, p2) {
+    const val1 = (p1.value || "").trim();
+    const val2 = (p2.value || "").trim();
+
+    const wrap = document.getElementById("matchPassWrap");
+    const alertEl = document.getElementById("matchPassAlert");
+    const iconEl = document.getElementById("matchPassIcon");
+    const textEl = document.getElementById("matchPassText");
+
+    const hide = () => {
+      if (wrap) wrap.classList.add("d-none");
+    };
+
+    const show = (type, iconClass, text) => {
+      if (!wrap || !alertEl || !iconEl || !textEl) return;
+      wrap.classList.remove("d-none");
+      alertEl.className = `alert alert-${type} py-2 px-3 mb-0 small rounded-3 d-flex align-items-center`;
+      iconEl.className = `bi me-2 ${iconClass}`;
+      textEl.innerText = text;
+    };
+
+    // Si no escribió confirmación
+    if (val2 === "") {
+      p2.classList.remove("is-valid", "is-invalid");
+      hide();
+      return;
+    }
+
+    // Si no escribió nueva contraseña
+    if (val1 === "") {
+      p2.classList.remove("is-valid");
+      p2.classList.add("is-invalid");
+      show(
+        "warning",
+        "bi-exclamation-triangle-fill",
+        "Primero escribe la nueva contraseña.",
+      );
+      return;
+    }
+
+    // Comparar contraseñas
+    if (val1 === val2) {
+      p2.classList.remove("is-invalid");
+      p2.classList.add("is-valid");
+      show("success", "bi-check-circle-fill", "Las contraseñas coinciden.");
+    } else {
+      p2.classList.remove("is-valid");
+      p2.classList.add("is-invalid");
+      show("danger", "bi-x-circle-fill", "Las contraseñas no coinciden.");
+    }
+  }
+
   /**
    * Actualizar perfil de usuario
    */
@@ -73,7 +170,87 @@
         return;
       }
 
-      // Crear objeto FormData personalizado
+      // Manejo de cambio de contraseña
+      const newPasswordEl = document.getElementById("newPassword");
+      const confirmNewPasswordEl =
+        document.getElementById("confirmNewPassword");
+
+      const newPass = newPasswordEl ? newPasswordEl.value.trim() : "";
+      const confirmPass = confirmNewPasswordEl
+        ? confirmNewPasswordEl.value.trim()
+        : "";
+
+      const wantsChangePassword =
+        passwordVerified && (newPass !== "" || confirmPass !== "");
+
+      // Si no ha verificado la contraseña pero intenta cambiarla
+      if (!passwordVerified && (newPass !== "" || confirmPass !== "")) {
+        showPassMsg("warning", "Primero verifica tu contraseña actual.");
+        return;
+      }
+
+      // Validaciones de la nueva contraseña
+      if (wantsChangePassword) {
+        if (newPass.length < 8) {
+          showPassMsg(
+            "warning",
+            "La nueva contraseña debe tener al menos 8 caracteres.",
+          );
+          return;
+        }
+        if (newPass !== confirmPass) {
+          showPassMsg("danger", "Las contraseñas no coinciden.");
+          return;
+        }
+        if (storedCurrentPassword && newPass === storedCurrentPassword) {
+          showPassMsg(
+            "warning",
+            "La nueva contraseña no puede ser igual a la actual.",
+          );
+          return;
+        }
+
+        try {
+          // Crear objeto FormData para el cambio de contraseña
+          const fdPass = new FormData();
+          fdPass.append("currentPassword", storedCurrentPassword);
+          fdPass.append("newPassword", newPass);
+
+          const urlPass = formEditProfile
+            .getAttribute("action")
+            .replace("/updateProfile", "/updatePassword");
+
+          const respPass = await fetch(urlPass, {
+            method: "POST",
+            body: fdPass,
+          });
+
+          if (!respPass.ok) {
+            throw new Error(`HTTP error! status: ${respPass.status}`);
+          }
+
+          const dataPass = await respPass.json();
+
+          if (!dataPass.status) {
+            showPassMsg(
+              "danger",
+              `${dataPass.message || "No se pudo actualizar la contraseña."}`,
+            );
+            return;
+          }
+
+          // Contraseña actualizada correctamente
+          showPassMsg("success", "✓ Contraseña actualizada correctamente.");
+        } catch (error) {
+          showPassMsg(
+            "danger",
+            "Ocurrió un error con el servidor: " + error.message,
+          );
+          return;
+        }
+      }
+
+      // Crear objeto FormData para el perfil
       const formData = new FormData();
       formData.append("names", names);
       formData.append("lastnames", lastnames);
@@ -83,7 +260,7 @@
       formData.append("username", username);
 
       try {
-        // Usamos la URL definida en el action del formulario
+        // Enviar la solicitud al servidor
         const url = formEditProfile.getAttribute("action");
 
         const response = await fetch(url, {
@@ -101,7 +278,7 @@
           formEditProfile.reset();
           $(modalEditProfile).modal("hide");
 
-          // Actualizar los datos mostrados en la vista sin recargar la página
+          // Actualizar la vista con los nuevos datos sin recargar la página
           updateViewWithData(data.updatedData);
 
           showAlert({
@@ -111,6 +288,9 @@
             icon: "success",
             status: true,
           });
+
+          // Resetear bloque de cambio de contraseña
+          resetPasswordBlock();
         } else {
           showAlert({
             title: data.title || "Ocurrió un error",
@@ -134,9 +314,10 @@
   }
 
   /**
-   * Actualiza los elementos visuales en la página con los nuevos datos
+   * Actualiza los datos mostrados en la vista del perfil sin recargar la página
    */
   function updateViewWithData(updatedData) {
+    
     const fullnameCardElement = document.getElementById("profile-fullname");
     if (fullnameCardElement)
       fullnameCardElement.textContent = updatedData.fullname;
@@ -189,7 +370,6 @@
     const birthDateElement = document.getElementById("birthDate");
     if (birthDateElement) birthDateElement.value = updatedData.birthDate || "";
 
-    // (Opcional) Si estás devolviendo prefix, puedes rellenarlo:
     const prefixElement = document.getElementById("prefix");
     if (prefixElement && updatedData.prefix !== undefined) {
       prefixElement.value = updatedData.prefix || "";
@@ -197,7 +377,7 @@
   }
 
   /**
-   * Función auxiliar para formatear fechas similar a la del PHP
+    * Formatea una fecha en formato DD/MM/YYYY HH:MM o DD/MM/YYYY
    */
   function formatDateProfile(value, withTime = true) {
     if (!value) return "Sin registrar";
@@ -230,115 +410,48 @@
   }
 
   /**
-   * Cambiar contraseña con con SweetAlert2
+    * Configura la funcionalidad de cambio de contraseña
    */
   function setupChangePassword() {
-    const btn = document.getElementById("btnChangePassword");
-    if (!btn) return;
+    const btnVerify = document.getElementById("btnVerifyPassword");
+    const btnCancel = document.getElementById("btnCancelPasswordChange");
 
-    btn.addEventListener("click", async () => {
-      const result = await Swal.fire({
-        title: "Cambiar contraseña",
-        html: `
-          <div style="display:flex; gap:8px; align-items:center;">
-            <input id="swal-current" type="password" class="swal2-input" placeholder="Contraseña actual" style="flex:1; margin:0;">
-            <button type="button" class="swal2-styled" data-toggle-pass="swal-current"
-              style="margin:0; padding:.4rem .6rem; line-height:1; border-radius:.5rem;">
-              <i class="bi bi-eye"></i>
-            </button>
-          </div>
+    const current = document.getElementById("currentPassword");
+    const p1 = document.getElementById("newPassword");
+    const p2 = document.getElementById("confirmNewPassword");
 
-          <div style="display:flex; gap:8px; align-items:center; margin-top:10px;">
-            <input id="swal-new" type="password" class="swal2-input" placeholder="Nueva contraseña" style="flex:1; margin:0;">
-            <button type="button" class="swal2-styled" data-toggle-pass="swal-new"
-              style="margin:0; padding:.4rem .6rem; line-height:1; border-radius:.5rem;">
-              <i class="bi bi-eye"></i>
-            </button>
-          </div>
+    if (!btnVerify || !btnCancel || !current || !p1 || !p2) return;
 
-          <div style="display:flex; gap:8px; align-items:center; margin-top:10px;">
-            <input id="swal-confirm" type="password" class="swal2-input" placeholder="Confirmar nueva contraseña" style="flex:1; margin:0;">
-            <button type="button" class="swal2-styled" data-toggle-pass="swal-confirm"
-              style="margin:0; padding:.4rem .6rem; line-height:1; border-radius:.5rem;">
-              <i class="bi bi-eye"></i>
-            </button>
-          </div>
-        `,
-        focusConfirm: false,
-        showCancelButton: true,
-        confirmButtonText: "Actualizar",
-        cancelButtonText: "Cancelar",
-        didOpen: () => {
-          // activar botones (mostrar-ocultar contraseña)
-          const buttons =
-            Swal.getPopup().querySelectorAll("[data-toggle-pass]");
-          buttons.forEach((btn) => {
-            btn.addEventListener("click", () => {
-              const inputId = btn.getAttribute("data-toggle-pass");
-              const input = document.getElementById(inputId);
-              const icon = btn.querySelector("i");
-              if (!input) return;
+    // Reiniciar bloque al abrir modal
+    $(modalEditProfile).on("shown.bs.modal", function () {
+      resetPasswordBlock();
+    });
 
-              const isPassword = input.type === "password";
-              input.type = isPassword ? "text" : "password";
+    // Verificar contraseña actual
+    btnVerify.addEventListener("click", async (e) => {
+      e.preventDefault();
+      hidePassMsg();
 
-              if (icon) {
-                icon.classList.toggle("bi-eye", !isPassword);
-                icon.classList.toggle("bi-eye-slash", isPassword);
-              }
+      const currentPassword = current.value.trim();
 
-              input.focus();
-            });
-          });
+      if (!currentPassword) {
+        current.classList.add("is-invalid");
+        showPassMsg(
+          "warning",
+          "✕ Ingresa tu contraseña actual para verificar.",
+        );
+        return;
+      }
 
-          document.getElementById("swal-current")?.focus();
-        },
-
-        preConfirm: () => {
-          const current = document.getElementById("swal-current").value.trim();
-          const pass1 = document.getElementById("swal-new").value.trim();
-          const pass2 = document.getElementById("swal-confirm").value.trim();
-
-          if (!current || !pass1 || !pass2) {
-            Swal.showValidationMessage("Completa todos los campos.");
-            return false;
-          }
-          if (pass1.length < 8) {
-            Swal.showValidationMessage(
-              "La nueva contraseña debe tener al menos 8 caracteres.",
-            );
-            return false;
-          }
-          if (pass1 !== pass2) {
-            Swal.showValidationMessage("La confirmación no coincide.");
-            return false;
-          }
-          if (pass1 === current) {
-            Swal.showValidationMessage(
-              "La nueva contraseña no puede ser igual a la actual.",
-            );
-            return false;
-          }
-          return { currentPassword: current, newPassword: pass1 };
-        },
-      });
-
-      if (!result.isConfirmed) return;
+      current.classList.remove("is-invalid");
 
       try {
-        Swal.fire({
-          title: "Actualizando...",
-          allowOutsideClick: false,
-          didOpen: () => Swal.showLoading(),
-        });
-
         const fd = new FormData();
-        fd.append("currentPassword", result.value.currentPassword);
-        fd.append("newPassword", result.value.newPassword);
+        fd.append("currentPassword", currentPassword);
 
         const url = formEditProfile
           .getAttribute("action")
-          .replace("/updateProfile", "/updatePassword");
+          .replace("/updateProfile", "/verifyPassword");
 
         const response = await fetch(url, { method: "POST", body: fd });
 
@@ -347,26 +460,49 @@
 
         const data = await response.json();
 
-        if (data.status) {
-          await Swal.fire({
-            title: data.title || "Listo",
-            text: data.message || "Contraseña actualizada.",
-            icon: "success",
-          });
-        } else {
-          await Swal.fire({
-            title: data.title || "Error",
-            text: data.message || "No se pudo actualizar la contraseña.",
-            icon: "error",
-          });
+        if (!data.status) {
+          passwordVerified = false;
+          storedCurrentPassword = "";
+          current.classList.add("is-invalid");
+          showPassMsg(
+            "danger",
+            `${data.message || "Contraseña incorrecta."}`,
+          );
+          return;
         }
+
+        // Contraseña verificada OK
+        passwordVerified = true;
+        storedCurrentPassword = currentPassword;
+
+        current.classList.remove("is-invalid");
+        current.classList.add("is-valid");
+        current.readOnly = true; // bloquear campo
+
+        p1.disabled = false;
+        p2.disabled = false;
+        p1.focus();
+
+        showPassMsg(
+          "success",
+          "Contraseña verificada. Ahora puedes escribir la nueva contraseña.",
+        );
       } catch (error) {
-        await Swal.fire({
-          title: "Error",
-          text: "Ocurrió un error con el servidor: " + error.message,
-          icon: "error",
-        });
+        showPassMsg(
+          "danger",
+          "Ocurrió un error con el servidor: " + error.message,
+        );
       }
     });
+
+    // Cancelar cambio de contraseña
+    btnCancel.addEventListener("click", (e) => {
+      e.preventDefault();
+      resetPasswordBlock();
+    });
+
+    // Verificar coincidencia de nuevas contraseñas en tiempo real
+    p1.addEventListener("input", () => checkPasswords(p1, p2));
+    p2.addEventListener("input", () => checkPasswords(p1, p2));
   }
 })();
