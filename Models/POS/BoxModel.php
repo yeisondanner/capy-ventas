@@ -48,7 +48,7 @@ class BoxModel extends Mysql
     // ? Funciones get
     public function getUsingBox(int $boxId, string $status)
     {
-       $this->boxId = $boxId;
+        $this->boxId = $boxId;
         $this->status = $status;
         $sql = <<<SQL
             SELECT
@@ -59,7 +59,6 @@ class BoxModel extends Mysql
         SQL;
 
         return $this->select($sql, [$this->boxId, $this->status]);
-
     }
 
 
@@ -184,7 +183,7 @@ class BoxModel extends Mysql
         return $this->select($sql, [$this->businessId, $this->supplierId]);
     }
 
-    public function issetExpenseCategory( int $idExpenseCategory)
+    public function issetExpenseCategory(int $idExpenseCategory)
     {
         $this->idExpenseCategory = $idExpenseCategory;
         $sql = <<<SQL
@@ -212,7 +211,8 @@ class BoxModel extends Mysql
         return $this->select($sql, [$this->paymentMethodId]);
     }
 
-    public function isUserOwnerOfBusiness(int $userId, int $businessId) {
+    public function isUserOwnerOfBusiness(int $userId, int $businessId)
+    {
         $sql = <<<SQL
             SELECT
                 *
@@ -258,7 +258,8 @@ class BoxModel extends Mysql
         return $this->select_all($sql, [$this->businessId]);
     }
 
-    public function getPlanInfoByUserId(int $userId, string $dateTime) {
+    public function getPlanInfoByUserId(int $userId, string $dateTime)
+    {
         $sql = <<<SQL
             SELECT
                 *
@@ -491,7 +492,7 @@ class BoxModel extends Mysql
             VALUES
                 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         SQL;
-        return (int) $this->insert($sql, [$this->nameCustomer, $this->directionCustomer, $this->nameBussines, $this->documentBussines, $this->directionBussines, $this->dateTime, $this->amount, $this->taxName, $this->taxPercentage , $this->tax_amount, $this->voucherName, $this->paymentMethod, $this->businessId, $this->userId]);
+        return (int) $this->insert($sql, [$this->nameCustomer, $this->directionCustomer, $this->nameBussines, $this->documentBussines, $this->directionBussines, $this->dateTime, $this->amount, $this->taxName, $this->taxPercentage, $this->tax_amount, $this->voucherName, $this->paymentMethod, $this->businessId, $this->userId]);
     }
 
 
@@ -533,7 +534,4 @@ class BoxModel extends Mysql
 
         return $this->select($sql, [$businessId]);
     }
-
-
 }
-

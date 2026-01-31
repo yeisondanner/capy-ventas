@@ -1,5 +1,6 @@
 <?php
 $validationCreateBox = (int) validate_permission_app(11, "c", false)['create'];
+
 if (empty($_SESSION[$nameVarBusiness]['logo'])) {
     $logoBusiness = GENERAR_PERFIL . htmlspecialchars($_SESSION[$nameVarBusiness]['business'] ?? 'Negocio', ENT_QUOTES, 'UTF-8');
 } else {
