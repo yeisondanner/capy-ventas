@@ -533,11 +533,15 @@ class Sales extends Controllers
         $discountAmount    = (float) strClean($_POST['discountAmount'] ?? 0);
         $discountPercent   = (float) strClean($_POST['discountPercentage'] ?? 0);
         $paidAmount        = max(0, (float) strClean($_POST['paidAmount'] ?? 0));
+        $saleType          = strClean($_POST['saleType'] ?? 'Contado');
         //obtenemos los datos de impuesto del negocio
         $taxname = $_SESSION[$this->nameVarBusiness]['taxname'];
         $tax = $_SESSION[$this->nameVarBusiness]['tax'];
         if ($paymentMethodId <= 0) {
             $this->responseError('Selecciona un método de pago válido.');
+        }
+        if ($saleType !== 'Contado' && $saleType !== 'Credito') {
+            $this->responseError('Selecciona un tipo de venta válido.');
         }
 
         $businessId = $this->getBusinessId();
@@ -612,7 +616,15 @@ class Sales extends Controllers
                 }
             }
         }
-
+        //verificamos si el tipo de venta es a credito para estandarizar ciertos parametros
+        if ($saleType === 'Credito') {
+            //Primera validamos que la venta no se pueda grabar para Sin cliente
+            if ($customerName === 'Sin cliente') {
+                $this->responseError('No se puede registrar una venta a credito para Sin cliente.');
+            }
+            $paymentMethodId = 1; //Establecemos el metodo de pago a Efectivo
+            $paidAmount = 0; //Establecemos con cuanto esta pagando
+        }
         $headerId = $this->model->insertVoucherHeader([
             'name_customer'      => $customerName,
             'direction_customer' => $customerDirection,
@@ -631,6 +643,7 @@ class Sales extends Controllers
             'tax'                => $tax,
             'amounttax'          => $totalAmountTax,
             'user_app_id'        => $this->getUserId(),
+            'sale_type'          => $saleType,
         ]);
         //validamos si la caja esta abierta para registrar la venta
         $requestOpenBox = $this->model->selectOpenBoxByUser([
@@ -719,7 +732,7 @@ class Sales extends Controllers
     public function updateVoucherName(): void
     {
         //VALIDACION DE PERMISOS
-        toJson(validate_permission_app(1, "u", false));
+        validate_permission_app(1, "u", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
