@@ -74,60 +74,44 @@ class Box extends Controllers
     }
 
     // TODO: funcion para validar
-    public function validateBoxIfRequired(): ?array  //si retorna null o array
+    public function validateBoxIfRequired(int $businessId): ?array  //si retorna null o array
     {
+        // * Validamos si es una cuenta free o pro
+        $planInfo = $this->getPlanOfBusiness();
+        $planId = (int)$planInfo["plan_id"] ?? 1;
 
         // * validamos si desde el inicio de sesión se requiere una caja aperturada
         $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
 
-        if ($openBox !== 'Si') {
-            toJson("no se requiere caja");
-            return null; // ? no se requiere caja
-        }
+        if ($planId !== 1) {
+            // * Consultamos el ID del usuario
+            $userId = $this->getUserId();
 
-        $userId = $this->getUserId(); //id del usuario logueado
-        $businessId = $this->getBusinessId(); //id del negocio activo
-
-        // * Consultamos las cajas existentes del negocio
-        $boxs = $this->model->getBoxs($businessId);
-        if (empty($boxs)) {
-            $this->responseError("Este negocio no tiene ninguna caja habilitada, porfavor comunicate con tu capy administrador para habilitar una caja.");
-        }
-
-        foreach ($boxs as $key => $value) {
-            // * buscamos en la bd si el uuario tiene una caja abierta
-            $boxSessions = $this->model->getBoxSessionsByUserId($userId, $value['idBox']);
-
-            toJson($boxSessions);
-
-            if ($boxSessions) {
-                return $boxSessions; // caja activa en este negocio
+            // * Consultamos las cajas existentes del negocio
+            $boxs = $this->model->getBoxs($businessId);
+            if (empty($boxs)) {
+                $this->responseError("Este negocio no tiene ninguna caja habilitada, porfavor comunicate con tu capy administrador para habilitar una caja.");
             }
 
-
-
-            if ($value['status'] === 'Inactivo') {
-                unset($boxs[$key]);
+            $issetBoxSession = false;
+            foreach ($boxs as $key => $value) {
+                // * buscamos en la bd si el uuario tiene una caja abierta
+                $boxSessions = $this->model->getBoxSessionsByUserId($userId, $value['idBox']);
+                if ($boxSessions) {
+                    $issetBoxSession = true;
+                    break;
+                }
             }
-        }
-        tojson("llego acaaaa");
 
-        $boxSessions = $this->model->getBoxSessionsByUserId($userId); //buscamos en la bd si el uuario tiene una caja abierta
-
-        if ($boxSessions) {
-            $box = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
-            if ($box) {
-                return $boxSessions; // caja activa en este negocio
-            } else {
-                // valida si la caja aperturada pertenece al negocio, lanzamos error
+            if (!$issetBoxSession && $openBox === "Si") {
                 $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
             }
+
+            return $boxSessions;
         }
-        // muestra error si el plan es Pro pero no ha abierto turno todavía
-        $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+
         return null;
     }
-
 
     // TODO: Endpoint para mostrar todas las cajas diponibles del negocio
     public function getBoxs()
@@ -296,14 +280,14 @@ class Box extends Controllers
             $this->responseError("El tipo de arqueo es inválido. Debe ser 'Cierre' o 'Auditoria'.");
         }
 
-        // * Consultamos el ID del usuario
-        $userId = $this->getUserId();
+        // * Consultamos el ID del negocio
+        $businessId = $this->getBusinessId();
 
-        // * Validamos que el usuario haya aperturado una caja
-        $boxSessions = $this->validateBoxIfRequired();
+        // * validamos si desde el inicio de sesión se requiere una caja aperturada
+        $boxSessions = $this->validateBoxIfRequired($businessId);
 
-        if (!$boxSessions) {
-            $this->responseError("Este plan no permite arqueos de caja.");
+        if(!$boxSessions || is_null($boxSessions)) {
+            $this->responseError("Este plan no permite realizar arqueos de caja.");
         }
 
         // * Consultamos las denominaciones de las monedas
@@ -362,9 +346,6 @@ class Box extends Controllers
             }
         }
 
-        // ? Sacamos el valor absoluto
-        // $difference = abs($difference);
-
         // * Registramos el arqueo o cierre de caja
         $insertArqueoBox = $this->model->insertBoxCashCount($boxSessions["idBoxSessions"], $type, $total_efectivo_sistema, $total_efectivo_contado, $difference, $notes);
 
@@ -403,22 +384,14 @@ class Box extends Controllers
             $notes = null;
         }
 
-        // * Consultamos el ID del usuario
-        $userId = $this->getUserId();
+        // * Consultamos el ID del negocio
+        $businessId = $this->getBusinessId();
 
-        // * Validamos que el usuario haya aperturado una caja
-        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
-        if ($boxSessions) {
-            // * Consultamos el ID del negocio
-            $businessId = $this->getBusinessId();
+        // * validamos si desde el inicio de sesión se requiere una caja aperturada
+        $boxSessions = $this->validateBoxIfRequired($businessId);
 
-            // * Validamos si la caja pertenece al negocio
-            $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
-            if (!$boxs) {
-                $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
-            }
-        } else {
-            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+        if(!$boxSessions || is_null($boxSessions)) {
+            $this->responseError("Este plan no permite realizar cierres de caja.");
         }
 
         // * Consultamos todos los movimientos asociados a la caja aperturada para calcular el total del sistema
@@ -495,8 +468,6 @@ class Box extends Controllers
         $status_movement_header = (int) $data["status_movement_header"];
         $check_tax = $data["check_tax"];
 
-        // toJson($data);
-
         // * Validamos que no este vacio los campos
         validateFieldsEmpty(array(
             "DESCRIPCION DEL MOVIMIENTO" => $description,
@@ -505,23 +476,20 @@ class Box extends Controllers
             "CLIENTE" => $customer,
             "METODO DE PAGO" => $payment_method,
         ));
+
         // * Validamos que el monto sea mayor que 0
         if ($amount <= 0) {
             $this->responseError("El monto ingresaado debe ser mayor que 0.");
         }
-        // * Validar TYPE (Debe ser uno de los valores permitidos en tu ENUM)
-        // $allowed_types = ['Ingreso', 'Egreso']; // Los valores de tu base de datos
-        // if (!in_array($type_movement, $allowed_types)) {
-        //     $this->responseError("El tipo de arqueo es inválido. Debe ser 'Ingreso' o 'Egreso'.");
-        // }
+
         // * Consultamos el ID del usuario
         $userId = $this->getUserId();
+
         // * Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
-        // * Consultamos si es necesario contar con caja aperturada para registrar una venta
 
-        //funcion que valida
-        $boxSessions = $this->validateBoxIfRequired();
+        // * validamos si desde el inicio de sesión se requiere una caja aperturada
+        $boxSessions = $this->validateBoxIfRequired($businessId);
 
         // * Validamos que el cliente exista y pertenesca al negocio
         $issetCustomer = $this->model->issetCustomer($businessId, $customer);
@@ -588,21 +556,14 @@ class Box extends Controllers
         $raw = file_get_contents('php://input');
         $data = json_decode($raw, true);
 
-
-        if (!$data) {
-            $this->responseError("JSON inválido");
-        }
-
-        $description = strClean($data["description"]);
+        $description = ($data["description"] == '' || $data["description"] === null) ? null : $data["description"];
         $date = strClean($data["date"]);
-
         $amount = (float)strClean($data["amount"]);
         $expense_name = trim(strClean($data["expense_name"] ?? ''));
         $expense_category = (int)strClean($data["expense_category"]);
         $supplier = (int)strClean($data["supplier"]);
         $payment_method = (int)strClean($data["payment_method"]);
         $status_expense_header = (int)$data["status_expense_header"];
-
         $type_movement = "Egreso";
 
         // * Validamos que no este vacio los campos
@@ -619,32 +580,12 @@ class Box extends Controllers
         if ($amount <= 0) {
             $this->responseError("El monto ingresaado debe ser mayor que 0.");
         }
-        // * Validar TYPE (Debe ser uno de los valores permitidos en tu ENUM)
-        // $allowed_types = ['Ingreso', 'Egreso']; // Los valores de tu base de datos
-        // if (!in_array($type_movement, $allowed_types)) {
-        //     $this->responseError("El tipo de arqueo es inválido. Debe ser 'Ingreso' o 'Egreso'.");
-        // }
 
-        // * Consultamos el ID del usuario
-        $userId = $this->getUserId();
         // * Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
 
-        //validamos que las funciones no devuelvan null
-        if (!$userId || !$businessId) {
-            $this->responseError("Sesión inválida o expirada");
-        }
-
-        // * Consultamos si es necesario contar con caja aperturada para registrar una venta
-        $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
-        $boxSessions = $this->model->getBoxSessionsByUserId($userId);
-        if ($openBox === "Si" && !$boxSessions) {
-            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
-        }
-
-        //validación de bloqueo
-        $boxSessions = $this->validateBoxIfRequired();
-
+        // * validamos si desde el inicio de sesión se requiere una caja aperturada
+        $boxSessions = $this->validateBoxIfRequired($businessId);
 
         // * Validamos que el proveedor exista y pertenesca al negocio
         $issetSupplier = $this->model->issetSupplier($businessId, $supplier);
@@ -663,13 +604,13 @@ class Box extends Controllers
             $this->responseError("La fecha ingresada no es valida.");
         }
 
+        // * Formateamos el nombre del gasto
         if ($expense_name === '' || $expense_name === null) {
             $expense_name = "Sin nombre - " . date("d/m/Y", strtotime($date));
         } else {
             // Siempre agregar la fecha al final
             $expense_name = $expense_name . " - " . date("d/m/Y", strtotime($date));
         }
-
 
         // * Validamos que exista el metodo de pago
         $issetPaymentMethod = $this->model->issetPaymentMethod($payment_method);
@@ -680,59 +621,54 @@ class Box extends Controllers
         // * Consultamos la fecha y hora actual
         $fecha_actual = date('Y-m-d H:i:s');
 
-        // TODO: FALTA TERMINAR ESTO, ME FUI PORQUE TENIA SueÑO
-        // toJson("aqui");
-        //obtenemos el nombre del metodo de pago
-        $pm = $issetPaymentMethod;
+        // * Consultamos el ID del usuario
+        $userId = $this->getUserId();
 
-        //reistramos el egreso en caja
-
-        $movement = $this->model->insertBoxMovement(
-            $boxSessions["idBoxSessions"],
-            "Egreso",
-            $expense_name,
+        // * registramos el egreso en la bd
+        $expense = $this->model->insertExpenseHeader(
+            $businessId,
+            $issetExpenseCategory["idExpenseCategory"],
+            $issetSupplier["idSupplier"],
             $amount,
-            $issetPaymentMethod["name"],
-            "expense",
-            null
+            $expense_name,
+            $fecha_actual,
+            "pagado",
+            $userId,
+            $issetPaymentMethod["idPaymentMethod"],
+            $description
         );
 
-        if (!$movement) {
+        if (!$expense) {
             $this->responseError("Error al registrar el gasto");
         }
 
         // * validamos si es necesario abrir caja para registrar la venta
-        /* if ($boxSessions) {
+        if ($boxSessions) {
             // * Registramos el movimiento
-            $movement_box = $this->model->insertBoxMovement($boxSessions["idBoxSessions"], $type_movement, $description, $amount, $issetPaymentMethod["name"], "voucher_header", $voucher);
-            if (!$movement_box) {
-                $this->responseError('Error al registrar el ' . $type_movement . ' de caja.');
-
-        //obtenemos el nombre del metodo de pago
-
-        if ($boxSessions) {
-            $boxSessionId = (int)$boxSessions["idBoxSessions"];
-        }
-
-        // Registro del movimiento (Solo si hay una caja activa)
-        if ($boxSessions) {
-            $movement = $this->model->insertBoxMovement(
+            $movement_box = $this->model->insertBoxMovement(
                 $boxSessions["idBoxSessions"],
-                "Egreso",
+                $type_movement,
                 $expense_name,
                 $amount,
                 $issetPaymentMethod["name"],
-                "expense",
-                null
+                "expense_economic",
+                $expense
             );
 
-            if (!$movement) {
-                $this->responseError("Error al registrar el movimiento en la caja.");
+            if (!$movement_box) {
+                toJson([
+                    'title'   => 'Gestión de Caja',
+                    'message' => 'Se registro el gasto pero no se pudo registrar el movimiento en la caja.',
+                    'type'    => 'warning',
+                    'icon'    => 'warning',
+                    'status'  => true,
+                    'status_expense_header' => $status_expense_header
+                ]);
             }
-        }*/
+        }
 
         toJson([
-            'title'   => 'Gestión de Caja',
+            'title'   => 'Registro de Gasto',
             'message' => 'Gasto registrado correctamente.',
             'type'    => 'success',
             'icon'    => 'success',
@@ -802,7 +738,7 @@ class Box extends Controllers
         if ($planId === 1) {
             $this->responseError("Usted cuenta con un plan Free, por lo tanto no puede aperturar caja.");
         }
-        
+
         // * Validamos que llegue el metodo GET
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->responseError('Método de solicitud no permitido.');
@@ -811,18 +747,27 @@ class Box extends Controllers
         // * Consultamos el ID del usuario
         $userId = $this->getUserId();
 
-        // * Validamos que el usuario haya aperturado una caja
-        $boxSessions = $this->validateBoxIfRequired();
-
-        if (!$boxSessions) {
-            $this->responseError("Este plan no incluye gestión de caja.");
-        }
-
+        // * Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
 
-        $boxs = $this->model->getBoxsById($boxSessions["box_id"], $businessId);
-        if (!$boxs) {
-            $this->responseError("No tienes ninguna caja aperturada en este negocio.");
+        // * Consultamos las cajas existentes del negocio
+        $boxs = $this->model->getBoxs($businessId);
+        if (empty($boxs)) {
+            $this->responseError("Este negocio no tiene ninguna caja habilitada, porfavor comunicate con tu capy administrador para habilitar una caja.");
+        }
+
+        $issetBoxSession = false;
+        foreach ($boxs as $key => $value) {
+            // * buscamos en la bd si el uuario tiene una caja abierta
+            $boxSessions = $this->model->getBoxSessionsByUserId($userId, $value['idBox']);
+            if ($boxSessions) {
+                $issetBoxSession = true;
+                break;
+            }
+        }
+
+        if (!$issetBoxSession) {
+            $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
         }
 
         // * cosultamos el nombre de la caja
@@ -834,8 +779,8 @@ class Box extends Controllers
         // * Consultamos todos los movimientos asociados a la caja aperturada
         $boxMovements = $this->model->getBoxMovements($boxSessions["idBoxSessions"]);
 
-        // * Consultamos los ultimos 4 movimientos asociados a la caja aperturada
-        $boxMovements_limit = $this->model->getBoxMovementsByLimit($boxSessions["idBoxSessions"], 4);
+        // * Consultamos los ultimos 5 movimientos asociados a la caja aperturada
+        $boxMovements_limit = $this->model->getBoxMovementsByLimit($boxSessions["idBoxSessions"], 5);
 
         // * Consultamos las ventas por hora
         $ventasPorHora = $this->model->getMovementsForHours($boxSessions["idBoxSessions"]);
@@ -900,6 +845,16 @@ class Box extends Controllers
     // TODO: Endpoint que devuelve los las denominaciones de la moneda
     public function getCurrencyDenominations()
     {
+        // * Consultamos el ID del negocio
+        $businessId = $this->getBusinessId();
+
+        // * validamos si desde el inicio de sesión se requiere una caja aperturada
+        $boxSessions = $this->validateBoxIfRequired($businessId);
+
+        if(!$boxSessions || is_null($boxSessions)) {
+            $this->responseError("Este plan no permite arqueos de caja.");
+        }
+
         // * Consultamos las denominaciones de las monedas
         $currencyDenominations = $this->model->getCurrencyDenominations();
         if (!$currencyDenominations) {
@@ -924,18 +879,14 @@ class Box extends Controllers
             $this->responseError('Método de solicitud no permitido.');
         }
 
-        // * Consultamos el ID del usuario
-        $userId = $this->getUserId();
+        // * Consultamos el ID del negocio
+        $businessId = $this->getBusinessId();
 
-        //validamos el negocio, caja y usuario
-        $boxSessions = $this->validateBoxIfRequired();
+        // * validamos si desde el inicio de sesión se requiere una caja aperturada
+        $boxSessions = $this->validateBoxIfRequired($businessId);
 
-        if (!$boxSessions) {
-            toJson([
-                'status' => true,
-                'data' => null
-            ]);
-            return;
+        if(!$boxSessions || is_null($boxSessions)) {
+            $this->responseError("Este plan no permite cierre de caja.");
         }
 
         // * Consultamos si tiene un arqueo de caja realizado y trael el ultimo realizado
@@ -958,15 +909,12 @@ class Box extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->responseError('Método de solicitud no permitido.');
         }
-        // * Consultamos el ID del usuario
-        $userId = $this->getUserId();
 
         // * Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
-        // * validamos si es necesario abrir caja para registrar la venta
-        // TODO: Falta validar a nivel de permiso
 
-        $boxSessions = $this->validateBoxIfRequired();
+        // * validamos si desde el inicio de sesión se requiere una caja aperturada
+        $this->validateBoxIfRequired($businessId);
 
         // * Consultamos todos los clientes del negocio
         $customers = $this->model->getCustomersByBusiness($businessId);
@@ -998,20 +946,12 @@ class Box extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->responseError('Método de solicitud no permitido.');
         }
-        // * Consultamos el ID del usuario
-        $userId = $this->getUserId();
 
         // * Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
-        // * validamos si es necesario abrir caja para registrar la venta
-        // TODO: Falta validar a nivel de permiso
 
-        $boxSessions = $this->validateBoxIfRequired();
-
-        //validacion de retiro de caja
-        /*if (!$boxSessions) {
-            $this->responseError("Este plan no permite retiros de caja.");
-        }*/
+        // * validamos si desde el inicio de sesión se requiere una caja aperturada
+        $this->validateBoxIfRequired($businessId);
 
         // * Consultamos todas las categorias de gastos
         $category_expences = $this->model->getCategoryExpenses();

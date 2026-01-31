@@ -42,6 +42,7 @@ class BoxModel extends Mysql
     protected string $directionBussines;
     protected string $dateTime;
     protected string $voucherName;
+    protected $description = null;
 
 
 
@@ -493,6 +494,39 @@ class BoxModel extends Mysql
                 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         SQL;
         return (int) $this->insert($sql, [$this->nameCustomer, $this->directionCustomer, $this->nameBussines, $this->documentBussines, $this->directionBussines, $this->dateTime, $this->amount, $this->taxName, $this->taxPercentage, $this->tax_amount, $this->voucherName, $this->paymentMethod, $this->businessId, $this->userId]);
+    }
+
+    public function insertExpenseHeader(int $businessId, int $expenseCategoryId, int $supplierId, float $amount, string $expenseName, string $date, string $status, int $userId, int $paymentMethodId, $description)
+    {
+        $this->businessId = $businessId;
+        $this->idExpenseCategory = $expenseCategoryId;
+        $this->supplierId = $supplierId;
+        $this->amount = $amount;
+        $this->concept = $expenseName;
+        $this->dateTime = $date;
+        $this->status = $status;
+        $this->userId = $userId;
+        $this->paymentMethodId = $paymentMethodId;
+        $this->description = $description;
+        $sql = <<<SQL
+            INSERT INTO expense_economic
+                (business_id, expense_category_id, supplier_id, amount, name_expense, expense_date, status, userapp_id, PaymentMethod_id, description)
+            VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+        SQL;
+        return (int) $this->insert($sql, [
+            $this->businessId,
+            $this->idExpenseCategory,
+            $this->supplierId,
+            $this->amount,
+            $this->concept,
+            $this->dateTime,
+            $this->status,
+            $this->userId,
+            $this->paymentMethodId,
+            $this->description
+        ]);
+
     }
 
 
