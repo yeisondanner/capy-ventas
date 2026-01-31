@@ -166,7 +166,8 @@ class Sales extends Controllers
             'product',
             'stock',
             'supplier',
-            'category'
+            'category',
+            'photo'
         ]);
         $idproduct    = strClean($_POST['idproduct']);
         $idsupplier   = strClean($_POST['idsupplier']);
@@ -180,6 +181,7 @@ class Sales extends Controllers
         $category     = strClean($_POST['category']);
         $selected     = max(1, (int) strClean($_POST['selected']));
         $measurement  = strClean($_POST['measurement']);
+        $photo        = strClean($_POST['photo']);
         validateFieldsEmpty([
             'ID PRODUCTO' => $idproduct,
             'ID PROVEEDOR' => $idsupplier,
@@ -191,8 +193,10 @@ class Sales extends Controllers
             'PROVEEDOR' => $supplier,
             'CATEGORIA' => $category,
             'SELECCIONADO' => $selected,
-            'UNIDAD MEDIDA' => $measurement
+            'UNIDAD MEDIDA' => $measurement,
+            'FOTO' => $photo
         ]);
+        $urlPhoto = base_url() . "/Loadfile/iconproducts?f=" . $photo;
         //validamos que la cantidad seleccionada no sea mayor al stock disponible
         if ($stock > 0) {
             $selected = min($selected, (int) $stock);
@@ -212,7 +216,8 @@ class Sales extends Controllers
                 'category' => $category,
                 'selected' => $selected,
                 'userId' => $userId,
-                'measurement' => $measurement
+                'measurement' => $measurement,
+                'photo' => $urlPhoto
             );
         } else {
             $length = count($_SESSION[$this->nameVarCart]);
@@ -239,7 +244,8 @@ class Sales extends Controllers
                 'category' => $category,
                 'selected' => $selected,
                 'userId' => $userId,
-                'measurement' => $measurement
+                'measurement' => $measurement,
+                'photo' => $urlPhoto
             );
         }
         toJson($this->getCartPayload('Producto agregado al carrito.', $product, $selected));

@@ -37,7 +37,7 @@
                                     <th>Acciones</th>
                                     <th>Nombre</th>
                                     <th>Descripción</th>
-                                    <th>Estado</th>
+                                    
                                     <th>Fecha de Registro</th>
                                 </tr>
                             </thead>
@@ -92,11 +92,11 @@
     </div>
 </div>
 
-<!-- Modal: Reporte de caja (simplificado) -->
+<!-- Modal: Reporte de caja -->
 <div class="modal fade" id="modalBoxReport" tabindex="-1" aria-labelledby="modalBoxReportLabel" aria-hidden="true">
     <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content shadow border-0">
-            <div class="modal-header bg-secondary text-white">
+            <div class="modal-header bg-success text-white">
                 <h5 class="modal-title d-flex align-items-center" id="modalBoxReportLabel">
                     <i class="bi bi-file-earmark-text me-2"></i> Reporte de la caja
                 </h5>
@@ -138,7 +138,7 @@
     </div>
 </div>
 
-<!-- Modal: Actualizar caja (SIN ESTADO) -->
+<!-- Modal: Actualizar caja -->
 <div class="modal fade" id="modalUpdateBox" tabindex="-1" aria-labelledby="modalUpdateBoxLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <form class="modal-content" id="formUpdateBox" autocomplete="off">

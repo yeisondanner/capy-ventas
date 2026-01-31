@@ -38,11 +38,19 @@
   const btnGuardarNombreVenta = document.getElementById(
     "btnGuardarNombreVenta",
   );
+  const divMontoPaga = document.getElementById("divMontoPaga");
 
   // Modal de cobro
   const btnFinalizarVenta = document.getElementById("btnFinalizarVenta");
   const spanResumenTotal = document.getElementById("resumenTotalVenta");
-
+  //variables de tipo de venta
+  const saleTypeContado = document.getElementById("saleTypeContado");
+  const saleTypeCredito = document.getElementById("saleTypeCredito");
+  //contenedores de los inputs
+  const fechaVentaContainer = document.getElementById("fechaVentaContainer");
+  const paymentMethodContainer = document.getElementById(
+    "paymentMethodContainer",
+  );
   let actualizarDesdeMonto = null;
   let actualizarDesdePorcentaje = null;
   let lastSaleId = null;
@@ -228,6 +236,23 @@
       // Usamos formato YYYY-MM-DD compatible con inputs type="date"
       inputFechaVenta.value = yyyy + "-" + mm + "-" + dd;
     }
+    //--camibamos el comportamiento de acuerdo al tipo de venta
+    if (saleTypeContado) {
+      saleTypeContado.addEventListener("input", function () {
+        if (saleTypeContado.checked) {
+          paymentMethodContainer.classList.remove("d-none");
+          fechaVentaContainer.classList.add("col-sm-6");
+        }
+      });
+    }
+    if (saleTypeCredito) {
+      saleTypeCredito.addEventListener("input", function () {
+        if (saleTypeCredito.checked) {
+          paymentMethodContainer.classList.add("d-none");
+          fechaVentaContainer.classList.remove("col-sm-6");
+        }
+      });
+    }
 
     // --- Descuento: recalcular total a pagar (monto fijo y porcentaje) ---
     actualizarDesdeMonto = function () {
@@ -362,6 +387,14 @@
         // Tomamos el total actual (texto tipo "S/ 209.70") y lo convertimos a número
         const totalTexto = lblTotal.textContent.replace("S/", "").trim();
         const total = parseFloat(totalTexto) || 0;
+        //limpiamos el input
+        inputMontoPaga.value = "0";
+        spanVuelto.textContent = "0.00";
+        if (paymentMethod.value == 1) {
+          divMontoPaga.classList.remove("d-none");
+        } else {
+          divMontoPaga.classList.add("d-none");
+        }
         spanModalTotal.textContent = total.toFixed(2);
 
         // Limpiamos inputs del modal de cobro
@@ -848,6 +881,13 @@
    */
   async function getProducts() {
     const url = base_url + "/pos/Sales/getProducts";
+    showAlert(
+      {
+        title: "Cargando productos...",
+        message: "Por favor, espera un momento...",
+      },
+      "loading",
+    );
     try {
       const response = await fetch(url);
       if (!response.ok) {
@@ -871,6 +911,15 @@
         message: "No es posible obtener los productos. Inténtalo nuevamente",
         html: `<pre>${error}</pre>`,
       });
+    } finally {
+      showAlert(
+        {
+          title: "Listo",
+          message: "Productos cargados",
+          position: "bottom-end",
+        },
+        "float",
+      );
     }
   }
 
@@ -1083,6 +1132,7 @@
     buttonProduct.dataset.supplier = product.supplier;
     buttonProduct.dataset.category = product.category;
     buttonProduct.dataset.measurement = product.measurement;
+    buttonProduct.dataset.photo = product.photo;
     //asignacion de valores
     spanCounter.textContent = "0";
     divImg.innerHTML = `<img class="emoji" src="${base_url}/Loadfile/iconproducts?f=${product.photo}" alt="${product.product}">`;
@@ -1162,7 +1212,7 @@
     divProduct.dataset.stock = product.stock;
     divProduct.dataset.price = price.toFixed(2);
     //llenamos la data
-    divIcon.innerHTML = `<i class="bi bi-bag"></i>`;
+    divIcon.innerHTML = `<img src="${product.photo}" class="img-fluid basket-icon" alt="${product.product}">`;
     spanName.textContent = product.product;
     spanStock.textContent = `${parseFloat(product.stock)} Disponibles`;
     btnDelete.innerHTML = `<i class="bi bi-trash"></i>`;
@@ -1280,6 +1330,7 @@
         formdata.append("category", card.dataset.category);
         formdata.append("selected", card.dataset.selected);
         formdata.append("measurement", card.dataset.measurement);
+        formdata.append("photo", card.dataset.photo);
         const url = base_url + "/pos/Sales/addCart";
         const config = {
           method: "POST",
@@ -1576,12 +1627,7 @@
         message: data.message,
       });
       if (data.status) {
-        getCart();
-        setTimeout(() => {
-          //ponemos el focus en el input de cantidad
-          const inputQty = document.getElementById(`quantity${idproduct}`);
-          inputQty.focus();
-        }, 200);
+        await getCart();
       }
       //validamos si hay un redireccionamiento
       if (data.url) {
@@ -1595,6 +1641,12 @@
         message: "Ocurrio un error con el servidor: " + error.name,
         icon: "error",
         timer: 4000,
+      });
+    } finally {
+      requestAnimationFrame(() => {
+        //ponemos el focus en el input de cantidad
+        const inputQty = document.getElementById(`quantity${idproduct}`);
+        inputQty.focus();
       });
     }
   }

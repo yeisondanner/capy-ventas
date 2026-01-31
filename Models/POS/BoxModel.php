@@ -123,7 +123,7 @@ class BoxModel extends Mysql
         return $this->select($sql, [$this->status, $this->boxId]);
     }
 
-    public function getBoxSessionsByUserId(int $userId, int $boxId = null)
+    public function getBoxSessionsByUserId(int $userId, int $boxId = 0)
     {
         $this->userId = $userId;
         $this->boxId = $boxId;

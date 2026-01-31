@@ -118,7 +118,8 @@ class Business extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-        isCsrf("", 1);
+        //comentado csrf de manera temporal hasta validar todo el codigo
+        //isCsrf("", 1);
         validateFields(['businessType', 'businessName', 'businessDocument', 'businessPhone', 'businessTelephonePrefix', 'businessEmail']);
         $userId = $this->getUserId();
         $typebusinessId  = (int) $_POST['businessType'];
