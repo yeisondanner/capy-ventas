@@ -236,8 +236,9 @@ class SalesModel extends Mysql
                 user_app_id,
                 tax_name,
                 tax_percentage,
-                tax_amount
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?);
+                tax_amount,
+                sale_type
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?);
         SQL;
 
         $values = [
@@ -258,6 +259,7 @@ class SalesModel extends Mysql
             $data['taxname'] ?? '--',
             $data['tax'] ?? 0,
             $data['amounttax'] ?? 0,
+            $data['sale_type'] ?? 'Contado'
         ];
 
         return (int) $this->insert($sql, $values);

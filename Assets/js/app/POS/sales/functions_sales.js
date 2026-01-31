@@ -24,6 +24,7 @@
 
   // Totales y descuentos
   const inputDescuentoMonto = document.getElementById("descuentoMonto");
+  let saleType = "Contado";
   const inputDescuentoPorc = document.getElementById("descuentoPorc");
   const lblSubtotal = document.getElementById("lblSubtotal");
   const tax = document.getElementById("tax");
@@ -262,6 +263,7 @@
             btn.classList.add("btn-success");
             btn.innerHTML = `<i class="bi bi-cash-stack me-1"></i> Cobrar`;
           });
+          saleType = "Contado";
         }
       });
     }
@@ -275,6 +277,7 @@
             btn.classList.add("btn-danger");
             btn.innerHTML = `<i class="bi bi-wallet2 me-1"></i> Guardar credito`;
           });
+          saleType = "Credito";
         }
       });
     }
@@ -496,6 +499,7 @@
         formdata.append("discountAmount", inputDescuentoMonto?.value || "0");
         formdata.append("discountPercentage", inputDescuentoPorc?.value || "0");
         formdata.append("paidAmount", inputMontoPaga?.value || "0");
+        formdata.append("saleType", saleType);
 
         const originalText = btnFinalizarVenta.innerHTML;
         btnFinalizarVenta.disabled = true;
@@ -1253,7 +1257,7 @@
     buttonProduct.dataset.photo = product.photo;
     //asignacion de valores
     spanCounter.textContent = "0";
-    divImg.innerHTML = `<img class="emoji" src="${base_url}/Loadfile/iconproducts?f=${product.photo}" alt="${product.product}">`;
+    divImg.innerHTML = `<img class="emoji" src="${base_url}/Loadfile/iconproducts?f=${product.photo}" loading="lazy" alt="${product.product}">`;
     spanPrice.textContent = getcurrency + product.price;
     spanName.textContent = product.product;
     spanStock.dataset.stock = stock;
