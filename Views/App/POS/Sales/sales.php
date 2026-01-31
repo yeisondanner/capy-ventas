@@ -180,7 +180,7 @@ headerPos($data); ?>
                                 <!-- Datos básicos de la venta -->
                                 <div class="row g-2 align-items-end">
                                     <div class="col-12">
-                                        <label class="form-label form-label-sm mb-1 small d-block">Tipo de pago</label>
+                                        <label class="form-label form-label-sm mb-1 small d-block">Tipo de venta</label>
                                         <div class="btn-group w-100" role="group">
                                             <input type="radio" class="btn-check" name="tipoPago" id="pagoContado" value="Contado" checked autocomplete="off">
                                             <label class="btn btn-outline-success" for="pagoContado">
