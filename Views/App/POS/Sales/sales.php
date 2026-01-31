@@ -179,6 +179,20 @@ headerPos($data); ?>
                                 </div>
                                 <!-- Datos básicos de la venta -->
                                 <div class="row g-2 align-items-end">
+                                    <div class="col-12">
+                                        <label class="form-label form-label-sm mb-1 small d-block">Tipo de pago</label>
+                                        <div class="btn-group w-100" role="group">
+                                            <input type="radio" class="btn-check" name="tipoPago" id="pagoContado" value="Contado" checked autocomplete="off">
+                                            <label class="btn btn-outline-success" for="pagoContado">
+                                                <i class="bi bi-cash-stack me-1"></i> Contado
+                                            </label>
+
+                                            <input type="radio" class="btn-check" name="tipoPago" id="pagoCredito" value="Credito" autocomplete="off">
+                                            <label class="btn btn-outline-danger" for="pagoCredito">
+                                                <i class="bi bi-credit-card me-1"></i> Crédito
+                                            </label>
+                                        </div>
+                                    </div>
                                     <div class="col-12 col-sm-6">
                                         <label class="form-label form-label-sm mb-1 small">Fecha de venta</label>
                                         <div class="input-group">
