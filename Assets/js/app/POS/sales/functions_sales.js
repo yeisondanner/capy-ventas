@@ -61,17 +61,25 @@
   let lastSearchTerm = "";
 
   /**
-   * Metodo que inicializa todas las funciones de la vista
+   * Método principal que inicializa todas las funciones, eventos y lógica de la vista.
+   * Configura la navegación entre pasos, detecta el tipo de dispositivo y carga datos iniciales.
    */
   function init() {
     // Control de flujo en escritorio (canasta -> pago)
     let desktopStep = 2;
 
-    // Helper para saber si estamos en un dispositivo pequeño (celular)
+    /**
+     * Helper para saber si estamos en un dispositivo pequeño (celular).
+     * @returns {boolean} True si el ancho de la ventana es menor o igual a 576px.
+     */
     function isMobile() {
       return window.innerWidth <= 576;
     }
 
+    /**
+     * Actualiza el estado habilitado/deshabilitado del botón para guardar el nombre de la venta.
+     * Solo se habilita si existe un ID de venta registrado.
+     */
     function refreshVoucherNameButtonState() {
       if (!btnGuardarNombreVenta) return;
 
@@ -99,7 +107,12 @@
       }
     }
 
-    // Muestra solo el paso n en móvil. En PC se muestran todos.
+    /**
+     * Muestra solo el paso indicado en la vista móvil.
+     * En escritorio no oculta nada, solo gestiona clases activas si fuera necesario.
+     *
+     * @param {number} n Número del paso a mostrar (1, 2 o 3).
+     */
     function showStep(n) {
       if (!isMobile()) {
         // En PC no ocultamos ningún paso, así que quitamos la clase de "activo".
@@ -254,7 +267,10 @@
       });
     }
 
-    // --- Descuento: recalcular total a pagar (monto fijo y porcentaje) ---
+    /**
+     * Recalcula los totales aplicando un descuento por monto fijo.
+     * Actualiza el porcentaje equivalente y el total final.
+     */
     actualizarDesdeMonto = function () {
       if (
         !lblSubtotal ||
@@ -265,27 +281,33 @@
         return;
 
       const subtotal = parseFloat(lblSubtotal.dataset.valor) || 0;
-      let monto = parseFloat(inputDescuentoMonto.value) || 0;
+      // Permitimos que el usuario escriba libremente. Usamos el valor numérico para cálculos.
+      let monto = parseFloat(inputDescuentoMonto.value);
+      if (isNaN(monto)) monto = 0;
 
-      // Evitar negativos y que el descuento supere al subtotal
-      if (monto < 0) monto = 0;
-      if (monto > subtotal) monto = subtotal;
+      // Para el cálculo interno restringimos, pero NO cambiamos el input mientras escribe
+      let montoCalculo = monto;
+      if (montoCalculo < 0) montoCalculo = 0;
+      if (montoCalculo > subtotal) montoCalculo = subtotal;
 
       // Calculamos el porcentaje equivalente
-      const porcentaje = subtotal > 0 ? (monto / subtotal) * 100 : 0;
+      const porcentaje = subtotal > 0 ? (montoCalculo / subtotal) * 100 : 0;
 
-      // Formateamos con 2 decimales
-      inputDescuentoMonto.value = monto.toFixed(2);
+      // NO sobrescribimos inputDescuentoMonto.value aquí para no bloquear la escritura
       inputDescuentoPorc.value = porcentaje.toFixed(2);
 
       // Total nunca menor que cero
-      const subTotal = Math.max(subtotal - monto, 0);
+      const subTotal = Math.max(subtotal - montoCalculo, 0);
       //calculamos el inpuesto
       const Tax = subTotal * (parseFloat(tax.value) / 100);
       const total = subTotal + Tax;
       lblTotal.textContent = "S/ " + total.toFixed(2);
     };
 
+    /**
+     * Recalcula los totales aplicando un descuento por porcentaje.
+     * Actualiza el monto equivalente y el total final.
+     */
     actualizarDesdePorcentaje = function () {
       if (
         !lblSubtotal ||
@@ -296,16 +318,18 @@
         return;
 
       const subtotal = parseFloat(lblSubtotal.dataset.valor) || 0;
-      let porcentaje = parseFloat(inputDescuentoPorc.value) || 0;
+      let porcentaje = parseFloat(inputDescuentoPorc.value);
+      if (isNaN(porcentaje)) porcentaje = 0;
 
-      // Limitar porcentaje entre 0 y 100
-      if (porcentaje < 0) porcentaje = 0;
-      if (porcentaje > 100) porcentaje = 100;
+      // Restricción para cálculo interno
+      let porcentajeCalculo = porcentaje;
+      if (porcentajeCalculo < 0) porcentajeCalculo = 0;
+      if (porcentajeCalculo > 100) porcentajeCalculo = 100;
 
       // Monto equivalente al porcentaje
-      const monto = subtotal * (porcentaje / 100);
+      const monto = subtotal * (porcentajeCalculo / 100);
 
-      inputDescuentoPorc.value = porcentaje.toFixed(2);
+      // NO sobrescribimos inputDescuentoPorc.value aquí
       inputDescuentoMonto.value = monto.toFixed(2);
 
       const subTotal = Math.max(subtotal - monto, 0);
@@ -319,11 +343,26 @@
     // Escuchamos cambios en el input de monto
     if (inputDescuentoMonto) {
       inputDescuentoMonto.addEventListener("input", actualizarDesdeMonto);
+      inputDescuentoMonto.addEventListener("blur", function () {
+        const subtotal = parseFloat(lblSubtotal.dataset.valor) || 0;
+        let val = parseFloat(this.value) || 0;
+        if (val < 0) val = 0;
+        if (val > subtotal) val = subtotal;
+        this.value = val.toFixed(2);
+        actualizarDesdeMonto(); // Actualizar cruzado para asegurar consistencia final
+      });
     }
 
     // Escuchamos cambios en el input de porcentaje
     if (inputDescuentoPorc) {
       inputDescuentoPorc.addEventListener("input", actualizarDesdePorcentaje);
+      inputDescuentoPorc.addEventListener("blur", function () {
+        let val = parseFloat(this.value) || 0;
+        if (val < 0) val = 0;
+        if (val > 100) val = 100;
+        this.value = val.toFixed(2);
+        actualizarDesdePorcentaje(); // Actualizar cruzado para asegurar consistencia final
+      });
     }
 
     // Inicializamos el total al cargar la página
@@ -365,7 +404,9 @@
     const inputMontoPaga = document.getElementById("montoPaga");
     const spanVuelto = document.getElementById("montoVuelto");
 
-    // Recalcula el vuelto cuando cambia el monto con el que paga el cliente
+    /**
+     * Recalcula el vuelto cuando cambia el monto con el que paga el cliente.
+     */
     function actualizarVuelto() {
       if (!spanModalTotal || !inputMontoPaga || !spanVuelto) return;
       const total = parseFloat(spanModalTotal.textContent) || 0;
@@ -638,6 +679,63 @@
         exportToPng("voucherContainer", "Comprobante_Venta.png");
       });
     }
+
+    /**
+     * Listener Global para la tecla Enter.
+     * Agiliza el flujo secuencial en PC: Canasta -> Pago -> Cobrar -> Finalizar.
+     * Se evita disparar si el usuario está buscando productos.
+     */
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        // Verificamos si el modal de cobro está visible (clase 'show' de Bootstrap)
+        const isModalCobroOpen =
+          modalCobroEl && modalCobroEl.classList.contains("show");
+        const isSearchFocused = document.activeElement === productSearchInput;
+
+        // Si el foco está en el buscador, no hacemos nada (permitir buscar)
+        if (isSearchFocused) return;
+
+        if (isModalCobroOpen) {
+          // Caso: Modal abierto -> Finalizar venta
+          event.preventDefault(); // Prevenir doble envío si aplica
+          if (btnFinalizarVenta && !btnFinalizarVenta.disabled) {
+            btnFinalizarVenta.click();
+          }
+        } else {
+          // Modal cerrado: Navegación por pasos
+          if (!isMobile()) {
+            // --- Lógica de PC ---
+            if (desktopStep === 2) {
+              // Si estamos en Paso 2 (Canasta) -> Ir a Paso 3 (Pago)
+              event.preventDefault();
+              showDesktopStep(3);
+            } else if (desktopStep === 3) {
+              // Si estamos en Paso 3 (Pago) -> Abrir Modal Cobrar
+              // Buscamos el botón de cobrar visible en el paso 3
+              // Generalmente es uno de la clase .btn-cobrar
+              const btnCobrarVisible = Array.from(botonesCobrar).find(
+                (b) => b.offsetParent !== null,
+              );
+              if (btnCobrarVisible) {
+                event.preventDefault();
+                btnCobrarVisible.click();
+              }
+            }
+          } else {
+            // --- Lógica Móvil ---
+            // Mantenemos comportamiento directo a cobrar o navegación simple
+            // Buscamos si hay un botón de cobrar visible
+            const btnCobrarVisible = Array.from(botonesCobrar).find(
+              (b) => b.offsetParent !== null,
+            );
+            if (btnCobrarVisible) {
+              event.preventDefault();
+              btnCobrarVisible.click();
+            }
+          }
+        }
+      }
+    });
   }
   // Esperamos a que todo el DOM esté cargado antes de manipular elementos
   document.addEventListener("DOMContentLoaded", function () {
@@ -695,7 +793,8 @@
   }
 
   /**
-   * Muestra un mensaje de sin resultados dentro de la grilla de productos.
+   * Muestra un mensaje indicando que no se encontraron productos.
+   * Se utiliza cuando el filtrado o la búsqueda no arrojan resultados.
    */
   function renderEmptyProducts() {
     if (!listProducts) return;
@@ -708,7 +807,8 @@
   }
 
   /**
-   * Conecta el input de búsqueda con el filtrado de productos.
+   * Vincula el evento de entrada (input) del buscador de productos
+   * con la función de filtrado, aplicando un debounce para optimizar rendimiento.
    */
   function bindProductSearch() {
     if (!productSearchInput) return;
@@ -877,7 +977,8 @@
     updateCategoryButtonsState();
   }
   /**
-   * Metodo que se encarga de obtener los productos asociados
+   * Obtiene el listado de productos desde el servidor y actualiza la caché local.
+   * Si la petición es exitosa, aplica los filtros vigentes para refrescar la grilla.
    */
   async function getProducts() {
     const url = base_url + "/pos/Sales/getProducts";
@@ -1044,8 +1145,8 @@
     });
   }
   /**
-   * Metodo que se encarga de obtener los productos cargados a la canasta
-   * @returns
+   * Obtiene el estado actual del carrito desde el servidor.
+   * Actualiza el listado visual, los totales y sincroniza contadores de productos.
    */
   async function getCart() {
     if (!listCart) return;
@@ -1096,7 +1197,12 @@
       });
     }
   }
-  //obtenemos el carda de los productos
+  /**
+   * Crea y retorna el elemento HTML de una tarjeta de producto.
+   *
+   * @param {object} product Datos del producto.
+   * @returns {HTMLElement} Elemento DOM de la tarjeta del producto.
+   */
   function renderProductCard(product) {
     const divCardProduct = document.createElement("div");
     const buttonProduct = document.createElement("button");
@@ -1149,7 +1255,12 @@
     divCardProduct.appendChild(buttonProduct);
     return divCardProduct;
   }
-  //funcion que encarga de renderizar los productos del carrito
+  /**
+   * Crea y retorna el elemento HTML de un producto en el carrito (canasta).
+   *
+   * @param {object} product Datos del producto en el carrito.
+   * @returns {HTMLElement} Elemento DOM del item en la canasta.
+   */
   function renderProductCart(product) {
     const quantity = Math.max(1, parseInt(product.selected, 10) || 1);
     const price = parseFloat(product.price) || 0;
@@ -1260,7 +1371,10 @@
 
     return divProduct;
   }
-  //funcion que se encarga de colorear los badges del stock
+  /**
+   * Actualiza el color de los badges de stock en las tarjetas de producto
+   * basándose en la cantidad disponible (Verde, Amarillo, Rojo).
+   */
   function badgeColor() {
     //prevenimos errores cuando no se encuentra un elemento de este tipo
     if (document.querySelectorAll(".product-stock-badge").length === 0) return;
@@ -1290,7 +1404,10 @@
       }
     });
   }
-  //Funcion que se encarga de dar la accion cuando se agrega un producto al carrito o canasta
+  /**
+   * Asigna los eventos de clic a las tarjetas de producto para agregarlos al carrito.
+   * Gestiona la animación y la actualización del contador en la tarjeta.
+   */
   function addCart() {
     if (document.querySelectorAll(".product-card").length === 0) return;
     // --- Indicador de cantidad seleccionada en las tarjetas de producto ---
@@ -1825,7 +1942,11 @@
   }
 
   /**
-   * Metodo que se encarga de descargar el comprobante en formato PNG
+   * Genera una imagen PNG del comprobante y fuerza su descarga.
+   * Utiliza html2canvas para renderizar el elemento DOM.
+   *
+   * @param {string} elementId ID del elemento contenedor a capturar.
+   * @param {string} filename Nombre del archivo a descargar.
    */
   const exportToPng = (elementId, filename) => {
     const originalElement = document.getElementById(elementId);
