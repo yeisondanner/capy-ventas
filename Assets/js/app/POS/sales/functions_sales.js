@@ -522,6 +522,7 @@
             icon: data.icon,
             title: data.title,
             message: data.message,
+            timer: data.timer,
           });
 
           if (data.status) {

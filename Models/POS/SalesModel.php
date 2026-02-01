@@ -2,6 +2,7 @@
 class SalesModel extends Mysql
 {
     private int $idBusiness;
+    private int $idCustomer;
 
     /**
      * Inicializa el modelo base y establece la conexión con la base de datos.
@@ -138,7 +139,8 @@ class SalesModel extends Mysql
         $sql = <<<SQL
             SELECT
                 fullname,
-                direction
+                direction,
+                credit_limit
             FROM customer
             WHERE idCustomer = ?
               AND business_id = ?
@@ -220,6 +222,7 @@ class SalesModel extends Mysql
     {
         $sql = <<<SQL
             INSERT INTO voucher_header (
+                customer_id,
                 name_customer,
                 direction_customer,
                 name_bussines,
@@ -238,10 +241,11 @@ class SalesModel extends Mysql
                 tax_percentage,
                 tax_amount,
                 sale_type
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?);
+            ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?);
         SQL;
 
         $values = [
+            $data['customer_id'] ?? 2,
             $data['name_customer'] ?? '',
             $data['direction_customer'] ?? '',
             $data['name_bussines'] ?? '',
@@ -451,5 +455,30 @@ class SalesModel extends Mysql
             SELECT*FROM payment_method AS pm WHERE pm.idPaymentMethod=?;
         SQL;
         return $this->select($sql, [$paymentMethodId]);
+    }
+    /**
+     * Metodo que se encarga de obtener la deuda total que debe el cliente al negocio, sin nigun filtro
+     * @param int $customerId
+     * @param int $businessId
+     * @return void
+     */
+    public function selectDebtTotal(int $customerId, int $businessId): ?array
+    {
+        $sql = <<<SQL
+            SELECT
+                ROUND(
+                    SUM(vh.amount),
+                    2
+                ) AS 'credit_total'
+            FROM
+                voucher_header AS vh
+            WHERE
+                vh.sale_type = 'Credito'
+                AND vh.business_id = ?
+                AND vh.customer_id = ?;
+        SQL;
+        $this->idBusiness = $businessId;
+        $this->idCustomer = $customerId;
+        return $this->select($sql, [$this->idBusiness, $this->idCustomer]);
     }
 }

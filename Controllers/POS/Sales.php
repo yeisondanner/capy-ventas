@@ -580,6 +580,7 @@ class Sales extends Controllers
 
         $customerName      = $customerInfo['fullname'] ?? 'Sin cliente';
         $customerDirection = $customerInfo['direction'] ?? 'Sin dirección';
+        $creditLimit       = $customerInfo['credit_limit'] ?? 0;
 
         $productIds = array_values(array_unique(array_map(static function ($item) {
             return (int) ($item['idproduct'] ?? 0);
@@ -617,15 +618,36 @@ class Sales extends Controllers
             }
         }
         //verificamos si el tipo de venta es a credito para estandarizar ciertos parametros
+        $typmovementvox = "Ingreso";
+        $concept = "Venta realizada el " . date('Y-m-d H:i:s');
         if ($saleType === 'Credito') {
             //Primera validamos que la venta no se pueda grabar para Sin cliente
             if ($customerName === 'Sin cliente') {
-                $this->responseError('No se puede registrar una venta a credito para Sin cliente.');
+                $this->responseError('No es posible realizar una venta a credito para este cliente, seleccione un cliente valido, por favor.', 6000);
+            }
+            //consultamos cuanto tiene el usuario ya usado de su credito
+            $debtTotal = $this->model->selectDebtTotal($customerId, $businessId);
+            if (!$debtTotal) {
+                $this->responseError('No se encontro información de la deuda total del cliente, por favor intente de nuevo o refresque la página.', 6000);
+            }
+            //validamos si el usuario tiene credito ilimitado si en caso es 0 no se valida el credito
+            if ($creditLimit > 0) {
+                $debtTotal = $debtTotal['credit_total'];
+                $creditLimitFree = $creditLimit - $debtTotal;
+                if ($creditLimitFree <= 0) {
+                    $this->responseError("Límite de crédito excedido. El consumo actual supera el margen permitido; por favor, regularice su deuda para continuar. El límite autorizado es " . getCurrency() . number_format($creditLimit, 2, '.', ',') . " y el monto excedido es de " . getCurrency() . number_format((float)abs($creditLimitFree), 2, '.', ','), 15000);
+                }
+                if ($totalAmount > $creditLimitFree) {
+                    $this->responseError("Límite de crédito excedido. Para procesar la venta, el cliente debe regularizar su deuda pendiente o ajustar el monto al saldo disponible de " . getCurrency() . number_format($creditLimitFree, 2, '.', ',') . ".También puede gestionar un aumento de cupo con la administración.", 15000);
+                }
             }
             $paymentMethodId = 1; //Establecemos el metodo de pago a Efectivo
             $paidAmount = 0; //Establecemos con cuanto esta pagando
+            $typmovementvox = "Credito";
+            $concept = "Venta a credito realizada el " . date('Y-m-d H:i:s');
         }
         $headerId = $this->model->insertVoucherHeader([
+            'customer_id'        => $customerId,
             'name_customer'      => $customerName,
             'direction_customer' => $customerDirection,
             'name_bussines'      => (string) ($businessInfo['name'] ?? ''),
@@ -660,8 +682,8 @@ class Sales extends Controllers
             //registramos el movimiento de la caja
             $insertMovement = $this->model->insertBoxMovement([
                 'boxSessions_id' => $requestOpenBox['idBoxSessions'] ?? 0,
-                'type_movement' => 'Ingreso',
-                'concept' => 'Venta realizada el ' . date('Y-m-d H:i:s'),
+                'type_movement' => $typmovementvox,
+                'concept' => $concept,
                 'amount' => $totalAmount,
                 'payment_method' => (string) ($requestPaymentMethod['name'] ?? 'Efectivo'),
                 'reference_table' => 'voucher_header',
