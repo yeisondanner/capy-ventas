@@ -205,11 +205,55 @@ headerPos($data); ?>
                                         </div>
                                     </div>
                                     <div class="col-12">
-                                        <label class="form-label form-label-sm mb-1 small">Cliente</label>
+                                        <label class="form-label form-label-sm mb-1 small" for="customerSelect">Cliente</label>
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="bi bi-person"></i></span>
                                             <select class="form-select" id="customerSelect">
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 d-none" id="customerCardContainer">
+                                        <!-- Widget de Ventas - Solo clases nativas de Bootstrap 5 -->
+                                        <div class="card shadow-sm w-100 border rounded-2">
+                                            <div class="card-body p-2">
+
+                                                <!-- Nombre y Estado -->
+                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                    <div class="text-truncate">
+                                                        <span class="fw-bold text-dark small" id="customerCardFullname">Juan Alberto Pérez</span>
+                                                    </div>
+                                                    <i class="bi bi-check-circle-fill text-success small" title="Activo"></i>
+                                                </div>
+
+                                                <!-- Documento -->
+                                                <div class="d-flex align-items-center text-muted mb-2 border-bottom pb-1" style="font-size: 0.75rem;">
+                                                    <span class="me-1" id="customerCardDocumentType">DNI:</span>
+                                                    <span class="fw-semibold text-dark font-monospace" id="customerCardDocumentNumber">12.345.678-K</span>
+                                                </div>
+
+                                                <!-- Crédito y Consumo -->
+                                                <div class="row g-0 mb-1">
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block" style="font-size: 0.65rem; line-height: 1;">Límite</small>
+                                                        <span class="fw-bold text-primary small" id="customerCardCreditLimit">$5,000</span>
+                                                    </div>
+                                                    <div class="col-6 text-end">
+                                                        <small class="text-muted d-block" style="font-size: 0.65rem; line-height: 1;">Consumido</small>
+                                                        <span class="fw-bold text-danger small" id="customerCardConsumed">$2,000</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Barra de progreso (Altura controlada por style inline, estándar en BS5) -->
+                                                <div class="progress mb-1" style="height: 1rem;" role="progressbar" id="customerCardProgressBar" aria-label="Consumo" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+                                                    <div class="progress-bar bg-danger" style="width: 40%" id="customerCardProgressValue"></div>
+                                                </div>
+
+                                                <!-- Saldo Disponible -->
+                                                <div class="d-flex justify-content-between align-items-center" style="font-size: 0.7rem;">
+                                                    <span class="text-muted text-uppercase fw-semibold">Disponible:</span>
+                                                    <span class="fw-bold text-success" id="customerCardAvailable">$3,000</span>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
