@@ -83,6 +83,7 @@ class Box extends Controllers
         // * validamos si desde el inicio de sesión se requiere una caja aperturada
         $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
 
+
         if ($planId !== 1) {
             // * Consultamos el ID del usuario
             $userId = $this->getUserId();
@@ -105,6 +106,10 @@ class Box extends Controllers
 
             if (!$issetBoxSession && $openBox === "Si") {
                 $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
+            }
+            
+            if(!$boxSessions){
+                return null;
             }
 
             return $boxSessions;
@@ -286,7 +291,7 @@ class Box extends Controllers
         // * validamos si desde el inicio de sesión se requiere una caja aperturada
         $boxSessions = $this->validateBoxIfRequired($businessId);
 
-        if(!$boxSessions || is_null($boxSessions)) {
+        if (!$boxSessions || is_null($boxSessions)) {
             $this->responseError("Este plan no permite realizar arqueos de caja.");
         }
 
@@ -390,7 +395,7 @@ class Box extends Controllers
         // * validamos si desde el inicio de sesión se requiere una caja aperturada
         $boxSessions = $this->validateBoxIfRequired($businessId);
 
-        if(!$boxSessions || is_null($boxSessions)) {
+        if (!$boxSessions || is_null($boxSessions)) {
             $this->responseError("Este plan no permite realizar cierres de caja.");
         }
 
@@ -851,7 +856,7 @@ class Box extends Controllers
         // * validamos si desde el inicio de sesión se requiere una caja aperturada
         $boxSessions = $this->validateBoxIfRequired($businessId);
 
-        if(!$boxSessions || is_null($boxSessions)) {
+        if (!$boxSessions || is_null($boxSessions)) {
             $this->responseError("Este plan no permite arqueos de caja.");
         }
 
@@ -885,7 +890,7 @@ class Box extends Controllers
         // * validamos si desde el inicio de sesión se requiere una caja aperturada
         $boxSessions = $this->validateBoxIfRequired($businessId);
 
-        if(!$boxSessions || is_null($boxSessions)) {
+        if (!$boxSessions || is_null($boxSessions)) {
             $this->responseError("Este plan no permite cierre de caja.");
         }
 
