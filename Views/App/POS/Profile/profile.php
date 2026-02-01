@@ -272,7 +272,7 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                         <p class="mb-0 text-white-50 small">Actualiza tus datos y privacidad</p>
                     </div>
                 </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
 
             <form id="formEditProfile" method="post" action="<?= base_url() ?>/pos/profile/updateProfile" autocomplete="off">
@@ -298,118 +298,141 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
 
                         <!-- DATOS PERSONALES -->
                         <div class="tab-pane fade show active" id="personal-content" role="tabpanel">
-                            <div class="bg-white p-4 rounded-4 shadow-sm border border-light">
-                                <h6 class="text-success fw-bold text-uppercase small mb-3 ls-1">Información Básica</h6>
 
-                                <div class="row g-3">
-                                    <!-- Nombres -->
-                                    <div class="col-md-6">
-                                        <label for="names" class="form-label fw-semibold text-dark small ps-2">Nombres</label>
-                                        <div class="input-group custom-input-group">
-                                            <span class="input-group-text ps-3"><i class="bi bi-person-fill"></i></span>
-                                            <input
-                                                type="text"
-                                                class="form-control"
-                                                id="names"
-                                                name="names"
-                                                placeholder="Ej: Juan Carlos"
-                                                value="<?= htmlspecialchars(explode(' ', $user['fullname'] ?? '')[0] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                            <div class="row g-4">
+
+                                <!-- Tarjeta (en responsive arriba, en lg a la derecha) -->
+                                <div class="col-lg-4 order-1 order-lg-2">
+                                    <div class="card border-0 text-white h-100 rounded-4 shadow-sm"
+                                        style="background: linear-gradient(160deg, #198754 0%, #0f5132 100%);">
+                                        <div class="card-body p-4 text-center d-flex flex-column justify-content-center align-items-center">
+                                            <div class="bg-white bg-opacity-25 rounded-circle p-3 mb-3">
+                                                <i class="bi bi-person-badge fs-1"></i>
+                                            </div>
+                                            <h5 class="fw-bold">Tus Datos</h5>
+                                            <p class="small text-white-50 mb-0">Mantén tu información actualizada para una mejor experiencia.</p>
                                         </div>
                                     </div>
-
-                                    <!-- Apellidos -->
-                                    <div class="col-md-6">
-                                        <label for="lastnames" class="form-label fw-semibold text-dark small ps-2">Apellidos</label>
-                                        <div class="input-group custom-input-group">
-                                            <span class="input-group-text ps-3"><i class="bi bi-person-vcard-fill"></i></span>
-                                            <input
-                                                type="text"
-                                                class="form-control"
-                                                id="lastnames"
-                                                name="lastnames"
-                                                placeholder="Ej: Pérez Díaz"
-                                                value="<?= htmlspecialchars(isset($user['fullname']) ? implode(' ', array_slice(explode(' ', $user['fullname']), 1)) : '', ENT_QUOTES, 'UTF-8'); ?>">
-                                        </div>
-                                    </div>
-
-                                    <!-- Email -->
-                                    <div class="col-12">
-                                        <label for="email" class="form-label fw-semibold text-dark small ps-2">Correo Electrónico</label>
-                                        <div class="input-group custom-input-group">
-                                            <span class="input-group-text ps-3"><i class="bi bi-envelope-fill"></i></span>
-                                            <input
-                                                type="email"
-                                                class="form-control"
-                                                id="email"
-                                                name="email"
-                                                placeholder="correo@dominio.com"
-                                                value="<?= htmlspecialchars($user['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12">
-                                        <hr class="text-muted opacity-25 my-2">
-                                    </div>
-
-
-                                    <div class="col-12 col-md-6 col-lg-4">
-                                        <label for="birthDate" class="form-label fw-semibold text-dark small ps-2">Fecha de Nacimiento</label>
-                                        <div class="input-group custom-input-group">
-                                            <span class="input-group-text ps-3"><i class="bi bi-calendar-event-fill"></i></span>
-                                            <input
-                                                type="date"
-                                                class="form-control"
-                                                id="birthDate"
-                                                name="birthDate"
-                                                value="<?= !empty($user['birthDate']) ? date('Y-m-d', strtotime($user['birthDate'])) : ''; ?>">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12 col-md-6 col-lg-3">
-                                        <label for="country" class="form-label fw-semibold text-dark small ps-2">País</label>
-                                        <div class="input-group custom-input-group">
-                                            <span class="input-group-text ps-3"><i class="bi bi-geo-alt-fill"></i></span>
-                                            <input
-                                                type="text"
-                                                class="form-control"
-                                                id="country"
-                                                name="country"
-                                                value="<?= htmlspecialchars($user['country'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                                                disabled>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12 col-md-6 col-lg-2">
-                                        <label for="prefix" class="form-label fw-semibold text-dark small ps-2">Prefijo</label>
-                                        <div class="input-group custom-input-group">
-                                            <span class="input-group-text ps-3"><i class="bi bi-telephone-plus-fill"></i></span>
-                                            <input
-                                                type="text"
-                                                class="form-control text-center"
-                                                id="prefix"
-                                                name="prefix"
-                                                value="<?= htmlspecialchars($user['prefix'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                                                disabled>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-12 col-md-6 col-lg-3">
-                                        <label for="phone" class="form-label fw-semibold text-dark small ps-2">Número de Teléfono</label>
-                                        <div class="input-group custom-input-group">
-                                            <span class="input-group-text ps-3"><i class="bi bi-phone-fill"></i></span>
-                                            <input
-                                                type="text"
-                                                class="form-control fw-bold"
-                                                id="phone"
-                                                name="phone"
-                                                placeholder="Ej: 987654321"
-                                                value="<?= htmlspecialchars($user['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
-                                        </div>
-                                    </div>
-
                                 </div>
+
+                                <!-- Formulario (en responsive abajo, en lg a la izquierda) -->
+                                <div class="col-lg-8 order-2 order-lg-1">
+                                    <div class="bg-white p-4 rounded-4 shadow-sm border border-light h-100">
+                                        <h6 class="text-success fw-bold text-uppercase small mb-3 ls-1">Información Básica</h6>
+
+                                        <div class="row g-3">
+                                            <!-- Nombres -->
+                                            <div class="col-md-6">
+                                                <label for="names" class="form-label fw-semibold text-dark small ps-2">Nombres</label>
+                                                <div class="input-group custom-input-group">
+                                                    <span class="input-group-text ps-3"><i class="bi bi-person-fill"></i></span>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control"
+                                                        id="names"
+                                                        name="names"
+                                                        placeholder="Ej: Juan Carlos"
+                                                        value="<?= htmlspecialchars(explode(' ', $user['fullname'] ?? '')[0] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                                </div>
+                                            </div>
+
+                                            <!-- Apellidos -->
+                                            <div class="col-md-6">
+                                                <label for="lastnames" class="form-label fw-semibold text-dark small ps-2">Apellidos</label>
+                                                <div class="input-group custom-input-group">
+                                                    <span class="input-group-text ps-3"><i class="bi bi-person-vcard-fill"></i></span>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control"
+                                                        id="lastnames"
+                                                        name="lastnames"
+                                                        placeholder="Ej: Pérez Díaz"
+                                                        value="<?= htmlspecialchars(isset($user['fullname']) ? implode(' ', array_slice(explode(' ', $user['fullname']), 1)) : '', ENT_QUOTES, 'UTF-8'); ?>">
+                                                </div>
+                                            </div>
+
+                                            <!-- Email -->
+                                            <div class="col-12">
+                                                <label for="email" class="form-label fw-semibold text-dark small ps-2">Correo Electrónico</label>
+                                                <div class="input-group custom-input-group">
+                                                    <span class="input-group-text ps-3"><i class="bi bi-envelope-fill"></i></span>
+                                                    <input
+                                                        type="email"
+                                                        class="form-control"
+                                                        id="email"
+                                                        name="email"
+                                                        placeholder="correo@dominio.com"
+                                                        value="<?= htmlspecialchars($user['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <hr class="text-muted opacity-25 my-2">
+                                            </div>
+
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <label for="birthDate" class="form-label fw-semibold text-dark small ps-2">Fecha de Nacimiento</label>
+                                                <div class="input-group custom-input-group">
+                                                    <span class="input-group-text ps-3"><i class="bi bi-calendar-event-fill"></i></span>
+                                                    <input
+                                                        type="date"
+                                                        class="form-control"
+                                                        id="birthDate"
+                                                        name="birthDate"
+                                                        value="<?= !empty($user['birthDate']) ? date('Y-m-d', strtotime($user['birthDate'])) : ''; ?>">
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <label for="country" class="form-label fw-semibold text-dark small ps-2">País</label>
+                                                <div class="input-group custom-input-group">
+                                                    <span class="input-group-text ps-3"><i class="bi bi-geo-alt-fill"></i></span>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control"
+                                                        id="country"
+                                                        name="country"
+                                                        value="<?= htmlspecialchars($user['country'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                                                        disabled>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <label for="prefix" class="form-label fw-semibold text-dark small ps-2">Prefijo</label>
+                                                <div class="input-group custom-input-group">
+                                                    <span class="input-group-text ps-3"><i class="bi bi-telephone-plus-fill"></i></span>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control text-center"
+                                                        id="prefix"
+                                                        name="prefix"
+                                                        value="<?= htmlspecialchars($user['prefix'] ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                                                        disabled>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12 col-md-6 col-lg-6">
+                                                <label for="phone" class="form-label fw-semibold text-dark small ps-2">Número de Teléfono</label>
+                                                <div class="input-group custom-input-group">
+                                                    <span class="input-group-text ps-3"><i class="bi bi-phone-fill"></i></span>
+                                                    <input
+                                                        type="text"
+                                                        class="form-control fw-bold"
+                                                        id="phone"
+                                                        name="phone"
+                                                        placeholder="Ej: 987654321"
+                                                        value="<?= htmlspecialchars($user['phone'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
+
                         </div>
+
 
                         <!-- SEGURIDAD -->
                         <div class="tab-pane fade" id="account-content" role="tabpanel">
