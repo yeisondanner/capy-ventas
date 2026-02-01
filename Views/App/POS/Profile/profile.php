@@ -259,8 +259,7 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
 <!-- GEMINASO, DISEÑO DE EDITAR PERIL :) -->
 <div class="modal fade" id="modalEditProfile" tabindex="-1" aria-labelledby="modalEditProfileLabel" aria-hidden="true" data-bs-focus="false">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 rounded-4 shadow-lg overflow-hidden">
-
+        <div class="modal-content border-0 overflow-hidden">
             <!-- Encabezado -->
             <div class="modal-header bg-success text-white py-3 border-0">
                 <div class="d-flex align-items-center gap-3">
@@ -274,35 +273,29 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                 </div>
                 <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
-
             <form id="formEditProfile" method="post" action="<?= base_url() ?>/pos/profile/updateProfile" autocomplete="off">
                 <div class="modal-body p-4 bg-light bg-opacity-25">
-
                     <!-- Navegación-->
                     <div class="d-flex justify-content-center mb-4">
                         <ul class="nav nav-pills bg-white rounded-pill p-1 shadow-sm border" id="profileTabs" role="tablist">
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal-content" type="button" role="tab">
+                                <button class="nav-link active rounded-pill" id="personal-tab" data-bs-toggle="tab" data-bs-target="#personal-content" type="button" role="tab">
                                     <i class="bi bi-person me-2"></i>Datos Personales
                                 </button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="account-tab" data-bs-toggle="tab" data-bs-target="#account-content" type="button" role="tab">
+                                <button class="nav-link rounded-pill" id="account-tab" data-bs-toggle="tab" data-bs-target="#account-content" type="button" role="tab">
                                     <i class="bi bi-shield-lock me-2"></i>Seguridad
                                 </button>
                             </li>
                         </ul>
                     </div>
-
                     <div class="tab-content" id="profileTabsContent">
-
                         <!-- DATOS PERSONALES -->
                         <div class="tab-pane fade show active" id="personal-content" role="tabpanel">
-
                             <div class="row g-4">
-
                                 <!-- Tarjeta (en responsive arriba, en lg a la derecha) -->
-                                <div class="col-lg-4 order-1 order-lg-2">
+                                <div class="col-lg-4">
                                     <div class="card border-0 text-white h-100 rounded-4 shadow-sm"
                                         style="background: linear-gradient(160deg, #198754 0%, #0f5132 100%);">
                                         <div class="card-body p-4 text-center d-flex flex-column justify-content-center align-items-center">
@@ -314,9 +307,8 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                                         </div>
                                     </div>
                                 </div>
-
                                 <!-- Formulario (en responsive abajo, en lg a la izquierda) -->
-                                <div class="col-lg-8 order-2 order-lg-1">
+                                <div class="col-lg-8">
                                     <div class="bg-white p-4 rounded-4 shadow-sm border border-light h-100">
                                         <h6 class="text-success fw-bold text-uppercase small mb-3 ls-1">Información Básica</h6>
 
@@ -335,7 +327,6 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                                                         value="<?= htmlspecialchars(explode(' ', $user['fullname'] ?? '')[0] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                                                 </div>
                                             </div>
-
                                             <!-- Apellidos -->
                                             <div class="col-md-6">
                                                 <label for="lastnames" class="form-label fw-semibold text-dark small ps-2">Apellidos</label>
@@ -350,7 +341,6 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                                                         value="<?= htmlspecialchars(isset($user['fullname']) ? implode(' ', array_slice(explode(' ', $user['fullname']), 1)) : '', ENT_QUOTES, 'UTF-8'); ?>">
                                                 </div>
                                             </div>
-
                                             <!-- Email -->
                                             <div class="col-12">
                                                 <label for="email" class="form-label fw-semibold text-dark small ps-2">Correo Electrónico</label>
@@ -365,11 +355,9 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                                                         value="<?= htmlspecialchars($user['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
                                                 </div>
                                             </div>
-
                                             <div class="col-12">
                                                 <hr class="text-muted opacity-25 my-2">
                                             </div>
-
                                             <div class="col-12 col-md-6 col-lg-6">
                                                 <label for="birthDate" class="form-label fw-semibold text-dark small ps-2">Fecha de Nacimiento</label>
                                                 <div class="input-group custom-input-group">
@@ -428,16 +416,11 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
-
                         </div>
-
-
                         <!-- SEGURIDAD -->
                         <div class="tab-pane fade" id="account-content" role="tabpanel">
                             <div class="row g-4">
-
                                 <!-- Tarjeta de Info  -->
                                 <div class="col-lg-4">
                                     <div class="card border-0 text-white h-100 rounded-4 shadow-sm" style="background: linear-gradient(160deg, #198754 0%, #0f5132 100%);">
@@ -450,11 +433,9 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                                         </div>
                                     </div>
                                 </div>
-
                                 <!-- Formulario de Cambio-->
                                 <div class="col-lg-8">
                                     <div class="bg-white p-4 rounded-4 shadow-sm border border-light h-100">
-
                                         <!-- Alerta Mensajes -->
                                         <div id="msg-container-pass" class="d-none mb-3">
                                             <div id="msg-alert-pass" class="alert border-0 rounded-3 py-2 px-3 d-flex align-items-center" role="alert">
@@ -462,7 +443,6 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                                                 <span id="msg-text-pass" class="small fw-semibold"></span>
                                             </div>
                                         </div>
-
                                         <!-- USUARIO -->
                                         <div class="mb-4">
                                             <label for="username" class="form-label fw-bold text-dark small">Usuario</label>
@@ -477,9 +457,7 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                                                     placeholder="Nombre de usuario">
                                             </div>
                                         </div>
-
                                         <hr class="text-muted opacity-25 my-4">
-
                                         <!-- Paso 1 -->
                                         <div class="mb-4">
                                             <label for="currentPassword" class="form-label fw-bold text-dark small">1. Validar Contraseña Actual</label>
@@ -497,11 +475,9 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                                                 </button>
                                             </div>
                                         </div>
-
                                         <!-- Paso 2 -->
                                         <div id="newPasswordSection" style="transition: all 0.3s ease;">
                                             <label class="form-label fw-bold text-dark small">2. Crear Nueva Contraseña</label>
-
                                             <div class="row g-2">
                                                 <div class="col-md-6">
                                                     <div class="input-group custom-input-group bg-light">
@@ -528,7 +504,6 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <!-- Mensaje de coincidencia-->
                                             <div id="matchPassWrap" class="mt-2 d-none">
                                                 <div id="matchPassAlert" class="alert py-2 px-3 mb-0 small rounded-3 d-flex align-items-center" role="alert">
@@ -536,23 +511,20 @@ $avatarName   = urlencode($user['fullname'] ?? 'Usuario');
                                                     <span id="matchPassText" class="fw-semibold"></span>
                                                 </div>
                                             </div>
-
                                             <div class="mt-2 text-end">
                                                 <small class="text-muted" style="font-size: 0.75rem;">Mínimo 8 caracteres</small>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
 
                             </div>
                         </div>
-
                     </div>
                 </div>
 
                 <div class="modal-footer border-0 pt-0 pb-4 px-4 bg-light bg-opacity-25 rounded-bottom-4 justify-content-between">
-                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold border-0" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">
                         Cancelar
                     </button>
                     <button type="submit" class="btn btn-success rounded-pill px-5 fw-bold shadow-sm">
