@@ -142,7 +142,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 <i class="bi bi-cash-coin fs-4"></i>
                             </span>
                             <input type="number" class="form-control border-start-0 text-center fw-bold fs-3 text-dark"
-                                name="cash_opening_amount" id="cash_opening_amount" value="0" placeholder="0.00"
+                                name="cash_opening_amount" id="cash_opening_amount" value="" placeholder="0.00"
                                 step="0.01" min="0" required>
                         </div>
                     </div>
