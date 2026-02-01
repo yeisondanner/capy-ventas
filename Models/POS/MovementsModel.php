@@ -41,6 +41,7 @@ class MovementsModel extends Mysql
                     INNER JOIN user_app ua ON vh.user_app_id = ua.idUserApp
                     INNER JOIN people p ON ua.people_id = p.idPeople
                     WHERE 
+                    vh.sale_type='Contado' AND
                     vh.business_id = ?
             SQL;
 
