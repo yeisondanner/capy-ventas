@@ -76,6 +76,9 @@
   const customerCardProgressValue = document.getElementById(
     "customerCardProgressValue",
   );
+  //elemento de lacabecera del modal de cobro
+  const modalCobroHeader = document.getElementById("modalCobroHeader");
+  const modalCobroLabel = document.getElementById("modalCobroLabel");
   //obtenemos el todos los botones con la clase btn-cobrar
   const btnCobrar = document.querySelectorAll(".btn-cobrar");
   let actualizarDesdeMonto = null;
@@ -531,20 +534,45 @@
     botonesCobrar.forEach(function (btn) {
       btn.addEventListener("click", function () {
         if (!modalCobro || !spanModalTotal || !lblTotal) return;
-
+        //estandarizamos el texto del boton y los colores del modal
+        btnFinalizarVenta.innerHTML = `<i class="bi bi-check-circle me-1"></i> Finalizar Venta al Contado`;
+        btnFinalizarVenta.classList.remove("btn-danger");
+        btnFinalizarVenta.classList.add("btn-success");
+        modalCobroHeader.classList.remove("bg-danger");
+        modalCobroHeader.classList.add("bg-success");
+        modalCobroLabel.innerHTML = `<i class="bi bi-cash-stack me-2"></i> Finalizar Venta al Contado`;
         // Tomamos el total actual (texto tipo "S/ 209.70") y lo convertimos a número
         const totalTexto = lblTotal.textContent.replace("S/", "").trim();
         const total = parseFloat(totalTexto) || 0;
         //limpiamos el input
         inputMontoPaga.value = "0";
         spanVuelto.textContent = "0.00";
-        if (paymentMethod.value == 1) {
+        if (paymentMethod.value == 1 && saleTypeContado.checked) {
           divMontoPaga.classList.remove("d-none");
         } else {
           divMontoPaga.classList.add("d-none");
         }
+        if (saleTypeCredito.checked) {
+          //si esta en venta a crédito hay un cliente valido seleccionado
+          const customer = customerSelect.options[customerSelect.selectedIndex];
+          if (customer.textContent === "Sin cliente (DNI: Sin cliente)") {
+            showAlert({
+              icon: "info",
+              title: "Sin cliente",
+              message:
+                "Debes seleccionar un cliente antes de finalizar la venta.",
+            });
+            return;
+          }
+          //estandarizamos el texto del boton y los colores del modal si es venta a crédito
+          btnFinalizarVenta.innerHTML = `<i class="bi bi-wallet2"></i> Finalizar Venta a Crédito`;
+          btnFinalizarVenta.classList.remove("btn-success");
+          btnFinalizarVenta.classList.add("btn-danger");
+          modalCobroHeader.classList.remove("bg-success");
+          modalCobroHeader.classList.add("bg-danger");
+          modalCobroLabel.innerHTML = `<i class="bi bi-wallet2 me-2"></i> Finalizar Venta a Crédito`;
+        }
         spanModalTotal.textContent = total.toFixed(2);
-
         // Limpiamos inputs del modal de cobro
         if (inputMontoPaga) {
           inputMontoPaga.value = "";

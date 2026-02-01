@@ -292,7 +292,7 @@ headerPos($data); ?>
 <div class="modal fade" id="modalCobro" tabindex="-1" aria-labelledby="modalCobroLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-info">
+            <div class="modal-header bg-success" id="modalCobroHeader">
                 <h5 class="modal-title text-white" id="modalCobroLabel">
                     <i class="bi bi-cash-stack me-2"></i> Confirmar cobro
                 </h5>
