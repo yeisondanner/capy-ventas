@@ -107,8 +107,8 @@ class Box extends Controllers
             if (!$issetBoxSession && $openBox === "Si") {
                 $this->responseError("No tienes ninguna caja aperturada. Por favor apertura tu turno.");
             }
-            
-            if(!$boxSessions){
+
+            if (!$boxSessions) {
                 return null;
             }
 
@@ -271,7 +271,7 @@ class Box extends Controllers
 
         // * Limpiamos los campos
         $type = strClean($data['type']);
-        $notes = strClean($data['notes']);
+        $notes = strClean($data['notes'] ?? "");
         $conteo_efectivo = $data['conteo_efectivo'];
 
         // * Validamos que no este vacio los campos

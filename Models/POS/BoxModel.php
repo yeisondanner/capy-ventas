@@ -510,7 +510,7 @@ class BoxModel extends Mysql
         $this->description = $description;
         $sql = <<<SQL
             INSERT INTO expense_economic
-                (business_id, expense_category_id, supplier_id, amount, name_expense, expense_date, status, userapp_id, PaymentMethod_id, description)
+                (business_id, expensecategory_id, supplier_id, amount, name_expense, expense_date, status, userapp_id, PaymentMethod_id, description)
             VALUES
                 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
         SQL;
@@ -526,7 +526,6 @@ class BoxModel extends Mysql
             $this->paymentMethodId,
             $this->description
         ]);
-
     }
 
 

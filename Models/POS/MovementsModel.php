@@ -62,7 +62,7 @@ class MovementsModel extends Mysql
              */
             $sql = <<<SQL
                 SELECT
-                    ee.idExpense_economic AS 'id',
+                    ee.idExpenseEconomic AS 'id',
                     CASE WHEN ee.name_expense IS NULL THEN CONCAT(
                         'Gastos del dia ',
                         DATE(ee.expense_date)
@@ -231,7 +231,7 @@ class MovementsModel extends Mysql
     {
         $sql = <<<SQL
             SELECT
-                ee.idExpense_economic AS id,
+                ee.idExpenseEconomic AS id,
                 ee.name_expense,
                 ee.description,
                 ee.amount,
@@ -250,12 +250,12 @@ class MovementsModel extends Mysql
                 expense_economic ee
                 INNER JOIN business b ON b.idBusiness = ee.business_id
                 INNER JOIN payment_method pm ON pm.idPaymentMethod = ee.PaymentMethod_id
-                INNER JOIN expense_category ec ON ec.idExpense_category = ee.expense_category_id
+                INNER JOIN expense_category ec ON ec.idExpenseCategory = ee.expensecategory_id
                 LEFT JOIN supplier s ON s.idSupplier = ee.supplier_id
                 INNER JOIN user_app ua ON ua.idUserApp = ee.userapp_id
                 INNER JOIN people p ON p.idPeople = ua.people_id
             WHERE
-                ee.idExpense_economic = ?
+                ee.idExpenseEconomic = ?
                 AND ee.business_id = ?
             LIMIT 1;
         SQL;

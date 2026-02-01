@@ -1127,6 +1127,7 @@
           title: "Listo",
           message: "Productos cargados",
           position: "bottom-end",
+          timer: 200,
         },
         "float",
       );
