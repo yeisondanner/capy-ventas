@@ -92,15 +92,27 @@ class SalesModel extends Mysql
                 c.idCustomer AS idCustomer,
                 c.fullname   AS fullname,
                 c.document_number AS document_number,
-                dt.name AS document_type
+                dt.name AS document_type,
+                c.credit_limit AS credit_limit
             FROM customer AS c
             INNER JOIN document_type AS dt ON dt.idDocumentType = c.documenttype_id
             WHERE c.business_id = ?
               AND c.status = 'Activo'
-            ORDER BY c.fullname ASC;
+            ORDER BY c.idCustomer ASC;
         SQL;
+        $this->idBusiness = $idBusiness;
 
-        return $this->select_all($sql, [$idBusiness]);
+        $result = $this->select_all($sql, [$this->idBusiness]);
+        foreach ($result as $key => $value) {
+            $consumed = $this->selectDebtTotal($value['idCustomer'], $this->idBusiness)['credit_total'];
+            $result[$key]['consumed'] = $consumed;
+            //calulamos cuando es en porcentaje de uso del credito limite
+            $percentage = ($consumed / $value['credit_limit']) * 100;
+            $result[$key]['percentage'] = $percentage > 100 ? 100 : $percentage; //si el porcentaje es mayor a 100, se coloca 100
+            $available = $value['credit_limit'] - $consumed;
+            $result[$key]['available'] = $available > 0 ? $available : 0;
+        }
+        return $result;
     }
 
     /**

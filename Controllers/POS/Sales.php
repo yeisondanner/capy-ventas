@@ -135,6 +135,10 @@ class Sales extends Controllers
                 'name'           => (string) ($customer['fullname'] ?? ''),
                 'document'       => (string) ($customer['document_number'] ?? ''),
                 'document_type'  => (string) ($customer['document_type'] ?? ''),
+                'credit_limit'   => (float) ($customer['credit_limit'] ?? 0),
+                'consumed'     => (float) ($customer['consumed'] ?? 0),
+                'percentage'     => (float) ($customer['percentage'] ?? 0),
+                'available'      => (float) ($customer['available'] ?? 0),
             ];
         }, $customers);
 

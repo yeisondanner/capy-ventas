@@ -52,6 +52,30 @@
   const paymentMethodContainer = document.getElementById(
     "paymentMethodContainer",
   );
+  //contenedor del card de cliente donde se la informacion del cliente
+  const customerCardContainer = document.getElementById(
+    "customerCardContainer",
+  );
+  const customerCardFullname = document.getElementById("customerCardFullname");
+  const customerCardDocumentType = document.getElementById(
+    "customerCardDocumentType",
+  );
+  const customerCardDocumentNumber = document.getElementById(
+    "customerCardDocumentNumber",
+  );
+  const customerCardCreditLimit = document.getElementById(
+    "customerCardCreditLimit",
+  );
+  const customerCardConsumed = document.getElementById("customerCardConsumed");
+  const customerCardAvailable = document.getElementById(
+    "customerCardAvailable",
+  );
+  const customerCardProgressBar = document.getElementById(
+    "customerCardProgressBar",
+  );
+  const customerCardProgressValue = document.getElementById(
+    "customerCardProgressValue",
+  );
   //obtenemos el todos los botones con la clase btn-cobrar
   const btnCobrar = document.querySelectorAll(".btn-cobrar");
   let actualizarDesdeMonto = null;
@@ -264,6 +288,9 @@
             btn.innerHTML = `<i class="bi bi-cash-stack me-1"></i> Cobrar`;
           });
           saleType = "Contado";
+          customerCardContainer.classList.add("d-none");
+          //posicionamos la primera seleccion del cliente
+          selectCustomer.selectedIndex = 0;
         }
       });
     }
@@ -278,10 +305,75 @@
             btn.innerHTML = `<i class="bi bi-wallet2 me-1"></i> Guardar credito`;
           });
           saleType = "Credito";
+          selectCustomer.selectedIndex = 0;
         }
       });
     }
+    //validamos como se debe comparta el card de informacion del cliente
+    if (selectCustomer) {
+      selectCustomer.addEventListener("change", function (e) {
+        // Buscamos la opción seleccionada dentro del select
+        const selectedOption = this.options[this.selectedIndex];
+        if (selectedOption.textContent === "Sin cliente (DNI: Sin cliente)") {
+          return;
+        }
+        //validamos que solo se cargue cuando estemos para hacer una venta a credito
+        if (!saleTypeCredito.checked) {
+          return;
+        }
+        const customer = JSON.parse(selectedOption.dataset.customer);
+        customerCardFullname.textContent = customer.name;
+        customerCardDocumentType.textContent = customer.document_type;
+        customerCardDocumentNumber.textContent = customer.document;
+        customerCardCreditLimit.textContent =
+          getcurrency + " " + customer.credit_limit;
+        customerCardConsumed.textContent =
+          getcurrency + " " + customer.consumed;
+        customerCardAvailable.textContent =
+          getcurrency + " " + customer.available;
+        //actualizamos la barra de progreso
+        customerCardProgressBar.setAttribute(
+          "aria-valuenow",
+          customer.consumed,
+        );
+        customerCardProgressValue.setAttribute(
+          "style",
+          "width: " + customer.percentage + "%",
+        );
+        customerCardProgressValue.textContent = customer.percentage + "%";
+        //Cambiamos los colores de la barra de progreso de acuerdo al consumo
+        // Limpiamos todas las posibles clases de Bootstrap
+        const bootstrapColors = [
+          "bg-success",
+          "bg-info",
+          "bg-primary",
+          "bg-secondary",
+          "bg-warning",
+          "bg-dark",
+          "bg-danger",
+        ];
+        customerCardProgressValue.classList.remove(...bootstrapColors);
 
+        const p = customer.percentage;
+
+        if (p < 15) {
+          customerCardProgressValue.classList.add("bg-success"); // Verde (Muy bajo)
+        } else if (p < 30) {
+          customerCardProgressValue.classList.add("bg-info"); // Celeste (Bajo)
+        } else if (p < 45) {
+          customerCardProgressValue.classList.add("bg-primary"); // Azul (Subiendo)
+        } else if (p < 60) {
+          customerCardProgressValue.classList.add("bg-secondary"); // Gris (Mitad)
+        } else if (p < 75) {
+          customerCardProgressValue.classList.add("bg-warning"); // Amarillo (Atención)
+        } else if (p < 90) {
+          customerCardProgressValue.classList.add("bg-dark"); // Negro/Gris oscuro (Casi lleno)
+        } else {
+          customerCardProgressValue.classList.add("bg-danger"); // Rojo (Lleno/Crítico)
+        }
+        customerCardContainer.classList.remove("d-none");
+      });
+    }
     /**
      * Recalcula los totales aplicando un descuento por monto fijo.
      * Actualiza el porcentaje equivalente y el total final.
@@ -755,7 +847,7 @@
     });
   }
   // Esperamos a que todo el DOM esté cargado antes de manipular elementos
-  document.addEventListener("DOMContentLoaded", function () {
+  document.addEventListener("DOMContentLoaded", async function () {
     init();
     bindCartActions();
     bindEmptyCart();
@@ -1144,6 +1236,9 @@
       } else {
         option.textContent = name;
       }
+      //pasamos todo el json de cliente al option
+      option.dataset.customer = JSON.stringify(customer);
+
       selectCustomer.appendChild(option);
     });
   }
