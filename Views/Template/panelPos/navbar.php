@@ -89,7 +89,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 <!-- Modal: Add Box -->
 <div class="modal fade" id="modalAddBox" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-content border-0 shadow-lg  overflow-hidden">
             <div class="modal-body d-flex flex-column p-4 gap-4">
                 <div class="d-flex justify-content-between">
                     <div>
@@ -166,7 +166,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 <!-- Modal: Gestión de caja -->
 <div class="modal fade" id="modalGestionBox" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
-        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-content border-0 shadow-lg overflow-hidden">
             <div class="modal-body p-4">
                 <div class="d-flex justify-content-between mb-4">
                     <div>
@@ -346,7 +346,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 <!-- Modal: Arqueo de caja -->
 <div class="modal fade" id="modalArqueoBox" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-content border-0 shadow-lg overflow-hidden">
             <div class="modal-body p-4 bg-light">
                 <div class="d-flex justify-content-between mb-4">
                     <div>
@@ -468,7 +468,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 <!-- Modal: Cerrar caja -->
 <div class="modal fade" id="modalCloseBox" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-content border-0 shadow-lg overflow-hidden">
             <div class="modal-header border-bottom py-3 bg-white">
                 <div>
                     <h4 class="fw-bold mb-1">Cierre de Caja</h4>
@@ -599,7 +599,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 <!-- Modal: Registrar nuevo movimiento -->
 <div class="modal fade" id="modalMovementBox" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-content border-0 shadow-lg overflow-hidden">
             <div class="modal-header border-bottom-0 py-3 bg-primary text-white">
                 <h5 class="fw-bold mb-0">Venta Rápida</h5>
                 <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -708,7 +708,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 <!-- Modal: Retirar movimiento movimiento -->
 <div class="modal fade" id="modalRetireMovementBox" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-content border-0 shadow-lg overflow-hidden">
             <div class="modal-header border-bottom-0 py-3 bg-danger text-white">
                 <h5 class="fw-bold mb-0">Retiro Rápido</h5>
                 <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
