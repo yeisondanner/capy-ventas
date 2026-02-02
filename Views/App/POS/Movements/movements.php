@@ -3,7 +3,7 @@
     <div class="app-title">
         <div>
             <h1><i class="bi bi-pc-display-horizontal"></i> Movimientos</h1>
-            <p>Administra los movimientos de tu negocio</p>
+            <p>Administra los movimientos de tu negocio de ingresos y egresos</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="bi bi-house-door fs-6"></i></li>
@@ -22,6 +22,10 @@
                     <li class="nav-item">
                         <a class="nav-link border border-primary shadow-sm rounded-5"
                             href="<?= base_url() ?>/pos/boxhistory"><i class="bi bi-cash fs-4"></i> Cierrres de caja</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link border border-primary shadow-sm rounded-5"
+                            href="<?= base_url() ?>/pos/credits"><i class="bi bi-wallet fs-4"></i> Creditos</a>
                     </li>
                 </ul>
             </div>

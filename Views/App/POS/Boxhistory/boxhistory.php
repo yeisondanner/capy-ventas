@@ -20,6 +20,10 @@
                     <li class="nav-item">
                         <a class="nav-link border border-primary shadow-sm rounded-5 active" aria-current="page" href="<?= base_url() ?>/pos/boxhistory"><i class="bi bi-cash fs-4"></i> Cierrres de caja</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link border border-primary shadow-sm rounded-5"
+                            href="<?= base_url() ?>/pos/credits"><i class="bi bi-wallet fs-4"></i> Creditos</a>
+                    </li>
                 </ul>
             </div>
         </div>
