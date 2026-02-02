@@ -213,10 +213,18 @@
 <div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="voucherModalLabel">Comprobante de Venta</h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="modal-header bg-secondary text-dark border-bottom-0 py-2">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-dark bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="bi bi-receipt fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="voucherModalLabel">Comprobante de Venta</h5>
+                        <p class="mb-0 small text-dark text-opacity-75">Aqui podras ver la nota de venta</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
             </div>
 
             <div class="modal-body" id="voucherContainer">
@@ -334,9 +342,18 @@
     <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
 
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="expenseModalLabel">Comprobante de Egreso</h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="modal-header bg-danger text-white border-bottom-0 py-2">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="bi bi-receipt fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="expenseModalLabel">Comprobante de Egreso</h5>
+                        <p class="mb-0 small text-white text-opacity-75">Aqui podras ver la nota de egreso</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
             </div>
 
             <div class="modal-body" id="expenseContainer">
