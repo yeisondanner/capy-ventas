@@ -287,7 +287,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         <h5 class="modal-title fw-bold mb-0" id="addBusinessModalLabel">Registrar Nuevo Negocio</h5>
                         <p class="mb-0 small text-white text-opacity-75">Crea y configura tu nuevo negocio independiente</p>
                     </div>
-                    <button type="button" class="btn-close btn-close-white ms-auto bg-white" data-bs-dismiss="modal"
+                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
                         aria-label="Cerrar"></button>
                 </div>
             </div>
