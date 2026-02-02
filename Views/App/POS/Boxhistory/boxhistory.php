@@ -110,9 +110,18 @@
     <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
 
-            <div class="modal-header bg-info">
-                <h5 class="modal-title" id="boxSessionModalLabel">Reporte de Cierre de Caja</h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="modal-header bg-info border-bottom-0 py-2">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="bi bi-cash-stack fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="boxSessionModalLabel">Reporte de Cierre de Caja</h5>
+                        <p class="mb-0 small text-dark text-opacity-75">Aqui podras ver el reporte de cierre de caja</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
             </div>
 
             <div class="modal-body">
