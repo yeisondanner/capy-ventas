@@ -120,17 +120,17 @@ class Business extends Controllers
         }
         //comentado csrf de manera temporal hasta validar todo el codigo
         //isCsrf("", 1);
-        validateFields(['businessType', 'businessName', 'businessDocument', 'businessPhone', 'businessTelephonePrefix', 'businessEmail']);
+        validateFields(['businessType', 'businessName', 'businessDocument', 'businessPhone', 'businessEmail']);
         $userId = $this->getUserId();
         $typebusinessId  = (int) $_POST['businessType'];
         $name            = strClean($_POST['businessName']);
         $documentNumber  = strClean($_POST['businessDocument']);
         $phoneNumber     = strClean($_POST['businessPhone']);
-        $telephonePrefix = strClean($_POST['businessTelephonePrefix']);
+        $telephonePrefix = "+51"; //por defecto hasta que el sistema vaya escalando
         $email           = strClean($_POST['businessEmail']);
         $direction       = strClean($_POST['businessDirection']);
         $city            = strClean($_POST['businessCity']);
-        $country         = strClean($_POST['businessCountry']);
+        $country         = "PERÚ"; //por defecto hasta que el sistema vaya escalando
         validateFieldsEmpty([
             'TIPO DE NEGOCIO' => $typebusinessId,
             'NOMBRE' => $name,

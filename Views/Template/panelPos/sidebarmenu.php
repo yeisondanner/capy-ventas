@@ -278,99 +278,130 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 <div class="modal fade" id="addBusinessModal" tabindex="-1" aria-labelledby="addBusinessModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <form class="modal-content" id="formAddBusiness" autocomplete="off">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="addBusinessModalLabel">Registrar nuevo negocio</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Cerrar"></button>
+            <div class="modal-header bg-primary text-white border-bottom-0 py-2">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="bi bi-shop fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="addBusinessModalLabel">Registrar Nuevo Negocio</h5>
+                        <p class="mb-0 small text-white text-opacity-75">Crea y configura tu nuevo negocio independiente</p>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
             </div>
             <div class="modal-body">
-                <?= csrf(true, 1); ?>
-                <div class="row g-3">
-                    <div class="col-6 col-md-3">
-                        <label for="businessType" class="form-label">Tipo de negocio <span
-                                class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-building"></i></span>
-                            <select class="form-select businessType" id="businessType" name="businessType" required>
-                                <option value="" selected disabled>Selecciona un tipo de negocio</option>
-                            </select>
+                <div class="row">
+                    <!-- Columna Izquierda: Formulario -->
+                    <div class="col-lg-8">
+                        <?= csrf(true, 1); ?>
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label for="businessType" class="form-label">Tipo de negocio <span
+                                        class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-building"></i></span>
+                                    <select class="form-select businessType" id="businessType" name="businessType" required>
+                                        <option value="" selected disabled>Selecciona un tipo de negocio</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="businessDocument" class="form-label">Número de documento <span
+                                        class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                                    <input type="text" class="form-control" id="businessDocument" name="businessDocument"
+                                        maxlength="11" required placeholder="RUC o documento">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="businessName" class="form-label">Nombre del negocio <span
+                                        class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-shop"></i></span>
+                                    <input type="text" class="form-control" id="businessName" name="businessName"
+                                        maxlength="255" required placeholder="Ingresa el nombre comercial">
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="businessEmail" class="form-label">Correo electrónico <span
+                                        class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                    <input type="email" class="form-control" id="businessEmail" name="businessEmail"
+                                        maxlength="255" required placeholder="correo@ejemplo.com">
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-3">
+                                <label for="businessCountry" class="form-label">País <span
+                                        class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                                    <input type="text" class="form-control " id="businessCountry" value="PERU"
+                                        onkeyup="this.value = this.value.toUpperCase()" name="businessCountry" maxlength="100"
+                                        placeholder="País del negocio" readonly disabled>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-6 col-lg-3">
+                                <label for="businessTelephonePrefix" class="form-label">Prefijo telefónico <span
+                                        class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone-plus"></i></span>
+                                    <input type="text" class="form-control" id="businessTelephonePrefix"
+                                        name="businessTelephonePrefix" maxlength="7" required placeholder="+51" value="+51" readonly disabled>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-6">
+                                <label for="businessPhone" class="form-label">Teléfono <span
+                                        class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                    <input type="text" class="form-control" id="businessPhone" name="businessPhone"
+                                        maxlength="9" required placeholder="Número de contacto">
+                                </div>
+                            </div>
+                            <div class="col-4 col-md-6 col-lg-4">
+                                <label for="businessCity" class="form-label">Ciudad</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-geo"></i></span>
+                                    <input type="text" class="form-control" id="businessCity"
+                                        onkeyup="this.value = this.value.toUpperCase()" name="businessCity" maxlength="250"
+                                        placeholder="Ciudad o provincia">
+                                </div>
+                            </div>
+                            <div class="col-8 col-md-12 col-lg-8">
+                                <label for="businessDirection" class="form-label">Dirección</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-signpost-2"></i></span>
+                                    <input type="text" class="form-control" id="businessDirection"
+                                        onkeyup="this.value = this.value.toUpperCase()" name="businessDirection"
+                                        placeholder="Dirección comercial">
+                                </div>
+                            </div>
                         </div>
+                        <p class="text-muted small mt-3 mb-0">Los campos marcados con <span class="text-danger">*</span> son
+                            obligatorios.</p>
                     </div>
-                    <div class="col-6 col-md-3">
-                        <label for="businessDocument" class="form-label">Número de documento <span
-                                class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                            <input type="text" class="form-control" id="businessDocument" name="businessDocument"
-                                maxlength="11" required placeholder="RUC o documento">
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label for="businessName" class="form-label">Nombre del negocio <span
-                                class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-shop"></i></span>
-                            <input type="text" class="form-control" id="businessName" name="businessName"
-                                maxlength="255" required placeholder="Ingresa el nombre comercial">
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <label for="businessEmail" class="form-label">Correo electrónico <span
-                                class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                            <input type="email" class="form-control" id="businessEmail" name="businessEmail"
-                                maxlength="255" required placeholder="correo@ejemplo.com">
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <label for="businessCountry" class="form-label">País</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                            <input type="text" class="form-control" id="businessCountry" value="PERU"
-                                onkeyup="this.value = this.value.toUpperCase()" name="businessCountry" maxlength="100"
-                                placeholder="País del negocio">
-                        </div>
-                    </div>
-                    <div class="col-6 col-md-2">
-                        <label for="businessTelephonePrefix" class="form-label">Prefijo telefónico <span
-                                class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-telephone-plus"></i></span>
-                            <input type="text" class="form-control" id="businessTelephonePrefix"
-                                name="businessTelephonePrefix" maxlength="7" required placeholder="+51" value="+51">
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <label for="businessPhone" class="form-label">Teléfono <span
-                                class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                            <input type="text" class="form-control" id="businessPhone" name="businessPhone"
-                                maxlength="11" required placeholder="Número de contacto">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <label for="businessCity" class="form-label">Ciudad</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-geo"></i></span>
-                            <input type="text" class="form-control" id="businessCity"
-                                onkeyup="this.value = this.value.toUpperCase()" name="businessCity" maxlength="250"
-                                placeholder="Ciudad o provincia">
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <label for="businessDirection" class="form-label">Dirección</label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-signpost-2"></i></span>
-                            <input type="text" class="form-control" id="businessDirection"
-                                onkeyup="this.value = this.value.toUpperCase()" name="businessDirection"
-                                placeholder="Dirección comercial">
+
+                    <!-- Columna Derecha: Panel Informativo -->
+                    <div class="col-lg-4 order-first order-lg-last mb-4 mb-lg-0">
+                        <div class="card bg-primary text-white h-100 border-0 shadow-sm" style="border-radius: 1rem;">
+                            <div class="card-body d-flex flex-column justify-content-center text-center p-4">
+                                <div class="mb-4">
+                                    <div class="bg-white bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                        <i class="bi bi-shop display-4"></i>
+                                    </div>
+                                </div>
+                                <h4 class="fw-bold mb-3">Expande tu Red</h4>
+                                <p class="mb-0 opacity-75">
+                                    Aquí podrás crear más negocios independientes. Da de alta tus nuevos proyectos y gestiónalos fácilmente desde tu cuenta actual.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <p class="text-muted small mt-3 mb-0">Los campos marcados con <span class="text-danger">*</span> son
-                    obligatorios.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
