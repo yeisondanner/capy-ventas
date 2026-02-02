@@ -112,7 +112,7 @@ headerPos($data); ?>
                                 <!-- Navegación de escritorio entre canasta y pago -->
                                 <div class="d-none d-lg-block mt-2">
                                     <button id="btnDesktopToStep3" class="btn btn-success w-100 btn-nav">
-                                        Siguiente: Pago <i class="bi bi-arrow-right-circle ms-1"></i>
+                                        Siguiente: Pago <i class="bi bi-arrow-right-circle ms-1"></i> (Enter)
                                     </button>
                                 </div>
                             </div>
@@ -267,7 +267,7 @@ headerPos($data); ?>
                                 </button>
                                 <!-- Botón de cobrar en móvil -->
                                 <button class="btn btn-success w-50 btn-cobrar btn-nav">
-                                    <i class="bi bi-cash-stack me-1"></i> Cobrar
+                                    <i class="bi bi-cash-stack me-1"></i> Cobrar (Enter)
                                 </button>
                             </div>
 
@@ -277,7 +277,7 @@ headerPos($data); ?>
                                     <i class="bi bi-arrow-left-circle me-1"></i> Atras:Canasta
                                 </button>
                                 <button class="btn btn-success btn-cobrar btn-nav">
-                                    <i class="bi bi-cash-stack me-1"></i> Cobrar
+                                    <i class="bi bi-cash-stack me-1"></i> Cobrar (Enter)
                                 </button>
                             </div>
                         </div>
@@ -292,11 +292,18 @@ headerPos($data); ?>
 <div class="modal fade" id="modalCobro" tabindex="-1" aria-labelledby="modalCobroLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-success" id="modalCobroHeader">
-                <h5 class="modal-title text-white" id="modalCobroLabel">
-                    <i class="bi bi-cash-stack me-2"></i> Confirmar cobro
-                </h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="modal-header bg-success text-white border-bottom-0 py-2" id="modalCobroHeader">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div id="iconModalHeaderCobro" class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="bi bi-cash-stack fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="modalCobroLabel">Confirmar cobro</h5>
+                        <p class="mb-0 small text-white text-opacity-75">Confirma el cobro de la venta al contado o a crédito</p>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
             </div>
             <div class="modal-body">
                 <!-- Total que viene del paso 3 -->
@@ -326,9 +333,8 @@ headerPos($data); ?>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer d-flex justify-content-between">
+            <div class="modal-footer d-flex justify-content-between align-items-center">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <!-- Al confirmar, se cierra este modal y se abre el de resumen/voucher -->
                 <button type="button" class="btn btn-success" id="btnFinalizarVenta">
                     <i class="bi bi-check-circle me-1"></i> Finalizar venta
                 </button>
@@ -341,12 +347,18 @@ headerPos($data); ?>
 <div class="modal fade" id="modalPostVenta" tabindex="-1" aria-labelledby="modalPostVentaLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-success">
-                <!-- Encabezado visual tipo comprobante/voucher -->
-                <h5 class="modal-title text-white" id="modalPostVentaLabel">
-                    <i class="bi bi-check-circle me-2"></i> Venta completada
-                </h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="modal-header bg-info text-dark border-bottom-0 py-2">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-dark bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="bi bi-check-circle fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="addBusinessModalLabel">Venta completada</h5>
+                        <p class="mb-0 small text-dark text-opacity-75">Venta a crédito o al contado finalizado, puedes ver esta información en movimientos</p>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
             </div>
             <div class="modal-body">
                 <h5 class="text-center fw-semibold mb-3">
@@ -378,21 +390,17 @@ headerPos($data); ?>
                         <span class="fw-bold fs-5">S/ <span id="resumenTotalVenta">0.00</span></span>
                     </div>
                 </div>
-
-                <hr class="my-2">
-                <!--<p class="small text-muted mb-2">Opciones de comprobante / voucher</p>-->
-
-                <!-- Acciones posibles luego de finalizar la venta -->
-                <!-- Acciones posibles luego de finalizar la venta (MOVIDO AL FOOTER) -->
-                <!-- <div class="d-flex flex-wrap gap-2 justify-content-center"> ... </div> -->
             </div>
-            <div class="modal-footer justify-content-center border-top-0 pt-0 pb-4">
-                <button type="button" class="btn btn-outline-dark" id="btnPrintVoucher">
-                    <i class="bi bi-printer me-1"></i> Imprimir
-                </button>
-                <button type="button" class="btn btn-success px-4" id="btnViewVoucher">
-                    <i class="bi bi-receipt me-1"></i> Ver Comprobante
-                </button>
+            <div class="modal-footer justify-content-center flex-column">
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-dark" id="btnPrintVoucher">
+                        <i class="bi bi-printer me-1"></i> Imprimir (P)
+                    </button>
+                    <button type="button" class="btn btn-info px-4" id="btnViewVoucher">
+                        <i class="bi bi-receipt me-1"></i> Ver Comprobante
+                    </button>
+                </div>
+                <div class="small text-muted mt-2"><i class="bi bi-keyboard"></i> Presiona <span class="fw-bold">P</span> para imprimir</div>
             </div>
         </div>
     </div>

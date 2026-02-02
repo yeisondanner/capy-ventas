@@ -447,37 +447,6 @@
   }
 }
 
-/* Estilo tipo voucher para el modal de venta finalizada */
-#modalPostVenta .modal-content {
-  border-radius: 1.25rem;
-  border: none;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.35);
-}
-
-#modalPostVenta .modal-header {
-  border-bottom: none;
-  justify-content: center;
-}
-
-#modalPostVenta .modal-body {
-  background: #f8fafc;
-  border-top: 1px dashed #e2e8f0;
-  border-bottom: 1px dashed #e2e8f0;
-}
-
-#modalPostVenta .modal-footer {
-  border-top: none;
-  justify-content: center;
-}
-
-#modalPostVenta .voucher-total span:last-child {
-  font-size: 1.25rem;
-}
-
-#modalPostVenta .btn-sm {
-  border-radius: 999px;
-}
-
 /* Estilos para el comprobante (copiado de styles_movements.css) */
 .report-card-movements {
   border: 2px solid #ddd;

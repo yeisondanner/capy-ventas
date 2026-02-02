@@ -79,6 +79,7 @@
   //elemento de lacabecera del modal de cobro
   const modalCobroHeader = document.getElementById("modalCobroHeader");
   const modalCobroLabel = document.getElementById("modalCobroLabel");
+  const iconModalHeaderCobro = document.getElementById("iconModalHeaderCobro");
   //obtenemos el todos los botones con la clase btn-cobrar
   const btnCobrar = document.querySelectorAll(".btn-cobrar");
   let actualizarDesdeMonto = null;
@@ -288,7 +289,7 @@
           btnCobrar.forEach((btn) => {
             btn.classList.remove("btn-danger");
             btn.classList.add("btn-success");
-            btn.innerHTML = `<i class="bi bi-cash-stack me-1"></i> Cobrar`;
+            btn.innerHTML = `<i class="bi bi-cash-stack me-1"></i> Cobrar (Enter)`;
           });
           saleType = "Contado";
           customerCardContainer.classList.add("d-none");
@@ -305,7 +306,7 @@
           btnCobrar.forEach((btn) => {
             btn.classList.remove("btn-success");
             btn.classList.add("btn-danger");
-            btn.innerHTML = `<i class="bi bi-wallet2 me-1"></i> Guardar credito`;
+            btn.innerHTML = `<i class="bi bi-wallet2 me-1"></i> Guardar credito (Enter)`;
           });
           saleType = "Credito";
           selectCustomer.selectedIndex = 0;
@@ -535,12 +536,13 @@
       btn.addEventListener("click", function () {
         if (!modalCobro || !spanModalTotal || !lblTotal) return;
         //estandarizamos el texto del boton y los colores del modal
-        btnFinalizarVenta.innerHTML = `<i class="bi bi-check-circle me-1"></i> Finalizar Venta al Contado`;
+        btnFinalizarVenta.innerHTML = `<i class="bi bi-check-circle me-1"></i> Finalizar Venta al Contado (Enter)`;
         btnFinalizarVenta.classList.remove("btn-danger");
         btnFinalizarVenta.classList.add("btn-success");
         modalCobroHeader.classList.remove("bg-danger");
         modalCobroHeader.classList.add("bg-success");
-        modalCobroLabel.innerHTML = `<i class="bi bi-cash-stack me-2"></i> Finalizar Venta al Contado`;
+        modalCobroLabel.innerHTML = `Finalizar Venta al Contado`;
+        iconModalHeaderCobro.innerHTML = `<i class="bi bi-cash-stack fs-3"></i>`;
         // Tomamos el total actual (texto tipo "S/ 209.70") y lo convertimos a número
         const totalTexto = lblTotal.textContent.replace("S/", "").trim();
         const total = parseFloat(totalTexto) || 0;
@@ -565,12 +567,13 @@
             return;
           }
           //estandarizamos el texto del boton y los colores del modal si es venta a crédito
-          btnFinalizarVenta.innerHTML = `<i class="bi bi-wallet2"></i> Finalizar Venta a Crédito`;
+          btnFinalizarVenta.innerHTML = `<i class="bi bi-wallet2"></i> Finalizar Venta a Crédito (Enter)`;
           btnFinalizarVenta.classList.remove("btn-success");
           btnFinalizarVenta.classList.add("btn-danger");
           modalCobroHeader.classList.remove("bg-success");
           modalCobroHeader.classList.add("bg-danger");
-          modalCobroLabel.innerHTML = `<i class="bi bi-wallet2 me-2"></i> Finalizar Venta a Crédito`;
+          modalCobroLabel.innerHTML = `Finalizar Venta a Crédito`;
+          iconModalHeaderCobro.innerHTML = `<i class="bi bi-wallet2 fs-3"></i>`;
         }
         spanModalTotal.textContent = total.toFixed(2);
         // Limpiamos inputs del modal de cobro
@@ -828,6 +831,15 @@
      * Se evita disparar si el usuario está buscando productos.
      */
     document.addEventListener("keydown", function (event) {
+      if (event.key === "p" || event.key === "P") {
+        const isModalPostVentaOpen =
+          modalPostVentaEl && modalPostVentaEl.classList.contains("show");
+        if (isModalPostVentaOpen && lastSaleId) {
+          event.preventDefault();
+          printVoucher(lastSaleId);
+          return;
+        }
+      }
       if (event.key === "Enter") {
         // Verificamos si el modal de cobro está visible (clase 'show' de Bootstrap)
         const isModalCobroOpen =
