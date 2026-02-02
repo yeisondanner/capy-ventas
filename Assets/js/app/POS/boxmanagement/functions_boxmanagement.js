@@ -27,7 +27,19 @@ export class Boxmanagement {
 
   #initTable = () => {
     return $("#table").DataTable({
-      ajax: { url: `${base_url}/pos/Boxmanagement/getBoxes`, dataSrc: "" },
+      processing: true,
+      ajax: {
+        url: `${base_url}/pos/Boxmanagement/getBoxes`,
+        dataSrc: function (json) {
+          if (json.url) {
+            setTimeout(() => {
+              window.location.href = json.url;
+            }, 1000);
+          }
+          // Importante: serverSide espera que los datos vengan en json.data
+          return json;
+        },
+      },
       columns: [
         { data: "cont", className: "text-center" },
         {
@@ -72,9 +84,11 @@ export class Boxmanagement {
           exportOptions: { columns: [0, 2, 3, 4] },
         },
       ],
-      responsive: true,
-      processing: true,
+      keyTable: true,
       destroy: true,
+      colReorder: true,
+      stateSave: true,
+      autoFill: false,
       iDisplayLength: 10,
       order: [[0, "asc"]],
       language: {
@@ -196,6 +210,10 @@ export class Boxmanagement {
             message: res.message || "No fue posible obtener la caja.",
           });
           if (res.url) setTimeout(() => (window.location.href = res.url), 1000);
+          return;
+        }
+        if (res.url) {
+          setTimeout(() => (window.location.href = res.url), 1000);
           return;
         }
 

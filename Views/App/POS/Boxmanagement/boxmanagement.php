@@ -16,7 +16,7 @@
             <div class="tile rounded-3">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
-                    $boxmanagement = (int) (validate_permission_app(12, "c", false)) ? (int) validate_permission_app(12, "c", false)['create'] : 0;
+                    $boxmanagement = (int) validate_permission_app(13, "c", false)['create'];
                     if ($boxmanagement === 1): ?>
                         <button class="btn btn-outline-primary btn-sm" type="button" id="btnOpenBoxModal">
                             <i class="bi bi-plus-lg"></i> Agregar nueva caja
@@ -37,7 +37,7 @@
                                     <th>Acciones</th>
                                     <th>Nombre</th>
                                     <th>Descripción</th>
-                                    
+
                                     <th>Fecha de Registro</th>
                                 </tr>
                             </thead>

@@ -31,7 +31,7 @@ class BoxManagement extends Controllers
 
     public function getBoxes(): void
     {
-        validate_permission_app(13, "r");
+        validate_permission_app(13, "r", false, false, false);
         $businessId = $this->getBusinessId();
 
         $arrData = $this->model->select_boxes($businessId);
@@ -45,13 +45,9 @@ class BoxManagement extends Controllers
 
             $arrData[$key]['cont'] = $cont;
 
-            $validationUpdate = (validate_permission_app(13, "u", false))
-                ? (int) validate_permission_app(13, "u", false)['update']
-                : 0;
+            $validationUpdate = (int) validate_permission_app(13, "u", false)['update'];
 
-            $validationDelete = (validate_permission_app(13, "d", false))
-                ? (int) validate_permission_app(13, "d", false)['delete']
-                : 0;
+            $validationDelete = (int) validate_permission_app(13, "d", false)['delete'];
 
 
             $isCajaPrincipal = (mb_strtolower(trim($boxNameRaw), 'UTF-8') === mb_strtolower('Caja Principal', 'UTF-8'));
@@ -106,8 +102,7 @@ class BoxManagement extends Controllers
 
     public function getBox(): void
     {
-        (!validate_permission_app(13, "r", false)['status']) ? toJson(validate_permission_app(13, "r", false)) : '';
-
+        validate_permission_app(13, "r", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -138,7 +133,7 @@ class BoxManagement extends Controllers
 
     public function setBox(): void
     {
-        (!validate_permission_app(13, "c", false)['status']) ? toJson(validate_permission_app(13, "c", false)) : '';
+        validate_permission_app(13, "c", false, false, false);
 
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
@@ -185,8 +180,7 @@ class BoxManagement extends Controllers
 
     public function updateBox(): void
     {
-        (!validate_permission_app(13, "u", false)['status']) ? toJson(validate_permission_app(13, "u", false)) : '';
-
+        validate_permission_app(13, "u", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -241,8 +235,7 @@ class BoxManagement extends Controllers
 
     public function deleteBox(): void
     {
-        (!validate_permission_app(13, "d", false)['status']) ? toJson(validate_permission_app(13, "d", false)) : '';
-
+        validate_permission_app(13, "d", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
             $this->responseError('Método de solicitud no permitido.');
         }
