@@ -73,7 +73,7 @@ $widget_alert = $data['page_vars'][2];
                 </div>
                 <div>
                     <h2 class="mb-1 fw-bold">Actualización Beta</h2>
-                    <p class="mb-0 opacity-90">Lanzada el 03 de Enero, 2026</p>
+                    <p class="mb-0 opacity-90">Lanzada el 01 de Febrero, 2026</p>
                 </div>
             </div>
             <div class="text-end">
@@ -84,78 +84,18 @@ $widget_alert = $data['page_vars'][2];
         <!-- Cuerpo del Tablón: Lista de Cambios -->
         <div class="card-body p-0">
 
-            <!-- Feature 1: Cuentas y Negocios -->
+            <!-- Feature 7: Gestión de Gastos -->
             <div class="change-item d-flex align-items-start gap-4 type-new">
-                <div class="icon-box shadow-sm">
-                    <i class="bi bi-person-workspace"></i>
-                </div>
-                <div class="flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge rounded-pill bg-success text-white type-badge">¡NUEVO!</span>
-                        <small class="text-muted">Administración</small>
-                    </div>
-                    <h5 class="fw-bold mb-2">Gestión de Cuentas y Negocios</h5>
-                    <p class="text-muted mb-0">Ahora puedes crear tu propia cuenta de usuario para acceder al sistema de forma segura. Además, hemos añadido la capacidad de registrar nuevos negocios y actualizar la información de los existentes fácilmente.</p>
-                </div>
-            </div>
-
-            <!-- Feature 2: Roles y Empleados -->
-            <div class="change-item d-flex align-items-start gap-4 type-new">
-                <div class="icon-box shadow-sm">
-                    <i class="bi bi-shield-lock-fill"></i>
-                </div>
-                <div class="flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge rounded-pill bg-success text-white type-badge">¡NUEVO!</span>
-                        <small class="text-muted">Seguridad</small>
-                    </div>
-                    <h5 class="fw-bold mb-2">Roles y Permisos Avanzados</h5>
-                    <p class="text-muted mb-0">Control total sobre tu personal. Crea roles personalizados y administra a tus empleados asignándoles permisos específicos según su función en el negocio.</p>
-                </div>
-            </div>
-
-            <!-- Feature 3: Inventario Ganancia -->
-            <div class="change-item d-flex align-items-start gap-4 type-improvement">
-                <div class="icon-box shadow-sm">
-                    <i class="bi bi-graph-up-arrow"></i>
-                </div>
-                <div class="flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary type-badge">Mejora</span>
-                        <small class="text-muted">Inventario</small>
-                    </div>
-                    <h5 class="fw-bold mb-2">Visualización de Ganancias</h5>
-                    <p class="text-muted mb-0">El módulo de inventarios ha sido actualizado. Ahora puedes ver claramente el margen de ganancia estimado por cada producto directamente en la lista.</p>
-                </div>
-            </div>
-
-            <!-- Feature 4: Comprobante Imagen -->
-            <div class="change-item d-flex align-items-start gap-4 type-new">
-                <div class="icon-box shadow-sm">
-                    <i class="bi bi-file-earmark-image"></i>
-                </div>
-                <div class="flex-grow-1">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="badge rounded-pill bg-success text-white type-badge">¡NUEVO!</span>
-                        <small class="text-muted">Ventas</small>
-                    </div>
-                    <h5 class="fw-bold mb-2">Comprobantes Listos para Compartir</h5>
-                    <p class="text-muted mb-0">Al realizar una venta, el sistema genera automáticamente el comprobante en formato de imagen. Ideal para enviarlo rápidamente por WhatsApp o redes sociales a tus clientes.</p>
-                </div>
-            </div>
-
-            <!-- Feature 5: Gestión de Caja -->
-            <div class="change-item d-flex align-items-start gap-4 type-new">
-                <div class="icon-box shadow-sm text-success">
-                    <i class="bi bi-cash-stack"></i>
+                <div class="icon-box shadow-sm text-danger">
+                    <i class="bi bi-receipt"></i>
                 </div>
                 <div class="flex-grow-1">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <span class="badge rounded-pill bg-success text-white type-badge">¡YA DISPONIBLE!</span>
-                        <small class="text-muted">Caja</small>
+                        <small class="text-muted">Finanzas</small>
                     </div>
-                    <h5 class="fw-bold mb-2">Gestión de Caja</h5>
-                    <p class="text-muted mb-0">Control total de tu dinero. Apertura y cierre de turnos, registro de ingresos/egresos y arqueos detallados.</p>
+                    <h5 class="fw-bold mb-2">Gestión de Gastos</h5>
+                    <p class="text-muted mb-0">Control total de tus egresos. Registra gastos operativos, compras y salidas de dinero para mantener tus finanzas en orden.</p>
                 </div>
             </div>
 
@@ -174,6 +114,81 @@ $widget_alert = $data['page_vars'][2];
                 </div>
             </div>
 
+            <!-- Feature 5: Gestión de Caja -->
+            <div class="change-item d-flex align-items-start gap-4 type-new">
+                <div class="icon-box shadow-sm text-success">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge rounded-pill bg-success text-white type-badge">¡YA DISPONIBLE!</span>
+                        <small class="text-muted">Caja</small>
+                    </div>
+                    <h5 class="fw-bold mb-2">Gestión de Caja</h5>
+                    <p class="text-muted mb-0">Control total de tu dinero. Apertura y cierre de turnos, registro de ingresos/egresos y arqueos detallados.</p>
+                </div>
+            </div>
+
+            <!-- Feature 4: Comprobante Imagen -->
+            <div class="change-item d-flex align-items-start gap-4 type-new">
+                <div class="icon-box shadow-sm">
+                    <i class="bi bi-file-earmark-image"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge rounded-pill bg-success text-white type-badge">¡NUEVO!</span>
+                        <small class="text-muted">Ventas</small>
+                    </div>
+                    <h5 class="fw-bold mb-2">Comprobantes Listos para Compartir</h5>
+                    <p class="text-muted mb-0">Al realizar una venta, el sistema genera automáticamente el comprobante en formato de imagen. Ideal para enviarlo rápidamente por WhatsApp o redes sociales a tus clientes.</p>
+                </div>
+            </div>
+
+            <!-- Feature 3: Inventario Ganancia -->
+            <div class="change-item d-flex align-items-start gap-4 type-improvement">
+                <div class="icon-box shadow-sm">
+                    <i class="bi bi-graph-up-arrow"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary type-badge">Mejora</span>
+                        <small class="text-muted">Inventario</small>
+                    </div>
+                    <h5 class="fw-bold mb-2">Visualización de Ganancias</h5>
+                    <p class="text-muted mb-0">El módulo de inventarios ha sido actualizado. Ahora puedes ver claramente el margen de ganancia estimado por cada producto directamente en la lista.</p>
+                </div>
+            </div>
+
+            <!-- Feature 2: Roles y Empleados -->
+            <div class="change-item d-flex align-items-start gap-4 type-new">
+                <div class="icon-box shadow-sm">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge rounded-pill bg-success text-white type-badge">¡NUEVO!</span>
+                        <small class="text-muted">Seguridad</small>
+                    </div>
+                    <h5 class="fw-bold mb-2">Roles y Permisos Avanzados</h5>
+                    <p class="text-muted mb-0">Control total sobre tu personal. Crea roles personalizados y administra a tus empleados asignándoles permisos específicos según su función en el negocio.</p>
+                </div>
+            </div>
+
+            <!-- Feature 1: Cuentas y Negocios -->
+            <div class="change-item d-flex align-items-start gap-4 type-new">
+                <div class="icon-box shadow-sm">
+                    <i class="bi bi-person-workspace"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="badge rounded-pill bg-success text-white type-badge">¡NUEVO!</span>
+                        <small class="text-muted">Administración</small>
+                    </div>
+                    <h5 class="fw-bold mb-2">Gestión de Cuentas y Negocios</h5>
+                    <p class="text-muted mb-0">Ahora puedes crear tu propia cuenta de usuario para acceder al sistema de forma segura. Además, hemos añadido la capacidad de registrar nuevos negocios y actualizar la información de los existentes fácilmente.</p>
+                </div>
+            </div>
+
         </div>
 
         <!-- Sección En Construcción (Próximamente) -->
@@ -184,10 +199,10 @@ $widget_alert = $data['page_vars'][2];
             <div class="row g-3">
                 <div class="col-md-6">
                     <div class="roadmap-item shadow-sm">
-                        <i class="bi bi-receipt"></i>
+                        <i class="bi bi-credit-card-2-front"></i>
                         <div>
-                            <div class="fw-bold small">Gestión de Gastos</div>
-                            <div class="text-muted" style="font-size: 0.8rem;">Registro de salidas de dinero</div>
+                            <div class="fw-bold small">Gestión de Créditos</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">Administración de cuentas por cobrar</div>
                         </div>
                     </div>
                 </div>
