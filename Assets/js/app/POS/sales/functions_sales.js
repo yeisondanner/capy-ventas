@@ -678,6 +678,7 @@
             //cargamos la canasta y los productos
             getCart();
             getProducts();
+            loadCustomers();
             refreshVoucherNameButtonState();
           }
           if (data.url) {
