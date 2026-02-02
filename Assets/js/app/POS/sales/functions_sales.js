@@ -798,15 +798,19 @@
       });
     }
 
-    // Botón Imprimir Comprobante (En desarrollo)
+    // Botón Imprimir Comprobante
     const btnPrintVoucher = document.getElementById("btnPrintVoucher");
     if (btnPrintVoucher) {
       btnPrintVoucher.addEventListener("click", function () {
-        showAlert({
-          icon: "info",
-          title: "En desarrollo",
-          message: "Esta opción estará disponible muy pronto.",
-        });
+        if (!lastSaleId) {
+          showAlert({
+            icon: "info",
+            title: "Sin venta",
+            message: "No hay una venta reciente para imprimir.",
+          });
+          return;
+        }
+        printVoucher(lastSaleId);
       });
     }
 
@@ -2003,84 +2007,189 @@
    * Carga los datos del comprobante y muestra el modal.
    * @param {number|string} idVoucher ID de la venta
    */
+  /**
+   * Obtiene los datos del comprobante desde el servidor.
+   * Retorna una promesa con la respuesta.
+   */
+  function fetchVoucherData(idVoucher) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: base_url + "/pos/Movements/getVoucher",
+        type: "POST",
+        dataType: "json",
+        data: { idVoucherHeader: idVoucher },
+        success: function (res) {
+          if (res.status) {
+            resolve(res);
+          } else {
+            reject(res.msg || "No se pudo cargar el comprobante");
+          }
+        },
+        error: function () {
+          reject("Error de comunicación con el servidor");
+        },
+      });
+    });
+  }
+
+  /**
+   * Rellena el DOM del modal de voucher con los datos recibidos.
+   */
+  function populateVoucherDOM(res) {
+    const h = res.header;
+    const d = res.details;
+
+    // === Cabecera ===
+    $("#name_bussines").text(h.name_bussines);
+    $("#direction_bussines").text(h.direction_bussines);
+    $("#document_bussines").text(h.document_bussines);
+    $("#date_time").text(h.date_time);
+    $("#name_customer").text(h.name_customer);
+    $("#direction_customer").text(h.direction_customer);
+    $("#fullname").text(h.fullname);
+    $("#sale_type").text(h.sale_type);
+    const logoImg = document.getElementById("logo_voucher");
+    if (logoImg) logoImg.src = h.logo;
+
+    //hacemos que el id se muestre con ceros a la izquierda
+    const id_voucher = String(h.id).padStart(8, "0");
+    //CV = Comprobante de Venta
+    const voucher_code = `CV-${id_voucher}`;
+    $("#voucher_code").text(voucher_code);
+
+    // Totales
+    $("#percentage_discount").text(h.percentage_discount);
+    $("#total_amount").text("S/ " + Number(h.amount).toFixed(2));
+
+    // Calculamos subtotal y descuento a partir del detalle
+    let subtotal = 0;
+    d.forEach((item) => {
+      subtotal += Number(item.sales_price_product) * item.stock_product;
+    });
+
+    const descuento = (subtotal * Number(h.percentage_discount || 0)) / 100;
+
+    $("#subtotal_amount").text("S/ " + subtotal.toFixed(2));
+    $("#discount_amount").text("- S/ " + descuento.toFixed(2));
+    $("#tax_name").text(h.tax_name);
+    $("#tax_percentage").text(Number(h.tax_percentage).toFixed(2));
+    $("#tax_amount").text("S/ " + Number(h.tax_amount).toFixed(2));
+
+    // === Detalle ===
+    const $tbody = $("#tbodyVoucherDetails");
+    $tbody.empty();
+
+    d.forEach((item) => {
+      $tbody.append(`
+        <tr>
+          <td>${item.stock_product}</td>
+          <td>${item.name_product} (${item.unit_of_measurement})</td>
+          <td class="text-end">S/ ${Number(item.sales_price_product).toFixed(
+            2,
+          )}</td>
+          <td class="text-end">S/ ${Number(
+            item.sales_price_product * item.stock_product,
+          ).toFixed(2)}</td>
+        </tr>
+      `);
+    });
+  }
+
+  /**
+   * Carga los datos del comprobante y muestra el modal.
+   * @param {number|string} idVoucher ID de la venta
+   */
   function loadVoucher(idVoucher) {
     showAlert({ title: "Cargando comprobante..." }, "loading");
-    $.ajax({
-      url: base_url + "/pos/Movements/getVoucher",
-      type: "POST",
-      dataType: "json",
-      data: { idVoucherHeader: idVoucher },
-      success: function (res) {
+    fetchVoucherData(idVoucher)
+      .then((res) => {
         Swal.close();
-        if (!res.status) {
-          alert(res.msg || "No se pudo cargar el comprobante");
-          return;
-        }
-
-        const h = res.header;
-        const d = res.details;
-
-        // === Cabecera ===
-        $("#name_bussines").text(h.name_bussines);
-        $("#direction_bussines").text(h.direction_bussines);
-        $("#document_bussines").text(h.document_bussines);
-        $("#date_time").text(h.date_time);
-        $("#name_customer").text(h.name_customer);
-        $("#direction_customer").text(h.direction_customer);
-        $("#fullname").text(h.fullname);
-        document.getElementById("logo_voucher").src = h.logo;
-        //hacemos que el id se muestre con ceros a la izquierda
-        const id_voucher = String(h.id).padStart(8, "0");
-        //CV = Comprobante de Venta
-        const voucher_code = `CV-${id_voucher}`;
-        $("#voucher_code").text(voucher_code);
-
-        // Totales
-        $("#percentage_discount").text(h.percentage_discount);
-        $("#total_amount").text("S/ " + Number(h.amount).toFixed(2));
-
-        // Calculamos subtotal y descuento a partir del detalle
-        let subtotal = 0;
-        d.forEach((item) => {
-          subtotal += Number(item.sales_price_product) * item.stock_product;
-        });
-
-        const descuento = (subtotal * Number(h.percentage_discount || 0)) / 100;
-
-        $("#subtotal_amount").text("S/ " + subtotal.toFixed(2));
-        $("#discount_amount").text("- S/ " + descuento.toFixed(2));
-        $("#tax_name").text(h.tax_name);
-        $("#tax_percentage").text(Number(h.tax_percentage).toFixed(2));
-        $("#tax_amount").text("S/ " + Number(h.tax_amount).toFixed(2));
-
-        // === Detalle ===
-        const $tbody = $("#tbodyVoucherDetails");
-        $tbody.empty();
-
-        d.forEach((item) => {
-          $tbody.append(`
-            <tr>
-              <td>${item.stock_product}</td>
-              <td>${item.name_product} (${item.unit_of_measurement})</td>
-              <td class="text-end">S/ ${Number(
-                item.sales_price_product,
-              ).toFixed(2)}</td>
-              <td class="text-end">S/ ${Number(
-                item.sales_price_product * item.stock_product,
-              ).toFixed(2)}</td>
-            </tr>
-          `);
-        });
-
+        populateVoucherDOM(res);
         const modalEl = document.getElementById("voucherModal");
         const modalVoucher = bootstrap.Modal.getOrCreateInstance(modalEl);
         modalVoucher.show();
-      },
-      error: function () {
+      })
+      .catch((err) => {
         Swal.close();
-        alert("Error de comunicación con el servidor");
-      },
+        alert(err);
+      });
+  }
+
+  /**
+   * Carga los datos y lanza la impresión del comprobante sin abrir el modal (o usándolo oculto).
+   */
+  function printVoucher(idVoucher) {
+    showAlert({ title: "Generando impresión..." }, "loading");
+    fetchVoucherData(idVoucher)
+      .then((res) => {
+        Swal.close();
+        populateVoucherDOM(res);
+        // Esperamos un breve momento para asegurar que el DOM se actualice
+        setTimeout(() => {
+          printElement("voucherContainer");
+        }, 300);
+      })
+      .catch((err) => {
+        Swal.close();
+        alert(err);
+      });
+  }
+
+  /**
+   * Imprime el contenido de un elemento HTML en una ventana nueva, copiando los estilos.
+   * @param {string} elementId ID del elemento a imprimir
+   */
+  function printElement(elementId) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+
+    // Crear ventana de impresión
+    const printWindow = window.open("", "PRINT", "height=600,width=800");
+    if (!printWindow) {
+      alert("La ventana de impresión fue bloqueada por el navegador.");
+      return;
+    }
+
+    printWindow.document.write(
+      "<html><head><title>Imprimir Comprobante</title>",
+    );
+
+    // Copiar estilos de la página actual
+    const styles = document.querySelectorAll('link[rel="stylesheet"], style');
+    styles.forEach((style) => {
+      printWindow.document.write(style.outerHTML);
     });
+
+    // Ajuste para forzar impresión de colores de fondo
+    printWindow.document.write(`
+      <style>
+        body { 
+          -webkit-print-color-adjust: exact !important; 
+          print-color-adjust: exact !important; 
+          background-color: white;
+        }
+        /* Ajuste para que se vea bien en el papel */
+        #${elementId} {
+            margin: 0;
+            padding: 20px !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+      </style>
+    `);
+
+    printWindow.document.write("</head><body>");
+    printWindow.document.write(element.innerHTML);
+    printWindow.document.write("</body></html>");
+
+    printWindow.document.close(); // Necesario para IE >= 10
+    printWindow.focus(); // Necesario para IE >= 10
+
+    // Dar tiempo a cargar estilos e imágenes
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 800);
   }
 
   /**

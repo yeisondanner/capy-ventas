@@ -444,6 +444,10 @@ headerPos($data); ?>
                             <label class="small text-uppercase text-muted fw-bold">Vendedor:</label>
                             <div class="fw-bold" id="fullname">--</div>
                         </div>
+                        <div class="col-12 mt-3">
+                            <label class="small text-uppercase text-muted fw-bold">Condición de Pago:</label>
+                            <div class="fw-bold text-uppercase" id="sale_type">--</div>
+                        </div>
 
                         <div class="col-12 mt-3">
                             <label class="small text-uppercase text-muted fw-bold">Cliente:</label>
