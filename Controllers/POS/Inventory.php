@@ -169,6 +169,18 @@ class Inventory extends Controllers
                 $this->responseError('El archivo debe ser una imagen.');
             }
         }
+        //validamos que el estock solo tenga 11 digitos
+        if ($stock > 99999999.99) {
+            $this->responseError('El stock no puede exceder los 11 dígitos.');
+        }
+        //validamos que el precio de compra solo tenga 11 digitos
+        if ($purchase > 99999999.99) {
+            $this->responseError('El precio de compra no puede exceder los 11 dígitos.');
+        }
+        //validamos que el precio de venta solo tenga 11 digitos
+        if ($sales > 99999999.99) {
+            $this->responseError('El precio de venta no puede exceder los 11 dígitos.');
+        }
 
         $this->ensureCategoryBelongsToBusiness($categoryId, $businessId);
         $this->ensureMeasurementExists($measurementId);
@@ -362,6 +374,18 @@ class Inventory extends Controllers
 
         if ($supplierId <= 0) {
             $this->responseError('Debes seleccionar un proveedor válido.');
+        }
+        //validamos que el estock solo tenga 11 digitos
+        if ($stock > 99999999.99) {
+            $this->responseError('El stock no puede exceder los 11 dígitos.');
+        }
+        //validamos que el precio de compra solo tenga 11 digitos
+        if ($purchase > 99999999.99) {
+            $this->responseError('El precio de compra no puede exceder los 11 dígitos.');
+        }
+        //validamos que el precio de venta solo tenga 11 digitos
+        if ($sales > 99999999.99) {
+            $this->responseError('El precio de venta no puede exceder los 11 dígitos.');
         }
         //validamos que el campo no este vacio
         if (!empty($flInput['name'])) {

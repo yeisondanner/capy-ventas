@@ -26,6 +26,10 @@ class CustomersModel extends Mysql
                 c.phone_number,
                 c.email,
                 c.direction,
+                c.credit_limit,
+                c.default_interest_rate,
+                c.current_interest_rate,
+                c.billing_date,
                 c.status
             FROM customer AS c
             INNER JOIN document_type AS dt ON dt.idDocumentType = c.documenttype_id
@@ -117,7 +121,11 @@ class CustomersModel extends Mysql
                 fullname        = ?,
                 phone_number    = ?,
                 email           = ?,
-                direction       = ?
+                direction       = ?,
+                credit_limit    = ?,
+                default_interest_rate = ?,
+                current_interest_rate = ?,
+                billing_date    = ?
             WHERE idCustomer = ?
               AND business_id = ?
             LIMIT 1;
@@ -130,6 +138,10 @@ class CustomersModel extends Mysql
             $data['phone'] !== '' ? $data['phone'] : null,
             $data['email'] !== '' ? $data['email'] : null,
             $data['address'] !== '' ? $data['address'] : null,
+            $data['credit_limit'],
+            $data['default_interest_rate'],
+            $data['current_interest_rate'],
+            $data['billing_date'] !== '' ? $data['billing_date'] : null,
             $customerId,
             $businessId,
         ];

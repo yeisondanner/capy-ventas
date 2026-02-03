@@ -74,6 +74,10 @@ class Customers extends Controllers
             $rawPhone         = (string) ($customer['phone_number'] ?? '');
             $rawEmail         = (string) ($customer['email'] ?? '');
             $rawAddress       = (string) ($customer['direction'] ?? '');
+            $rawCreditLimit   = (float) ($customer['credit_limit'] ?? 50.00);
+            $rawDefaultRate   = (float) ($customer['default_interest_rate'] ?? 0.00);
+            $rawCurrentRate   = (float) ($customer['current_interest_rate'] ?? 0.00);
+            $rawBillingDate   = (string) ($customer['billing_date'] ?? '');
             $rawStatus        = (string) ($customer['status'] ?? 'Activo');
 
             $name        = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
@@ -108,6 +112,10 @@ class Customers extends Controllers
             $customers[$key]['email_raw']           = $rawEmail;
             $customers[$key]['direction']           = $address;
             $customers[$key]['direction_raw']       = $rawAddress;
+            $customers[$key]['credit_limit']        = number_format($rawCreditLimit, 2, '.', '');
+            $customers[$key]['default_interest_rate'] = number_format($rawDefaultRate, 2, '.', '');
+            $customers[$key]['current_interest_rate'] = number_format($rawCurrentRate, 2, '.', '');
+            $customers[$key]['billing_date']        = $rawBillingDate;
             $customers[$key]['status_text']         = $rawStatus;
             $customers[$key]['status']              = $rawStatus === 'Activo'
                 ? '<span class="badge bg-success"><i class="bi bi-check-circle"></i> Activo</span>'
@@ -161,7 +169,7 @@ class Customers extends Controllers
         $businessId = $this->getBusinessId();
 
         $documentTypeId = (int) ($_POST['txtCustomerDocumentType'] ?? 0);
-        $document       = $this->sanitizeNumeric($_POST['txtCustomerDocument'] ?? '', 11);
+        $document       = $this->sanitizeNumeric($_POST['txtCustomerDocument'] ?? '', 8);
         $name           = ucwords(strClean($_POST['txtCustomerName'] ?? ''));
         $phone          = $this->sanitizeNumeric($_POST['txtCustomerPhone'] ?? '', 11);
         $email          = $this->sanitizeEmail($_POST['txtCustomerEmail'] ?? '');
@@ -180,8 +188,8 @@ class Customers extends Controllers
         }
 
         // Validacion de Formatos
-        if (verifyData("^\d{8,15}$", $document)) {
-            $this->responseError('El número de documento no es válido. Debe contener entre 8 y 15 dígitos numéricos.');
+        if (verifyData("^\d{8}$", $document)) {
+            $this->responseError('El número de documento no es válido. Debe contener exactamente 8 dígitos numéricos.');
         }
 
         if (verifyData("[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+(\s[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+)*", $name)) {
@@ -260,11 +268,15 @@ class Customers extends Controllers
         }
 
         $documentTypeId = (int) ($_POST['txtCustomerDocumentType'] ?? 0);
-        $document       = $this->sanitizeNumeric($_POST['txtCustomerDocument'] ?? '', 15);
+        $document       = $this->sanitizeNumeric($_POST['txtCustomerDocument'] ?? '', 8);
         $name           = ucwords(strClean($_POST['txtCustomerName'] ?? ''));
         $phone          = $this->sanitizeNumeric($_POST['txtCustomerPhone'] ?? '', 15);
         $email          = $this->sanitizeEmail($_POST['txtCustomerEmail'] ?? '');
         $address        = strClean($_POST['txtCustomerAddress'] ?? '');
+        $creditLimit    = (float) ($_POST['txtCustomerCreditLimit'] ?? 50.00);
+        $defaultRate    = (float) ($_POST['txtCustomerDefaultInterest'] ?? 0.00);
+        $currentRate    = (float) ($_POST['txtCustomerCurrentInterest'] ?? 0.00);
+        $billingDate    = strClean($_POST['txtCustomerBillingDate'] ?? '');
 
         if ($documentTypeId <= 0) {
             $this->responseError('Debes seleccionar un tipo de documento válido.');
@@ -279,8 +291,8 @@ class Customers extends Controllers
         }
 
         // Validacion de Formatos
-        if (verifyData("^\d{8,15}$", $document)) {
-            $this->responseError('El número de documento no es válido. Debe contener entre 8 y 15 dígitos numéricos.');
+        if (verifyData("^\d{8}$", $document)) {
+            $this->responseError('El número de documento no es válido. Debe contener exactamente 8 dígitos numéricos.');
         }
 
         if (verifyData("[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+(\s[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+)*", $name)) {
@@ -307,6 +319,10 @@ class Customers extends Controllers
             'phone'            => $phone,
             'email'            => $email,
             'address'          => $address,
+            'credit_limit'     => $creditLimit,
+            'default_interest_rate' => $defaultRate,
+            'current_interest_rate' => $currentRate,
+            'billing_date'     => $billingDate,
         ]);
 
         if (!$updated) {

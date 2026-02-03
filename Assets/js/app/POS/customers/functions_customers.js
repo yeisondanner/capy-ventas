@@ -3,6 +3,7 @@
 
   let customersTable;
   let customerModalElement;
+  let editCustomerModalElement;
   let detailModalElement;
 
   const PROTECTED_CUSTOMER_NAME = "Sin cliente";
@@ -93,61 +94,35 @@
   }
 
   /**
-   * Reinicia el formulario de clientes.
+   * Resetea el formulario de creación.
    */
-  function resetCustomerForm() {
+  function resetCreateForm() {
     const form = document.getElementById("formCustomer");
     if (!form) return;
 
     form.reset();
-    form.dataset.mode = "create";
-
     const idField = document.getElementById("customerId");
     if (idField) {
       idField.value = "0";
     }
-
-    updateModalTexts(false);
   }
 
   /**
-   * Actualiza los textos del modal según el modo seleccionado.
-   * @param {boolean} isEdit Indica si el modal está en modo edición.
-   */
-  function updateModalTexts(isEdit) {
-    const title = document.getElementById("modalCustomerLabel");
-    const submitButton = document.querySelector(
-      "#formCustomer button[type='submit']",
-    );
-
-    if (title) {
-      title.textContent = isEdit ? "Actualizar cliente" : "Registrar cliente";
-    }
-
-    if (submitButton) {
-      submitButton.innerHTML = isEdit
-        ? '<i class="bi bi-save"></i> Actualizar'
-        : '<i class="bi bi-save"></i> Guardar';
-    }
-  }
-
-  /**
-   * Rellena el formulario con los datos del cliente.
+   * Rellena el formulario de EDICIÓN con los datos del cliente.
    * @param {any} customer Datos del cliente.
    */
-  function populateCustomerForm(customer) {
-    const form = document.getElementById("formCustomer");
+  function populateEditForm(customer) {
+    const form = document.getElementById("formEditCustomer");
     if (!form || !customer) return;
 
-    form.dataset.mode = "edit";
-
-    const idField = document.getElementById("customerId");
+    // Campos con sufijo 'Edit' para el modal de edición
+    const idField = document.getElementById("customerIdEdit");
     if (idField) {
       idField.value = customer.idCustomer || customer.id || 0;
     }
 
     const documentTypeField = document.getElementById(
-      "txtCustomerDocumentType",
+      "txtCustomerDocumentTypeEdit",
     );
     if (documentTypeField) {
       documentTypeField.value = String(
@@ -155,32 +130,54 @@
       );
     }
 
-    const documentField = document.getElementById("txtCustomerDocument");
+    const documentField = document.getElementById("txtCustomerDocumentEdit");
     if (documentField) {
       documentField.value = customer.document_raw || "";
     }
 
-    const nameField = document.getElementById("txtCustomerName");
+    const nameField = document.getElementById("txtCustomerNameEdit");
     if (nameField) {
       nameField.value = customer.fullname_raw || "";
     }
 
-    const phoneField = document.getElementById("txtCustomerPhone");
+    const phoneField = document.getElementById("txtCustomerPhoneEdit");
     if (phoneField) {
       phoneField.value = customer.phone_raw || "";
     }
 
-    const emailField = document.getElementById("txtCustomerEmail");
+    const emailField = document.getElementById("txtCustomerEmailEdit");
     if (emailField) {
       emailField.value = customer.email_raw || "";
     }
 
-    const addressField = document.getElementById("txtCustomerAddress");
+    const addressField = document.getElementById("txtCustomerAddressEdit");
     if (addressField) {
       addressField.value = customer.direction_raw || "";
     }
 
-    updateModalTexts(true);
+    const creditLimitField = document.getElementById("txtCustomerCreditLimit");
+    if (creditLimitField) {
+      creditLimitField.value = customer.credit_limit || "50.00";
+    }
+
+    const defaultInterestField = document.getElementById(
+      "txtCustomerDefaultInterest",
+    );
+    if (defaultInterestField) {
+      defaultInterestField.value = customer.default_interest_rate || "0.00";
+    }
+
+    const currentInterestField = document.getElementById(
+      "txtCustomerCurrentInterest",
+    );
+    if (currentInterestField) {
+      currentInterestField.value = customer.current_interest_rate || "0.00";
+    }
+
+    const billingDateField = document.getElementById("txtCustomerBillingDate");
+    if (billingDateField) {
+      billingDateField.value = customer.billing_date || "";
+    }
   }
 
   /**
@@ -383,10 +380,9 @@
   }
 
   /**
-   * Envía la información del formulario para registrar o actualizar un cliente.
-   * @param {SubmitEvent} event Evento submit del formulario.
+   * Envía la información para CREAR un nuevo cliente via modal #modalCustomer
    */
-  async function submitCustomer(event) {
+  async function submitCreateCustomer(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
@@ -397,19 +393,14 @@
       showAlert({
         icon: "error",
         title: "Token ausente",
-        message:
-          "No se encontró el token de seguridad. Actualiza la página e inténtalo nuevamente.",
+        message: "No se encontró el token de seguridad.",
       });
       return;
     }
 
     const formData = new FormData(form);
-    const customerId = Number.parseInt(formData.get("customerId") || "0", 10);
-    const isEdit = customerId > 0;
-
-    const endpoint = isEdit
-      ? `${base_url}/pos/Customers/updateCustomer`
-      : `${base_url}/pos/Customers/setCustomer`;
+    // Endpoint para crear
+    const endpoint = `${base_url}/pos/Customers/setCustomer`;
 
     if (!formData.get("token")) {
       formData.append("token", token);
@@ -435,24 +426,81 @@
       });
 
       if (data.status) {
-        resetCustomerForm();
+        resetCreateForm();
         hideModal(customerModalElement);
         if (customersTable) {
           customersTable.ajax.reload(null, false);
         }
       }
-      if (data.url) {
-        setTimeout(() => {
-          window.location.href = data.url;
-        }, 1000);
-      }
     } catch (error) {
-      console.error("Error guardando cliente", error);
+      console.error("Error creando cliente", error);
       showAlert({
         icon: "error",
         title: "Ocurrió un error",
-        message:
-          "No fue posible guardar la información del cliente. Inténtalo nuevamente.",
+        message: "No fue posible registrar el cliente.",
+      });
+    }
+  }
+
+  /**
+   * Envía la información para EDITAR un cliente via modal #modalEditCustomer
+   */
+  async function submitEditCustomer(event) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    if (!form) return;
+
+    const token = getSecurityToken();
+    if (!token) {
+      showAlert({
+        icon: "error",
+        title: "Token ausente",
+        message: "No se encontró el token de seguridad.",
+      });
+      return;
+    }
+
+    const formData = new FormData(form);
+    // Endpoint para actualizar
+    const endpoint = `${base_url}/pos/Customers/updateCustomer`;
+
+    if (!formData.get("token")) {
+      formData.append("token", token);
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}`);
+      }
+
+      const data = await response.json();
+      showAlert({
+        icon: data.icon || (data.status ? "success" : "error"),
+        title:
+          data.title ||
+          (data.status ? "Operación exitosa" : "Ocurrió un error"),
+        message: data.message || "",
+      });
+
+      if (data.status) {
+        form.reset(); // Reset del form de edición
+        hideModal(editCustomerModalElement);
+        if (customersTable) {
+          customersTable.ajax.reload(null, false);
+        }
+      }
+    } catch (error) {
+      console.error("Error actualizando cliente", error);
+      showAlert({
+        icon: "error",
+        title: "Ocurrió un error",
+        message: "No fue posible actualizar el cliente.",
       });
     }
   }
@@ -552,16 +600,24 @@
   /**
    * Registra los eventos del formulario y de la tabla de clientes.
    */
+  /**
+   * Registra los eventos del formulario y de la tabla de clientes.
+   */
   function registerEvents() {
-    const form = document.getElementById("formCustomer");
-    if (form) {
-      form.addEventListener("submit", submitCustomer);
+    const createForm = document.getElementById("formCustomer");
+    if (createForm) {
+      createForm.addEventListener("submit", submitCreateCustomer);
+    }
+
+    const editForm = document.getElementById("formEditCustomer");
+    if (editForm) {
+      editForm.addEventListener("submit", submitEditCustomer);
     }
 
     const openButton = document.getElementById("btnOpenCustomerModal");
     if (openButton) {
       openButton.addEventListener("click", () => {
-        resetCustomerForm();
+        resetCreateForm();
         showModal(customerModalElement);
       });
     }
@@ -589,8 +645,8 @@
           event.preventDefault();
           const data = getRowDataFromElement(editButton);
           if (data) {
-            populateCustomerForm(data);
-            showModal(customerModalElement);
+            populateEditForm(data);
+            showModal(editCustomerModalElement);
           }
           return;
         }
@@ -708,6 +764,7 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     customerModalElement = document.getElementById("modalCustomer");
+    editCustomerModalElement = document.getElementById("modalEditCustomer");
     detailModalElement = document.getElementById("modalCustomerDetail");
 
     registerEvents();

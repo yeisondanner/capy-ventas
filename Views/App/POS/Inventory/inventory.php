@@ -64,9 +64,18 @@
 <div class="modal fade" id="modalProduct" tabindex="-1" aria-labelledby="modalProductLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <form class="modal-content" id="formSaveProduct" autocomplete="off">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="modalProductLabel">Registrar producto</h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="modal-header bg-primary text-white border-bottom-0 py-2">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="bi bi-box-seam fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="modalProductLabel">Registrar producto</h5>
+                        <p class="mb-0 small text-white text-opacity-75">Aqui podras registrar un nuevo producto</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
             </div>
             <div class="modal-body">
                 <?= csrf(); ?>
@@ -120,7 +129,7 @@
                         <label for="txtProductStock" class="form-label">Stock (opcional)</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-sort-numeric-up-alt"></i></span>
-                            <input type="number" step="0.01" min="0" class="form-control" id="txtProductStock"
+                            <input type="number" step="0.01" min="0" max="99999999.99" class="form-control" id="txtProductStock"
                                 name="txtProductStock" placeholder="0.00">
                         </div>
                     </div>
@@ -128,7 +137,7 @@
                         <label for="txtProductPurchasePrice" class="form-label">Precio compra <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-cash"></i></span>
-                            <input type="number" step="0.01" min="0" class="form-control" id="txtProductPurchasePrice"
+                            <input type="number" step="0.01" min="0" max="99999999.99" class="form-control" id="txtProductPurchasePrice"
                                 name="txtProductPurchasePrice" required placeholder="0.00">
                         </div>
                     </div>
@@ -136,7 +145,7 @@
                         <label for="txtProductSalesPrice" class="form-label">Precio venta <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-cash"></i></span>
-                            <input type="number" step="0.01" min="0" class="form-control" id="txtProductSalesPrice"
+                            <input type="number" step="0.01" min="0" max="99999999.99" class="form-control" id="txtProductSalesPrice"
                                 name="txtProductSalesPrice" required placeholder="0.00">
                         </div>
                     </div>
@@ -183,11 +192,20 @@
         <div class="modal-content shadow border-0">
 
             <!-- Encabezado -->
-            <div class="modal-header bg-secondary text-white">
-                <h5 class="modal-title d-flex align-items-center" id="modalProductReportLabel">
-                    <i class="bi bi-file-earmark-text me-2"></i> Reporte del producto
-                </h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="modal-header bg-secondary text-white border-bottom-0 py-2">
+
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="bi bi-file-earmark-text fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="modalProductReportLabel">Reporte del producto</h5>
+                        <p class="mb-0 small text-white text-opacity-75">Aqui podras ver el reporte del producto</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+
             </div>
 
             <div class="modal-body bg-light p-4">
@@ -275,11 +293,20 @@
 
 <!-- Modal: Gestionar categorías -->
 <div class="modal fade" id="modalCategory" aria-labelledby="modalCategoryLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h5 class="modal-title" id="modalCategoryLabel">Categorías</h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="modal-header bg-info text-dark border-bottom-0 py-2">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="bi bi-collection fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="modalCategoryLabel">Categorías</h5>
+                        <p class="mb-0 small text-dark text-opacity-75">Aqui podras gestionar tus categorias de tus productos</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
             </div>
             <div class="modal-body">
                 <div class="mb-3">
@@ -313,9 +340,18 @@
 <div class="modal fade" id="modalUpdateProduct" tabindex="-1" aria-labelledby="modalUpdateProductLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <form class="modal-content" id="formUpdateProduct" autocomplete="off">
-            <div class="modal-header bg-success text-white">
-                <h5 class="modal-title" id="modalUpdateProductLabel">Actualizar producto</h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            <div class="modal-header bg-success text-white border-bottom-0 py-2">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="bi bi-pencil-square fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="modalUpdateProductLabel">Actualizar producto</h5>
+                        <p class="mb-0 small text-white text-opacity-75">Aqui podras actualizar la informacion de tu producto</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
             </div>
             <div class="modal-body">
                 <?= csrf(); ?>
