@@ -27,7 +27,7 @@ get_option_and_permission_app();
 <html lang="es">
 
 <head>
-    <title><?= $data["page_title"] ?></title>
+    <title>CAPY VENTAS - <?= $data["page_title"] ?></title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,10 +35,14 @@ get_option_and_permission_app();
     <meta name="description" content="<?= getSystemInfo()["c_description"] ?>">
     <!-- Main CSS-->
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/dataTables.bootstrap.min.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/buttons.bootstrap5.min.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/autoFill.bootstrap5.min.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/colReorder.bootstrap5.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css"
+        href="<?= media() ?>/css/libraries/POS/plugins/dataTables.bootstrap.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css"
+        href="<?= media() ?>/css/libraries/POS/plugins/buttons.bootstrap5.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css"
+        href="<?= media() ?>/css/libraries/POS/plugins/autoFill.bootstrap5.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css"
+        href="<?= media() ?>/css/libraries/POS/plugins/colReorder.bootstrap5.min.css?<?= versionSystem() ?>">
     <!-- Font-icon css-->
     <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css?<?= versionSystem() ?>">
     <!--TODO: Cargamos el icono de la pagina-->
@@ -69,7 +73,9 @@ get_option_and_permission_app();
 </head>
 
 <body class="app sidebar-mini">
-    <div class="position-fixed bottom-0 end-0 p-1 rounded-top-2 bg-dark border border-white text-white" onclick="showAlert({title:'Identificador de Usuario', message:'Código único e invariable que identifica al usuario dentro de la plataforma.', type:'info', icon:'info',position:'bottom-left', timer:1000, status:true, url:''})" style="z-index: 9999;">
+    <div class="position-fixed bottom-0 end-0 p-1 rounded-top-2 bg-dark border border-white text-white"
+        onclick="showAlert({title:'Identificador de Usuario', message:'Código único e invariable que identifica al usuario dentro de la plataforma.', type:'info', icon:'info',position:'bottom-left', timer:1000, status:true, url:''})"
+        style="z-index: 9999;">
         UID: <?= str_pad($_SESSION[$nameVarLoginInfo]['idUser'], 11, "0", STR_PAD_LEFT); ?>
     </div>
     <!-- Navbar-->

@@ -42,13 +42,13 @@ class Customers extends Controllers
     {
         validate_permission_app(4, "r");
         $data = [
-            'page_id'          => 4,
-            'page_title'       => 'Gestión de clientes',
+            'page_id' => 4,
+            'page_title' => 'Gestión de clientes',
             'page_description' => 'Administra los clientes registrados en tu negocio.',
-            'page_container'   => 'Customers',
-            'page_view'        => 'customers',
-            'page_js_css'      => 'customers',
-            'document_types'   => $this->model->selectDocumentTypes(),
+            'page_container' => 'Customers',
+            'page_view' => 'customers',
+            'page_js_css' => 'customers',
+            'document_types' => $this->model->selectDocumentTypes(),
         ];
 
         $this->views->getView($this, 'customers', $data, 'POS');
@@ -63,67 +63,67 @@ class Customers extends Controllers
     {
         validate_permission_app(4, "r", false, false, false);
         $businessId = $this->getBusinessId();
-        $customers  = $this->model->selectCustomers($businessId);
-        $counter    = 1;
+        $customers = $this->model->selectCustomers($businessId);
+        $counter = 1;
         $validationUpdate = (int) validate_permission_app(4, "u", false)['update'];
         $validationDelete = (int) validate_permission_app(4, "d", false)['delete'];
         foreach ($customers as $key => $customer) {
-            $rawName          = (string) ($customer['fullname'] ?? '');
-            $rawDocumentType  = (string) ($customer['document_type'] ?? '');
-            $rawDocument      = (string) ($customer['document_number'] ?? '');
-            $rawPhone         = (string) ($customer['phone_number'] ?? '');
-            $rawEmail         = (string) ($customer['email'] ?? '');
-            $rawAddress       = (string) ($customer['direction'] ?? '');
-            $rawCreditLimit   = (float) ($customer['credit_limit'] ?? 50.00);
-            $rawDefaultRate   = (float) ($customer['default_interest_rate'] ?? 0.00);
-            $rawCurrentRate   = (float) ($customer['current_interest_rate'] ?? 0.00);
-            $rawBillingDate   = (string) ($customer['billing_date'] ?? '');
-            $rawStatus        = (string) ($customer['status'] ?? 'Activo');
+            $rawName = (string) ($customer['fullname'] ?? '');
+            $rawDocumentType = (string) ($customer['document_type'] ?? '');
+            $rawDocument = (string) ($customer['document_number'] ?? '');
+            $rawPhone = (string) ($customer['phone_number'] ?? '');
+            $rawEmail = (string) ($customer['email'] ?? '');
+            $rawAddress = (string) ($customer['direction'] ?? '');
+            $rawCreditLimit = (float) ($customer['credit_limit'] ?? 50.00);
+            $rawDefaultRate = (float) ($customer['default_interest_rate'] ?? 0.00);
+            $rawCurrentRate = (float) ($customer['current_interest_rate'] ?? 0.00);
+            $rawBillingDate = (string) ($customer['billing_date'] ?? '');
+            $rawStatus = (string) ($customer['status'] ?? 'Activo');
 
-            $name        = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
-            $document    = $rawDocument !== ''
+            $name = htmlspecialchars($rawName, ENT_QUOTES, 'UTF-8');
+            $document = $rawDocument !== ''
                 ? htmlspecialchars($rawDocument, ENT_QUOTES, 'UTF-8')
                 : 'Sin documento';
             $documentType = $rawDocumentType !== ''
                 ? htmlspecialchars($rawDocumentType, ENT_QUOTES, 'UTF-8')
                 : 'Sin tipo';
-            $phone       = $rawPhone !== ''
+            $phone = $rawPhone !== ''
                 ? htmlspecialchars($rawPhone, ENT_QUOTES, 'UTF-8')
                 : 'Sin teléfono';
-            $email       = $rawEmail !== ''
+            $email = $rawEmail !== ''
                 ? htmlspecialchars($rawEmail, ENT_QUOTES, 'UTF-8')
                 : 'Sin correo';
-            $address     = $rawAddress !== ''
+            $address = $rawAddress !== ''
                 ? htmlspecialchars($rawAddress, ENT_QUOTES, 'UTF-8')
                 : 'Sin dirección';
 
-            $customers[$key]['cont']                = $counter;
-            $customers[$key]['fullname']            = $name;
-            $customers[$key]['fullname_raw']        = $rawName;
-            $customers[$key]['document_type']       = $documentType;
-            $customers[$key]['document_type_raw']   = $rawDocumentType;
-            $customers[$key]['documenttype_id']     = (int) ($customer['documenttype_id'] ?? 0);
-            $customers[$key]['document_type_id']    = (int) ($customer['documenttype_id'] ?? 0);
-            $customers[$key]['document_number']     = $document;
-            $customers[$key]['document_raw']        = $rawDocument;
-            $customers[$key]['phone_number']        = $phone;
-            $customers[$key]['phone_raw']           = $rawPhone;
-            $customers[$key]['email']               = $email;
-            $customers[$key]['email_raw']           = $rawEmail;
-            $customers[$key]['direction']           = $address;
-            $customers[$key]['direction_raw']       = $rawAddress;
-            $customers[$key]['credit_limit']        = number_format($rawCreditLimit, 2, '.', '');
+            $customers[$key]['cont'] = $counter;
+            $customers[$key]['fullname'] = $name;
+            $customers[$key]['fullname_raw'] = $rawName;
+            $customers[$key]['document_type'] = $documentType;
+            $customers[$key]['document_type_raw'] = $rawDocumentType;
+            $customers[$key]['documenttype_id'] = (int) ($customer['documenttype_id'] ?? 0);
+            $customers[$key]['document_type_id'] = (int) ($customer['documenttype_id'] ?? 0);
+            $customers[$key]['document_number'] = $document;
+            $customers[$key]['document_raw'] = $rawDocument;
+            $customers[$key]['phone_number'] = $phone;
+            $customers[$key]['phone_raw'] = $rawPhone;
+            $customers[$key]['email'] = $email;
+            $customers[$key]['email_raw'] = $rawEmail;
+            $customers[$key]['direction'] = $address;
+            $customers[$key]['direction_raw'] = $rawAddress;
+            $customers[$key]['credit_limit'] = number_format($rawCreditLimit, 2, '.', '');
             $customers[$key]['default_interest_rate'] = number_format($rawDefaultRate, 2, '.', '');
             $customers[$key]['current_interest_rate'] = number_format($rawCurrentRate, 2, '.', '');
-            $customers[$key]['billing_date']        = $rawBillingDate;
-            $customers[$key]['status_text']         = $rawStatus;
-            $customers[$key]['status']              = $rawStatus === 'Activo'
+            $customers[$key]['billing_date'] = $rawBillingDate;
+            $customers[$key]['status_text'] = $rawStatus;
+            $customers[$key]['status'] = $rawStatus === 'Activo'
                 ? '<span class="badge bg-success"><i class="bi bi-check-circle"></i> Activo</span>'
                 : '<span class="badge bg-secondary"><i class="bi bi-slash-circle"></i> Inactivo</span>';
 
             $isProtected = $this->isProtectedCustomerName($customer['fullname'] ?? '');
 
-            $actions  = '<div class="btn-group btn-group-sm" role="group">';
+            $actions = '<div class="btn-group btn-group-sm" role="group">';
             $actions .= '<button class="btn btn-sm btn-outline-secondary view-customer" data-id="'
                 . (int) $customer['idCustomer'] . '" title="Ver detalles del cliente">'
                 . '<i class="bi bi-file-earmark-text"></i></button>';
@@ -169,11 +169,11 @@ class Customers extends Controllers
         $businessId = $this->getBusinessId();
 
         $documentTypeId = (int) ($_POST['txtCustomerDocumentType'] ?? 0);
-        $document       = $this->sanitizeNumeric($_POST['txtCustomerDocument'] ?? '', 8);
-        $name           = ucwords(strClean($_POST['txtCustomerName'] ?? ''));
-        $phone          = $this->sanitizeNumeric($_POST['txtCustomerPhone'] ?? '', 11);
-        $email          = $this->sanitizeEmail($_POST['txtCustomerEmail'] ?? '');
-        $address        = strClean($_POST['txtCustomerAddress'] ?? '');
+        $document = $this->sanitizeNumeric($_POST['txtCustomerDocument'] ?? '', 8);
+        $name = ucwords(strClean($_POST['txtCustomerName'] ?? ''));
+        $phone = $this->sanitizeNumeric($_POST['txtCustomerPhone'] ?? '', 11);
+        $email = strtolower($this->sanitizeEmail($_POST['txtCustomerEmail'] ?? ''));
+        $address = ucwords(strClean($_POST['txtCustomerAddress'] ?? ''));
 
         if ($documentTypeId <= 0) {
             $this->responseError('Debes seleccionar un tipo de documento válido.');
@@ -215,11 +215,11 @@ class Customers extends Controllers
 
         $customerId = $this->model->insertCustomer($businessId, [
             'document_type_id' => $documentTypeId,
-            'document'         => $document,
-            'name'             => $name,
-            'phone'            => $phone,
-            'email'            => $email,
-            'address'          => $address,
+            'document' => $document,
+            'name' => $name,
+            'phone' => $phone,
+            'email' => $email,
+            'address' => $address,
         ]);
 
         if ($customerId <= 0) {
@@ -227,11 +227,11 @@ class Customers extends Controllers
         }
 
         toJson([
-            'title'   => 'Cliente registrado',
+            'title' => 'Cliente registrado',
             'message' => 'El cliente se registró correctamente.',
-            'type'    => 'success',
-            'icon'    => 'success',
-            'status'  => true,
+            'type' => 'success',
+            'icon' => 'success',
+            'status' => true,
         ]);
     }
 
@@ -268,15 +268,15 @@ class Customers extends Controllers
         }
 
         $documentTypeId = (int) ($_POST['txtCustomerDocumentType'] ?? 0);
-        $document       = $this->sanitizeNumeric($_POST['txtCustomerDocument'] ?? '', 8);
-        $name           = ucwords(strClean($_POST['txtCustomerName'] ?? ''));
-        $phone          = $this->sanitizeNumeric($_POST['txtCustomerPhone'] ?? '', 15);
-        $email          = $this->sanitizeEmail($_POST['txtCustomerEmail'] ?? '');
-        $address        = strClean($_POST['txtCustomerAddress'] ?? '');
-        $creditLimit    = (float) ($_POST['txtCustomerCreditLimit'] ?? 50.00);
-        $defaultRate    = (float) ($_POST['txtCustomerDefaultInterest'] ?? 0.00);
-        $currentRate    = (float) ($_POST['txtCustomerCurrentInterest'] ?? 0.00);
-        $billingDate    = strClean($_POST['txtCustomerBillingDate'] ?? '');
+        $document = $this->sanitizeNumeric($_POST['txtCustomerDocument'] ?? '', 8);
+        $name = ucwords(strClean($_POST['txtCustomerName'] ?? ''));
+        $phone = $this->sanitizeNumeric($_POST['txtCustomerPhone'] ?? '', 15);
+        $email = $this->sanitizeEmail($_POST['txtCustomerEmail'] ?? '');
+        $address = strClean($_POST['txtCustomerAddress'] ?? '');
+        $creditLimit = (float) ($_POST['txtCustomerCreditLimit'] ?? 50.00);
+        $defaultRate = (float) ($_POST['txtCustomerDefaultInterest'] ?? 0.00);
+        $currentRate = (float) ($_POST['txtCustomerCurrentInterest'] ?? 0.00);
+        $billingDate = strClean($_POST['txtCustomerBillingDate'] ?? '');
 
         if ($documentTypeId <= 0) {
             $this->responseError('Debes seleccionar un tipo de documento válido.');
@@ -314,15 +314,15 @@ class Customers extends Controllers
 
         $updated = $this->model->updateCustomer($customerId, $businessId, [
             'document_type_id' => $documentTypeId,
-            'document'         => $document,
-            'name'             => $name,
-            'phone'            => $phone,
-            'email'            => $email,
-            'address'          => $address,
-            'credit_limit'     => $creditLimit,
+            'document' => $document,
+            'name' => $name,
+            'phone' => $phone,
+            'email' => $email,
+            'address' => $address,
+            'credit_limit' => $creditLimit,
             'default_interest_rate' => $defaultRate,
             'current_interest_rate' => $currentRate,
-            'billing_date'     => $billingDate,
+            'billing_date' => $billingDate,
         ]);
 
         if (!$updated) {
@@ -330,11 +330,11 @@ class Customers extends Controllers
         }
 
         toJson([
-            'title'   => 'Cliente actualizado',
+            'title' => 'Cliente actualizado',
             'message' => 'Los datos del cliente fueron actualizados correctamente.',
-            'type'    => 'success',
-            'icon'    => 'success',
-            'status'  => true,
+            'type' => 'success',
+            'icon' => 'success',
+            'status' => true,
         ]);
     }
 
@@ -383,11 +383,11 @@ class Customers extends Controllers
         }
 
         toJson([
-            'title'   => 'Cliente eliminado',
+            'title' => 'Cliente eliminado',
             'message' => 'El cliente se eliminó correctamente.',
-            'type'    => 'success',
-            'icon'    => 'success',
-            'status'  => true,
+            'type' => 'success',
+            'icon' => 'success',
+            'status' => true,
         ]);
     }
 
@@ -636,10 +636,10 @@ class Customers extends Controllers
     private function responseError(string $message): void
     {
         toJson([
-            'title'  => 'Ocurrió un error',
+            'title' => 'Ocurrió un error',
             'message' => $message,
-            'type'   => 'error',
-            'icon'   => 'error',
+            'type' => 'error',
+            'icon' => 'error',
             'status' => false,
         ]);
     }
