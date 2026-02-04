@@ -73,7 +73,7 @@ get_option_and_permission_app();
 </head>
 
 <body class="app sidebar-mini">
-    <div class="position-fixed bottom-0 end-0 p-1 rounded-top-2 bg-dark border border-white text-white"
+    <div class="position-fixed bottom-0 end-0 p-1 rounded-top-2 bg-dark bg-opacity-50 border border-white text-white"
         onclick="showAlert({title:'Identificador de Usuario', message:'Código único e invariable que identifica al usuario dentro de la plataforma.', type:'info', icon:'info',position:'bottom-left', timer:1000, status:true, url:''})"
         style="z-index: 9999;">
         UID: <?= str_pad($_SESSION[$nameVarLoginInfo]['idUser'], 11, "0", STR_PAD_LEFT); ?>
