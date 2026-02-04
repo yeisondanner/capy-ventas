@@ -58,7 +58,7 @@
 <!-- Modal: Registrar caja -->
 <!-- Modal: Registrar caja -->
 <div class="modal fade" id="modalBox" tabindex="-1" aria-labelledby="modalBoxLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <form class="modal-content" id="formBox" autocomplete="off">
             <div class="modal-header bg-primary text-white border-bottom-0 py-2">
                 <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
@@ -93,7 +93,7 @@
                                 <label for="descriptionBox" class="form-label">Descripción</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-info-circle"></i></span>
-                                    <textarea class="form-control" id="descriptionBox" name="descriptionBox" rows="3"
+                                    <textarea class="form-control" id="descriptionBox" name="descriptionBox" rows="6"
                                         placeholder="Describe las características principales de la caja"></textarea>
                                 </div>
                             </div>
@@ -198,7 +198,7 @@
 
 <!-- Modal: Actualizar caja -->
 <div class="modal fade" id="modalUpdateBox" tabindex="-1" aria-labelledby="modalUpdateBoxLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <form class="modal-content" id="formUpdateBox" autocomplete="off">
             <div class="modal-header bg-success text-white border-bottom-0 py-2">
                 <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
@@ -220,10 +220,6 @@
                 <div class="row">
                     <div class="col-lg-8">
                         <div class="row g-3">
-                            <div class="col-12 text-primary border-bottom pb-2">
-                                <h6><i class="bi bi-box-seam me-2"></i>Datos de la Caja</h6>
-                            </div>
-
                             <div class="col-12">
                                 <label for="update_nameBox" class="form-label">Nombre de la Caja <span
                                         class="text-danger">*</span></label>
@@ -233,13 +229,12 @@
                                         maxlength="255" required>
                                 </div>
                             </div>
-
                             <div class="col-12">
                                 <label for="update_descriptionBox" class="form-label">Descripción</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-info-circle"></i></span>
                                     <textarea class="form-control" id="update_descriptionBox"
-                                        name="update_descriptionBox" rows="3"></textarea>
+                                        name="update_descriptionBox" rows="6"></textarea>
                                 </div>
                             </div>
                         </div>
