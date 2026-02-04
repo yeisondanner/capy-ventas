@@ -3,6 +3,7 @@
 
   let suppliersTable;
   let supplierModalElement;
+  let editSupplierModalElement;
   let detailModalElement;
 
   const PROTECTED_SUPPLIER_NAME = "Sin Proveedor";
@@ -93,87 +94,57 @@
   }
 
   /**
-   * Reinicia el formulario de proveedores.
+   * Reinicia el formulario de creación de proveedores.
    */
-  function resetSupplierForm() {
+  function resetCreateForm() {
     const form = document.getElementById("formSupplier");
     if (!form) return;
 
     form.reset();
-    form.dataset.mode = "create";
 
     const idField = document.getElementById("supplierId");
     if (idField) {
       idField.value = "0";
     }
-
-    updateModalTexts(false);
   }
 
   /**
-   * Actualiza los textos del modal según el modo seleccionado.
-   * @param {boolean} isEdit Indica si el modal está en modo edición.
-   */
-  function updateModalTexts(isEdit) {
-    const title = document.getElementById("modalSupplierLabel");
-    const submitButton = document.querySelector(
-      "#formSupplier button[type='submit']",
-    );
-
-    if (title) {
-      title.textContent = isEdit
-        ? "Actualizar proveedor"
-        : "Registrar proveedor";
-    }
-
-    if (submitButton) {
-      submitButton.innerHTML = isEdit
-        ? '<i class="bi bi-save"></i> Actualizar'
-        : '<i class="bi bi-save"></i> Guardar';
-    }
-  }
-
-  /**
-   * Rellena el formulario con los datos del proveedor.
+   * Rellena el formulario de edición con los datos del proveedor.
    * @param {any} supplier Datos del proveedor.
    */
-  function populateSupplierForm(supplier) {
-    const form = document.getElementById("formSupplier");
+  function populateEditForm(supplier) {
+    const form = document.getElementById("formEditSupplier");
     if (!form || !supplier) return;
 
-    form.dataset.mode = "edit";
-
-    const idField = document.getElementById("supplierId");
+    const idField = document.getElementById("supplierIdEdit");
     if (idField) {
       idField.value = supplier.idSupplier || supplier.id || 0;
     }
 
-    const documentField = document.getElementById("txtSupplierDocument");
+    const documentField = document.getElementById("txtSupplierDocumentEdit");
     if (documentField) {
       documentField.value = supplier.document_raw || "";
     }
 
-    const nameField = document.getElementById("txtSupplierName");
+    const nameField = document.getElementById("txtSupplierNameEdit");
     if (nameField) {
-      nameField.value = supplier.company_raw || "";
+      nameField.value = supplier.company_name || supplier.company_raw || "";
     }
 
-    const phoneField = document.getElementById("txtSupplierPhone");
+    const phoneField = document.getElementById("txtSupplierPhoneEdit");
     if (phoneField) {
       phoneField.value = supplier.phone_raw || "";
     }
 
-    const emailField = document.getElementById("txtSupplierEmail");
+    const emailField = document.getElementById("txtSupplierEmailEdit");
     if (emailField) {
       emailField.value = supplier.email_raw || "";
     }
 
-    const addressField = document.getElementById("txtSupplierAddress");
+    const addressField = document.getElementById("txtSupplierAddressEdit");
     if (addressField) {
       addressField.value = supplier.direction_raw || "";
     }
-
-    updateModalTexts(true);
   }
 
   /**
@@ -362,17 +333,17 @@
         const cleanName = name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
         exportToPng(
           "supplierReportContainer",
-          `Ficha_Proveedor_${cleanName}.png`,
+          `Ficha_Proveedor_${cleanName}.png`
         );
       });
     }
   }
 
   /**
-   * Envía la información del formulario para registrar o actualizar un proveedor.
+   * Envía la información para crear un nuevo proveedor.
    * @param {SubmitEvent} event Evento submit del formulario.
    */
-  async function submitSupplier(event) {
+  async function submitCreateSupplier(event) {
     event.preventDefault();
 
     const form = event.currentTarget;
@@ -390,12 +361,7 @@
     }
 
     const formData = new FormData(form);
-    const supplierId = Number.parseInt(formData.get("supplierId") || "0", 10);
-    const isEdit = supplierId > 0;
-
-    const endpoint = isEdit
-      ? `${base_url}/pos/Suppliers/updateSupplier`
-      : `${base_url}/pos/Suppliers/setSupplier`;
+    const endpoint = `${base_url}/pos/Suppliers/setSupplier`;
 
     if (!formData.get("token")) {
       formData.append("token", token);
@@ -421,7 +387,7 @@
       });
 
       if (data.status) {
-        resetSupplierForm();
+        resetCreateForm();
         hideModal(supplierModalElement);
         if (suppliersTable) {
           suppliersTable.ajax.reload(null, false);
@@ -444,6 +410,76 @@
   }
 
   /**
+   * Envía la información para actualizar un proveedor.
+   * @param {SubmitEvent} event Evento submit del formulario.
+   */
+  async function submitEditSupplier(event) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    if (!form) return;
+
+    const token = getSecurityToken();
+    if (!token) {
+      showAlert({
+        icon: "error",
+        title: "Token ausente",
+        message:
+          "No se encontró el token de seguridad. Actualiza la página e inténtalo nuevamente.",
+      });
+      return;
+    }
+
+    const formData = new FormData(form);
+    const endpoint = `${base_url}/pos/Suppliers/updateSupplier`;
+
+    if (!formData.get("token")) {
+      formData.append("token", token);
+    }
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}`);
+      }
+
+      const data = await response.json();
+      showAlert({
+        icon: data.icon || (data.status ? "success" : "error"),
+        title:
+          data.title ||
+          (data.status ? "Operación exitosa" : "Ocurrió un error"),
+        message: data.message || "",
+      });
+
+      if (data.status) {
+        form.reset();
+        hideModal(editSupplierModalElement);
+        if (suppliersTable) {
+          suppliersTable.ajax.reload(null, false);
+        }
+      }
+      if (data.url) {
+        setTimeout(() => {
+          window.location.href = data.url;
+        }, 1000);
+      }
+    } catch (error) {
+      console.error("Error actualizando proveedor", error);
+      showAlert({
+        icon: "error",
+        title: "Ocurrió un error",
+        message:
+          "No fue posible actualizar la información del proveedor. Inténtalo nuevamente.",
+      });
+    }
+  }
+
+  /**
    * Solicita confirmación para eliminar o desactivar un proveedor.
    * @param {any} supplier Datos del proveedor.
    * @param {HTMLElement} button Botón que originó la acción.
@@ -453,7 +489,7 @@
 
     if (
       isProtectedSupplierName(
-        supplier.company_raw || supplier.company_name || "",
+        supplier.company_raw || supplier.company_name || ""
       )
     ) {
       showAlert({
@@ -503,7 +539,7 @@
               id: supplier.idSupplier || supplier.id || 0,
               token,
             }),
-          },
+          }
         );
 
         if (!response.ok) {
@@ -542,15 +578,20 @@
    * Registra los eventos del formulario y de la tabla de proveedores.
    */
   function registerEvents() {
-    const form = document.getElementById("formSupplier");
-    if (form) {
-      form.addEventListener("submit", submitSupplier);
+    const createForm = document.getElementById("formSupplier");
+    if (createForm) {
+      createForm.addEventListener("submit", submitCreateSupplier);
+    }
+
+    const editForm = document.getElementById("formEditSupplier");
+    if (editForm) {
+      editForm.addEventListener("submit", submitEditSupplier);
     }
 
     const openButton = document.getElementById("btnOpenSupplierModal");
     if (openButton) {
       openButton.addEventListener("click", () => {
-        resetSupplierForm();
+        resetCreateForm();
         showModal(supplierModalElement);
       });
     }
@@ -578,8 +619,8 @@
           event.preventDefault();
           const data = getRowDataFromElement(editButton);
           if (data) {
-            populateSupplierForm(data);
-            showModal(supplierModalElement);
+            populateEditForm(data);
+            showModal(editSupplierModalElement);
           }
           return;
         }
@@ -675,6 +716,7 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     supplierModalElement = document.getElementById("modalSupplier");
+    editSupplierModalElement = document.getElementById("modalEditSupplier");
     detailModalElement = document.getElementById("modalSupplierDetail");
 
     registerEvents();
