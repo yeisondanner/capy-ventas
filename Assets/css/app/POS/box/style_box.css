@@ -20,7 +20,9 @@
   border-radius: 1.2rem;
   padding: 0.625rem 0.875rem;
   font-size: 0.95rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
 }
 
 /* Ajuste para que los bordes se vean bien con input-group */

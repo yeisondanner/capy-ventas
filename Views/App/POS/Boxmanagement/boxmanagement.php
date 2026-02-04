@@ -93,8 +93,8 @@
                                 <label for="descriptionBox" class="form-label">Descripción</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-info-circle"></i></span>
-                                    <input type="text" class="form-control" id="descriptionBox" name="descriptionBox"
-                                        placeholder="Describe las características principales de la caja">
+                                    <textarea class="form-control" id="descriptionBox" name="descriptionBox" rows="3"
+                                        placeholder="Describe las características principales de la caja"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -134,22 +134,25 @@
         <div class="modal-content">
             <div class="modal-header bg-secondary text-dark border-bottom-0 py-2">
                 <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
-                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
                         <i class="bi bi-box-seam fs-3"></i>
                     </div>
                     <div>
                         <h5 class="modal-title fw-bold mb-0" id="modalBoxReportLabel">Ficha de la Caja</h5>
                         <p class="mb-0 small text-dark text-opacity-75">Detalles de la caja seleccionada</p>
                     </div>
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
             </div>
 
             <div class="modal-body" id="boxReportContainer">
                 <div class="receipt-container p-4 border rounded shadow-sm bg-white">
-                    
+
                     <!-- Header -->
-                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 border-bottom pb-3 mb-3">
+                    <div
+                        class="d-flex flex-wrap align-items-center justify-content-between gap-2 border-bottom pb-3 mb-3">
                         <div>
                             <h4 class="fw-bold mb-1 text-dark" id="reportBoxName">-</h4>
                             <div class="small text-muted">Nombre de la caja</div>
@@ -177,7 +180,8 @@
                     <!-- System Footer -->
                     <div class="row mt-4">
                         <div class="col-12 text-center d-flex align-items-center justify-content-center">
-                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
+                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo"
+                                style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
                             <small class="text-muted fst-italic">Generado por Capy Ventas</small>
                         </div>
                     </div>
@@ -198,14 +202,16 @@
         <form class="modal-content" id="formUpdateBox" autocomplete="off">
             <div class="modal-header bg-success text-white border-bottom-0 py-2">
                 <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
-                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
                         <i class="bi bi-pencil-square fs-3"></i>
                     </div>
                     <div>
                         <h5 class="modal-title fw-bold mb-0" id="modalUpdateBoxLabel">Actualizar caja</h5>
                         <p class="mb-0 small text-white text-opacity-75">Modifica los datos de la caja seleccionada</p>
                     </div>
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
             </div>
             <div class="modal-body">
@@ -219,7 +225,8 @@
                             </div>
 
                             <div class="col-12">
-                                <label for="update_nameBox" class="form-label">Nombre de la Caja <span class="text-danger">*</span></label>
+                                <label for="update_nameBox" class="form-label">Nombre de la Caja <span
+                                        class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-tag"></i></span>
                                     <input type="text" class="form-control" id="update_nameBox" name="update_nameBox"
@@ -231,7 +238,8 @@
                                 <label for="update_descriptionBox" class="form-label">Descripción</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-info-circle"></i></span>
-                                    <input type="text" class="form-control" id="update_descriptionBox" name="update_descriptionBox">
+                                    <textarea class="form-control" id="update_descriptionBox"
+                                        name="update_descriptionBox" rows="3"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -249,7 +257,8 @@
                                 </div>
                                 <h4 class="fw-bold mb-3">Edición de Datos</h4>
                                 <p class="mb-0 opacity-75">
-                                    Actualice la información de la caja. Asegúrese de guardar los cambios para mantener la integridad de los datos.
+                                    Actualice la información de la caja. Asegúrese de guardar los cambios para mantener
+                                    la integridad de los datos.
                                 </p>
                             </div>
                         </div>
