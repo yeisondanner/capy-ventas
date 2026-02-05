@@ -15,7 +15,7 @@
             <div class="tile rounded-3">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
-                    $createEmployee = (int)validate_permission_app(5, "c", false)['create'];
+                    $createEmployee = (int) validate_permission_app(5, "c", false)['create'];
                     if ($createEmployee === 1): ?>
                         <button class="btn btn-sm btn-outline-primary" type="button" id="btnOpenEmployeeModal">
                             <i class="bi bi-plus-lg"></i> Agregar nuevo empleado
@@ -28,7 +28,8 @@
             <div class="tile rounded-3">
                 <div class="tile-body">
                     <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
-                        <table class="table table-sm table-hover table-bordered table-striped" id="table" data-token="<?= csrf(false); ?>">
+                        <table class="table table-sm table-hover table-bordered table-striped" id="table"
+                            data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
@@ -76,12 +77,13 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="txtEmployeeUserSearch"
                                         name="txtEmployeeUserSearch" maxlength="120"
-                                        placeholder="Ingresa usuario o correo registrado"
-                                        list="employeeUserSuggestions" required>
+                                        placeholder="Ingresa usuario o correo registrado" list="employeeUserSuggestions"
+                                        required>
                                     <button class="btn btn-outline-secondary" type="button"
                                         id="btnSearchEmployeeUser"><i class="bi bi-search"></i> Buscar</button>
                                 </div>
-                                <small class="text-muted">Carga un usuario existente para vincularlo como empleado.</small>
+                                <small class="text-muted">Carga un usuario existente para vincularlo como
+                                    empleado.</small>
                                 <datalist id="employeeUserSuggestions"></datalist>
                                 <input type="hidden" id="txtEmployeeUserappId" name="txtEmployeeUserappId">
                             </div>
@@ -101,7 +103,8 @@
                                         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
                                             <div>
                                                 <p class="text-muted small mb-1">Nombre completo</p>
-                                                <h5 class="mb-1" id="displayEmployeeFullName">Sin usuario seleccionado</h5>
+                                                <h5 class="mb-1" id="displayEmployeeFullName">Sin usuario seleccionado
+                                                </h5>
                                                 <p class="mb-0 text-muted" id="displayEmployeeEmail">-</p>
                                             </div>
                                             <div class="text-end">
@@ -110,7 +113,8 @@
                                                     asignado</span>
                                             </div>
                                         </div>
-                                        <div class="mt-2 text-muted small" id="displayEmployeeNote">Busca un usuario para
+                                        <div class="mt-2 text-muted small" id="displayEmployeeNote">Busca un usuario
+                                            para
                                             mostrar sus datos antes de guardar.</div>
                                     </div>
                                 </div>
@@ -130,7 +134,8 @@
                                 </div>
                                 <h4 class="fw-bold mb-3">Nuevo Empleado</h4>
                                 <p class="mb-0 opacity-75">
-                                    Registre un nuevo colaborador. Asegúrese de vincular un usuario existente y asignar el rol adecuado.
+                                    Registre un nuevo colaborador. Asegúrese de vincular un usuario existente y asignar
+                                    el rol adecuado.
                                 </p>
                             </div>
                         </div>
@@ -168,7 +173,8 @@
                 <div class="receipt-container report-card-employee p-4 border rounded shadow-sm bg-white">
 
                     <!-- Header -->
-                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 border-bottom pb-3 mb-3">
+                    <div
+                        class="d-flex flex-wrap align-items-center justify-content-between gap-2 border-bottom pb-3 mb-3">
                         <div>
                             <h4 class="fw-bold mb-1 text-dark" id="reportEmployeeName">--</h4>
                             <div class="small text-muted">Nombre del empleado</div>
@@ -182,10 +188,10 @@
                             <label class="small text-uppercase text-muted fw-bold">Usuario de App:</label>
                             <div class="mt-1 fs-5" id="reportEmployeeUserApp">--</div>
                         </div>
-                        
+
                         <div class="col-12">
-                             <label class="small text-uppercase text-muted fw-bold">Email:</label>
-                             <div class="mt-1" id="reportEmployeeEmail">--</div>
+                            <label class="small text-uppercase text-muted fw-bold">Email:</label>
+                            <div class="mt-1" id="reportEmployeeEmail">--</div>
                         </div>
 
                         <div class="col-12">
@@ -196,15 +202,15 @@
                             <label class="small text-uppercase text-muted fw-bold">Rol:</label>
                             <div class="mt-1 fw-bold" id="reportEmployeeRole">--</div>
                         </div>
-                        
+
                         <div class="col-6">
                             <label class="small text-uppercase text-muted fw-bold">Estado:</label>
                             <div class="mt-1" id="reportEmployeeStatus">--</div>
                         </div>
-                        
+
                         <div class="col-12 mt-3">
-                             <label class="small text-uppercase text-muted fw-bold">Descripción del Rol:</label>
-                             <div class="mt-1 small" id="reportEmployeeRoleDescription">--</div>
+                            <label class="small text-uppercase text-muted fw-bold">Descripción del Rol:</label>
+                            <div class="mt-1 small" id="reportEmployeeRoleDescription">--</div>
                         </div>
                     </div>
 
@@ -269,8 +275,8 @@
                             <div class="col-md-4">
                                 <label for="update_txtEmployeeRolapp" class="form-label">Rol de Aplicación <span
                                         class="text-danger">*</span></label>
-                                <select class="form-select" id="update_txtEmployeeRolapp" name="update_txtEmployeeRolapp"
-                                    required>
+                                <select class="form-select" id="update_txtEmployeeRolapp"
+                                    name="update_txtEmployeeRolapp" required>
                                     <option value="" selected disabled>Selecciona un rol</option>
                                 </select>
                             </div>
@@ -301,8 +307,8 @@
                             <div class="col-md-6">
                                 <label for="update_txtEmployeeStatus" class="form-label">Estado <span
                                         class="text-danger">*</span></label>
-                                <select class="form-select" id="update_txtEmployeeStatus" name="update_txtEmployeeStatus"
-                                    required>
+                                <select class="form-select" id="update_txtEmployeeStatus"
+                                    name="update_txtEmployeeStatus" required>
                                     <option value="Activo">Activo</option>
                                     <option value="Inactivo">Inactivo</option>
                                 </select>
@@ -322,7 +328,8 @@
                                 </div>
                                 <h4 class="fw-bold mb-3">Edición de Datos</h4>
                                 <p class="mb-0 opacity-75">
-                                    Actualice la información del empleado. Asegúrese de guardar los cambios para mantener
+                                    Actualice la información del empleado. Asegúrese de guardar los cambios para
+                                    mantener
                                     la integridad de los datos.
                                 </p>
                             </div>
