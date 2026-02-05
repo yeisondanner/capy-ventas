@@ -85,13 +85,13 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                 <div class="list-group list-group-flush">
                     <?php
                     if ($data_menu(8) && $data_menu(8)['update'] === '1'):
-                    ?>
+                        ?>
                         <a href="<?= base_url() ?>/pos/business/configuration"
                             class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0">
                             <i class="bi bi-gear"></i>
                             <span>Configuraciones</span>
                         </a>
-                    <?php
+                        <?php
                     endif;
                     ?>
                     <?php
@@ -119,7 +119,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         class="app-menu__icon bi bi-cart"></i><span
                         class="app-menu__label"><?= $data_menu(1) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?>
                         <?= $data_menu(1) ? $data_menu(1)['Interface'] : 'Vender' ?></span></a></li>
-            <li><a class="app-menu__item <?= ($data['page_id'] === 2 || $data['page_id'] === 12) ? 'active' : '' ?>"
+            <li><a class="app-menu__item <?= ($data['page_id'] === 2 || $data['page_id'] === 12 || $data['page_id'] === 15) ? 'active' : '' ?>"
                     href="<?= $data_menu(2) ? base_url() . '/pos/movements' : $linkestadointerfaz ?>"><i
                         class="app-menu__icon bi bi-pc-display-horizontal"></i><span
                         class="app-menu__label"><?= $data_menu(2) ? '' : '<span class="badge bg-success text-white shadow"><i class="bi bi-arrow-up"></i> Mejorar</span>' ?>
@@ -182,7 +182,7 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
             <?php if ($data_menu_employee(2)): ?>
                 <li>
                     <a <?= $data_menu_employee(2) ? '' : 'style="cursor: no-drop;"' ?>
-                        class="app-menu__item <?= ($data['page_id'] === 2 || $data['page_id'] === 12) ? 'active' : '' ?>"
+                        class="app-menu__item <?= ($data['page_id'] === 2 || $data['page_id'] === 12 || $data['page_id'] === 15) ? 'active' : '' ?>"
                         href="<?= $data_menu_employee(2) ? base_url() . '/pos/movements' : base_url() . '/pos/Errors/no_permisos' ?>">
                         <i class="app-menu__icon bi bi-pc-display-horizontal"></i>
                         <span
@@ -280,12 +280,14 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
         <form class="modal-content" id="formAddBusiness" autocomplete="off">
             <div class="modal-header bg-primary text-white border-bottom-0 py-2">
                 <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
-                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
                         <i class="bi bi-shop fs-3"></i>
                     </div>
                     <div>
                         <h5 class="modal-title fw-bold mb-0" id="addBusinessModalLabel">Registrar Nuevo Negocio</h5>
-                        <p class="mb-0 small text-white text-opacity-75">Crea y configura tu nuevo negocio independiente</p>
+                        <p class="mb-0 small text-white text-opacity-75">Crea y configura tu nuevo negocio independiente
+                        </p>
                     </div>
                     <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
                         aria-label="Cerrar"></button>
@@ -302,7 +304,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                         class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-building"></i></span>
-                                    <select class="form-select businessType" id="businessType" name="businessType" required>
+                                    <select class="form-select businessType" id="businessType" name="businessType"
+                                        required>
                                         <option value="" selected disabled>Selecciona un tipo de negocio</option>
                                     </select>
                                 </div>
@@ -312,8 +315,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                         class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                                    <input type="text" class="form-control" id="businessDocument" name="businessDocument"
-                                        maxlength="11" required placeholder="RUC o documento">
+                                    <input type="text" class="form-control" id="businessDocument"
+                                        name="businessDocument" maxlength="11" required placeholder="RUC o documento">
                                 </div>
                             </div>
                             <div class="col-12 col-md-6">
@@ -340,8 +343,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
                                     <input type="text" class="form-control " id="businessCountry" value="PERU"
-                                        onkeyup="this.value = this.value.toUpperCase()" name="businessCountry" maxlength="100"
-                                        placeholder="País del negocio" readonly disabled>
+                                        onkeyup="this.value = this.value.toUpperCase()" name="businessCountry"
+                                        maxlength="100" placeholder="País del negocio" readonly disabled>
                                 </div>
                             </div>
                             <div class="col-6 col-md-6 col-lg-3">
@@ -350,7 +353,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-telephone-plus"></i></span>
                                     <input type="text" class="form-control" id="businessTelephonePrefix"
-                                        name="businessTelephonePrefix" maxlength="7" required placeholder="+51" value="+51" readonly disabled>
+                                        name="businessTelephonePrefix" maxlength="7" required placeholder="+51"
+                                        value="+51" readonly disabled>
                                 </div>
                             </div>
                             <div class="col-12 col-md-6 col-lg-6">
@@ -367,8 +371,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-geo"></i></span>
                                     <input type="text" class="form-control" id="businessCity"
-                                        onkeyup="this.value = this.value.toUpperCase()" name="businessCity" maxlength="250"
-                                        placeholder="Ciudad o provincia">
+                                        onkeyup="this.value = this.value.toUpperCase()" name="businessCity"
+                                        maxlength="250" placeholder="Ciudad o provincia">
                                 </div>
                             </div>
                             <div class="col-8 col-md-12 col-lg-8">
@@ -381,7 +385,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                                 </div>
                             </div>
                         </div>
-                        <p class="text-muted small mt-3 mb-0">Los campos marcados con <span class="text-danger">*</span> son
+                        <p class="text-muted small mt-3 mb-0">Los campos marcados con <span class="text-danger">*</span>
+                            son
                             obligatorios.</p>
                     </div>
 
@@ -390,13 +395,15 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         <div class="card bg-primary text-white h-100 border-0 shadow-sm" style="border-radius: 1rem;">
                             <div class="card-body d-flex flex-column justify-content-center text-center p-4">
                                 <div class="mb-4">
-                                    <div class="bg-white bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                    <div class="bg-white bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                        style="width: 80px; height: 80px;">
                                         <i class="bi bi-shop display-4"></i>
                                     </div>
                                 </div>
                                 <h4 class="fw-bold mb-3">Expande tu Red</h4>
                                 <p class="mb-0 opacity-75">
-                                    Aquí podrás crear más negocios independientes. Da de alta tus nuevos proyectos y gestiónalos fácilmente desde tu cuenta actual.
+                                    Aquí podrás crear más negocios independientes. Da de alta tus nuevos proyectos y
+                                    gestiónalos fácilmente desde tu cuenta actual.
                                 </p>
                             </div>
                         </div>

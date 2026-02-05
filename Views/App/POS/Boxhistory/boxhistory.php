@@ -15,10 +15,13 @@
             <div class="tile rounded-5 border shadow-sm">
                 <ul class="nav nav-pills nav-fill">
                     <li class="nav-item">
-                        <a class="nav-link border border-primary shadow-sm rounded-5" href="<?= base_url() ?>/pos/movements"><i class="bi bi-pc-display-horizontal fs-4"></i> Movimientos</a>
+                        <a class="nav-link border border-primary shadow-sm rounded-5"
+                            href="<?= base_url() ?>/pos/movements"><i class="bi bi-pc-display-horizontal fs-4"></i>
+                            Movimientos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link border border-primary shadow-sm rounded-5 active" aria-current="page" href="<?= base_url() ?>/pos/boxhistory"><i class="bi bi-cash fs-4"></i> Cierrres de caja</a>
+                        <a class="nav-link border border-primary shadow-sm rounded-5 active" aria-current="page"
+                            href="<?= base_url() ?>/pos/boxhistory"><i class="bi bi-cash fs-4"></i> Cierrres de caja</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link border border-primary shadow-sm rounded-5"
@@ -35,7 +38,9 @@
                     <h6 class="text-center text-primary mb-3">Filtrar Cierrres de caja</h6>
                     <div class="d-flex flex-wrap gap-1">
                         <div class="flex-fill __filter_col">
-                            <label for="filter-type" class="text-muted fw-bold d-block text-uppercase small form-label">Tipo de Filtro:</label>
+                            <label for="filter-type"
+                                class="text-muted fw-bold d-block text-uppercase small form-label">Tipo de
+                                Filtro:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-filter"></i></span>
                                 <select id="filter-type" class="form-select">
@@ -50,7 +55,8 @@
                         </div>
 
                         <div class="flex-fill" id="date-container">
-                            <label for="filter-date" class="text-muted fw-bold d-block text-uppercase small form-label" id="date-label">Fecha:</label>
+                            <label for="filter-date" class="text-muted fw-bold d-block text-uppercase small form-label"
+                                id="date-label">Fecha:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-calendar"></i></span>
                                 <input type="date" id="filter-date" class="form-control" value="<?= date('Y-m-d') ?>">
@@ -58,7 +64,8 @@
                         </div>
 
                         <div class="flex-fill" id="date-range-container" style="display: none;">
-                            <label for="min-date" class="text-muted fw-bold d-block text-uppercase small form-label">Desde:</label>
+                            <label for="min-date"
+                                class="text-muted fw-bold d-block text-uppercase small form-label">Desde:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-calendar"></i></span>
                                 <input type="date" id="min-date" class="form-control">
@@ -66,15 +73,18 @@
                         </div>
 
                         <div class="flex-fill" id="date-to-container" style="display: none;">
-                            <label for="max-date" class="text-muted fw-bold d-block text-uppercase small form-label">Hasta:</label>
+                            <label for="max-date"
+                                class="text-muted fw-bold d-block text-uppercase small form-label">Hasta:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-calendar"></i></span>
                                 <input type="date" id="max-date" class="form-control">
                             </div>
                         </div>
                         <div class="flex-fill d-flex align-items-end justify-content-center justify-content-sm-start">
-                            <button id="filter-btn" class="btn_filter flex-fill btn btn-outline-primary me-2"><i class="bi bi-funnel"></i> Filtrar</button>
-                            <button id="reset-btn" class="btn_clean flex-fill btn btn-outline-secondary "><i class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
+                            <button id="filter-btn" class="btn_filter flex-fill btn btn-outline-primary me-2"><i
+                                    class="bi bi-funnel"></i> Filtrar</button>
+                            <button id="reset-btn" class="btn_clean flex-fill btn btn-outline-secondary "><i
+                                    class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
                         </div>
                     </div>
                 </div>
@@ -84,7 +94,8 @@
             <div class="tile rounded-3">
                 <div class="tile-body">
                     <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
-                        <table class="table table-sm table-hover table-bordered table-striped table-responsive" id="table" data-token="<?= csrf(false); ?>">
+                        <table class="table table-sm table-hover table-bordered table-striped table-responsive"
+                            id="table" data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
@@ -112,7 +123,8 @@
 
             <div class="modal-header bg-info border-bottom-0 py-2">
                 <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
-                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
                         <i class="bi bi-cash-stack fs-3"></i>
                     </div>
                     <div>
@@ -194,8 +206,10 @@
 
                     <!-- NOTAS -->
                     <div class="mb-4">
-                        <h6 class="fw-bold small text-uppercase mb-2"><i class="bi bi-sticky me-1"></i>Notas de Cierre</h6>
-                        <div class="p-3 bg-light rounded fst-italic text-muted border-start border-4 border-info small" id="session_notes">
+                        <h6 class="fw-bold small text-uppercase mb-2"><i class="bi bi-sticky me-1"></i>Notas de Cierre
+                        </h6>
+                        <div class="p-3 bg-light rounded fst-italic text-muted border-start border-4 border-info small"
+                            id="session_notes">
                             Sin notas.
                         </div>
                     </div>
@@ -223,7 +237,8 @@
 
                     <!-- HISTORIAL DE ARQUEOS (Timeline Style) -->
                     <div class="mb-4">
-                        <h6 class="fw-bold text-uppercase mb-3"><i class="bi bi-list-check me-2"></i>Historial de Arqueos</h6>
+                        <h6 class="fw-bold text-uppercase mb-3"><i class="bi bi-list-check me-2"></i>Historial de
+                            Arqueos</h6>
                         <div id="counts_history_container" class="vstack gap-3">
                             <!-- Contenido generado por JS -->
                         </div>
@@ -231,7 +246,8 @@
 
                     <!-- MOVIMIENTOS DE CAJA -->
                     <div id="movements_general_container" style="display:none;">
-                        <h6 class="fw-bold text-uppercase mb-3 mt-4"><i class="bi bi-arrow-left-right me-2"></i>Movimientos de Caja</h6>
+                        <h6 class="fw-bold text-uppercase mb-3 mt-4"><i
+                                class="bi bi-arrow-left-right me-2"></i>Movimientos de Caja</h6>
                         <div id="movements_history_container" class="vstack gap-2">
                             <!-- Contenido generado por JS -->
                         </div>
@@ -247,12 +263,12 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" id="download-png"><i class="bi bi-card-image"></i> Exportar PNG</button>
+                <button type="button" class="btn btn-outline-warning" id="download-png"><i class="bi bi-card-image"></i>
+                    Exportar PNG</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
 
-<script src="<?= media(); ?>/js/libraries/POS/plugins/chart.umd.min.js"></script>
 <?= footerPos($data) ?>
