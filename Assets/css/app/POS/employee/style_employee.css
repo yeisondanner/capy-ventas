@@ -47,3 +47,10 @@
     font-size: 1.35rem;
   }
 }
+
+.report-card-employee {
+  border: 2px solid #ddd;
+  max-width: 100%;
+  margin: 0 auto;
+  font-family: "Courier New", Courier, monospace;
+}
