@@ -131,7 +131,7 @@ class Movements extends Controllers
         $id = $data['id'];
         $btnReport = '';
         if ($validationReport === 1) {
-            $btnReport = '<button class="btn btn-outline-info btn-sm  report-item-' . $type . '"' . 'title="Ver reporte"' . 'type="button"' . 'data-id="' . $id . '">' . '<i class="bi bi-file-earmark-text"></i></button>';
+            $btnReport = '<button class="btn btn-outline-secondary btn-sm  report-item-' . $type . '"' . 'title="Ver reporte"' . 'type="button"' . 'data-id="' . $id . '">' . '<i class="bi bi-file-earmark-text"></i></button>';
         }
         return <<<HTML
                 <div class="btn-group">
