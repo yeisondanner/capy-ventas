@@ -35,7 +35,7 @@
         <div class="col-md-12">
             <div class="tile rounded-3">
                 <div class="tile-body border p-2 rounded-3 bg-light">
-                    <h6 class="text-center text-primary mb-3">Filtrar Cierrres de caja</h6>
+                    <h6 class="text-center text-primary mb-3">Filtrar Creditos</h6>
                     <div class="d-flex flex-wrap gap-1">
                         <div class="flex-fill __filter_col">
                             <label for="filter-type"
@@ -43,17 +43,26 @@
                                 Cliente:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                <input type="text" class="form-control" id="filter-name"
-                                    placeholder="Nombre del cliente">
+                                <input type="text" class="form-control" id="filter-search"
+                                    placeholder="Nombre del cliente o DNI">
                             </div>
                         </div>
 
                         <div class="flex-fill" id="date-container">
-                            <label for="filter-date" class="text-muted fw-bold d-block text-uppercase small form-label"
-                                id="date-label">Fecha:</label>
+                            <label for="filter-date-start" class="text-muted fw-bold d-block text-uppercase small form-label"
+                                id="date-label">Fecha de Inicio:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                                <input type="date" id="filter-date" class="form-control" value="<?= date('Y-m-d') ?>">
+                                <input type="date" id="filter-date-start" class="form-control"
+                                    value="<?= date('Y-m-d') ?>">
+                            </div>
+                        </div>
+                        <div class="flex-fill" id="date-container">
+                            <label for="filter-date-end" class="text-muted fw-bold d-block text-uppercase small form-label"
+                                id="date-label">Fecha de Fin:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                <input type="date" id="filter-date-end" class="form-control" value="<?= date('Y-m-d') ?>">
                             </div>
                         </div>
                         <div class="flex-fill d-flex align-items-end justify-content-center justify-content-sm-start">
@@ -79,7 +88,6 @@
                                     <th>Cliente</th>
                                     <th>Limite de Credito</th>
                                     <th>Saldo Pendiente</th>
-                                    <th>Fecha y Hora</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

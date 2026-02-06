@@ -2,6 +2,9 @@
 class CreditsModel extends Mysql
 {
     private int $idBusiness;
+    private string $search;
+    private string $startDate;
+    private string $endDate;
     /**
      * Inicializa el modelo base y establece la conexión con la base de datos.
      */
@@ -12,7 +15,7 @@ class CreditsModel extends Mysql
     /**
      * Metodo que se encarga de obtener todos los creditos
      */
-    public function getAllCredits(int $idBusiness)
+    public function getCreditsWithFilters(int $idBusiness, string $search, string $startDate, string $endDate)
     {
         $sql = <<<SQL
                 SELECT
@@ -27,22 +30,36 @@ class CreditsModel extends Mysql
                     c.credit_limit,
                     c.default_interest_rate,
                     c.current_interest_rate,
-                    c.billing_date
+                    c.billing_date,
+                    SUM(vh.amount) AS 'amount_pending'
                 FROM
                     customer AS c
                     INNER JOIN voucher_header AS vh ON vh.customer_id = c.idCustomer
                     INNER JOIN document_type AS dt ON dt.idDocumentType = c.documenttype_id
                 WHERE
                     vh.sale_type = 'Credito'
-                    AND c.business_id = ?
-                    AND vh.business_id = ?
-                ORDER BY
-                    vh.registration_date DESC
-                GROUP BY
-                    c.idCustomer;
+                        AND c.business_id = ?
+                        AND vh.business_id = ?    
         SQL;
         $this->idBusiness = $idBusiness;
-        return $this->select_all($sql, [$this->idBusiness, $this->idBusiness]);
+        $arrValues = [$this->idBusiness, $this->idBusiness];
+        if (!empty($search) && $search != null) {
+            $sql .= "AND (c.fullname LIKE ? OR c.document_number LIKE ?)";
+            $this->search = '%' . $search . '%';
+            array_push($arrValues, $this->search, $this->search);
+        }
+        if (empty($startDate) && $startDate != null && empty($endDate) && $endDate != null) {
+            $sql .= "AND DATE(vh.date_time) BETWEEN ? AND ?";
+            $this->startDate = $startDate;
+            $this->endDate = $endDate;
+            array_push($arrValues, $this->startDate, $this->endDate);
+        }
+        $sql .= <<<SQL
+                GROUP BY
+                    c.idCustomer
+                ORDER BY
+                    vh.registration_date DESC;
+        SQL;
+        return $this->select_all($sql, $arrValues);
     }
-
 }

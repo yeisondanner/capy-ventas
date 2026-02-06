@@ -57,11 +57,20 @@ class Credits extends Controllers
      * 
      * @return void
      */
-    public function getAllCredits()
+    public function getAllCreditsFilters()
     {
         validate_permission_app(15, "r", false, false, false);
         $businessId = $this->getBusinessId();
-        $data = $this->model->getAllCredits($businessId);
+        $search = strClean($_POST['search'] ?? '');
+        $startDate = strClean($_POST['startDate'] ?? '');
+        $endDate = strClean($_POST['endDate'] ?? '');
+        $data = $this->model->getCreditsWithFilters($businessId, $search, $startDate, $endDate);
+        $cont = 1;
+        foreach ($data as $key => $value) {
+            $data[$key]['actions'] = '';
+            $data[$key]['cont'] = $cont;
+            $cont++;
+        }
         toJson($data);
     }
     /**
@@ -96,5 +105,4 @@ class Credits extends Controllers
 
         toJson($data);
     }
-
 }
