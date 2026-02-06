@@ -431,26 +431,38 @@
           text: "<i class='bi bi-clipboard-check'></i> Copiar",
           titleAttr: "Copiar",
           className: "btn btn-sm btn-outline-secondary",
+          exportOptions: {
+            columns: [0, 2, 3, 4, 5, 6],
+          },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
-          title: "Reporte de categorias en Excel",
+          title: "Reporte de movimientos en Excel",
           className: "btn btn-sm btn-outline-success",
+          exportOptions: {
+            columns: [0, 2, 3, 4, 5, 6],
+          },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
-          title: "Reporte de categorias en CSV",
+          title: "Reporte de movimientos en CSV",
           className: "btn btn-sm btn-outline-info",
+          exportOptions: {
+            columns: [0, 2, 3, 4, 5, 6],
+          },
         },
         {
           extend: "pdfHtml5",
           text: "<i class='bi bi-file-earmark-pdf'></i> PDF",
-          title: "Reporte de categorias en PDF",
+          title: "Reporte de movimientos en PDF",
           className: "btn btn-sm btn-outline-danger",
           orientation: "landscape",
           pageSize: "LEGAL",
+          exportOptions: {
+            columns: [0, 2, 3, 4, 5, 6],
+          },
         },
       ],
       columnDefs: [
