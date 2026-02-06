@@ -19,7 +19,6 @@ class CreditsModel extends Mysql
     {
         $sql = <<<SQL
                 SELECT
-                    vh.idVoucherHeader,
                     c.idCustomer,
                     c.fullname,
                     dt.`name` AS 'document_type',
@@ -31,18 +30,24 @@ class CreditsModel extends Mysql
                     c.default_interest_rate,
                     c.current_interest_rate,
                     c.billing_date,
-                    SUM(vh.amount) AS 'amount_pending'
+                    -- Suma condicional: solo suma si es 'Credito', de lo contrario suma 0
+                    IFNULL(
+                        SUM(
+                            CASE WHEN vh.`status` = 'Pendiente' THEN vh.amount ELSE 0 END
+                        ),
+                        0.00
+                    ) AS 'amount_pending'
                 FROM
                     customer AS c
-                    INNER JOIN voucher_header AS vh ON vh.customer_id = c.idCustomer
                     INNER JOIN document_type AS dt ON dt.idDocumentType = c.documenttype_id
+                    INNER JOIN voucher_header AS vh ON vh.customer_id = c.idCustomer
+                    AND vh.business_id = c.business_id -- Mantenemos la relación de negocio en el JOIN
                 WHERE
                     vh.sale_type = 'Credito'
-                        AND c.business_id = ?
-                        AND vh.business_id = ?    
+                    AND c.business_id = ? 
         SQL;
         $this->idBusiness = $idBusiness;
-        $arrValues = [$this->idBusiness, $this->idBusiness];
+        $arrValues = [$this->idBusiness];
         if (!empty($search) && $search != null) {
             $sql .= "AND (c.fullname LIKE ? OR c.document_number LIKE ?)";
             $this->search = '%' . $search . '%';

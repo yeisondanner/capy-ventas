@@ -41,7 +41,16 @@
         {
           data: "amount_pending",
           render: (data, type, row) => {
-            return `${getcurrency} ${data}`;
+            if (data <= 0) {
+              return `<span class="text-success"> <i class="bi bi-check-circle"></i> ${getcurrency} ${data}</span>`;
+            } else if (
+              data / row.credit_limit > 0.25 &&
+              data / row.credit_limit <= 0.5
+            ) {
+              return `<span class="text-warning"> <i class="bi bi-exclamation-circle"></i> ${getcurrency} ${data}</span>`;
+            } else if (data / row.credit_limit > 0.5) {
+              return `<span class="text-danger"> <i class="bi bi-exclamation-triangle"></i> ${getcurrency} ${data}</span>`;
+            }
           },
         },
       ],
