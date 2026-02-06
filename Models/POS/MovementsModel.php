@@ -41,7 +41,7 @@ class MovementsModel extends Mysql
                     INNER JOIN user_app ua ON vh.user_app_id = ua.idUserApp
                     INNER JOIN people p ON ua.people_id = p.idPeople
                     WHERE 
-                    vh.sale_type='Contado' AND
+                    vh.status='Pagado' AND
                     vh.business_id = ?
             SQL;
 
@@ -120,7 +120,9 @@ class MovementsModel extends Mysql
                     vh.sale_type,
                     b.logo,
                     vh.idVoucherHeader AS 'id',
-                    CONCAT(p.`names`, ' ', p.lastname) AS fullname
+                    CONCAT(p.`names`, ' ', p.lastname) AS fullname,
+                    vh.status,
+                    vh.sale_type
                 FROM
                     voucher_header vh
                     INNER JOIN business AS b ON b.idBusiness = vh.business_id

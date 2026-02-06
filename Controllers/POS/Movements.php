@@ -191,6 +191,7 @@ class Movements extends Controllers
             'tax_percentage' => $headerRow['tax_percentage'],
             'tax_amount' => $headerRow['tax_amount'],
             'sale_type' => $headerRow['sale_type'],
+            'status' => $headerRow['status'],
             'id' => $headerRow['id'],
         ];
         $dataDetails = $rows['detail'];

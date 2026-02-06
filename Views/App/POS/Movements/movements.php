@@ -184,8 +184,8 @@
                 </div>
                 <div class="tile-body">
                     <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
-                        <table class="table table-sm table-hover table-bordered table-striped"
-                            id="table" data-token="<?= csrf(false); ?>">
+                        <table class="table table-sm table-hover table-bordered table-striped" id="table"
+                            data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
@@ -215,7 +215,8 @@
         <div class="modal-content">
             <div class="modal-header bg-secondary text-dark border-bottom-0 py-2">
                 <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
-                    <div class="bg-dark bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                    <div class="bg-dark bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
                         <i class="bi bi-receipt fs-3"></i>
                     </div>
                     <div>
@@ -251,9 +252,17 @@
 
                     <!-- Details Grid -->
                     <div class="row g-3 mb-4">
-                        <div class="col-12">
+                        <div class="col-6">
                             <label class="small text-uppercase text-muted fw-bold">Codigo de Venta:</label>
                             <div class="fw-bold" id="voucher_code">--</div>
+                        </div>
+                        <div class="col-3">
+                            <label class="small text-uppercase text-muted fw-bold">Estado:</label>
+                            <div class="fw-bold" id="voucher_state">----</div>
+                        </div>
+                        <div class="col-3">
+                            <label class="small text-uppercase text-muted fw-bold">Tipo Venta:</label>
+                            <div class="fw-bold" id="voucher_type">------</div>
                         </div>
                         <div class="col-6">
                             <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión:</label>
@@ -320,7 +329,8 @@
                     <!-- System Footer -->
                     <div class="row mt-4">
                         <div class="col-12 text-center d-flex align-items-center justify-content-center">
-                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
+                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo"
+                                style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
                             <small class="text-muted fst-italic">Generado por Capy Ventas</small>
                         </div>
                     </div>
@@ -344,7 +354,8 @@
 
             <div class="modal-header bg-danger text-white border-bottom-0 py-2">
                 <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
-                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
                         <i class="bi bi-receipt fs-3"></i>
                     </div>
                     <div>
@@ -374,7 +385,8 @@
                     <!-- Title & Date -->
                     <div class="row mb-4">
                         <div class="col-12 text-center">
-                            <h5 class="fw-bold text-decoration-underline text-uppercase" id="expense_title">Comprobante de Gasto/Egreso</h5>
+                            <h5 class="fw-bold text-decoration-underline text-uppercase" id="expense_title">Comprobante
+                                de Gasto/Egreso</h5>
                         </div>
                     </div>
 
@@ -446,7 +458,8 @@
                     <!-- System Footer -->
                     <div class="row mt-4">
                         <div class="col-12 text-center d-flex align-items-center justify-content-center">
-                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
+                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo"
+                                style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
                             <small class="text-muted fst-italic">Generado por Capy Ventas</small>
                         </div>
                     </div>

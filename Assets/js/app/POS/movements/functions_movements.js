@@ -15,7 +15,7 @@
         const filterType = this.value;
         const dateContainer = document.getElementById("date-container");
         const dateRangeContainer = document.getElementById(
-          "date-range-container",
+          "date-range-container"
         );
         const dateToContainer = document.getElementById("date-to-container");
         const dateLabel = document.getElementById("date-label");
@@ -162,7 +162,7 @@
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
     var yearStart = new Date(Date.UTC(d.getFullYear(), 0, 1));
     var weekNo = Math.ceil(
-      ((d - yearStart) / 86400000 + yearStart.getUTCDay() + 1) / 7,
+      ((d - yearStart) / 86400000 + yearStart.getUTCDay() + 1) / 7
     );
     return weekNo;
   }
@@ -279,7 +279,7 @@
             const endDate = new Date(
               today.getFullYear(),
               today.getMonth() + 1,
-              0,
+              0
             ).getDate();
             minDate = startDate;
             maxDate =
@@ -355,7 +355,7 @@
             message: "Error al cargar los totales",
             icon: "error",
           },
-          "float",
+          "float"
         );
       },
       complete: function () {
@@ -366,7 +366,7 @@
             message: "Información cargada correctamente",
             icon: "success",
           },
-          "float",
+          "float"
         );
       },
     });
@@ -380,7 +380,7 @@
         url: base_url + "/pos/Movements/getMovements",
         data: function (d) {
           const type = document.querySelector(
-            'input[name="movementType"]:checked',
+            'input[name="movementType"]:checked'
           ).value;
           d.type = type;
           d.filterType = document.getElementById("filter-type").value;
@@ -395,7 +395,7 @@
           // Calcular fechas usando la función centralizada
           const { minDate, maxDate } = calculateDateRange(
             d.filterType,
-            filterValue,
+            filterValue
           );
           d.minDate = minDate;
           d.maxDate = maxDate;
@@ -538,7 +538,7 @@
                 message: res.message || "No se pudo cargar el comprobante",
                 icon: res.icon,
               },
-              "float",
+              "float"
             );
             if (res.url) {
               setTimeout(() => {
@@ -582,7 +582,8 @@
           $("#tax_name").text(h.tax_name);
           $("#tax_percentage").text(Number(h.tax_percentage).toFixed(2));
           $("#tax_amount").text(getcurrency + Number(h.tax_amount).toFixed(2));
-
+          $("#voucher_state").text(h.status);
+          $("#voucher_type").text(h.sale_type);
           // === Detalle ===
           const $tbody = $("#tbodyVoucherDetails");
           $tbody.empty();
@@ -593,10 +594,10 @@
               <td>${item.stock_product}</td>
               <td>${item.name_product} (${item.unit_of_measurement})</td>
               <td class="text-end">S/ ${Number(
-                item.sales_price_product,
+                item.sales_price_product
               ).toFixed(2)}</td>
               <td class="text-end">S/ ${Number(
-                item.sales_price_product * item.stock_product,
+                item.sales_price_product * item.stock_product
               ).toFixed(2)}</td>
 |            </tr>
           `);
@@ -631,7 +632,7 @@
                 message: res.message || "No se pudo cargar el comprobante",
                 icon: res.icon,
               },
-              "float",
+              "float"
             );
             if (res.url) {
               setTimeout(() => {
@@ -644,13 +645,13 @@
           const d = res.data;
 
           $("#name_business_expense").text(
-            d.name_bussines || "NOMBRE DEL NEGOCIO",
+            d.name_bussines || "NOMBRE DEL NEGOCIO"
           );
           $("#direction_business_expense").text(
-            d.direction_bussines || "Dirección no registrada",
+            d.direction_bussines || "Dirección no registrada"
           );
           $("#document_business_expense").text(
-            d.document_bussines || "00000000000",
+            d.document_bussines || "00000000000"
           );
           $("#expense_date").text(d.expense_date);
           $("#expense_fullname").text(d.fullname);
@@ -695,7 +696,7 @@
               message: "Error de comunicación con el servidor",
               position: "bottom",
             },
-            "float",
+            "float"
           );
         },
       });
@@ -765,14 +766,14 @@
 
     // Comprobante de Gasto (Egresos)
     const btnDownloadPngExpense = document.getElementById(
-      "download-expense-png",
+      "download-expense-png"
     );
     if (btnDownloadPngExpense) {
       // Remover listeners anteriores
       const newBtnExpense = btnDownloadPngExpense.cloneNode(true);
       btnDownloadPngExpense.parentNode.replaceChild(
         newBtnExpense,
-        btnDownloadPngExpense,
+        btnDownloadPngExpense
       );
 
       newBtnExpense.addEventListener("click", () => {
@@ -799,7 +800,7 @@
             message: "Cargando registros de " + typeTranslate + "...",
             icon: "info",
           },
-          "float",
+          "float"
         );
         table.ajax.reload();
         loadTotals();
