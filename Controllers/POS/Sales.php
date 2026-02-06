@@ -48,14 +48,14 @@ class Sales extends Controllers
     {
         validate_permission_app(1, "r");
         $data = [
-            'page_id'          => 1,
-            'page_title'       => 'Nueva venta',
+            'page_id' => 1,
+            'page_title' => 'Nueva venta',
             'page_description' => 'Realiza tus ventas en esta sección.',
-            'page_container'   => 'Sales',
-            'page_view'        => 'sales',
-            'page_js_css'      => 'sales',
-            'taxname'          => $_SESSION[$this->nameVarBusiness]['taxname'] ?? '',
-            'tax'              => $_SESSION[$this->nameVarBusiness]['tax'] ?? '',
+            'page_container' => 'Sales',
+            'page_view' => 'sales',
+            'page_js_css' => 'sales',
+            'taxname' => $_SESSION[$this->nameVarBusiness]['taxname'] ?? '',
+            'tax' => $_SESSION[$this->nameVarBusiness]['tax'] ?? '',
         ];
 
         $this->views->getView($this, 'sales', $data, 'POS');
@@ -69,7 +69,7 @@ class Sales extends Controllers
     {
         validate_permission_app(1, "r", false);
         $businessId = $this->getBusinessId();
-        $products   = $this->model->selectProducts($businessId);
+        $products = $this->model->selectProducts($businessId);
         if (!$products) {
             $this->responseError('No se encontraron productos en el negocio.');
         }
@@ -88,7 +88,7 @@ class Sales extends Controllers
         $categories = $this->model->selectPopularCategories($businessId, 5);
         if (!is_array($categories) || count($categories) === 0) {
             toJson([
-                'status'     => true,
+                'status' => true,
                 'categories' => [],
             ]);
 
@@ -98,13 +98,13 @@ class Sales extends Controllers
         $response = array_map(static function ($category) {
             return [
                 'idcategory' => (int) ($category['idCategory'] ?? 0),
-                'category'   => (string) ($category['category'] ?? ''),
+                'category' => (string) ($category['category'] ?? ''),
                 'total_sold' => (float) ($category['total_sold'] ?? 0),
             ];
         }, $categories);
 
         toJson([
-            'status'     => true,
+            'status' => true,
             'categories' => $response,
         ]);
     }
@@ -118,11 +118,11 @@ class Sales extends Controllers
     {
         validate_permission_app(1, "r");
         $businessId = $this->getBusinessId();
-        $customers  = $this->model->selectCustomers($businessId);
+        $customers = $this->model->selectCustomers($businessId);
 
         if (!is_array($customers) || count($customers) === 0) {
             toJson([
-                'status'    => true,
+                'status' => true,
                 'customers' => [],
             ]);
 
@@ -131,19 +131,19 @@ class Sales extends Controllers
 
         $response = array_map(static function ($customer) {
             return [
-                'id'             => (int) ($customer['idCustomer'] ?? 0),
-                'name'           => (string) ($customer['fullname'] ?? ''),
-                'document'       => (string) ($customer['document_number'] ?? ''),
-                'document_type'  => (string) ($customer['document_type'] ?? ''),
-                'credit_limit'   => (float) ($customer['credit_limit'] ?? 0),
-                'consumed'     => (float) ($customer['consumed'] ?? 0),
-                'percentage'     => (float) ($customer['percentage'] ?? 0),
-                'available'      => (float) ($customer['available'] ?? 0),
+                'id' => (int) ($customer['idCustomer'] ?? 0),
+                'name' => (string) ($customer['fullname'] ?? ''),
+                'document' => (string) ($customer['document_number'] ?? ''),
+                'document_type' => (string) ($customer['document_type'] ?? ''),
+                'credit_limit' => (float) ($customer['credit_limit'] ?? 0),
+                'consumed' => (float) ($customer['consumed'] ?? 0),
+                'percentage' => (float) ($customer['percentage'] ?? 0),
+                'available' => (float) ($customer['available'] ?? 0),
             ];
         }, $customers);
 
         toJson([
-            'status'    => true,
+            'status' => true,
             'customers' => $response,
         ]);
     }
@@ -173,19 +173,19 @@ class Sales extends Controllers
             'category',
             'photo'
         ]);
-        $idproduct    = strClean($_POST['idproduct']);
-        $idsupplier   = strClean($_POST['idsupplier']);
+        $idproduct = strClean($_POST['idproduct']);
+        $idsupplier = strClean($_POST['idsupplier']);
         $idmeasurement = strClean($_POST['idmeasurement']);
-        $idcategory   = strClean($_POST['idcategory']);
-        $price        = (float) strClean($_POST['price']);
+        $idcategory = strClean($_POST['idcategory']);
+        $price = (float) strClean($_POST['price']);
         $purchasePrice = (float) strClean($_POST['purchase_price'] ?? 0);
-        $product      = strClean($_POST['product']);
-        $stock        = (float) strClean($_POST['stock']);
-        $supplier     = strClean($_POST['supplier']);
-        $category     = strClean($_POST['category']);
-        $selected     = max(1, (int) strClean($_POST['selected']));
-        $measurement  = strClean($_POST['measurement']);
-        $photo        = strClean($_POST['photo']);
+        $product = strClean($_POST['product']);
+        $stock = (float) strClean($_POST['stock']);
+        $supplier = strClean($_POST['supplier']);
+        $category = strClean($_POST['category']);
+        $selected = max(1, (int) strClean($_POST['selected']));
+        $measurement = strClean($_POST['measurement']);
+        $photo = strClean($_POST['photo']);
         validateFieldsEmpty([
             'ID PRODUCTO' => $idproduct,
             'ID PROVEEDOR' => $idsupplier,
@@ -290,8 +290,8 @@ class Sales extends Controllers
         }
 
         $idproduct = strClean($_POST['idproduct'] ?? '');
-        $action    = strClean($_POST['action'] ?? '');
-        $quantity  = $_POST['quantity'] ?? null;
+        $action = strClean($_POST['action'] ?? '');
+        $quantity = $_POST['quantity'] ?? null;
 
         if ($idproduct === '' || $action === '') {
             $this->responseError('Los datos del producto son obligatorios.');
@@ -302,8 +302,8 @@ class Sales extends Controllers
                 continue;
             }
 
-            $current  = (int) $item['selected'];
-            $stock    = (float) $item['stock'];
+            $current = (int) $item['selected'];
+            $stock = (float) $item['stock'];
             $newValue = $current;
 
             if ($action === 'increment') {
@@ -396,10 +396,10 @@ class Sales extends Controllers
 
         toJson([
             'status' => true,
-            'title'  => 'Carrito vaciado',
+            'title' => 'Carrito vaciado',
             'message' => 'Todos los productos fueron eliminados de la canasta.',
-            'icon'   => 'success',
-            'cart'   => [],
+            'icon' => 'success',
+            'cart' => [],
             'subtotal' => 0,
         ]);
     }
@@ -426,10 +426,10 @@ class Sales extends Controllers
     private function responseError(string $message, int $timer = 2000): void
     {
         $data = [
-            'title'  => 'Ocurrió un error',
+            'title' => 'Ocurrió un error',
             'message' => $message,
-            'type'   => 'error',
-            'icon'   => 'error',
+            'type' => 'error',
+            'icon' => 'error',
             'status' => false,
             'timer' => $timer,
         ];
@@ -503,13 +503,13 @@ class Sales extends Controllers
 
         return [
             'status' => true,
-            'title'  => $title,
+            'title' => $title,
             'message' => $selected > 0
                 ? $selected . ' ' . $product . ' en la canasta.'
                 : $product . ' eliminado de la canasta.',
-            'icon'      => 'success',
-            'cart'      => $cart,
-            'subtotal'  => $subtotal,
+            'icon' => 'success',
+            'cart' => $cart,
+            'subtotal' => $subtotal,
         ];
     }
 
@@ -530,14 +530,14 @@ class Sales extends Controllers
         if (count($cart) === 0) {
             $this->responseError('No hay productos en el carrito para registrar la venta.');
         }
-        $saleDate          = strClean($_POST['saleDate'] ?? '');
-        $paymentMethodId   = (int) strClean($_POST['paymentMethodId'] ?? '0');
-        $customerId        = (int) strClean($_POST['customerId'] ?? '0');
-        $voucherName       = trim(strClean($_POST['voucherName'] ?? ''));
-        $discountAmount    = (float) strClean($_POST['discountAmount'] ?? 0);
-        $discountPercent   = (float) strClean($_POST['discountPercentage'] ?? 0);
-        $paidAmount        = max(0, (float) strClean($_POST['paidAmount'] ?? 0));
-        $saleType          = strClean($_POST['saleType'] ?? 'Contado');
+        $saleDate = strClean($_POST['saleDate'] ?? '');
+        $paymentMethodId = (int) strClean($_POST['paymentMethodId'] ?? '0');
+        $customerId = (int) strClean($_POST['customerId'] ?? '0');
+        $voucherName = trim(strClean($_POST['voucherName'] ?? ''));
+        $discountAmount = (float) strClean($_POST['discountAmount'] ?? 0);
+        $discountPercent = (float) strClean($_POST['discountPercentage'] ?? 0);
+        $paidAmount = max(0, (float) strClean($_POST['paidAmount'] ?? 0));
+        $saleType = strClean($_POST['saleType'] ?? 'Contado');
         //obtenemos los datos de impuesto del negocio
         $taxname = $_SESSION[$this->nameVarBusiness]['taxname'];
         $tax = $_SESSION[$this->nameVarBusiness]['tax'];
@@ -549,16 +549,16 @@ class Sales extends Controllers
         }
 
         $businessId = $this->getBusinessId();
-        $subtotal   = $this->calculateSubtotal($cart);
+        $subtotal = $this->calculateSubtotal($cart);
 
-        $discountAmount  = max(0, min($discountAmount, $subtotal));
+        $discountAmount = max(0, min($discountAmount, $subtotal));
         $discountPercent = $subtotal > 0
             ? min(round(($discountAmount / $subtotal) * 100, 2), 100)
             : 0;
 
-        $totalAmountNoTax     = max($subtotal - $discountAmount, 0);
-        $totalAmountTax       = $totalAmountNoTax * ($tax / 100);
-        $totalAmount          = $totalAmountNoTax + $totalAmountTax;
+        $totalAmountNoTax = max($subtotal - $discountAmount, 0);
+        $totalAmountTax = $totalAmountNoTax * ($tax / 100);
+        $totalAmount = $totalAmountNoTax + $totalAmountTax;
 
         $saleDateTime = date('Y-m-d H:i:s');
         if ($saleDate !== '') {
@@ -582,9 +582,9 @@ class Sales extends Controllers
             ? $this->model->selectCustomerById($customerId, $businessId)
             : null;
 
-        $customerName      = $customerInfo['fullname'] ?? 'Sin cliente';
+        $customerName = $customerInfo['fullname'] ?? 'Sin cliente';
         $customerDirection = $customerInfo['direction'] ?? 'Sin dirección';
-        $creditLimit       = $customerInfo['credit_limit'] ?? 0;
+        $creditLimit = $customerInfo['credit_limit'] ?? 0;
 
         $productIds = array_values(array_unique(array_map(static function ($item) {
             return (int) ($item['idproduct'] ?? 0);
@@ -624,7 +624,9 @@ class Sales extends Controllers
         //verificamos si el tipo de venta es a credito para estandarizar ciertos parametros
         $typmovementvox = "Ingreso";
         $concept = "Venta realizada el " . date('Y-m-d H:i:s');
+        $status = "Pagado";
         if ($saleType === 'Credito') {
+            $status = "Pendiente";
             //Primera validamos que la venta no se pueda grabar para Sin cliente
             if ($customerName === 'Sin cliente') {
                 $this->responseError('No es posible realizar una venta a credito para este cliente, seleccione un cliente valido, por favor.', 6000);
@@ -639,7 +641,7 @@ class Sales extends Controllers
                 $debtTotal = $debtTotal['credit_total'];
                 $creditLimitFree = $creditLimit - $debtTotal;
                 if ($creditLimitFree <= 0) {
-                    $this->responseError("Límite de crédito excedido. El consumo actual supera el margen permitido; por favor, regularice su deuda para continuar. El límite autorizado es " . getCurrency() . number_format($creditLimit, 2, '.', ',') . " y el monto excedido es de " . getCurrency() . number_format((float)abs($creditLimitFree), 2, '.', ','), 15000);
+                    $this->responseError("Límite de crédito excedido. El consumo actual supera el margen permitido; por favor, regularice su deuda para continuar. El límite autorizado es " . getCurrency() . number_format($creditLimit, 2, '.', ',') . " y el monto excedido es de " . getCurrency() . number_format((float) abs($creditLimitFree), 2, '.', ','), 15000);
                 }
                 if ($totalAmount > $creditLimitFree) {
                     $this->responseError("Límite de crédito excedido. Para procesar la venta, el cliente debe regularizar su deuda pendiente o ajustar el monto al saldo disponible de " . getCurrency() . number_format($creditLimitFree, 2, '.', ',') . ".También puede gestionar un aumento de cupo con la administración.", 15000);
@@ -651,25 +653,26 @@ class Sales extends Controllers
             $concept = "Venta a credito realizada el " . date('Y-m-d H:i:s');
         }
         $headerId = $this->model->insertVoucherHeader([
-            'customer_id'        => $customerId,
-            'name_customer'      => $customerName,
+            'customer_id' => $customerId,
+            'name_customer' => $customerName,
             'direction_customer' => $customerDirection,
-            'name_bussines'      => (string) ($businessInfo['name'] ?? ''),
-            'document_bussines'  => (string) ($businessInfo['document_number'] ?? ''),
+            'name_bussines' => (string) ($businessInfo['name'] ?? ''),
+            'document_bussines' => (string) ($businessInfo['document_number'] ?? ''),
             'direction_bussines' => (string) ($businessInfo['direction'] ?? ''),
-            'date_time'          => $saleDateTime,
-            'amount'             => $totalAmount,
+            'date_time' => $saleDateTime,
+            'amount' => $totalAmount,
             'percentage_discount' => $discountPercent,
-            'fixed_discount'     => $discountAmount,
-            'how_much_do_i_pay'  => $paidAmount,
-            'voucher_name'       => $voucherName !== '' ? $voucherName : null,
-            'payment_method_id'  => $paymentMethodId,
-            'business_id'        => $businessId,
-            'taxname'           => $taxname,
-            'tax'                => $tax,
-            'amounttax'          => $totalAmountTax,
-            'user_app_id'        => $this->getUserId(),
-            'sale_type'          => $saleType,
+            'fixed_discount' => $discountAmount,
+            'how_much_do_i_pay' => $paidAmount,
+            'voucher_name' => $voucherName !== '' ? $voucherName : null,
+            'payment_method_id' => $paymentMethodId,
+            'business_id' => $businessId,
+            'taxname' => $taxname,
+            'tax' => $tax,
+            'amounttax' => $totalAmountTax,
+            'user_app_id' => $this->getUserId(),
+            'sale_type' => $saleType,
+            'status' => $status,
         ]);
         //validamos si la caja esta abierta para registrar la venta
         $requestOpenBox = $this->model->selectOpenBoxByUser([
@@ -710,21 +713,21 @@ class Sales extends Controllers
                 continue;
             }
 
-            $productData   = $productsById[$productId] ?? [];
-            $salesPrice    = (float) ($item['price'] ?? 0);
+            $productData = $productsById[$productId] ?? [];
+            $salesPrice = (float) ($item['price'] ?? 0);
             $purchasePrice = (float) ($productData['purchase_price'] ?? ($item['purchase_price'] ?? 0));
             $detailSubtotal = round($salesPrice * $quantity, 2);
 
             $detailId = $this->model->insertVoucherDetail([
-                'product_id'             => $productId,
-                'voucherheader_id'       => $headerId,
-                'name_product'           => (string) ($productData['product'] ?? ($item['product'] ?? '')),
-                'unit_of_measurement'    => (string) ($productData['measurement'] ?? ($item['measurement'] ?? '')),
-                'name_category'          => (string) ($productData['category'] ?? ($item['category'] ?? '')),
-                'sales_price_product'    => $salesPrice,
+                'product_id' => $productId,
+                'voucherheader_id' => $headerId,
+                'name_product' => (string) ($productData['product'] ?? ($item['product'] ?? '')),
+                'unit_of_measurement' => (string) ($productData['measurement'] ?? ($item['measurement'] ?? '')),
+                'name_category' => (string) ($productData['category'] ?? ($item['category'] ?? '')),
+                'sales_price_product' => $salesPrice,
                 'purchase_price_product' => $purchasePrice,
-                'stock_product'          => $quantity,
-                'subtotal'               => $detailSubtotal,
+                'stock_product' => $quantity,
+                'subtotal' => $detailSubtotal,
             ]);
 
             if ($detailId <= 0) {
@@ -740,13 +743,13 @@ class Sales extends Controllers
         unset($_SESSION[$this->nameVarCart]);
 
         toJson([
-            'status'  => true,
-            'title'   => 'Venta registrada',
+            'status' => true,
+            'title' => 'Venta registrada',
             'message' => 'La venta se registró correctamente.',
-            'icon'    => 'success',
+            'icon' => 'success',
             'sale_id' => $headerId,
             'voucher_name' => $voucherName !== '' ? $voucherName : null,
-            'total'   => $totalAmount,
+            'total' => $totalAmount,
         ]);
     }
 
@@ -763,7 +766,7 @@ class Sales extends Controllers
             $this->responseError('Método de solicitud no permitido.');
         }
 
-        $voucherId  = (int) strClean($_POST['saleId'] ?? '0');
+        $voucherId = (int) strClean($_POST['saleId'] ?? '0');
         $voucherName = trim(strClean($_POST['voucherName'] ?? ''));
 
         if ($voucherId <= 0) {
@@ -788,11 +791,11 @@ class Sales extends Controllers
         }
 
         toJson([
-            'status'       => true,
-            'title'        => 'Nombre actualizado',
-            'message'      => 'Se guardó el nombre del voucher generado.',
-            'icon'         => 'success',
-            'sale_id'      => $voucherId,
+            'status' => true,
+            'title' => 'Nombre actualizado',
+            'message' => 'Se guardó el nombre del voucher generado.',
+            'icon' => 'success',
+            'sale_id' => $voucherId,
             'voucher_name' => $voucherName,
         ]);
     }

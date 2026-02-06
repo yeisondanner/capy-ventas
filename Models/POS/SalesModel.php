@@ -200,7 +200,7 @@ class SalesModel extends Mysql
         }
 
         $placeholders = implode(',', array_fill(0, count($productIds), '?'));
-        $params       = array_merge($productIds, [$idBusiness, $idBusiness]);
+        $params = array_merge($productIds, [$idBusiness, $idBusiness]);
 
         $sql = <<<SQL
             SELECT
@@ -252,8 +252,9 @@ class SalesModel extends Mysql
                 tax_name,
                 tax_percentage,
                 tax_amount,
-                sale_type
-            ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?);
+                sale_type,
+                `status`
+            ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?);
         SQL;
 
         $values = [
@@ -275,7 +276,8 @@ class SalesModel extends Mysql
             $data['taxname'] ?? '--',
             $data['tax'] ?? 0,
             $data['amounttax'] ?? 0,
-            $data['sale_type'] ?? 'Contado'
+            $data['sale_type'] ?? 'Credito',
+            $data['status'] ?? 'Pendiente'
         ];
 
         return (int) $this->insert($sql, $values);
@@ -485,7 +487,8 @@ class SalesModel extends Mysql
             FROM
                 voucher_header AS vh
             WHERE
-                vh.sale_type = 'Credito'
+                vh.status = 'Pendiente'
+                AND vh.sale_type = 'Credito'
                 AND vh.business_id = ?
                 AND vh.customer_id = ?;
         SQL;
