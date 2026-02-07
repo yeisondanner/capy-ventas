@@ -183,7 +183,9 @@ class MovementsModel extends Mysql
                 SELECT
                     COALESCE(SUM(vh.amount), 0) AS total_sales
                 FROM voucher_header vh
-                WHERE vh.business_id = ? 
+                WHERE 
+                    vh.`status`='Pagado' AND
+                    vh.business_id = ? 
         SQL;
         $sqlTotalExpenses = <<<SQL
                 SELECT
