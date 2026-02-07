@@ -38,7 +38,7 @@
                     <h6 class="text-center text-primary mb-3">Filtrar Creditos</h6>
                     <div class="d-flex flex-wrap gap-1">
                         <div class="flex-fill __filter_col">
-                            <label for="filter-type"
+                            <label for="filter-search"
                                 class="text-muted fw-bold d-block text-uppercase small form-label">Nombre del
                                 Cliente:</label>
                             <div class="input-group">
@@ -49,8 +49,9 @@
                         </div>
 
                         <div class="flex-fill" id="date-container">
-                            <label for="filter-date-start" class="text-muted fw-bold d-block text-uppercase small form-label"
-                                id="date-label">Fecha de Inicio:</label>
+                            <label for="filter-date-start"
+                                class="text-muted fw-bold d-block text-uppercase small form-label" id="date-label">Fecha
+                                de Inicio:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-calendar"></i></span>
                                 <input type="date" id="filter-date-start" class="form-control"
@@ -58,11 +59,13 @@
                             </div>
                         </div>
                         <div class="flex-fill" id="date-container">
-                            <label for="filter-date-end" class="text-muted fw-bold d-block text-uppercase small form-label"
-                                id="date-label">Fecha de Fin:</label>
+                            <label for="filter-date-end"
+                                class="text-muted fw-bold d-block text-uppercase small form-label" id="date-label">Fecha
+                                de Fin:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                                <input type="date" id="filter-date-end" class="form-control" value="<?= date('Y-m-d') ?>">
+                                <input type="date" id="filter-date-end" class="form-control"
+                                    value="<?= date('Y-m-d') ?>">
                             </div>
                         </div>
                         <div class="flex-fill d-flex align-items-end justify-content-center justify-content-sm-start">
@@ -80,7 +83,7 @@
                 <div class="tile-body">
                     <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
                         <table class="table table-sm table-hover table-bordered table-striped table-responsive"
-                            id="table" data-token="<?= csrf(false); ?>">
+                            id="table">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>

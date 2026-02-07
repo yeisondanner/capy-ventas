@@ -5,9 +5,22 @@
   const filterDateEnd = document.getElementById("filter-date-end");
   const filterBtn = document.getElementById("filter-btn");
   const resetBtn = document.getElementById("reset-btn");
+  /**
+   * Variable que almacena la tabla de creditos
+   */
+  let table;
+  /**
+   * Evento que se ejecuta cuando el DOM esta cargado
+   */
   document.addEventListener("DOMContentLoaded", function () {
+    // Carga la tabla de creditos
     loadTable();
+    // Carga los eventos de los filtros
+    inputsEventsFilters();
   });
+  /**
+   * Carga la tabla de creditos
+   */
   function loadTable() {
     table = $("#table").DataTable({
       processing: true,
@@ -133,5 +146,54 @@
       // Callback que se ejecuta después de que se carguen los datos
       drawCallback: function () {},
     });
+  }
+  /**
+   * Filtra la tabla de creditos
+   */
+  function inputsEventsFilters() {
+    /**
+     * Evento que se ejecuta cuando el usuario escribe en el input de busqueda
+     */
+    if (!filterSearch) {
+      filterSearch.addEventListener("input", () => {
+        alert("dsfs");
+        table.ajax.reload();
+      });
+    }
+    /**
+     * Evento que se ejecuta cuando el usuario cambia la fecha de inicio
+     */
+    if (!filterDateStart) {
+      filterDateStart.addEventListener("input", () => {
+        table.ajax.reload();
+      });
+    }
+    /**
+     * Evento que se ejecuta cuando el usuario cambia la fecha de fin
+     */
+    if (!filterDateEnd) {
+      filterDateEnd.addEventListener("input", () => {
+        table.ajax.reload();
+      });
+    }
+    /**
+     * Evento que se ejecuta cuando el usuario hace clic en el boton de filtrar
+     */
+    if (!filterBtn) {
+      filterBtn.addEventListener("click", () => {
+        table.ajax.reload();
+      });
+    }
+    /**
+     * Evento que se ejecuta cuando el usuario hace clic en el boton de limpiar
+     */
+    if (!resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        filterSearch.value = "";
+        filterDateStart.value = "";
+        filterDateEnd.value = "";
+        table.ajax.reload();
+      });
+    }
   }
 })();
