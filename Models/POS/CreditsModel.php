@@ -20,7 +20,9 @@ class CreditsModel extends Mysql
         $sql = <<<SQL
                 SELECT
                     c.idCustomer,
-                    c.fullname,
+                    concat(c.fullname,' (',
+                    c.document_number,
+                    ')') AS 'fullname',
                     dt.`name` AS 'document_type',
                     c.document_number,
                     c.phone_number,

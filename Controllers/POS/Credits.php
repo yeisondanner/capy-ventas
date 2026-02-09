@@ -69,6 +69,8 @@ class Credits extends Controllers
         foreach ($data as $key => $value) {
             $data[$key]['actions'] = '';
             $data[$key]['cont'] = $cont;
+            $data[$key]["amount_pending"] = (float)$value["amount_pending"];
+            $data[$key]["credit_limit"] = (float)$value["credit_limit"];
             $cont++;
         }
         toJson($data);

@@ -57,6 +57,11 @@
             if (data <= 0) {
               return `<span class="text-success"> <i class="bi bi-check-circle"></i> ${getcurrency} ${data}</span>`;
             } else if (
+              data / row.credit_limit > 0 &&
+              data / row.credit_limit <= 0.25
+            ) {
+              return `<span class="text-info"> <i class="bi bi-exclamation-circle"></i> ${getcurrency} ${data}</span>`;
+            } else if (
               data / row.credit_limit > 0.25 &&
               data / row.credit_limit <= 0.5
             ) {
@@ -154,16 +159,15 @@
     /**
      * Evento que se ejecuta cuando el usuario escribe en el input de busqueda
      */
-    if (!filterSearch) {
+    if (filterSearch) {
       filterSearch.addEventListener("input", () => {
-        alert("dsfs");
         table.ajax.reload();
       });
     }
     /**
      * Evento que se ejecuta cuando el usuario cambia la fecha de inicio
      */
-    if (!filterDateStart) {
+    if (filterDateStart) {
       filterDateStart.addEventListener("input", () => {
         table.ajax.reload();
       });
@@ -171,7 +175,7 @@
     /**
      * Evento que se ejecuta cuando el usuario cambia la fecha de fin
      */
-    if (!filterDateEnd) {
+    if (filterDateEnd) {
       filterDateEnd.addEventListener("input", () => {
         table.ajax.reload();
       });
@@ -179,7 +183,7 @@
     /**
      * Evento que se ejecuta cuando el usuario hace clic en el boton de filtrar
      */
-    if (!filterBtn) {
+    if (filterBtn) {
       filterBtn.addEventListener("click", () => {
         table.ajax.reload();
       });
@@ -187,7 +191,7 @@
     /**
      * Evento que se ejecuta cuando el usuario hace clic en el boton de limpiar
      */
-    if (!resetBtn) {
+    if (resetBtn) {
       resetBtn.addEventListener("click", () => {
         filterSearch.value = "";
         filterDateStart.value = "";
