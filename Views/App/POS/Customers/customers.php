@@ -439,7 +439,8 @@
                             <div class="fw-bold" id="report_customer_interest">--</div>
                         </div>
                         <div class="col-6 mt-3">
-                            <label class="small text-uppercase text-muted fw-bold">Interes por vencimiento:</label>
+                            <label class="small text-uppercase text-muted fw-bold">Interes mensual por
+                                vencimiento:</label>
                             <div class="fw-bold" id="report_customer_interest_overdue">--</div>
                         </div>
                     </div>

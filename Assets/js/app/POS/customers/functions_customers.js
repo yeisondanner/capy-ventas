@@ -274,11 +274,13 @@
       document.getElementById("report_customer_facturation_date").textContent =
         d.billing_date || "--";
       document.getElementById("report_customer_credit_limit").textContent =
-        (d.credit_limit == 0 ? "Ilimitado" : d.credit_limit) || "--";
+        getcurrency +
+          " " +
+          (d.credit_limit == 0 ? "Ilimitado" : d.credit_limit) || "--";
       document.getElementById("report_customer_interest").textContent =
-        d.default_interest_rate || "--";
+        d.current_interest_rate + " %" || "--";
       document.getElementById("report_customer_interest_overdue").textContent =
-        d.current_interest_rate || "--";
+        d.default_interest_rate + " %" || "--";
 
       // Estado Badge
       const statusEl = document.getElementById("report_customer_status");
