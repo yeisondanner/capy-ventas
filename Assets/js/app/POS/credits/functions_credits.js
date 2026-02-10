@@ -59,7 +59,7 @@
         {
           data: "billing_date",
           render: (data, type, row) => {
-            return `<span class="text-danger"><i class="bi bi-calendar"></i> ${data}</span>`;
+            return `<span class="text-danger"><i class="bi bi-calendar"></i> ${data ?? "Sin fecha <i class='bi bi-slash-circle'></i>"}</span>`;
           },
         },
         {
