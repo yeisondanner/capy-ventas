@@ -55,8 +55,8 @@ class CreditsModel extends Mysql
             $this->search = '%' . $search . '%';
             array_push($arrValues, $this->search, $this->search);
         }
-        if (empty($startDate) && $startDate != null && empty($endDate) && $endDate != null) {
-            $sql .= "AND DATE(vh.date_time) BETWEEN ? AND ?";
+        if (!empty($startDate) && $startDate != null && !empty($endDate) && $endDate != null) {
+            $sql .= "AND DATE(c.billing_date) BETWEEN ? AND ?";
             $this->startDate = $startDate;
             $this->endDate = $endDate;
             array_push($arrValues, $this->startDate, $this->endDate);

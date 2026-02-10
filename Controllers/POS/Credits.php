@@ -61,9 +61,9 @@ class Credits extends Controllers
     {
         validate_permission_app(15, "r", false, false, false);
         $businessId = $this->getBusinessId();
-        $search = strClean($_POST['search'] ?? '');
-        $startDate = strClean($_POST['startDate'] ?? '');
-        $endDate = strClean($_POST['endDate'] ?? '');
+        $search = strClean($_GET['search'] ?? '');
+        $startDate = strClean($_GET['startDate'] ?? '');
+        $endDate = strClean($_GET['endDate'] ?? '');
         $data = $this->model->getCreditsWithFilters($businessId, $search, $startDate, $endDate);
         $cont = 1;
         foreach ($data as $key => $value) {
@@ -71,6 +71,7 @@ class Credits extends Controllers
             $data[$key]['cont'] = $cont;
             $data[$key]["amount_pending"] = (float)$value["amount_pending"];
             $data[$key]["credit_limit"] = (float)$value["credit_limit"];
+            $data[$key]["countDays"] = dateDifference(date("Y-m-d"), $value["billing_date"]);
             $cont++;
         }
         toJson($data);

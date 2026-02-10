@@ -89,8 +89,9 @@
                                     <th>#</th>
                                     <th>Acciones</th>
                                     <th>Cliente</th>
-                                    <th>Limite de Credito</th>
-                                    <th>Saldo Pendiente</th>
+                                    <th title="Fecha de Facturación">Fecha de Fac.</th>
+                                    <th title="Limite de Crédito">Limite de Cré.</th>
+                                    <th title="Saldo Pendiente">Saldo Pend.</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

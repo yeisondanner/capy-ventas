@@ -13,6 +13,8 @@
    * Evento que se ejecuta cuando el DOM esta cargado
    */
   document.addEventListener("DOMContentLoaded", function () {
+    //definimos la fecha minima de la fecha de fin
+    filterDateEnd.min = filterDateStart.value;
     // Carga la tabla de creditos
     loadTable();
     // Carga los eventos de los filtros
@@ -43,8 +45,23 @@
       },
       columns: [
         { data: "cont" },
-        { data: "actions" },
+        {
+          data: "actions",
+          render: (data, type, row) => {
+            return `<div class="button-group">
+              <button class="btn btn-sm btn-outline-secondary btn-report-credit" title="Ver detalles">
+                <i class="bi bi-file-earmark-text"></i>
+              </button>
+            </div>`;
+          },
+        },
         { data: "fullname" },
+        {
+          data: "billing_date",
+          render: (data, type, row) => {
+            return `<span class="text-danger"><i class="bi bi-calendar"></i> ${data}</span>`;
+          },
+        },
         {
           data: "credit_limit",
           render: (data, type, row) => {
@@ -54,19 +71,14 @@
         {
           data: "amount_pending",
           render: (data, type, row) => {
+            const percentage = data / row.credit_limit;
             if (data <= 0) {
               return `<span class="text-success"> <i class="bi bi-check-circle"></i> ${getcurrency} ${data}</span>`;
-            } else if (
-              data / row.credit_limit > 0 &&
-              data / row.credit_limit <= 0.25
-            ) {
+            } else if (percentage > 0 && percentage <= 0.25) {
               return `<span class="text-info"> <i class="bi bi-exclamation-circle"></i> ${getcurrency} ${data}</span>`;
-            } else if (
-              data / row.credit_limit > 0.25 &&
-              data / row.credit_limit <= 0.5
-            ) {
+            } else if (percentage > 0.25 && percentage <= 0.5) {
               return `<span class="text-warning"> <i class="bi bi-exclamation-circle"></i> ${getcurrency} ${data}</span>`;
-            } else if (data / row.credit_limit > 0.5) {
+            } else if (percentage > 0.5) {
               return `<span class="text-danger"> <i class="bi bi-exclamation-triangle"></i> ${getcurrency} ${data}</span>`;
             }
           },
@@ -80,7 +92,7 @@
           titleAttr: "Copiar",
           className: "btn btn-sm btn-outline-secondary",
           exportOptions: {
-            columns: [2, 3, 4],
+            columns: [2, 3, 4, 5],
           },
         },
         {
@@ -89,7 +101,7 @@
           title: "Reporte de créditos en Excel",
           className: "btn btn-sm btn-outline-success",
           exportOptions: {
-            columns: [2, 3, 4],
+            columns: [2, 3, 4, 5],
           },
         },
         {
@@ -98,7 +110,7 @@
           title: "Reporte de créditos en CSV",
           className: "btn btn-sm btn-outline-info",
           exportOptions: {
-            columns: [2, 3, 4],
+            columns: [2, 3, 4, 5],
           },
         },
         {
@@ -109,7 +121,7 @@
           orientation: "landscape",
           pageSize: "LEGAL",
           exportOptions: {
-            columns: [2, 3, 4],
+            columns: [2, 3, 4, 5],
           },
         },
       ],
@@ -134,6 +146,11 @@
         },
         {
           targets: [4],
+          searchable: false,
+          className: "text-center",
+        },
+        {
+          targets: [5],
           searchable: false,
           className: "text-center",
         },
@@ -169,6 +186,10 @@
      */
     if (filterDateStart) {
       filterDateStart.addEventListener("input", () => {
+        //definimos la fecha minima de la fecha de fin
+        filterDateEnd.min = filterDateStart.value;
+        //depaso colocamos la fecha actual de inicio a la final para evitar problemas con la fecha minima
+        filterDateEnd.value = filterDateStart.value;
         table.ajax.reload();
       });
     }
@@ -177,6 +198,16 @@
      */
     if (filterDateEnd) {
       filterDateEnd.addEventListener("input", () => {
+        //si la fecha minima esta vacia lazanmos una alerta
+        if (filterDateStart.value === "") {
+          showAlert({
+            title: "Ocurrio un error inesperado",
+            message: "Debe seleccionar una fecha de inicio",
+            icon: "error",
+          });
+          filterDateEnd.value = "";
+          return;
+        }
         table.ajax.reload();
       });
     }
