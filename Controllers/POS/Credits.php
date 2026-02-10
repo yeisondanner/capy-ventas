@@ -76,6 +76,26 @@ class Credits extends Controllers
         toJson($data);
     }
     /**
+     * Metodo que se encarga de obtener la informacion del cliente y sus creditos
+     * 
+     * @return void
+     */
+    public function getInfoCustomerAndCredits()
+    {
+        validate_permission_app(15, "r", false, false, false);
+        validateFields(["idCustomer"]);
+        $idCustomer = strClean($_POST['idCustomer']);
+        validateFieldsEmpty(["ID del cliente" => $idCustomer]);
+        $idBusiness = (int) $this->getBusinessId();
+        $data = $this->model->getInfoCustomer($idCustomer, $idBusiness);
+        $arrData = [
+            'customer' => $data,
+            'credits' => [],
+            'status' => true
+        ];
+        toJson($arrData);
+    }
+    /**
      * Obtiene el identificador del negocio activo desde la sesión.
      *
      * @return int

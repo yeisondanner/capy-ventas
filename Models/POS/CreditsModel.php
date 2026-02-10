@@ -2,6 +2,7 @@
 class CreditsModel extends Mysql
 {
     private int $idBusiness;
+    private int $idCustomer;
     private string $search;
     private string $startDate;
     private string $endDate;
@@ -68,5 +69,70 @@ class CreditsModel extends Mysql
                     vh.registration_date DESC;
         SQL;
         return $this->select_all($sql, $arrValues);
+    }
+    /**
+     * Metodo que se encarga de obtener la informacion de un cliente limitado por el negocio
+     * @param int $idCustomer
+     * @param int $idBusiness
+     * @return array
+     */
+    public function getInfoCustomer(int $idCustomer, int $idBusiness)
+    {
+        $sql = <<<SQL
+                SELECT
+                    c.idCustomer,
+                    c.fullname,
+                    dt.`name` AS 'documentType',
+                    c.document_number,
+                    c.phone_number,
+                    c.email,
+                    c.direction,
+                    c.credit_limit,
+                    c.default_interest_rate,
+                    c.current_interest_rate,
+                    c.billing_date,
+                    DAY(c.billing_date) AS 'day_billing',
+                    c.`status`,
+                    IFNULL(
+                        SUM(vh.amount),
+                        0
+                    ) AS 'amount_total',
+                    (
+                        c.credit_limit - IFNULL(
+                            SUM(vh.amount),
+                            0
+                        )
+                    ) AS 'amount_disp',
+                    CASE WHEN c.credit_limit != 0 THEN ROUND(
+                        (IFNULL(
+                            SUM(vh.amount),
+                            0
+                        ) / c.credit_limit)*100,
+                        2
+                    ) ELSE 0 END AS 'percent_consu'
+                FROM
+                    customer AS c
+                    INNER JOIN document_type AS dt ON dt.idDocumentType = c.documenttype_id
+                    LEFT JOIN voucher_header AS vh ON vh.customer_id = c.idCustomer
+                    AND vh.sale_type = 'Credito'
+                    AND vh.`status` = 'Pendiente'
+                WHERE
+                    c.idCustomer = ?
+                    AND c.business_id = ?;
+        SQL;
+        $this->idCustomer = $idCustomer;
+        $this->idBusiness = $idBusiness;
+        $arrValues = [$this->idCustomer, $this->idBusiness];
+        return $this->select($sql, $arrValues);
+    }
+    /**
+     * Aqui se detallan los creditos del cliente
+     * @param int $idCustomer
+     * @param int $idBusiness
+     * @return void
+     */
+    public function getCreditsCustomer(int $idCustomer, int $idBusiness)
+    {
+
     }
 }

@@ -5,6 +5,32 @@
   const filterDateEnd = document.getElementById("filter-date-end");
   const filterBtn = document.getElementById("filter-btn");
   const resetBtn = document.getElementById("reset-btn");
+  //elementos del modal de reporte
+  const detailCustomerName = document.getElementById("detailCustomerName");
+  const detailCustomerDocument = document.getElementById(
+    "detailCustomerDocument"
+  );
+  const detailCustomerStatus = document.getElementById("detailCustomerStatus");
+  const detailCustomerCode = document.getElementById("detailCustomerCode");
+  const detailCustomerPhone = document.getElementById("detailCustomerPhone");
+  const detailCustomerDirection = document.getElementById(
+    "detailCustomerDirection"
+  );
+  const detailCustomerBillingDay = document.getElementById(
+    "detailCustomerBillingDay"
+  );
+  const detailCustomerCreditLimit = document.getElementById(
+    "detailCustomerCreditLimit"
+  );
+  const detailCustomerPercentConsu = document.getElementById(
+    "detailCustomerPercentConsu"
+  );
+  const detailCustomerIndicadorPercent = document.getElementById(
+    "detailCustomerIndicadorPercent"
+  );
+  const detailCustomerAmountDisp = document.getElementById(
+    "detailCustomerAmountDisp"
+  );
   /**
    * Variable que almacena la tabla de creditos
    */
@@ -49,7 +75,7 @@
           data: "actions",
           render: (data, type, row) => {
             return `<div class="button-group">
-              <button class="btn btn-sm btn-outline-secondary btn-report-credit" title="Ver detalles">
+              <button class="btn btn-sm btn-outline-secondary btn-report-credit" data-id="${row.idCustomer}" title="Ver detalles">
                 <i class="bi bi-file-earmark-text"></i>
               </button>
             </div>`;
@@ -166,7 +192,9 @@
         url: base_url + "/Assets/js/libraries/POS/Spanish-datatables.json",
       },
       // Callback que se ejecuta después de que se carguen los datos
-      drawCallback: function () {},
+      drawCallback: function () {
+        getCreditsReport();
+      },
     });
   }
   /**
@@ -230,5 +258,85 @@
         table.ajax.reload();
       });
     }
+  }
+  /**
+   * Metodo que se encarga de obtener la información de los
+   * creditos
+   */
+  function getCreditsReport() {
+    const btnReportCredit = document.querySelectorAll(".btn-report-credit");
+    if (btnReportCredit) {
+      btnReportCredit.forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const idCustomer = btn.getAttribute("data-id");
+          const formdata = new FormData();
+          formdata.append("idCustomer", idCustomer);
+          const config = {
+            body: formdata,
+            method: "POST",
+          };
+          const endpoint = `${base_url}/pos/Credits/getInfoCustomerAndCredits`;
+          showAlert(
+            {
+              title: "Obteniendo información del cliente",
+              message: "Por favor espere...",
+              icon: "info",
+            },
+            "loading"
+          );
+          try {
+            const response = await fetch(endpoint, config);
+            const data = await response.json();
+            if (!data.status) {
+              showAlert({
+                title: data.title,
+                message: data.message,
+                icon: data.icon,
+              });
+              return;
+            }
+            renderCustomerCredits(data);
+          } catch (error) {
+            showAlert({
+              title: "Ocurrio un error inesperado",
+              message: "Por favor recargue la pagina",
+              icon: "error",
+            });
+          } finally {
+            swal.close();
+            $("#creditsReportModal").modal("show");
+          }
+        });
+      });
+    }
+  }
+  function renderCustomerCredits(data) {
+    /**
+     * Mostramos la información del cliente
+     */
+    detailCustomerName.textContent = data.customer.fullname;
+    detailCustomerDocument.textContent = data.customer.document_number;
+    detailCustomerStatus.textContent = data.customer.status;
+    /**
+     * Cambiamos el color del badge segun el estado del cliente
+     */
+    if (data.customer.status === "Activo") {
+      detailCustomerStatus.classList.remove("bg-danger");
+      detailCustomerStatus.classList.add("bg-success");
+    } else {
+      detailCustomerStatus.classList.remove("bg-success");
+      detailCustomerStatus.classList.add("bg-danger");
+    }
+    detailCustomerCode.textContent = `ID: #${data.customer.idCustomer}`;
+    detailCustomerPhone.textContent = data.customer.phone_number;
+    detailCustomerDirection.textContent = data.customer.direction;
+    detailCustomerBillingDay.textContent = `Día ${data.customer.day_billing} del mes`;
+    detailCustomerCreditLimit.textContent = `Total: ${getcurrency} ${data.customer.credit_limit > 0 ? data.customer.credit_limit : "Ilimitado"}`;
+    detailCustomerPercentConsu.textContent = `${data.customer.percent_consu != 0 ? data.customer.percent_consu : "Ilimitado"}% Uso`;
+    detailCustomerIndicadorPercent.style.width = `${data.customer.percent_consu != 0 ? data.customer.percent_consu : "100"}%`;
+    detailCustomerAmountDisp.textContent = `${getcurrency} ${data.customer.amount_disp > 0 ? data.customer.amount_disp : "Ilimitado"}`;
+    /**
+     * Fin de la información del cliente
+     */
   }
 })();
