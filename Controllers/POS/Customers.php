@@ -277,31 +277,22 @@ class Customers extends Controllers
         $defaultRate = (float) ($_POST['txtCustomerDefaultInterest'] ?? 0.00);
         $currentRate = (float) ($_POST['txtCustomerCurrentInterest'] ?? 0.00);
         $billingDate = strClean($_POST['txtCustomerBillingDate'] ?? '');
-        if ($documentTypeId <= 0) {
-            $this->responseError('Debes seleccionar un tipo de documento válido.');
-        }
-
-        if ($document === '') {
-            $this->responseError('El número de documento es obligatorio.');
-        }
-
-        if ($name === '') {
-            $this->responseError('El nombre del cliente es obligatorio.');
-        }
-
+        validateFieldsEmpty([
+            "NÚMERO DE DOCUMENTO" => $document,
+            "NOMBRE DEL CLIENTE" => $name,
+            "FECHA DE FACTURACIÓN" => $billingDate,
+            "TIPO DE DOCUMENTO" => $documentTypeId,
+        ]);
         // Validacion de Formatos
         if (verifyData("^\d{8}$", $document)) {
             $this->responseError('El número de documento no es válido. Debe contener exactamente 8 dígitos numéricos.');
         }
-
         if (verifyData("[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+(\s[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+)*", $name)) {
             $this->responseError('El nombre del cliente contiene caracteres no permitidos. Solo se aceptan letras y espacios.');
         }
-
         if (!empty($phone) && verifyData("^\d{9,15}$", $phone)) {
             $this->responseError('El número de teléfono no es válido. Debe contener entre 9 y 15 dígitos numéricos.');
         }
-
         if (!empty($email) && verifyData("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", $email)) {
             $this->responseError('El correo electrónico no tiene un formato válido.');
         }

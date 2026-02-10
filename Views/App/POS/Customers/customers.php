@@ -306,11 +306,12 @@
                                 <div class="form-text">Interés por financiamiento.</div>
                             </div>
                             <div class="col-6 col-md-6">
-                                <label for="txtCustomerBillingDate" class="form-label">Fecha de facturación</label>
+                                <label for="txtCustomerBillingDate" class="form-label">Fecha de facturación <span
+                                        class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
                                     <input type="date" class="form-control" id="txtCustomerBillingDate"
-                                        name="txtCustomerBillingDate">
+                                        name="txtCustomerBillingDate" required>
                                 </div>
                                 <div class="form-text">Fecha prefijada de cobro.</div>
                             </div>
