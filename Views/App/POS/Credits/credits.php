@@ -223,7 +223,37 @@
 
                                 <!-- Encabezado Sección Derecha -->
                                 <div class="py-3 px-4 border-bottom d-flex justify-content-between align-items-center">
-                                    <h5 class="fw-bold mb-0">Estado de Cuenta</h5>
+                                    <h5 class="fw-bold mb-0"><i class="bi bi-wallet2 me-1"></i> Estado de Cuenta</h5>
+                                </div>
+
+                                <!-- Filtros de Fecha -->
+                                <div class="px-4 py-3 border-bottom bg-white">
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col-sm-4">
+                                            <label class="form-label small text-muted text-uppercase fw-bold mb-1">Fecha
+                                                Inicio</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                                <input type="date" class="form-control" id="modal-filter-date-start">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label small text-muted text-uppercase fw-bold mb-1">Fecha
+                                                Fin</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                                <input type="date" class="form-control" id="modal-filter-date-end">
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-outline-primary flex-fill"><i
+                                                        class="bi bi-funnel"></i> Filtrar</button>
+                                                <button class="btn btn-sm btn-outline-secondary flex-fill"><i
+                                                        class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- KPIs Rápidos -->
@@ -246,7 +276,7 @@
                                 </div>
 
                                 <!-- Tabla Scrollable -->
-                                <div class="flex-grow-1 overflow-auto p-0">
+                                <div class="flex-grow-1 overflow-auto p-0" style="max-height: 40vh;">
                                     <table class="table table-hover align-middle mb-0">
                                         <thead class="bg-light sticky-top">
                                             <tr>
@@ -267,6 +297,81 @@
                                         </thead>
                                         <tbody>
                                             <!-- Movimiento 1 (Pagado / Contado) -->
+                                            <tr>
+                                                <td class="ps-4 text-nowrap">01/10/2023</td>
+                                                <td>
+                                                    <div class="fw-medium">Factura F001-204</div>
+                                                    <span
+                                                        class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10"
+                                                        style="font-size: 0.65em;">CONTADO</span>
+                                                </td>
+                                                <td class="text-end tabular-nums">S/. 2,400.00</td>
+                                                <td class="text-center"><span
+                                                        class="badge rounded-pill bg-success-subtle text-success">Pagado</span>
+                                                </td>
+                                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border"><i
+                                                            class="bi bi-eye"></i></button></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4 text-nowrap">01/10/2023</td>
+                                                <td>
+                                                    <div class="fw-medium">Factura F001-204</div>
+                                                    <span
+                                                        class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10"
+                                                        style="font-size: 0.65em;">CONTADO</span>
+                                                </td>
+                                                <td class="text-end tabular-nums">S/. 2,400.00</td>
+                                                <td class="text-center"><span
+                                                        class="badge rounded-pill bg-success-subtle text-success">Pagado</span>
+                                                </td>
+                                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border"><i
+                                                            class="bi bi-eye"></i></button></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4 text-nowrap">01/10/2023</td>
+                                                <td>
+                                                    <div class="fw-medium">Factura F001-204</div>
+                                                    <span
+                                                        class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10"
+                                                        style="font-size: 0.65em;">CONTADO</span>
+                                                </td>
+                                                <td class="text-end tabular-nums">S/. 2,400.00</td>
+                                                <td class="text-center"><span
+                                                        class="badge rounded-pill bg-success-subtle text-success">Pagado</span>
+                                                </td>
+                                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border"><i
+                                                            class="bi bi-eye"></i></button></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4 text-nowrap">01/10/2023</td>
+                                                <td>
+                                                    <div class="fw-medium">Factura F001-204</div>
+                                                    <span
+                                                        class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10"
+                                                        style="font-size: 0.65em;">CONTADO</span>
+                                                </td>
+                                                <td class="text-end tabular-nums">S/. 2,400.00</td>
+                                                <td class="text-center"><span
+                                                        class="badge rounded-pill bg-success-subtle text-success">Pagado</span>
+                                                </td>
+                                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border"><i
+                                                            class="bi bi-eye"></i></button></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="ps-4 text-nowrap">01/10/2023</td>
+                                                <td>
+                                                    <div class="fw-medium">Factura F001-204</div>
+                                                    <span
+                                                        class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10"
+                                                        style="font-size: 0.65em;">CONTADO</span>
+                                                </td>
+                                                <td class="text-end tabular-nums">S/. 2,400.00</td>
+                                                <td class="text-center"><span
+                                                        class="badge rounded-pill bg-success-subtle text-success">Pagado</span>
+                                                </td>
+                                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border"><i
+                                                            class="bi bi-eye"></i></button></td>
+                                            </tr>
                                             <tr>
                                                 <td class="ps-4 text-nowrap">01/10/2023</td>
                                                 <td>
@@ -352,6 +457,8 @@
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button class="btn btn-outline-primary shadow-sm"><i class="bi bi-wallet2 me-1"></i> Pagar
+                    Todo</button>
             </div>
         </div>
     </div>
