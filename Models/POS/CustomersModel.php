@@ -239,7 +239,11 @@ class CustomersModel extends Mysql
                 b.name AS name_bussines,
                 b.direction AS direction_bussines,
                 b.document_number AS document_bussines,
-                b.logo
+                b.logo,
+                c.credit_limit,
+                c.default_interest_rate,
+                c.current_interest_rate,
+                c.billing_date
             FROM customer c
             INNER JOIN document_type dt ON dt.idDocumentType = c.documenttype_id
             INNER JOIN business b ON b.idBusiness = c.business_id

@@ -425,6 +425,23 @@
                             <label class="small text-uppercase text-muted fw-bold">Dirección:</label>
                             <div class="border-bottom border-dark pb-1" id="report_customer_address">--</div>
                         </div>
+                        <div class="col-6 mt-3">
+                            <label class="small text-uppercase text-muted fw-bold">Fecha de Facturación:</label>
+                            <div class="fw-bold" id="report_customer_facturation_date">--</div>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <label class="small text-uppercase text-muted fw-bold">Limite de Credito:</label>
+                            <div class="fw-bold" id="report_customer_credit_limit">--</div>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <label class="small text-uppercase text-muted fw-bold">Interes mensual por
+                                financiamiento:</label>
+                            <div class="fw-bold" id="report_customer_interest">--</div>
+                        </div>
+                        <div class="col-6 mt-3">
+                            <label class="small text-uppercase text-muted fw-bold">Interes por vencimiento:</label>
+                            <div class="fw-bold" id="report_customer_interest_overdue">--</div>
+                        </div>
                     </div>
 
                     <!-- System Footer -->

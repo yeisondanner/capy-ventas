@@ -122,11 +122,11 @@
     }
 
     const documentTypeField = document.getElementById(
-      "txtCustomerDocumentTypeEdit",
+      "txtCustomerDocumentTypeEdit"
     );
     if (documentTypeField) {
       documentTypeField.value = String(
-        customer.documenttype_id || customer.document_type_id || "",
+        customer.documenttype_id || customer.document_type_id || ""
       );
     }
 
@@ -161,14 +161,14 @@
     }
 
     const defaultInterestField = document.getElementById(
-      "txtCustomerDefaultInterest",
+      "txtCustomerDefaultInterest"
     );
     if (defaultInterestField) {
       defaultInterestField.value = customer.default_interest_rate || "0.00";
     }
 
     const currentInterestField = document.getElementById(
-      "txtCustomerCurrentInterest",
+      "txtCustomerCurrentInterest"
     );
     if (currentInterestField) {
       currentInterestField.value = customer.current_interest_rate || "0.00";
@@ -271,6 +271,14 @@
         d.email || "--";
       document.getElementById("report_customer_address").textContent =
         d.direction || "--";
+      document.getElementById("report_customer_facturation_date").textContent =
+        d.billing_date || "--";
+      document.getElementById("report_customer_credit_limit").textContent =
+        (d.credit_limit == 0 ? "Ilimitado" : d.credit_limit) || "--";
+      document.getElementById("report_customer_interest").textContent =
+        d.default_interest_rate || "--";
+      document.getElementById("report_customer_interest_overdue").textContent =
+        d.current_interest_rate || "--";
 
       // Estado Badge
       const statusEl = document.getElementById("report_customer_status");
@@ -373,7 +381,7 @@
         const cleanName = name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
         exportToPng(
           "customerReportContainer",
-          `Ficha_Cliente_${cleanName}.png`,
+          `Ficha_Cliente_${cleanName}.png`
         );
       });
     }
@@ -563,7 +571,7 @@
               id: customer.idCustomer || customer.id || 0,
               token,
             }),
-          },
+          }
         );
 
         if (!response.ok) {

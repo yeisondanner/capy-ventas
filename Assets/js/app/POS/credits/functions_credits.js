@@ -65,7 +65,7 @@
         {
           data: "credit_limit",
           render: (data, type, row) => {
-            return `${getcurrency} ${data}`;
+            return `${getcurrency} ${data == 0 ? "Sin límite" : data}`;
           },
         },
         {

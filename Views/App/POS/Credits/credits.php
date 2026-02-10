@@ -78,6 +78,15 @@
                 </div>
             </div>
         </div>
+        <div class="col-12 mb-2">
+            <div class="p-3 border-start border-4 border-info bg-light shadow-sm rounded">
+                <p class="mb-0 text-primary">
+                    <span class="fw-bold text-info text-uppercase small">Información:</span><br>
+                    Para que se muestre el cliente en la lista, el cliente debe tener una fecha de facturación
+                    establecida.
+                </p>
+            </div>
+        </div>
         <div class="col-md-12">
             <div class="tile rounded-3">
                 <div class="tile-body">
