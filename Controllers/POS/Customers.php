@@ -277,7 +277,6 @@ class Customers extends Controllers
         $defaultRate = (float) ($_POST['txtCustomerDefaultInterest'] ?? 0.00);
         $currentRate = (float) ($_POST['txtCustomerCurrentInterest'] ?? 0.00);
         $billingDate = strClean($_POST['txtCustomerBillingDate'] ?? '');
-
         if ($documentTypeId <= 0) {
             $this->responseError('Debes seleccionar un tipo de documento válido.');
         }
@@ -305,6 +304,18 @@ class Customers extends Controllers
 
         if (!empty($email) && verifyData("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}", $email)) {
             $this->responseError('El correo electrónico no tiene un formato válido.');
+        }
+        //validamos que el limite de credito no sea menor a cero y mayor a 99999999.99
+        if ($creditLimit < 0 || $creditLimit > 99999999.99) {
+            $this->responseError('El límite de crédito no es válido. Debe estar entre 0 y 99999999.99.');
+        }
+        //validamos que la tasa de interes por defecto no sea menor a cero y mayor a 100
+        if ($defaultRate < 0 || $defaultRate > 100) {
+            $this->responseError('La tasa de interés por defecto no es válida. Debe estar entre 0 y 100.');
+        }
+        //validamos que la tasa de interes actual no sea menor a cero y mayor a 100
+        if ($currentRate < 0 || $currentRate > 100) {
+            $this->responseError('La tasa de interés actual no es válida. Debe estar entre 0 y 100.');
         }
 
         $existing = $this->model->selectCustomerByDocument($businessId, $documentTypeId, $document, $customerId);

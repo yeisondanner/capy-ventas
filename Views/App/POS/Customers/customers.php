@@ -3,7 +3,8 @@
     <div class="app-title">
         <div>
             <h1><i class="bi bi-people-fill"></i> Clientes</h1>
-            <p>Administra los clientes de tu negocio: registra nuevos contactos, actualiza sus datos y consulta su información.</p>
+            <p>Administra los clientes de tu negocio: registra nuevos contactos, actualiza sus datos y consulta su
+                información.</p>
         </div>
         <ul class="app-breadcrumb breadcrumb">
             <li class="breadcrumb-item"><i class="bi bi-house-door fs-6"></i></li>
@@ -15,7 +16,7 @@
             <div class="tile rounded-3">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
-                    $createCustomer = (int) (validate_permission_app(4, "c", false)) ? (int)validate_permission_app(4, "c", false)['create'] : 0;
+                    $createCustomer = (int) (validate_permission_app(4, "c", false)) ? (int) validate_permission_app(4, "c", false)['create'] : 0;
                     if ($createCustomer === 1): ?>
                         <button class="btn btn-sm btn-outline-primary" type="button" id="btnOpenCustomerModal">
                             <i class="bi bi-plus-lg"></i> Registrar cliente
@@ -28,7 +29,8 @@
             <div class="tile rounded-3">
                 <div class="tile-body">
                     <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
-                        <table class="table table-sm table-hover table-bordered table-striped table-responsive" id="customerTable" data-token="<?= csrf(false); ?>">
+                        <table class="table table-sm table-hover table-bordered table-striped table-responsive"
+                            id="customerTable" data-token="<?= csrf(false); ?>">
                             <thead class="thead-light">
                                 <tr>
                                     <th>#</th>
@@ -56,7 +58,8 @@
         <form class="modal-content" id="formCustomer" autocomplete="off">
             <div class="modal-header bg-primary text-white border-bottom-0 py-2">
                 <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
-                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
                         <i class="bi bi-person fs-3"></i>
                     </div>
                     <div>
@@ -75,10 +78,12 @@
                     <div class="col-lg-8">
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label for="txtCustomerDocumentType" class="form-label">Tipo de documento <span class="text-danger">*</span></label>
+                                <label for="txtCustomerDocumentType" class="form-label">Tipo de documento <span
+                                        class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-file-earmark-text"></i></span>
-                                    <select class="form-select" id="txtCustomerDocumentType" name="txtCustomerDocumentType" required>
+                                    <select class="form-select" id="txtCustomerDocumentType"
+                                        name="txtCustomerDocumentType" required>
                                         <option value="" selected disabled>Selecciona un tipo de documento</option>
                                         <?php foreach (($data['document_types'] ?? []) as $type): ?>
                                             <option value="<?= (int) ($type['id'] ?? 0); ?>">
@@ -89,42 +94,50 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="txtCustomerDocument" class="form-label">Número de documento <span class="text-danger">*</span></label>
+                                <label for="txtCustomerDocument" class="form-label">Número de documento <span
+                                        class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                                    <input type="text" class="form-control" id="txtCustomerDocument" name="txtCustomerDocument" maxlength="8"
-                                        required placeholder="Número de documento" pattern="[0-9]{8}" title="El documento debe contener exactamente 8 dígitos numéricos">
+                                    <input type="text" class="form-control" id="txtCustomerDocument"
+                                        name="txtCustomerDocument" maxlength="8" required
+                                        placeholder="Número de documento" pattern="[0-9]{8}"
+                                        title="El documento debe contener exactamente 8 dígitos numéricos">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="txtCustomerName" class="form-label">Nombre completo <span class="text-danger">*</span></label>
+                                <label for="txtCustomerName" class="form-label">Nombre completo <span
+                                        class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                    <input type="text" class="form-control" id="txtCustomerName" name="txtCustomerName" maxlength="255" required
-                                        placeholder="Nombre completo del cliente" pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+" title="Solo se permiten letras y espacios">
+                                    <input type="text" class="form-control" id="txtCustomerName" name="txtCustomerName"
+                                        maxlength="255" required placeholder="Nombre completo del cliente"
+                                        pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+" title="Solo se permiten letras y espacios">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label for="txtCustomerPhone" class="form-label">Teléfono</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                    <input type="text" class="form-control" id="txtCustomerPhone" name="txtCustomerPhone" maxlength="15"
-                                        placeholder="Número de contacto" pattern="[0-9]{9,15}" title="Solo se permiten números (9-15 dígitos)">
+                                    <input type="text" class="form-control" id="txtCustomerPhone"
+                                        name="txtCustomerPhone" maxlength="15" placeholder="Número de contacto"
+                                        pattern="[0-9]{9,15}" title="Solo se permiten números (9-15 dígitos)">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label for="txtCustomerEmail" class="form-label">Correo electrónico</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" class="form-control" id="txtCustomerEmail" name="txtCustomerEmail" maxlength="255"
-                                        placeholder="correo@ejemplo.com" title="Ingrese un correo electrónico válido">
+                                    <input type="email" class="form-control" id="txtCustomerEmail"
+                                        name="txtCustomerEmail" maxlength="255" placeholder="correo@ejemplo.com"
+                                        title="Ingrese un correo electrónico válido">
                                 </div>
                             </div>
                             <div class="col-12">
                                 <label for="txtCustomerAddress" class="form-label">Dirección</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                                    <input type="text" class="form-control" id="txtCustomerAddress" name="txtCustomerAddress"
+                                    <input type="text" class="form-control" id="txtCustomerAddress"
+                                        name="txtCustomerAddress"
                                         placeholder="Dirección o información adicional del cliente">
                                 </div>
                             </div>
@@ -136,13 +149,15 @@
                         <div class="card bg-primary text-white h-100 border-0 shadow-sm" style="border-radius: 1rem;">
                             <div class="card-body d-flex flex-column justify-content-center text-center p-4">
                                 <div class="mb-4">
-                                    <div class="bg-white bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                    <div class="bg-white bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                        style="width: 80px; height: 80px;">
                                         <i class="bi bi-people-fill display-4"></i>
                                     </div>
                                 </div>
                                 <h4 class="fw-bold mb-3">Gestión de Clientes</h4>
                                 <p class="mb-0 opacity-75">
-                                    Complete los datos del formulario para registrar un nuevo cliente. Esta información es esencial para la gestión de ventas y facturación.
+                                    Complete los datos del formulario para registrar un nuevo cliente. Esta información
+                                    es esencial para la gestión de ventas y facturación.
                                 </p>
                             </div>
                         </div>
@@ -158,12 +173,14 @@
 </div>
 
 <!-- Modal: Editar cliente -->
-<div class="modal fade" id="modalEditCustomer" tabindex="-1" aria-labelledby="modalEditCustomerLabel" aria-hidden="true">
+<div class="modal fade" id="modalEditCustomer" tabindex="-1" aria-labelledby="modalEditCustomerLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <form class="modal-content" id="formEditCustomer" autocomplete="off">
             <div class="modal-header bg-success text-white border-bottom-0 py-2">
                 <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
-                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
                         <i class="bi bi-pencil-square fs-3"></i>
                     </div>
                     <div>
@@ -183,14 +200,16 @@
                         <div class="row g-3">
                             <!-- Section: Personal Data -->
                             <div class="col-12 mt-2">
-                                <h6 class="text-primary border-bottom pb-2"><i class="bi bi-person-lines-fill me-2"></i>Datos personales</h6>
+                                <h6 class="text-primary border-bottom pb-2"><i
+                                        class="bi bi-person-lines-fill me-2"></i>Datos personales</h6>
                             </div>
 
                             <div class="col-md-6">
                                 <label for="txtCustomerDocumentTypeEdit" class="form-label">Tipo de documento</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-card-heading"></i></span>
-                                    <select class="form-select" id="txtCustomerDocumentTypeEdit" name="txtCustomerDocumentType" required>
+                                    <select class="form-select" id="txtCustomerDocumentTypeEdit"
+                                        name="txtCustomerDocumentType" required>
                                         <?php foreach (($data['document_types'] ?? []) as $type): ?>
                                             <option value="<?= (int) ($type['id'] ?? 0); ?>">
                                                 <?= htmlspecialchars($type['name'] ?? '', ENT_QUOTES, 'UTF-8'); ?>
@@ -200,56 +219,68 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="txtCustomerDocumentEdit" class="form-label">Número de documento <span class="text-danger">*</span></label>
+                                <label for="txtCustomerDocumentEdit" class="form-label">Número de documento <span
+                                        class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-card-text"></i></span>
-                                    <input type="text" class="form-control" id="txtCustomerDocumentEdit" name="txtCustomerDocument" maxlength="8"
-                                        required placeholder="Número de documento" pattern="[0-9]{8}" title="El documento debe contener exactamente 8 dígitos numéricos">
+                                    <input type="text" class="form-control" id="txtCustomerDocumentEdit"
+                                        name="txtCustomerDocument" maxlength="8" required
+                                        placeholder="Número de documento" pattern="[0-9]{8}"
+                                        title="El documento debe contener exactamente 8 dígitos numéricos">
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <label for="txtCustomerNameEdit" class="form-label">Nombre completo <span class="text-danger">*</span></label>
+                                <label for="txtCustomerNameEdit" class="form-label">Nombre completo <span
+                                        class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-person"></i></span>
-                                    <input type="text" class="form-control" id="txtCustomerNameEdit" name="txtCustomerName" maxlength="255" required
-                                        placeholder="Nombre completo del cliente" pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+" title="Solo se permiten letras y espacios">
+                                    <input type="text" class="form-control" id="txtCustomerNameEdit"
+                                        name="txtCustomerName" maxlength="255" required
+                                        placeholder="Nombre completo del cliente" pattern="[a-zA-ZñÑáéíóúÁÉÍÓÚ ]+"
+                                        title="Solo se permiten letras y espacios">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label for="txtCustomerPhoneEdit" class="form-label">Teléfono</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                    <input type="text" class="form-control" id="txtCustomerPhoneEdit" name="txtCustomerPhone" maxlength="15"
-                                        placeholder="Número de contacto" pattern="[0-9]{9,15}" title="Solo se permiten números (9-15 dígitos)">
+                                    <input type="text" class="form-control" id="txtCustomerPhoneEdit"
+                                        name="txtCustomerPhone" maxlength="15" placeholder="Número de contacto"
+                                        pattern="[0-9]{9,15}" title="Solo se permiten números (9-15 dígitos)">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <label for="txtCustomerEmailEdit" class="form-label">Correo electrónico</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                                    <input type="email" class="form-control" id="txtCustomerEmailEdit" name="txtCustomerEmail" maxlength="255"
-                                        placeholder="correo@ejemplo.com" title="Ingrese un correo electrónico válido">
+                                    <input type="email" class="form-control" id="txtCustomerEmailEdit"
+                                        name="txtCustomerEmail" maxlength="255" placeholder="correo@ejemplo.com"
+                                        title="Ingrese un correo electrónico válido">
                                 </div>
                             </div>
                             <div class="col-12">
                                 <label for="txtCustomerAddressEdit" class="form-label">Dirección</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                                    <input type="text" class="form-control" id="txtCustomerAddressEdit" name="txtCustomerAddress"
+                                    <input type="text" class="form-control" id="txtCustomerAddressEdit"
+                                        name="txtCustomerAddress"
                                         placeholder="Dirección o información adicional del cliente">
                                 </div>
                             </div>
 
                             <!-- Section: Credit Data -->
                             <div class="col-12 mt-4">
-                                <h6 class="text-success border-bottom pb-2"><i class="bi bi-credit-card-2-front me-2"></i>Datos de crédito</h6>
+                                <h6 class="text-success border-bottom pb-2"><i
+                                        class="bi bi-credit-card-2-front me-2"></i>Datos de crédito</h6>
                             </div>
 
                             <div class="col-6 col-md-6">
                                 <label for="txtCustomerCreditLimit" class="form-label">Límite de crédito</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-cash-coin"></i></span>
-                                    <input type="number" class="form-control" id="txtCustomerCreditLimit" name="txtCustomerCreditLimit" step="0.01" min="0" placeholder="50.00">
+                                    <input type="number" class="form-control" id="txtCustomerCreditLimit"
+                                        name="txtCustomerCreditLimit" step="0.01" min="0" max="99999999.99"
+                                        placeholder="50.00">
                                 </div>
                                 <div class="form-text">0.00 = Crédito ilimitado.</div>
                             </div>
@@ -257,15 +288,20 @@
                                 <label for="txtCustomerDefaultInterest" class="form-label">Tasa mora mensual (%)</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-percent"></i></span>
-                                    <input type="number" class="form-control" id="txtCustomerDefaultInterest" name="txtCustomerDefaultInterest" step="0.01" min="0" placeholder="0.00">
+                                    <input type="number" class="form-control" id="txtCustomerDefaultInterest"
+                                        name="txtCustomerDefaultInterest" step="0.01" min="0" max="100"
+                                        placeholder="0.00">
                                 </div>
                                 <div class="form-text">Interés por pago tardío.</div>
                             </div>
                             <div class="col-6 col-md-6">
-                                <label for="txtCustomerCurrentInterest" class="form-label">Tasa financ. mensual (%)</label>
+                                <label for="txtCustomerCurrentInterest" class="form-label">Tasa financ. mensual
+                                    (%)</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-graph-up"></i></span>
-                                    <input type="number" class="form-control" id="txtCustomerCurrentInterest" name="txtCustomerCurrentInterest" step="0.01" min="0" placeholder="0.00">
+                                    <input type="number" class="form-control" id="txtCustomerCurrentInterest"
+                                        name="txtCustomerCurrentInterest" step="0.01" min="0" max="100"
+                                        placeholder="0.00">
                                 </div>
                                 <div class="form-text">Interés por financiamiento.</div>
                             </div>
@@ -273,7 +309,8 @@
                                 <label for="txtCustomerBillingDate" class="form-label">Fecha de facturación</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-                                    <input type="date" class="form-control" id="txtCustomerBillingDate" name="txtCustomerBillingDate">
+                                    <input type="date" class="form-control" id="txtCustomerBillingDate"
+                                        name="txtCustomerBillingDate">
                                 </div>
                                 <div class="form-text">Fecha prefijada de cobro.</div>
                             </div>
@@ -285,13 +322,15 @@
                         <div class="card bg-success text-white h-100 border-0 shadow-sm" style="border-radius: 1rem;">
                             <div class="card-body d-flex flex-column justify-content-center text-center p-4">
                                 <div class="mb-4">
-                                    <div class="bg-white bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                    <div class="bg-white bg-opacity-25 rounded-circle d-inline-flex align-items-center justify-content-center"
+                                        style="width: 80px; height: 80px;">
                                         <i class="bi bi-arrow-repeat display-4"></i>
                                     </div>
                                 </div>
                                 <h4 class="fw-bold mb-3">Edición de Datos</h4>
                                 <p class="mb-0 opacity-75">
-                                    Actualice la información del cliente. Asegúrese de guardar los cambios para que se reflejen en futuros comprobantes.
+                                    Actualice la información del cliente. Asegúrese de guardar los cambios para que se
+                                    reflejen en futuros comprobantes.
                                 </p>
                             </div>
                         </div>
@@ -307,19 +346,23 @@
 </div>
 
 <!-- Modal: Detalle del cliente (Estilo Reporte) -->
-<div class="modal fade" id="modalCustomerDetail" tabindex="-1" aria-labelledby="modalCustomerDetailLabel" aria-hidden="true">
+<div class="modal fade" id="modalCustomerDetail" tabindex="-1" aria-labelledby="modalCustomerDetailLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header bg-secondary text-dark border-bottom-0 py-2">
                 <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
-                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
                         <i class="bi bi-person-badge fs-3"></i>
                     </div>
                     <div>
                         <h5 class="modal-title fw-bold mb-0" id="modalCustomerDetailLabel">Ficha del Cliente</h5>
-                        <p class="mb-0 small text-dark text-opacity-75">Información detallada del cliente seleccionado</p>
+                        <p class="mb-0 small text-dark text-opacity-75">Información detallada del cliente seleccionado
+                        </p>
                     </div>
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
                 </div>
             </div>
 
@@ -368,7 +411,8 @@
                         </div>
                         <div class="col-6 mt-3 text-end">
                             <label class="small text-uppercase text-muted fw-bold">Estado:</label>
-                            <div><span id="report_customer_status" class="badge bg-light text-dark border">--</span></div>
+                            <div><span id="report_customer_status" class="badge bg-light text-dark border">--</span>
+                            </div>
                         </div>
 
                         <div class="col-12 mt-3">
@@ -385,7 +429,8 @@
                     <!-- System Footer -->
                     <div class="row mt-4">
                         <div class="col-12 text-center d-flex align-items-center justify-content-center">
-                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
+                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo"
+                                style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
                             <small class="text-muted fst-italic">Generado por Capy Ventas</small>
                         </div>
                     </div>
@@ -394,7 +439,8 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" id="btnDownloadCustomerPng"><i class="bi bi-card-image"></i>
+                <button type="button" class="btn btn-outline-warning" id="btnDownloadCustomerPng"><i
+                        class="bi bi-card-image"></i>
                     Exportar PNG</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
             </div>
