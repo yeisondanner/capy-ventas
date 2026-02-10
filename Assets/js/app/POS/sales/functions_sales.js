@@ -334,11 +334,15 @@
         customerCardDocumentType.textContent = customer.document_type;
         customerCardDocumentNumber.textContent = customer.document;
         customerCardCreditLimit.textContent =
-          getcurrency + " " + customer.credit_limit;
+          getcurrency +
+          " " +
+          (customer.credit_limit === 0 ? "Ilimitado" : customer.credit_limit);
         customerCardConsumed.textContent =
           getcurrency + " " + customer.consumed;
         customerCardAvailable.textContent =
-          getcurrency + " " + customer.available;
+          getcurrency +
+          " " +
+          (customer.available === 0 ? "Ilimitado" : customer.available);
         //actualizamos la barra de progreso
         customerCardProgressBar.setAttribute(
           "aria-valuenow",
