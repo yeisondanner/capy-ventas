@@ -116,7 +116,7 @@
 <!-- Modal reporte de creditos -->
 <div class="modal fade" id="creditsReportModal" tabindex="-1" aria-labelledby="creditsReportModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-secondary text-dark border-bottom-0 py-2">
                 <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
@@ -276,7 +276,7 @@
                                 </div>
 
                                 <!-- Tabla Scrollable -->
-                                <div class="flex-grow-1 overflow-auto p-0" style="max-height: 40vh;">
+                                <div class="flex-grow-1 overflow-auto p-0" style="max-height: 60vh;">
                                     <table class="table table-hover align-middle mb-0">
                                         <thead class="bg-light sticky-top">
                                             <tr>
