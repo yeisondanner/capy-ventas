@@ -182,6 +182,7 @@
 
                                 <!-- Datos de Contacto (BD: phone_number, email, direction) -->
                                 <div class="mb-4 small">
+                                    <p class="fw-bold text-dark mb-2">Datos de Contacto</p>
                                     <div class="d-flex align-items-center mb-3">
                                         <i class="bi bi-card-heading text-secondary fs-5 me-3"></i>
                                         <div>
@@ -199,7 +200,7 @@
                                                 321</span>
                                         </div>
                                     </div>
-                                    <div class="d-flex align-items-center">
+                                    <div class="d-flex align-items-center mb-3">
                                         <i class="bi bi-geo-alt text-secondary fs-5 me-3"></i>
                                         <div>
                                             <span class="d-block text-muted" style="font-size: 0.8em;">DIRECCIÓN</span>
@@ -207,6 +208,35 @@
                                                 Principal 123, Lima</span>
                                         </div>
                                     </div>
+                                    <p class="fw-bold text-dark mb-2">Datos de financiamiento</p>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-credit-card text-secondary fs-5 me-3"></i>
+                                        <div>
+                                            <span class="d-block text-muted" style="font-size: 0.8em;">LIMITE DE
+                                                CREDITO</span>
+                                            <span class="fw-medium text-dark"
+                                                id="detailCustomerCreditLimitFinancing">--</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-percent text-secondary fs-5 me-3"></i>
+                                        <div>
+                                            <span class="d-block text-muted" style="font-size: 0.8em;">INTERES MENSUAL X
+                                                MORA</span>
+                                            <span class="fw-medium text-dark"
+                                                id="detailCustomerMonthlyInterest">--</span>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="bi bi-calendar-check text-secondary fs-5 me-3"></i>
+                                        <div>
+                                            <span class="d-block text-muted" style="font-size: 0.8em;">INTERES MENSUAL X
+                                                FINANCIAMIENTO</span>
+                                            <span class="fw-medium text-dark"
+                                                id="detailCustomerMonthlyInterestFinancing">--</span>
+                                        </div>
+                                    </div>
+
                                 </div>
 
                                 <!-- Footer Sidebar -->
@@ -247,10 +277,11 @@
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="d-flex gap-2">
-                                                <button class="btn btn-sm btn-outline-primary flex-fill"><i
-                                                        class="bi bi-funnel"></i> Filtrar</button>
-                                                <button class="btn btn-sm btn-outline-secondary flex-fill"><i
-                                                        class="bi bi-arrow-counterclockwise"></i> Limpiar</button>
+                                                <button class="btn btn-sm btn-outline-primary flex-fill"
+                                                    id="modal-filter-btn"><i class="bi bi-funnel"></i> Filtrar</button>
+                                                <button class="btn btn-sm btn-outline-secondary flex-fill"
+                                                    id="modal-filter-reset"><i class="bi bi-arrow-counterclockwise"></i>
+                                                    Limpiar</button>
                                             </div>
                                         </div>
                                     </div>
@@ -261,17 +292,20 @@
                                     <div class="col-4 border-end p-3 text-center">
                                         <small class="text-uppercase text-muted fw-bold"
                                             style="font-size: 0.7rem;">Total Comprado</small>
-                                        <div class="h5 mb-0 fw-bold tabular-nums text-dark">S/. 4,400.50</div>
+                                        <div class="h5 mb-0 fw-bold tabular-nums text-dark"
+                                            id="detailCustomerTotalPurchased">S/. --</div>
                                     </div>
                                     <div class="col-4 border-end p-3 text-center">
                                         <small class="text-uppercase text-muted fw-bold"
                                             style="font-size: 0.7rem;">Pagado</small>
-                                        <div class="h5 mb-0 fw-bold tabular-nums text-success">S/. 2,850.00</div>
+                                        <div class="h5 mb-0 fw-bold tabular-nums text-success"
+                                            id="detailCustomerTotalPaid">S/. --</div>
                                     </div>
                                     <div class="col-4 p-3 text-center bg-danger bg-opacity-10">
                                         <small class="text-uppercase text-danger fw-bold"
                                             style="font-size: 0.7rem;">Deuda Pendiente</small>
-                                        <div class="h5 mb-0 fw-bold tabular-nums text-danger">S/. 1,550.50</div>
+                                        <div class="h5 mb-0 fw-bold tabular-nums text-danger"
+                                            id="detailCustomerTotalDebt">S/. --</div>
                                     </div>
                                 </div>
 

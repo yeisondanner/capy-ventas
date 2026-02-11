@@ -123,7 +123,24 @@ class CreditsModel extends Mysql
         $this->idCustomer = $idCustomer;
         $this->idBusiness = $idBusiness;
         $arrValues = [$this->idCustomer, $this->idBusiness];
-        return $this->select($sql, $arrValues);
+        return $this->select($sql, $arrValues) ?? [
+            "idCustomer" => 0,
+            "fullname" => "",
+            "documentType" => "",
+            "document_number" => "",
+            "phone_number" => "",
+            "email" => "",
+            "direction" => "",
+            "credit_limit" => 0,
+            "default_interest_rate" => 0,
+            "current_interest_rate" => 0,
+            "billing_date" => "",
+            "day_billing" => 0,
+            "status" => "",
+            "amount_total" => 0,
+            "amount_disp" => 0,
+            "percent_consu" => 0
+        ];
     }
     /**
      * Aqui se detallan los creditos del cliente
@@ -134,5 +151,49 @@ class CreditsModel extends Mysql
     public function getCreditsCustomer(int $idCustomer, int $idBusiness)
     {
 
+    }
+    /**
+     * Metodo que se encarga de obtener los kpis del cliente
+     * Trae la sumatoria del total comprado,
+     * Total pagado y
+     * deuda pendiente
+     * @param int $idCustomer
+     * @param int $idBusiness
+     * @return void
+     */
+    public function getKPISCustomer(int $idCustomer, int $idBusiness, string $startDate, string $endDate)
+    {
+        $this->idCustomer = $idCustomer;
+        $this->idBusiness = $idBusiness;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+        $sql = <<<SQL
+                SELECT
+                    SUM(
+                        CASE WHEN vh.`status` = 'Pendiente' THEN vh.amount ELSE 0 END
+                    ) AS total_pendiente,
+                    SUM(
+                        CASE WHEN vh.`status` = 'Pagado' THEN vh.amount ELSE 0 END
+                    ) AS total_pagado,
+                    SUM(
+                        CASE WHEN vh.`status` IN ('Pendiente', 'Pagado') THEN vh.amount ELSE 0 END
+                    ) AS total_ventas
+                FROM
+                    voucher_header AS vh
+                WHERE
+                    vh.customer_id = ?
+                    AND vh.business_id = ?               
+        SQL;
+        $arrValues = [$this->idCustomer, $this->idBusiness];
+        if ($this->startDate != null && $this->startDate != '' && $this->endDate != null && $this->endDate != '') {
+            $sql .= "AND vh.date_time BETWEEN ? AND ?";
+            array_push($arrValues, $this->startDate, $this->endDate);
+        }
+        $sql .= "GROUP BY vh.customer_id";
+        return $this->select($sql, $arrValues) ?? [
+            'total_pendiente' => 0.00,
+            'total_pagado' => 0.00,
+            'total_ventas' => 0.00
+        ];
     }
 }

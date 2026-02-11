@@ -19,6 +19,15 @@
   const detailCustomerBillingDay = document.getElementById(
     "detailCustomerBillingDay"
   );
+  const detailCustomerCreditLimitFinancing = document.getElementById(
+    "detailCustomerCreditLimitFinancing"
+  );
+  const detailCustomerMonthlyInterest = document.getElementById(
+    "detailCustomerMonthlyInterest"
+  );
+  const detailCustomerMonthlyInterestFinancing = document.getElementById(
+    "detailCustomerMonthlyInterestFinancing"
+  );
   const detailCustomerCreditLimit = document.getElementById(
     "detailCustomerCreditLimit"
   );
@@ -31,10 +40,30 @@
   const detailCustomerAmountDisp = document.getElementById(
     "detailCustomerAmountDisp"
   );
+  const modalFilterDateStart = document.getElementById(
+    "modal-filter-date-start"
+  );
+  const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
+  const modalFilterBtn = document.getElementById("modal-filter-btn");
+  const modalFilterReset = document.getElementById("modal-filter-reset");
+  //elementos del modal de reporte de creditos
+  const detailCustomerTotalPurchased = document.getElementById(
+    "detailCustomerTotalPurchased"
+  );
+  const detailCustomerTotalPaid = document.getElementById(
+    "detailCustomerTotalPaid"
+  );
+  const detailCustomerTotalDebt = document.getElementById(
+    "detailCustomerTotalDebt"
+  );
   /**
    * Variable que almacena la tabla de creditos
    */
   let table;
+  /**
+   * Variable que obtiene el id el cliente
+   */
+  let idCustomer;
   /**
    * Evento que se ejecuta cuando el DOM esta cargado
    */
@@ -258,6 +287,51 @@
         table.ajax.reload();
       });
     }
+    /**
+     * eventos de filtros del modal de rporte de creditos
+     */
+    if (modalFilterDateStart) {
+      modalFilterDateStart.addEventListener("input", () => {
+        //establecemos la fecha minima de la fecha de fin
+        modalFilterDateEnd.min = modalFilterDateStart.value;
+        getInformationDetailCredist(
+          idCustomer,
+          modalFilterDateStart.value,
+          modalFilterDateEnd.value
+        );
+      });
+    }
+    if (modalFilterDateEnd) {
+      modalFilterDateEnd.addEventListener("input", () => {
+        //si en caso se seleccionas una fecha establecemos la fecha maxima de la fecha de inicio
+        modalFilterDateStart.max = modalFilterDateEnd.value;
+        getInformationDetailCredist(
+          idCustomer,
+          modalFilterDateStart.value,
+          modalFilterDateEnd.value
+        );
+      });
+    }
+    if (modalFilterBtn) {
+      modalFilterBtn.addEventListener("click", () => {
+        getInformationDetailCredist(
+          idCustomer,
+          modalFilterDateStart.value,
+          modalFilterDateEnd.value
+        );
+      });
+    }
+    if (modalFilterReset) {
+      modalFilterReset.addEventListener("click", () => {
+        modalFilterDateStart.value = "";
+        modalFilterDateEnd.value = "";
+        getInformationDetailCredist(
+          idCustomer,
+          modalFilterDateStart.value,
+          modalFilterDateEnd.value
+        );
+      });
+    }
   }
   /**
    * Metodo que se encarga de obtener la información de los
@@ -268,48 +342,66 @@
     if (btnReportCredit) {
       btnReportCredit.forEach((btn) => {
         btn.addEventListener("click", async () => {
-          const idCustomer = btn.getAttribute("data-id");
-          const formdata = new FormData();
-          formdata.append("idCustomer", idCustomer);
-          const config = {
-            body: formdata,
-            method: "POST",
-          };
-          const endpoint = `${base_url}/pos/Credits/getInfoCustomerAndCredits`;
-          showAlert(
-            {
-              title: "Obteniendo información del cliente",
-              message: "Por favor espere...",
-              icon: "info",
-            },
-            "loading"
+          idCustomer = btn.getAttribute("data-id");
+          $("#creditsReportModal").modal("show");
+          await getInformationDetailCredist(
+            idCustomer,
+            modalFilterDateStart.value,
+            modalFilterDateEnd.value
           );
-          try {
-            const response = await fetch(endpoint, config);
-            const data = await response.json();
-            if (!data.status) {
-              showAlert({
-                title: data.title,
-                message: data.message,
-                icon: data.icon,
-              });
-              return;
-            }
-            renderCustomerCredits(data);
-          } catch (error) {
-            showAlert({
-              title: "Ocurrio un error inesperado",
-              message: "Por favor recargue la pagina",
-              icon: "error",
-            });
-          } finally {
-            swal.close();
-            $("#creditsReportModal").modal("show");
-          }
         });
       });
     }
   }
+  /**
+   *
+   */
+  async function getInformationDetailCredist(idCustomer, startDate, endDate) {
+    const formdata = new FormData();
+    formdata.append("idCustomer", idCustomer);
+    formdata.append("startDate", startDate);
+    formdata.append("endDate", endDate);
+    const config = {
+      body: formdata,
+      method: "POST",
+    };
+    const endpoint = `${base_url}/pos/Credits/getInfoCustomerAndCredits`;
+    showAlert(
+      {
+        title: "Obteniendo información del cliente",
+        message: "Por favor espere...",
+        icon: "info",
+      },
+      "loading"
+    );
+    try {
+      const response = await fetch(endpoint, config);
+      const data = await response.json();
+      if (!data.status) {
+        showAlert({
+          title: data.title,
+          message: data.message,
+          icon: data.icon,
+        });
+        return;
+      }
+      renderCustomerCredits(data);
+      renderKPISCustomerCredits(data);
+      //data de creditos
+    } catch (error) {
+      showAlert({
+        title: "Ocurrio un error inesperado",
+        message: "Por favor recargue la pagina",
+        icon: "error",
+      });
+    } finally {
+      swal.close();
+    }
+  }
+  /**
+   * Metodo que se encarga de renderizar la información del cliente
+   * @param {*} data
+   */
   function renderCustomerCredits(data) {
     /**
      * Mostramos la información del cliente
@@ -335,8 +427,20 @@
     detailCustomerPercentConsu.textContent = `${data.customer.percent_consu != 0 ? data.customer.percent_consu : "Ilimitado"}% Uso`;
     detailCustomerIndicadorPercent.style.width = `${data.customer.percent_consu != 0 ? data.customer.percent_consu : "100"}%`;
     detailCustomerAmountDisp.textContent = `${getcurrency} ${data.customer.amount_disp > 0 ? data.customer.amount_disp : "Ilimitado"}`;
+    detailCustomerCreditLimitFinancing.textContent = `${getcurrency} ${data.customer.credit_limit > 0 ? data.customer.credit_limit : "Ilimitado"}`;
+    detailCustomerMonthlyInterest.textContent = `${parseFloat(data.customer.default_interest_rate).toFixed(2)}%`;
+    detailCustomerMonthlyInterestFinancing.textContent = `${parseFloat(data.customer.current_interest_rate).toFixed(2)}%`;
     /**
      * Fin de la información del cliente
      */
+  }
+  /**
+   * Metodo que se encarga de renderizar los kpis de los creditos del cliente
+   * @param {*} data
+   */
+  function renderKPISCustomerCredits(data) {
+    detailCustomerTotalPurchased.textContent = `${getcurrency} ${data.kpis.total_ventas}`;
+    detailCustomerTotalPaid.textContent = `${getcurrency} ${data.kpis.total_pagado}`;
+    detailCustomerTotalDebt.textContent = `${getcurrency} ${data.kpis.total_pendiente}`;
   }
 })();

@@ -83,14 +83,22 @@ class Credits extends Controllers
     public function getInfoCustomerAndCredits()
     {
         validate_permission_app(15, "r", false, false, false);
-        validateFields(["idCustomer"]);
+        validateFields(["idCustomer", "startDate", "endDate"]);
         $idCustomer = strClean($_POST['idCustomer']);
+        $startDate = ($_POST['startDate']);
+        $endDate = ($_POST['endDate']);
         validateFieldsEmpty(["ID del cliente" => $idCustomer]);
         $idBusiness = (int) $this->getBusinessId();
-        $data = $this->model->getInfoCustomer($idCustomer, $idBusiness);
+        $dataCustomer = $this->model->getInfoCustomer($idCustomer, $idBusiness);
+        $dataKPIS = $this->model->getKPISCustomer($idCustomer, $idBusiness, $startDate, $endDate);
         $arrData = [
-            'customer' => $data,
+            'customer' => $dataCustomer,
             'credits' => [],
+            'kpis' => [
+                "total_ventas" => $dataKPIS['total_ventas'] ?? 0.00,
+                "total_pagado" => $dataKPIS['total_pagado'] ?? 0.00,
+                "total_pendiente" => $dataKPIS['total_pendiente'] ?? 0.00
+            ],
             'status' => true
         ];
         toJson($arrData);
