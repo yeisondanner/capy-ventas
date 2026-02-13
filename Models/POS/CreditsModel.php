@@ -148,9 +148,54 @@ class CreditsModel extends Mysql
      * @param int $idBusiness
      * @return void
      */
-    public function getCreditsCustomer(int $idCustomer, int $idBusiness)
+    public function getCreditsCustomer(int $idCustomer, int $idBusiness, string $startDate, string $endDate)
     {
+        $sqlCredits = <<<SQL
+                SELECT
+                    vh.idVoucherHeader,
+                    vh.date_time,
+                    CASE WHEN vh.voucher_name != "" THEN vh.voucher_name ELSE CONCAT(
+                        'Venta del día ',
+                        DATE(vh.date_time)
+                    ) END AS 'voucher_name',
+                    pm.`name` AS 'payment_method',
+                    vh.amount,
+                    vh.`status` AS  'payment_status',
+                    vh.sale_type 
+                FROM
+                    voucher_header AS vh
+                    INNER JOIN payment_method AS pm ON pm.idPaymentMethod = vh.payment_method_id
+                WHERE
+                    vh.customer_id = ?
+                    AND 
+                    vh.business_id= ?                
+        SQL;
+        $this->idCustomer = $idCustomer;
+        $this->idBusiness = $idBusiness;
+        $this->startDate = $startDate;
+        $this->endDate = $endDate;
+        $arrValues = [$this->idCustomer, $this->idBusiness];
 
+        if ($this->startDate != null && $this->startDate != '' && $this->endDate != null && $this->endDate != '') {
+            $sqlCredits .= "AND vh.date_time BETWEEN ? AND ?";
+            array_push($arrValues, $this->startDate, $this->endDate);
+        }
+        $sqlCredits .= <<<SQL
+                    ORDER BY
+                        CASE 
+                            WHEN vh.`status`='Pendiente' THEN 0 ELSE 1
+                        END ASC,
+                        vh.date_time DESC;
+        SQL;
+        return $this->select_all($sqlCredits, $arrValues) ?? [
+            "idVoucherHeader" => 0,
+            "date_time" => "",
+            "voucher_name" => "",
+            "payment_method" => "",
+            "amount" => 0,
+            "payment_status" => "",
+            "sale_type" => ""
+        ];
     }
     /**
      * Metodo que se encarga de obtener los kpis del cliente
