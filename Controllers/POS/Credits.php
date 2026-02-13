@@ -94,7 +94,7 @@ class Credits extends Controllers
         $dataCredits = $this->model->getCreditsCustomer($idCustomer, $idBusiness, $startDate, $endDate);
         $arrData = [
             'customer' => $dataCustomer,
-            'credits' => $dataCredits,
+            'customerSales' => $dataCredits,
             'kpis' => [
                 "total_ventas" => $dataKPIS['total_ventas'] ?? 0.00,
                 "total_pagado" => $dataKPIS['total_pagado'] ?? 0.00,

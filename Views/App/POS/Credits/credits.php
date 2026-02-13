@@ -329,7 +329,7 @@
                                                     Acción</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody id="customerSalesBody">
                                             <!-- Movimiento 1 (Pagado / Contado) -->
                                             <tr>
                                                 <td class="ps-4 text-nowrap">01/10/2023</td>
@@ -346,82 +346,6 @@
                                                 <td class="text-end pe-4"><button class="btn btn-sm btn-light border"><i
                                                             class="bi bi-eye"></i></button></td>
                                             </tr>
-                                            <tr>
-                                                <td class="ps-4 text-nowrap">01/10/2023</td>
-                                                <td>
-                                                    <div class="fw-medium">Factura F001-204</div>
-                                                    <span
-                                                        class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10"
-                                                        style="font-size: 0.65em;">CONTADO</span>
-                                                </td>
-                                                <td class="text-end tabular-nums">S/. 2,400.00</td>
-                                                <td class="text-center"><span
-                                                        class="badge rounded-pill bg-success-subtle text-success">Pagado</span>
-                                                </td>
-                                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border"><i
-                                                            class="bi bi-eye"></i></button></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="ps-4 text-nowrap">01/10/2023</td>
-                                                <td>
-                                                    <div class="fw-medium">Factura F001-204</div>
-                                                    <span
-                                                        class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10"
-                                                        style="font-size: 0.65em;">CONTADO</span>
-                                                </td>
-                                                <td class="text-end tabular-nums">S/. 2,400.00</td>
-                                                <td class="text-center"><span
-                                                        class="badge rounded-pill bg-success-subtle text-success">Pagado</span>
-                                                </td>
-                                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border"><i
-                                                            class="bi bi-eye"></i></button></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="ps-4 text-nowrap">01/10/2023</td>
-                                                <td>
-                                                    <div class="fw-medium">Factura F001-204</div>
-                                                    <span
-                                                        class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10"
-                                                        style="font-size: 0.65em;">CONTADO</span>
-                                                </td>
-                                                <td class="text-end tabular-nums">S/. 2,400.00</td>
-                                                <td class="text-center"><span
-                                                        class="badge rounded-pill bg-success-subtle text-success">Pagado</span>
-                                                </td>
-                                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border"><i
-                                                            class="bi bi-eye"></i></button></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="ps-4 text-nowrap">01/10/2023</td>
-                                                <td>
-                                                    <div class="fw-medium">Factura F001-204</div>
-                                                    <span
-                                                        class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10"
-                                                        style="font-size: 0.65em;">CONTADO</span>
-                                                </td>
-                                                <td class="text-end tabular-nums">S/. 2,400.00</td>
-                                                <td class="text-center"><span
-                                                        class="badge rounded-pill bg-success-subtle text-success">Pagado</span>
-                                                </td>
-                                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border"><i
-                                                            class="bi bi-eye"></i></button></td>
-                                            </tr>
-                                            <tr>
-                                                <td class="ps-4 text-nowrap">01/10/2023</td>
-                                                <td>
-                                                    <div class="fw-medium">Factura F001-204</div>
-                                                    <span
-                                                        class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10"
-                                                        style="font-size: 0.65em;">CONTADO</span>
-                                                </td>
-                                                <td class="text-end tabular-nums">S/. 2,400.00</td>
-                                                <td class="text-center"><span
-                                                        class="badge rounded-pill bg-success-subtle text-success">Pagado</span>
-                                                </td>
-                                                <td class="text-end pe-4"><button class="btn btn-sm btn-light border"><i
-                                                            class="bi bi-eye"></i></button></td>
-                                            </tr>
-
                                             <!-- Movimiento 2 (Pagado / Crédito) -->
                                             <tr>
                                                 <td class="ps-4 text-nowrap">05/10/2023</td>

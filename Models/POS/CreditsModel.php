@@ -153,7 +153,7 @@ class CreditsModel extends Mysql
         $sqlCredits = <<<SQL
                 SELECT
                     vh.idVoucherHeader,
-                    vh.date_time,
+                    DATE(vh.date_time) AS 'date',
                     CASE WHEN vh.voucher_name != "" THEN vh.voucher_name ELSE CONCAT(
                         'Venta del día ',
                         DATE(vh.date_time)

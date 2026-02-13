@@ -8,54 +8,56 @@
   //elementos del modal de reporte
   const detailCustomerName = document.getElementById("detailCustomerName");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument"
+    "detailCustomerDocument",
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection"
+    "detailCustomerDirection",
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay"
+    "detailCustomerBillingDay",
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing"
+    "detailCustomerCreditLimitFinancing",
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest"
+    "detailCustomerMonthlyInterest",
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing"
+    "detailCustomerMonthlyInterestFinancing",
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit"
+    "detailCustomerCreditLimit",
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu"
+    "detailCustomerPercentConsu",
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent"
+    "detailCustomerIndicadorPercent",
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp"
+    "detailCustomerAmountDisp",
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start"
+    "modal-filter-date-start",
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased"
+    "detailCustomerTotalPurchased",
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid"
+    "detailCustomerTotalPaid",
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt"
+    "detailCustomerTotalDebt",
   );
+  //cuerpo de la tabla de creditos
+  const customerSalesBody = document.getElementById("customerSalesBody");
   /**
    * Variable que almacena la tabla de creditos
    */
@@ -297,7 +299,7 @@
         getInformationDetailCredist(
           idCustomer,
           modalFilterDateStart.value,
-          modalFilterDateEnd.value
+          modalFilterDateEnd.value,
         );
       });
     }
@@ -308,7 +310,7 @@
         getInformationDetailCredist(
           idCustomer,
           modalFilterDateStart.value,
-          modalFilterDateEnd.value
+          modalFilterDateEnd.value,
         );
       });
     }
@@ -317,7 +319,7 @@
         getInformationDetailCredist(
           idCustomer,
           modalFilterDateStart.value,
-          modalFilterDateEnd.value
+          modalFilterDateEnd.value,
         );
       });
     }
@@ -328,7 +330,7 @@
         getInformationDetailCredist(
           idCustomer,
           modalFilterDateStart.value,
-          modalFilterDateEnd.value
+          modalFilterDateEnd.value,
         );
       });
     }
@@ -347,7 +349,7 @@
           await getInformationDetailCredist(
             idCustomer,
             modalFilterDateStart.value,
-            modalFilterDateEnd.value
+            modalFilterDateEnd.value,
           );
         });
       });
@@ -372,7 +374,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading"
+      "loading",
     );
     try {
       const response = await fetch(endpoint, config);
@@ -387,7 +389,7 @@
       }
       renderCustomerCredits(data);
       renderKPISCustomerCredits(data);
-      //data de creditos
+      renderBodyTableCustomerCredits(data);
     } catch (error) {
       showAlert({
         title: "Ocurrio un error inesperado",
@@ -442,5 +444,65 @@
     detailCustomerTotalPurchased.textContent = `${getcurrency} ${data.kpis.total_ventas}`;
     detailCustomerTotalPaid.textContent = `${getcurrency} ${data.kpis.total_pagado}`;
     detailCustomerTotalDebt.textContent = `${getcurrency} ${data.kpis.total_pendiente}`;
+  }
+  function renderBodyTableCustomerCredits(data) {
+    customerSalesBody.innerHTML = "";
+    data.customerSales.forEach((sale) => {
+      //estilos del tipo de venta
+      let saleTypeClass = "";
+      if (sale.sale_type === "Contado") {
+        saleTypeClass =
+          "badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-10";
+      } else if (sale.sale_type === "Credito") {
+        saleTypeClass =
+          "badge bg-info bg-opacity-10 text-info-emphasis border border-info border-opacity-10";
+      } else {
+        saleTypeClass =
+          "badge bg-warning bg-opacity-10 text-warning-emphasis border border-warning border-opacity-10";
+      }
+      //estilos del estado de la venta
+      let salePaymentStatusClass = "";
+      let rowClass = "";
+      let dateClass = "ps-4 text-nowrap";
+      if (sale.payment_status === "Pagado") {
+        salePaymentStatusClass =
+          "badge rounded-pill bg-success-subtle text-success";
+      } else if (sale.payment_status === "Pendiente") {
+        salePaymentStatusClass = "badge rounded-pill bg-danger text-white";
+        rowClass = [
+          "table-danger",
+          "border-start",
+          "border-4",
+          "border-danger",
+        ];
+        dateClass = "ps-4 text-nowrap fw-bold text-danger";
+      } else {
+        salePaymentStatusClass =
+          "badge rounded-pill bg-warning-subtle text-warning";
+      }
+      const row = document.createElement("tr");
+      row.classList.add(...rowClass);
+      //cambiamos el tipo de boton
+      let btnActions = "";
+      if (sale.payment_status === "Pendiente") {
+        btnActions = `<button class="btn btn-sm btn-dark px-3 rounded-pill shadow-sm">Pagar</button>`;
+      } else {
+        btnActions = `<button class="btn btn-sm btn-light border"><i class="bi bi-eye"></i></button>`;
+      }
+      row.innerHTML = `
+      <td class="${dateClass}">${sale.date}</td>
+      <td><div class="fw-medium">${sale.voucher_name}</div>
+          <span class="${saleTypeClass}" style="font-size: 0.65em;">
+            ${sale.sale_type}
+          </span>
+      </td>
+      <td class="text-end tabular-nums">${getcurrency} ${sale.amount}</td>
+      <td class="text-center">
+          <span class="${salePaymentStatusClass}">${sale.payment_status}</span>
+      </td>
+      <td class="text-end pe-4">${btnActions}</td>
+      `;
+      customerSalesBody.appendChild(row);
+    });
   }
 })();
