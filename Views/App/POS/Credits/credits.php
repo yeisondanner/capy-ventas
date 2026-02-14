@@ -259,7 +259,7 @@
                                 <!-- Filtros de Fecha -->
                                 <div class="px-4 py-3 border-bottom bg-white">
                                     <div class="row g-2 align-items-end">
-                                        <div class="col-sm-4">
+                                        <div class="col-6 col-sm-6 col-md-6 col-lg-12 col-xl-2">
                                             <label class="form-label small text-muted text-uppercase fw-bold mb-1">Fecha
                                                 Inicio</label>
                                             <div class="input-group input-group-sm">
@@ -267,7 +267,7 @@
                                                 <input type="date" class="form-control" id="modal-filter-date-start">
                                             </div>
                                         </div>
-                                        <div class="col-sm-4">
+                                        <div class="col-6 col-sm-6 col-md-6 col-lg-3 col-xl-2">
                                             <label class="form-label small text-muted text-uppercase fw-bold mb-1">Fecha
                                                 Fin</label>
                                             <div class="input-group input-group-sm">
@@ -275,7 +275,33 @@
                                                 <input type="date" class="form-control" id="modal-filter-date-end">
                                             </div>
                                         </div>
-                                        <div class="col-sm-4">
+                                        <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                                            <label class="form-label small text-muted text-uppercase fw-bold mb-1">Tipo
+                                                venta</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-cash"></i></span>
+                                                <select class="form-select" id="modal-filter-sale-type">
+                                                    <option value="All">Todos</option>
+                                                    <option value="Credito">Crédito</option>
+                                                    <option value="Contado">Contado</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                                            <label
+                                                class="form-label small text-muted text-uppercase fw-bold mb-1">Estado
+                                                Pago</label>
+                                            <div class="input-group input-group-sm">
+                                                <span class="input-group-text"><i class="bi bi-cash"></i></span>
+                                                <select class="form-select" id="modal-filter-payment-status">
+                                                    <option value="All">Todos</option>
+                                                    <option value="Pagado">Pagado</option>
+                                                    <option value="Pendiente">Pendiente</option>
+                                                    <option value="Anulado">Anulado</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-4">
                                             <div class="d-flex gap-2">
                                                 <button class="btn btn-sm btn-outline-primary flex-fill"
                                                     id="modal-filter-btn"><i class="bi bi-funnel"></i> Filtrar</button>

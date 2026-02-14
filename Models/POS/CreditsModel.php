@@ -6,6 +6,8 @@ class CreditsModel extends Mysql
     private string $search;
     private string $startDate;
     private string $endDate;
+    private string $saleType;
+    private string $paymentStatus;
     /**
      * Inicializa el modelo base y establece la conexión con la base de datos.
      */
@@ -148,7 +150,7 @@ class CreditsModel extends Mysql
      * @param int $idBusiness
      * @return void
      */
-    public function getCreditsCustomer(int $idCustomer, int $idBusiness, string $startDate, string $endDate)
+    public function getCreditsCustomer(int $idCustomer, int $idBusiness, string $startDate, string $endDate, string $saleType, string $paymentStatus)
     {
         $sqlCredits = <<<SQL
                 SELECT
@@ -174,10 +176,19 @@ class CreditsModel extends Mysql
         $this->idBusiness = $idBusiness;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->saleType = $saleType;
+        $this->paymentStatus = $paymentStatus;
         $arrValues = [$this->idCustomer, $this->idBusiness];
-
+        if ($this->saleType != 'All') {
+            $sqlCredits .= "AND vh.sale_type = ?";
+            array_push($arrValues, $this->saleType);
+        }
+        if ($this->paymentStatus != 'All') {
+            $sqlCredits .= "AND vh.`status` = ?";
+            array_push($arrValues, $this->paymentStatus);
+        }
         if ($this->startDate != null && $this->startDate != '' && $this->endDate != null && $this->endDate != '') {
-            $sqlCredits .= "AND vh.date_time BETWEEN ? AND ?";
+            $sqlCredits .= "AND DATE(vh.date_time) BETWEEN ? AND ?";
             array_push($arrValues, $this->startDate, $this->endDate);
         }
         $sqlCredits .= <<<SQL
@@ -206,12 +217,14 @@ class CreditsModel extends Mysql
      * @param int $idBusiness
      * @return void
      */
-    public function getKPISCustomer(int $idCustomer, int $idBusiness, string $startDate, string $endDate)
+    public function getKPISCustomer(int $idCustomer, int $idBusiness, string $startDate, string $endDate, string $saleType, string $paymentStatus)
     {
         $this->idCustomer = $idCustomer;
         $this->idBusiness = $idBusiness;
         $this->startDate = $startDate;
         $this->endDate = $endDate;
+        $this->saleType = $saleType;
+        $this->paymentStatus = $paymentStatus;
         $sql = <<<SQL
                 SELECT
                     SUM(
@@ -231,7 +244,7 @@ class CreditsModel extends Mysql
         SQL;
         $arrValues = [$this->idCustomer, $this->idBusiness];
         if ($this->startDate != null && $this->startDate != '' && $this->endDate != null && $this->endDate != '') {
-            $sql .= "AND vh.date_time BETWEEN ? AND ?";
+            $sql .= "AND DATE(vh.date_time) BETWEEN ? AND ?";
             array_push($arrValues, $this->startDate, $this->endDate);
         }
         $sql .= "GROUP BY vh.customer_id";

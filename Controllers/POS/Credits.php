@@ -87,11 +87,24 @@ class Credits extends Controllers
         $idCustomer = strClean($_POST['idCustomer']);
         $startDate = ($_POST['startDate']);
         $endDate = ($_POST['endDate']);
-        validateFieldsEmpty(["ID del cliente" => $idCustomer]);
+        $saleType = strClean($_POST['saleType']);
+        $paymentStatus = strClean($_POST['paymentStatus']);
+        validateFieldsEmpty([
+            "ID del cliente" => $idCustomer,
+            "TIPO DE VENTAS" => $saleType,
+            "ESTADO DE PAGO" => $paymentStatus
+        ]);
         $idBusiness = (int) $this->getBusinessId();
         $dataCustomer = $this->model->getInfoCustomer($idCustomer, $idBusiness);
-        $dataKPIS = $this->model->getKPISCustomer($idCustomer, $idBusiness, $startDate, $endDate);
-        $dataCredits = $this->model->getCreditsCustomer($idCustomer, $idBusiness, $startDate, $endDate);
+        //validamos si los tipos existen
+        if (!in_array($saleType, ["All", "Credito", "Contado"])) {
+            $saleType = "All";
+        }
+        if (!in_array($paymentStatus, ["All", 'Pendiente', "Pagado", "Anulado"])) {
+            $paymentStatus = "All";
+        }
+        $dataKPIS = $this->model->getKPISCustomer($idCustomer, $idBusiness, $startDate, $endDate, $saleType, $paymentStatus);
+        $dataCredits = $this->model->getCreditsCustomer($idCustomer, $idBusiness, $startDate, $endDate, $saleType, $paymentStatus);
         $arrData = [
             'customer' => $dataCustomer,
             'customerSales' => $dataCredits,

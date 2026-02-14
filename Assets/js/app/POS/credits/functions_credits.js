@@ -8,53 +8,57 @@
   //elementos del modal de reporte
   const detailCustomerName = document.getElementById("detailCustomerName");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument",
+    "detailCustomerDocument"
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection",
+    "detailCustomerDirection"
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay",
+    "detailCustomerBillingDay"
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing",
+    "detailCustomerCreditLimitFinancing"
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest",
+    "detailCustomerMonthlyInterest"
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing",
+    "detailCustomerMonthlyInterestFinancing"
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit",
+    "detailCustomerCreditLimit"
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu",
+    "detailCustomerPercentConsu"
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent",
+    "detailCustomerIndicadorPercent"
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp",
+    "detailCustomerAmountDisp"
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start",
+    "modal-filter-date-start"
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
+  const modalFilterSaleType = document.getElementById("modal-filter-sale-type");
+  const modalFilterPaymentStatus = document.getElementById(
+    "modal-filter-payment-status"
+  );
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased",
+    "detailCustomerTotalPurchased"
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid",
+    "detailCustomerTotalPaid"
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt",
+    "detailCustomerTotalDebt"
   );
   //cuerpo de la tabla de creditos
   const customerSalesBody = document.getElementById("customerSalesBody");
@@ -247,8 +251,6 @@
       filterDateStart.addEventListener("input", () => {
         //definimos la fecha minima de la fecha de fin
         filterDateEnd.min = filterDateStart.value;
-        //depaso colocamos la fecha actual de inicio a la final para evitar problemas con la fecha minima
-        filterDateEnd.value = filterDateStart.value;
         table.ajax.reload();
       });
     }
@@ -257,16 +259,8 @@
      */
     if (filterDateEnd) {
       filterDateEnd.addEventListener("input", () => {
-        //si la fecha minima esta vacia lazanmos una alerta
-        if (filterDateStart.value === "") {
-          showAlert({
-            title: "Ocurrio un error inesperado",
-            message: "Debe seleccionar una fecha de inicio",
-            icon: "error",
-          });
-          filterDateEnd.value = "";
-          return;
-        }
+        //hacemos que el maximo de la fecha de inicio sea la fecha de fin
+        filterDateStart.max = filterDateEnd.value;
         table.ajax.reload();
       });
     }
@@ -300,9 +294,42 @@
           idCustomer,
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
+          modalFilterSaleType.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
+    /**
+     * Evento que se ejecuta cuando el usuario cambia el tipo de venta
+     */
+    if (modalFilterSaleType) {
+      modalFilterSaleType.addEventListener("change", () => {
+        getInformationDetailCredist(
+          idCustomer,
+          modalFilterDateStart.value,
+          modalFilterDateEnd.value,
+          modalFilterSaleType.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
+        );
+      });
+    }
+    /**
+     * Evento que se ejecuta cuando el usuario cambia el estado de pago
+     */
+    if (modalFilterPaymentStatus) {
+      modalFilterPaymentStatus.addEventListener("change", () => {
+        getInformationDetailCredist(
+          idCustomer,
+          modalFilterDateStart.value,
+          modalFilterDateEnd.value,
+          modalFilterSaleType.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
+        );
+      });
+    }
+    /**
+     * Evento que se ejecuta cuando el usuario cambia la fecha de fin
+     */
     if (modalFilterDateEnd) {
       modalFilterDateEnd.addEventListener("input", () => {
         //si en caso se seleccionas una fecha establecemos la fecha maxima de la fecha de inicio
@@ -311,18 +338,28 @@
           idCustomer,
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
+          modalFilterSaleType.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
+    /**
+     * Evento que se ejecuta cuando el usuario hace clic en el boton de filtrar
+     */
     if (modalFilterBtn) {
       modalFilterBtn.addEventListener("click", () => {
         getInformationDetailCredist(
           idCustomer,
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
+          modalFilterSaleType.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
+    /**
+     * Evento que se ejecuta cuando el usuario hace clic en el boton de limpiar
+     */
     if (modalFilterReset) {
       modalFilterReset.addEventListener("click", () => {
         modalFilterDateStart.value = "";
@@ -331,6 +368,8 @@
           idCustomer,
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
+          modalFilterSaleType.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -350,6 +389,8 @@
             idCustomer,
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
+            modalFilterSaleType.value ?? "All",
+            modalFilterPaymentStatus.value ?? "All"
           );
         });
       });
@@ -358,11 +399,20 @@
   /**
    *
    */
-  async function getInformationDetailCredist(idCustomer, startDate, endDate) {
+  async function getInformationDetailCredist(
+    idCustomer,
+    startDate,
+    endDate,
+    saleType,
+    paymentStatus
+  ) {
+    // return; //paramos temporalmente
     const formdata = new FormData();
     formdata.append("idCustomer", idCustomer);
     formdata.append("startDate", startDate);
     formdata.append("endDate", endDate);
+    formdata.append("saleType", saleType);
+    formdata.append("paymentStatus", paymentStatus);
     const config = {
       body: formdata,
       method: "POST",
@@ -374,7 +424,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading",
+      "loading"
     );
     try {
       const response = await fetch(endpoint, config);
@@ -447,6 +497,20 @@
   }
   function renderBodyTableCustomerCredits(data) {
     customerSalesBody.innerHTML = "";
+    if (data.customerSales.length === 0) {
+      customerSalesBody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-5">
+                        <div class="text-muted">
+                            <i class="bi bi-receipt fs-1 mb-3"></i>
+                            <h6 class="fw-bold">No se encontraron movimientos</h6>
+                            <p class="mb-0 small">Intenta ajustar los filtros de fecha o estado para ver resultados.</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+      return;
+    }
     data.customerSales.forEach((sale) => {
       //estilos del tipo de venta
       let saleTypeClass = "";
