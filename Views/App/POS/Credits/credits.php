@@ -358,7 +358,9 @@
                                         <tbody id="customerSalesBody">
                                             <!-- Movimiento 1 (Pagado / Contado) -->
                                             <tr>
-                                                <td class="ps-4 text-nowrap">01/10/2023</td>
+                                                <td class="ps-4 text-nowrap">
+                                                    <div class="fw-medium">01/10/2023</div>
+                                                </td>
                                                 <td>
                                                     <div class="fw-medium">Factura F001-204</div>
                                                     <span
@@ -374,7 +376,9 @@
                                             </tr>
                                             <!-- Movimiento 2 (Pagado / Crédito) -->
                                             <tr>
-                                                <td class="ps-4 text-nowrap">05/10/2023</td>
+                                                <td class="ps-4 text-nowrap">
+                                                    <div class="fw-medium">05/10/2023</div>
+                                                </td>
                                                 <td>
                                                     <div class="fw-medium">Boleta B001-089</div>
                                                     <span
@@ -392,7 +396,11 @@
                                             <!-- Movimiento 3 (DEUDA) -->
                                             <!-- Nota: table-danger para resaltar fila completa -->
                                             <tr class="table-danger border-start border-4 border-danger">
-                                                <td class="ps-4 text-nowrap fw-bold text-danger">12/10/2023</td>
+                                                <td class="ps-4 text-nowrap fw-bold text-danger">
+                                                    <div class="fw-medium">12/10/2023</div>
+                                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-10"
+                                                        style="font-size: 0.65em;">Vencido 4 dias</span>
+                                                </td>
                                                 <td>
                                                     <div class="fw-bold text-dark">Factura F001-215</div>
                                                     <span
@@ -410,7 +418,31 @@
 
                                             <!-- Movimiento 4 (DEUDA) -->
                                             <tr class="table-danger border-start border-4 border-danger">
-                                                <td class="ps-4 text-nowrap fw-bold text-danger">15/10/2023</td>
+                                                <td class="ps-4 text-nowrap fw-bold text-danger">
+                                                    <div class="fw-medium">15/10/2023</div>
+                                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10"
+                                                        style="font-size: 0.65em;">A tiempo</span>
+                                                </td>
+                                                <td>
+                                                    <div class="fw-bold text-dark">Factura F001-220</div>
+                                                    <span
+                                                        class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10"
+                                                        style="font-size: 0.65em;">CRÉDITO</span>
+                                                </td>
+                                                <td class="text-end fw-bold text-danger tabular-nums">S/. 350.50</td>
+                                                <td class="text-center"><span
+                                                        class="badge rounded-pill bg-danger text-white">Pendiente</span>
+                                                </td>
+                                                <td class="text-end pe-4"><button
+                                                        class="btn btn-sm btn-dark px-3 rounded-pill shadow-sm">Pagar</button>
+                                                </td>
+                                            </tr>
+                                            <tr class="table-danger border-start border-4 border-danger">
+                                                <td class="ps-4 text-nowrap fw-bold text-danger">
+                                                    <div class="fw-medium">15/10/2023</div>
+                                                    <span class="badge bg-warning text-dark border border-warning"
+                                                        style="font-size: 0.65em;">2 dias por vencer</span>
+                                                </td>
                                                 <td>
                                                     <div class="fw-bold text-dark">Factura F001-220</div>
                                                     <span
