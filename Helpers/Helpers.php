@@ -170,13 +170,13 @@ function sendEmail(array $config, array $params)
     /*  $config = [
           'smtp' => [
               'host' => 'mail.shaday-pe.com',
-              'username' => 'pureba@shaday-pe.com',
-              'password' => 'X5XFy46Qp?g_',
+              'username' => 'notificacion@shaday-pe.com',
+              'password' => 'j+HtQ}]ECq*q2[gJ',
               'port' => 465,
               'encryption' => 'ssl' // ssl o tls
           ],
           'from' => [
-              'email' => 'pureba@shaday-pe.com',
+              'email' => 'notificacion@shaday-pe.com',
               'name' => 'Nombre Remitente'
           ]
       ];
