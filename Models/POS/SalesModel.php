@@ -256,8 +256,9 @@ class SalesModel extends Mysql
                 tax_percentage,
                 tax_amount,
                 sale_type,
-                `status`
-            ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?);
+                `status`,
+                payment_deadline
+            ) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?);
         SQL;
 
         $values = [
@@ -280,7 +281,8 @@ class SalesModel extends Mysql
             $data['tax'] ?? 0,
             $data['amounttax'] ?? 0,
             $data['sale_type'] ?? 'Credito',
-            $data['status'] ?? 'Pendiente'
+            $data['status'] ?? 'Pendiente',
+            $data['payment_deadline'] ?? null
         ];
 
         return (int) $this->insert($sql, $values);
@@ -498,5 +500,21 @@ class SalesModel extends Mysql
         $this->idBusiness = $businessId;
         $this->idCustomer = $customerId;
         return $this->select($sql, [$this->idBusiness, $this->idCustomer]);
+    }
+    /**
+     * Obtenemos la informacion del cliente
+     * limitamos su busqueda por el negocio para evitar problemas
+     * @param  int $id
+     * @param int $businessId
+     * @return array
+     */
+    public function selectFullInfoCustomerById(int $id, int $businessId): ?array
+    {
+        $sql = <<<SQL
+            SELECT*FROM customer AS c WHERE c.idCustomer=? AND c.business_id=? LIMIT 1;
+        SQL;
+        $this->idBusiness = $businessId;
+        $this->idCustomer = $id;
+        return $this->select($sql, [$this->idCustomer, $this->idBusiness]);
     }
 }

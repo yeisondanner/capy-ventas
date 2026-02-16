@@ -530,7 +530,7 @@ class Sales extends Controllers
         if (count($cart) === 0) {
             $this->responseError('No hay productos en el carrito para registrar la venta.');
         }
-        $saleDate = strClean($_POST['saleDate'] ?? '');
+        $saleDate = strClean($_POST['saleDate']);
         $paymentMethodId = (int) strClean($_POST['paymentMethodId'] ?? '0');
         $customerId = (int) strClean($_POST['customerId'] ?? '0');
         $voucherName = trim(strClean($_POST['voucherName'] ?? ''));
@@ -541,6 +541,7 @@ class Sales extends Controllers
         //obtenemos los datos de impuesto del negocio
         $taxname = $_SESSION[$this->nameVarBusiness]['taxname'];
         $tax = $_SESSION[$this->nameVarBusiness]['tax'];
+        validateFieldsEmpty(['FECHA DE VENTA' => $saleDate]);
         if ($paymentMethodId <= 0) {
             $this->responseError('Selecciona un método de pago válido.');
         }
@@ -625,6 +626,7 @@ class Sales extends Controllers
         $typmovementvox = "Ingreso";
         $concept = "Venta realizada el " . date('Y-m-d H:i:s');
         $status = "Pagado";
+        $paymentDeadline = null;
         if ($saleType === 'Credito') {
             $status = "Pendiente";
             //Primera validamos que la venta no se pueda grabar para Sin cliente
@@ -651,6 +653,23 @@ class Sales extends Controllers
             $paidAmount = 0; //Establecemos con cuanto esta pagando
             $typmovementvox = "Credito";
             $concept = "Venta a credito realizada el " . date('Y-m-d H:i:s');
+            //obtenemos la fecha en la que factura la venta o se pagara la venta a credito
+            $paymentDeadline = $this->model->selectFullInfoCustomerById($customerId, $businessId);
+            if (!$paymentDeadline) {
+                $this->responseError('No se encontro informacion del cliente, por favor intente de nuevo o refresque la página.', 6000);
+            }
+            //primero verificamos que la fecha de facturación sea mayor a la fecha que esta ingresando la venta
+            $billing_date = $paymentDeadline["billing_date"];
+            //obtenemos el dia de la fecha de facturación
+            $billing_date_day = date('d', strtotime($billing_date));
+            //obtenemos el dia de la fecha de la venta
+            $saleDate_day = date('d', strtotime($saleDateTime));
+            //armamos la fecha de facturacion actual con el presente
+            $billing_date = date('Y') . '-' . date('m') . '-' . $billing_date_day;
+            //si el dia de la venta es mayor al dia de la fecha de facturación armamos la fecha para el proximo mes
+            if ($saleDate_day > $billing_date_day) {
+                $billing_date = date('Y-m-d', strtotime('+1 month', strtotime($billing_date)));
+            }
         }
         $headerId = $this->model->insertVoucherHeader([
             'customer_id' => $customerId,
@@ -673,6 +692,7 @@ class Sales extends Controllers
             'user_app_id' => $this->getUserId(),
             'sale_type' => $saleType,
             'status' => $status,
+            'payment_deadline' => $billing_date,
         ]);
         //validamos si la caja esta abierta para registrar la venta
         $requestOpenBox = $this->model->selectOpenBoxByUser([
