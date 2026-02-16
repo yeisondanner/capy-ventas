@@ -626,7 +626,7 @@ class Sales extends Controllers
         $typmovementvox = "Ingreso";
         $concept = "Venta realizada el " . date('Y-m-d H:i:s');
         $status = "Pagado";
-        $paymentDeadline = null;
+        $billing_date = null;
         if ($saleType === 'Credito') {
             $status = "Pendiente";
             //Primera validamos que la venta no se pueda grabar para Sin cliente

@@ -220,7 +220,8 @@ class CreditsModel extends Mysql
             "amount_current_interest_rate" => 0
         ];
         foreach ($dataCredits as $key => $value) {
-            if (!empty($value['payment_deadline'])) {
+            //Validamos si el credito tiene fecha de vencimiento y que su estado sea pendiente
+            if (!empty($value['payment_deadline']) && $value['payment_status'] == 'Pendiente') {
                 //sumamos el monto del interes financiado
                 $dataCredits[$key]['amount'] = $value['amount'] + $value['amount_current_interest_rate'];
                 //verificamos si el credito esta vencido

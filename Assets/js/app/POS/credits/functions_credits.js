@@ -565,8 +565,20 @@
       } else {
         btnActions = `<button class="btn btn-sm btn-light border"><i class="bi bi-eye"></i></button>`;
       }
+      //validamos si los dias han sido vnecido
+      let date_status = "";
+      if (sale.days_overdue < 0) {
+        date_status = `<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-10" style="font-size: 0.65em;">${sale.date_status}</span>`;
+      } else if (sale.days_overdue >= 0 && sale.days_overdue < 5) {
+        date_status = `<span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-10" style="font-size: 0.65em;">${sale.date_status}</span>`;
+      } else if (sale.days_overdue >= 5) {
+        date_status = `<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10" style="font-size: 0.65em;">${sale.date_status}</span>`;
+      }
       row.innerHTML = `
-      <td class="${dateClass}">${sale.date}</td>
+      <td class="${dateClass}">
+                  <div class="fw-medium">${sale.date}</div>
+                  ${date_status}
+      </td>
       <td><div class="fw-medium">${sale.voucher_name}</div>
           <span class="${saleTypeClass}" style="font-size: 0.65em;">
             ${sale.sale_type}
