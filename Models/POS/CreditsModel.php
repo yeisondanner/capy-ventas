@@ -162,11 +162,18 @@ class CreditsModel extends Mysql
                     ) END AS 'voucher_name',
                     pm.`name` AS 'payment_method',
                     vh.amount,
-                    vh.`status` AS  'payment_status',
-                    vh.sale_type 
+                    vh.`status` AS 'payment_status',
+                    vh.sale_type,
+                    DATE(vh.payment_deadline) AS 'payment_deadline',
+                    c.default_interest_rate,
+                    c.current_interest_rate,
+                    #obtenemos los montos de los intereses
+                    ((c.default_interest_rate/100)*vh.amount) AS 'amount_default_interest_rate',
+                    ((c.current_interest_rate/100)*vh.amount) AS 'amount_current_interest_rate'
                 FROM
                     voucher_header AS vh
                     INNER JOIN payment_method AS pm ON pm.idPaymentMethod = vh.payment_method_id
+                    INNER JOIN customer AS c ON c.idCustomer=vh.customer_id
                 WHERE
                     vh.customer_id = ?
                     AND 
@@ -198,15 +205,44 @@ class CreditsModel extends Mysql
                         END ASC,
                         vh.date_time DESC;
         SQL;
-        return $this->select_all($sqlCredits, $arrValues) ?? [
+        $dataCredits = $this->select_all($sqlCredits, $arrValues) ?? [
             "idVoucherHeader" => 0,
             "date_time" => "",
             "voucher_name" => "",
             "payment_method" => "",
             "amount" => 0,
             "payment_status" => "",
-            "sale_type" => ""
+            "sale_type" => "",
+            "payment_deadline" => "",
+            "default_interest_rate" => 0,
+            "current_interest_rate" => 0,
+            "amount_default_interest_rate" => 0,
+            "amount_current_interest_rate" => 0
         ];
+        foreach ($dataCredits as $key => $value) {
+            if (!empty($value['payment_deadline'])) {
+                //sumamos el monto del interes financiado
+                $dataCredits[$key]['amount'] = $value['amount'] + $value['amount_current_interest_rate'];
+                //verificamos si el credito esta vencido
+                $dataDate = dateDifference(date('Y-m-d'), $value['payment_deadline']);
+                if ($dataDate['total_dias'] < 0) {
+                    $dataCredits[$key]['date_status'] = 'Vencido ' . abs($dataDate['total_dias']) . ' dias';
+                    //meses vencidos, converitmos a positivo
+                    $month_overdue = abs($dataDate['meses']);
+                    if ($month_overdue > 0) {
+                        //multiplicamos la cantidad de meses vencidos para obtener el valor de cuanto a crecido el interes por mora
+                        $amount_overdue = $month_overdue * $value['amount_default_interest_rate'];
+                        $dataCredits[$key]['amount'] = $dataCredits[$key]['amount'] + $amount_overdue;
+                    }
+                } else if ($dataDate['total_dias'] >= 0 && $dataDate["total_dias"] < 5) {
+                    $dataCredits[$key]['date_status'] = 'Proximo a vencer ' . $dataDate['total_dias'] . ' dias';
+                } else {
+                    $dataCredits[$key]['date_status'] = 'Vigente ' . $dataDate['total_dias'] . ' dias';
+                }
+                $dataCredits[$key]['days_overdue'] = $dataDate['total_dias'];
+            }
+        }
+        return $dataCredits;
     }
     /**
      * Metodo que se encarga de obtener los kpis del cliente

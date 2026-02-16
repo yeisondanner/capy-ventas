@@ -8,57 +8,57 @@
   //elementos del modal de reporte
   const detailCustomerName = document.getElementById("detailCustomerName");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument",
+    "detailCustomerDocument"
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection",
+    "detailCustomerDirection"
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay",
+    "detailCustomerBillingDay"
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing",
+    "detailCustomerCreditLimitFinancing"
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest",
+    "detailCustomerMonthlyInterest"
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing",
+    "detailCustomerMonthlyInterestFinancing"
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit",
+    "detailCustomerCreditLimit"
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu",
+    "detailCustomerPercentConsu"
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent",
+    "detailCustomerIndicadorPercent"
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp",
+    "detailCustomerAmountDisp"
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start",
+    "modal-filter-date-start"
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
   const modalFilterSaleType = document.getElementById("modal-filter-sale-type");
   const modalFilterPaymentStatus = document.getElementById(
-    "modal-filter-payment-status",
+    "modal-filter-payment-status"
   );
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased",
+    "detailCustomerTotalPurchased"
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid",
+    "detailCustomerTotalPaid"
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt",
+    "detailCustomerTotalDebt"
   );
   //cuerpo de la tabla de creditos
   const customerSalesBody = document.getElementById("customerSalesBody");
@@ -295,7 +295,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -309,7 +309,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -323,7 +323,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -339,7 +339,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -353,7 +353,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -369,7 +369,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -390,7 +390,7 @@
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
             modalFilterSaleType.value ?? "All",
-            modalFilterPaymentStatus.value ?? "All",
+            modalFilterPaymentStatus.value ?? "All"
           );
         });
       });
@@ -411,9 +411,9 @@
     startDate,
     endDate,
     saleType,
-    paymentStatus,
+    paymentStatus
   ) {
-    return; //paramos temporalmente
+    //return; //paramos temporalmente
     const formdata = new FormData();
     formdata.append("idCustomer", idCustomer);
     formdata.append("startDate", startDate);
@@ -431,7 +431,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading",
+      "loading"
     );
     try {
       const response = await fetch(endpoint, config);
