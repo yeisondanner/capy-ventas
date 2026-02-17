@@ -235,7 +235,7 @@ class CreditsModel extends Mysql
                 if ($dataDate['total_dias'] < 0) {
                     $dataCredits[$key]['date_status'] = 'Vencido ' . abs($dataDate['total_dias']) . ' dias';
                     //meses vencidos, converitmos a positivo
-                    $month_overdue = abs($dataDate['meses']);
+                    $month_overdue = abs(round($dataDate['total_dias'] / 30, 0));
                     if ($month_overdue > 0) {
                         //multiplicamos la cantidad de meses vencidos para obtener el valor de cuanto a crecido el interes por mora
                         $amount_overdue = (float) $month_overdue * (float) $value['amount_default_interest_rate'];
@@ -274,15 +274,32 @@ class CreditsModel extends Mysql
                         vh.`status`,
                         c.current_interest_rate,
                         c.default_interest_rate,
-                        c.billing_date
+                        vh.payment_deadline,
+                        #obtenemos los montos de los intereses
+                        ROUND(
+                            (c.default_interest_rate / 100)* vh.amount,
+                            2
+                        ) AS 'amount_default_interest_rate',
+                        ROUND(
+                            (c.current_interest_rate / 100)* vh.amount,
+                            2
+                        ) AS 'amount_current_interest_rate'
                     FROM
                         voucher_header AS vh
-                        INNER JOIN customer AS c ON c.idCustomer=vh.customer_id
+                        INNER JOIN customer AS c ON c.idCustomer = vh.customer_id
                     WHERE
                         vh.customer_id = ?
                     AND vh.business_id = ?               
         SQL;
         $arrValues = [$this->idCustomer, $this->idBusiness];
+        if ($this->saleType != 'All') {
+            $sql .= "AND vh.sale_type = ?";
+            array_push($arrValues, $this->saleType);
+        }
+        if ($this->paymentStatus != 'All') {
+            $sql .= "AND vh.`status` = ?";
+            array_push($arrValues, $this->paymentStatus);
+        }
         if ($this->startDate != null && $this->startDate != '' && $this->endDate != null && $this->endDate != '') {
             $sql .= "AND DATE(vh.date_time) BETWEEN ? AND ?";
             array_push($arrValues, $this->startDate, $this->endDate);
@@ -301,6 +318,19 @@ class CreditsModel extends Mysql
                 //sumamos el monto del interes financiado
                 $interestFinancing = (float) $value['amount'] * (float) $value['current_interest_rate'] / 100;
                 $total_pendiente += round((float) $value['amount'] + (float) $interestFinancing, 2);
+                //validamos si el credito tiene fecha de vencimiento
+                if (!empty($value['payment_deadline'])) {
+                    $dataDate = dateDifference(date('Y-m-d'), $value['payment_deadline']);
+                    if ($dataDate['total_dias'] < 0) {
+                        //Convertimos a meses la cantidad de dias entre 30 dias
+                        $month_overdue = abs(round($dataDate['total_dias'] / 30, 0));
+                        if ($month_overdue > 0) {
+                            //multiplicamos la cantidad de meses vencidos para obtener el valor de cuanto a crecido el interes por mora
+                            $amount_overdue = (float) $month_overdue * (float) $value['amount_default_interest_rate'];
+                            $total_pendiente += (float) $amount_overdue;
+                        }
+                    }
+                }
             } else {
                 $total_anulado += (float) $value['amount'];
             }
