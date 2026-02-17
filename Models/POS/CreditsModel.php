@@ -229,7 +229,7 @@ class CreditsModel extends Mysql
             //Validamos si el credito tiene fecha de vencimiento y que su estado sea pendiente
             if (!empty($value['payment_deadline']) && $value['payment_status'] == 'Pendiente') {
                 //sumamos el monto del interes financiado
-                $dataCredits[$key]['amount'] = (float) $value['amount'] + (float) $value['amount_current_interest_rate'];
+                $dataCredits[$key]['amount'] = number_format((float) $value['amount'] + (float) $value['amount_current_interest_rate'], 2);
                 //verificamos si el credito esta vencido
                 $dataDate = dateDifference(date('Y-m-d'), $value['payment_deadline']);
                 if ($dataDate['total_dias'] < 0) {
@@ -239,7 +239,7 @@ class CreditsModel extends Mysql
                     if ($month_overdue > 0) {
                         //multiplicamos la cantidad de meses vencidos para obtener el valor de cuanto a crecido el interes por mora
                         $amount_overdue = (float) $month_overdue * (float) $value['amount_default_interest_rate'];
-                        $dataCredits[$key]['amount'] = (float) $dataCredits[$key]['amount'] + (float) $amount_overdue;
+                        $dataCredits[$key]['amount'] = number_format((float) $dataCredits[$key]['amount'] + (float) $amount_overdue, 2);
                     }
                 } else if ($dataDate['total_dias'] >= 0 && $dataDate["total_dias"] < 5) {
                     $dataCredits[$key]['date_status'] = 'Proximo a vencer ' . $dataDate['total_dias'] . ' dias';
@@ -258,9 +258,9 @@ class CreditsModel extends Mysql
      * deuda pendiente
      * @param int $idCustomer
      * @param int $idBusiness
-     * @return void
+     * @return array
      */
-    public function getKPISCustomer(int $idCustomer, int $idBusiness, string $startDate, string $endDate, string $saleType, string $paymentStatus)
+    public function getKPISCustomer(int $idCustomer, int $idBusiness, string $startDate, string $endDate, string $saleType, string $paymentStatus): array
     {
         $this->idCustomer = $idCustomer;
         $this->idBusiness = $idBusiness;
@@ -337,11 +337,12 @@ class CreditsModel extends Mysql
         }
         //sumamos el total de ventas
         $total_ventas = round((float) $total_pagado + (float) $total_pendiente + (float) $total_anulado, 2);
-        return [
-            'total_ventas' => $total_ventas,
-            'total_pagado' => $total_pagado,
-            'total_pendiente' => $total_pendiente,
-            'total_anulado' => $total_anulado
+        $dataKPIS = [
+            'total_ventas' => number_format($total_ventas, 2),
+            'total_pagado' => number_format($total_pagado, 2),
+            'total_pendiente' => number_format($total_pendiente, 2),
+            'total_anulado' => number_format($total_anulado, 2)
         ];
+        return $dataKPIS;
     }
 }
