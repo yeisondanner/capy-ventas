@@ -168,12 +168,18 @@ class CreditsModel extends Mysql
                     c.default_interest_rate,
                     c.current_interest_rate,
                     #obtenemos los montos de los intereses
-                    ((c.default_interest_rate/100)*vh.amount) AS 'amount_default_interest_rate',
-                    ((c.current_interest_rate/100)*vh.amount) AS 'amount_current_interest_rate'
+                    ROUND(
+                        (c.default_interest_rate / 100)* vh.amount,
+                        2
+                    ) AS 'amount_default_interest_rate',
+                    ROUND(
+                        (c.current_interest_rate / 100)* vh.amount,
+                        2
+                    ) AS 'amount_current_interest_rate'
                 FROM
                     voucher_header AS vh
                     INNER JOIN payment_method AS pm ON pm.idPaymentMethod = vh.payment_method_id
-                    INNER JOIN customer AS c ON c.idCustomer=vh.customer_id
+                    INNER JOIN customer AS c ON c.idCustomer = vh.customer_id
                 WHERE
                     vh.customer_id = ?
                     AND 
@@ -223,7 +229,7 @@ class CreditsModel extends Mysql
             //Validamos si el credito tiene fecha de vencimiento y que su estado sea pendiente
             if (!empty($value['payment_deadline']) && $value['payment_status'] == 'Pendiente') {
                 //sumamos el monto del interes financiado
-                $dataCredits[$key]['amount'] = $value['amount'] + $value['amount_current_interest_rate'];
+                $dataCredits[$key]['amount'] = (float) $value['amount'] + (float) $value['amount_current_interest_rate'];
                 //verificamos si el credito esta vencido
                 $dataDate = dateDifference(date('Y-m-d'), $value['payment_deadline']);
                 if ($dataDate['total_dias'] < 0) {
@@ -232,8 +238,8 @@ class CreditsModel extends Mysql
                     $month_overdue = abs($dataDate['meses']);
                     if ($month_overdue > 0) {
                         //multiplicamos la cantidad de meses vencidos para obtener el valor de cuanto a crecido el interes por mora
-                        $amount_overdue = $month_overdue * $value['amount_default_interest_rate'];
-                        $dataCredits[$key]['amount'] = $dataCredits[$key]['amount'] + $amount_overdue;
+                        $amount_overdue = (float) $month_overdue * (float) $value['amount_default_interest_rate'];
+                        $dataCredits[$key]['amount'] = (float) $dataCredits[$key]['amount'] + (float) $amount_overdue;
                     }
                 } else if ($dataDate['total_dias'] >= 0 && $dataDate["total_dias"] < 5) {
                     $dataCredits[$key]['date_status'] = 'Proximo a vencer ' . $dataDate['total_dias'] . ' dias';
@@ -263,20 +269,17 @@ class CreditsModel extends Mysql
         $this->saleType = $saleType;
         $this->paymentStatus = $paymentStatus;
         $sql = <<<SQL
-                SELECT
-                    SUM(
-                        CASE WHEN vh.`status` = 'Pendiente' THEN vh.amount ELSE 0 END
-                    ) AS total_pendiente,
-                    SUM(
-                        CASE WHEN vh.`status` = 'Pagado' THEN vh.amount ELSE 0 END
-                    ) AS total_pagado,
-                    SUM(
-                        CASE WHEN vh.`status` IN ('Pendiente', 'Pagado') THEN vh.amount ELSE 0 END
-                    ) AS total_ventas
-                FROM
-                    voucher_header AS vh
-                WHERE
-                    vh.customer_id = ?
+                    SELECT
+                        vh.amount,
+                        vh.`status`,
+                        c.current_interest_rate,
+                        c.default_interest_rate,
+                        c.billing_date
+                    FROM
+                        voucher_header AS vh
+                        INNER JOIN customer AS c ON c.idCustomer=vh.customer_id
+                    WHERE
+                        vh.customer_id = ?
                     AND vh.business_id = ?               
         SQL;
         $arrValues = [$this->idCustomer, $this->idBusiness];
@@ -284,11 +287,31 @@ class CreditsModel extends Mysql
             $sql .= "AND DATE(vh.date_time) BETWEEN ? AND ?";
             array_push($arrValues, $this->startDate, $this->endDate);
         }
-        $sql .= "GROUP BY vh.customer_id";
-        return $this->select($sql, $arrValues) ?? [
-            'total_pendiente' => 0.00,
-            'total_pagado' => 0.00,
-            'total_ventas' => 0.00
+        // $sql .= "GROUP BY vh.customer_id";
+        $rstData = $this->select_all($sql, $arrValues);
+        //variables para almacenar los valores
+        $total_ventas = 0.00;
+        $total_pagado = 0.00;
+        $total_pendiente = 0.00;
+        $total_anulado = 0.00;
+        foreach ($rstData as $key => $value) {
+            if ($value['status'] == 'Pagado') {
+                $total_pagado += (float) $value['amount'];
+            } else if ($value['status'] == 'Pendiente') {
+                //sumamos el monto del interes financiado
+                $interestFinancing = (float) $value['amount'] * (float) $value['current_interest_rate'] / 100;
+                $total_pendiente += round((float) $value['amount'] + (float) $interestFinancing, 2);
+            } else {
+                $total_anulado += (float) $value['amount'];
+            }
+        }
+        //sumamos el total de ventas
+        $total_ventas = round((float) $total_pagado + (float) $total_pendiente + (float) $total_anulado, 2);
+        return [
+            'total_ventas' => $total_ventas,
+            'total_pagado' => $total_pagado,
+            'total_pendiente' => $total_pendiente,
+            'total_anulado' => $total_anulado
         ];
     }
 }

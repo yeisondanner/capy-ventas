@@ -230,8 +230,7 @@
                                     <div class="d-flex align-items-center mb-3">
                                         <i class="bi bi-calendar-check text-secondary fs-5 me-3"></i>
                                         <div>
-                                            <span class="d-block text-muted" style="font-size: 0.8em;">INTERES MENSUAL X
-                                                FINANCIAMIENTO</span>
+                                            <span class="d-block text-muted" style="font-size: 0.8em;">INTERES FINANCIAMIENTO</span>
                                             <span class="fw-medium text-dark"
                                                 id="detailCustomerMonthlyInterestFinancing">--</span>
                                         </div>

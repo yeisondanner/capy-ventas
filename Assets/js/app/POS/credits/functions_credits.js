@@ -8,57 +8,57 @@
   //elementos del modal de reporte
   const detailCustomerName = document.getElementById("detailCustomerName");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument"
+    "detailCustomerDocument",
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection"
+    "detailCustomerDirection",
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay"
+    "detailCustomerBillingDay",
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing"
+    "detailCustomerCreditLimitFinancing",
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest"
+    "detailCustomerMonthlyInterest",
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing"
+    "detailCustomerMonthlyInterestFinancing",
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit"
+    "detailCustomerCreditLimit",
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu"
+    "detailCustomerPercentConsu",
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent"
+    "detailCustomerIndicadorPercent",
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp"
+    "detailCustomerAmountDisp",
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start"
+    "modal-filter-date-start",
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
   const modalFilterSaleType = document.getElementById("modal-filter-sale-type");
   const modalFilterPaymentStatus = document.getElementById(
-    "modal-filter-payment-status"
+    "modal-filter-payment-status",
   );
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased"
+    "detailCustomerTotalPurchased",
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid"
+    "detailCustomerTotalPaid",
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt"
+    "detailCustomerTotalDebt",
   );
   //cuerpo de la tabla de creditos
   const customerSalesBody = document.getElementById("customerSalesBody");
@@ -295,7 +295,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -309,7 +309,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -323,7 +323,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -339,7 +339,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -353,7 +353,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -369,7 +369,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -390,7 +390,7 @@
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
             modalFilterSaleType.value ?? "All",
-            modalFilterPaymentStatus.value ?? "All"
+            modalFilterPaymentStatus.value ?? "All",
           );
         });
       });
@@ -411,7 +411,7 @@
     startDate,
     endDate,
     saleType,
-    paymentStatus
+    paymentStatus,
   ) {
     //return; //paramos temporalmente
     const formdata = new FormData();
@@ -431,7 +431,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading"
+      "loading",
     );
     try {
       const response = await fetch(endpoint, config);
@@ -561,16 +561,16 @@
       //cambiamos el tipo de boton
       let btnActions = "";
       if (sale.payment_status === "Pendiente") {
-        btnActions = `<button class="btn btn-sm btn-dark px-3 rounded-pill shadow-sm">Pagar</button>`;
+        btnActions = `<button class="btn btn-sm btn-dark shadow-sm btn-payment"><i class="bi bi-wallet"></i></button>`;
       } else {
-        btnActions = `<button class="btn btn-sm btn-light border"><i class="bi bi-eye"></i></button>`;
+        btnActions = `<button class="btn btn-sm btn-light border btn-view"><i class="bi bi-file-earmark-text"></i></button>`;
       }
       //validamos si los dias han sido vnecido
       let date_status = "";
       if (sale.days_overdue < 0) {
         date_status = `<span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-10" style="font-size: 0.65em;">${sale.date_status}</span>`;
       } else if (sale.days_overdue >= 0 && sale.days_overdue < 5) {
-        date_status = `<span class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-10" style="font-size: 0.65em;">${sale.date_status}</span>`;
+        date_status = `<span class="badge bg-warning text-dark border border-warning" style="font-size: 0.65em;">${sale.date_status}</span>`;
       } else if (sale.days_overdue >= 5) {
         date_status = `<span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10" style="font-size: 0.65em;">${sale.date_status}</span>`;
       }
