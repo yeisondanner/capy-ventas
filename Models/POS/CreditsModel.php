@@ -3,6 +3,7 @@ class CreditsModel extends Mysql
 {
     private int $idBusiness;
     private int $idCustomer;
+    private int $idvoucher;
     private string $search;
     private string $startDate;
     private string $endDate;
@@ -349,11 +350,11 @@ class CreditsModel extends Mysql
      * Metodo que se encarga de obtener la informacion de un credito ah pagar 
      * aqui se obtendra la información del credito a pagar con todo los valores calculados de creditos 
      * actuales
-     * @param int $idcustomer
+     * @param int $idvoucher
      * @param int $idbussines
      * @return array
      */
-    public function getInfoCreditToPay(int $idCustomer, int $idBusiness)
+    public function getInfoCreditToPay(int $idvoucher, int $idBusiness)
     {
         $sql = <<<SQL
                 SELECT
@@ -381,8 +382,56 @@ class CreditsModel extends Mysql
                     LIMIT
                         1;
         SQL;
-        $arrValues = [$idCustomer, $idBusiness];
+        $this->idvoucher = $idvoucher;
+        $this->idBusiness = $idBusiness;
+        $arrValues = [$this->idvoucher, $this->idBusiness];
         $rstData = $this->select($sql, $arrValues);
+        $rstData['amount_total'] = 0;
+        $rstData['amount_total_overdue'] = 0; #este se calcula multiplicando la cantidad de meses vencidos por el monto del interes por mora que ya viene calculado en la consulta
+        $rstData['month_overdue'] = 0;
+        //convetirmos a float los valores de interes de la consulta 
+        $rstData['current_interest_rate'] = (float) $rstData['current_interest_rate'];
+        $rstData['default_interest_rate'] = (float) $rstData['default_interest_rate'];
+        $rstData['total_dias'] = 0;
+        //no recorremos el array ya que solo llega una sola linea de registro
+        //validamos que la fecha de vencimiento no este vacia
+        if (!empty($rstData['payment_deadline'])) {
+            //calculamos la fecha de vencimiento
+            $dataDate = dateDifference(date('Y-m-d'), $rstData['payment_deadline']);
+            $rstData['total_dias'] = abs($dataDate['total_dias']);
+            //validamos si la fecha de vencimiento es menor a la fecha actual
+            if ($dataDate['total_dias'] < 0) {
+                //Convertimos a meses la cantidad de dias entre 30 dias
+                $month_overdue = abs(round($dataDate['total_dias'] / 30, 0));
+                //devolvemos el valor de la cantidad de meses de vencimiento
+                $rstData['month_overdue'] = $month_overdue;
+                //multiplicamos la cantida de meses vencidos por el monto del interes por mora
+                $rstData['amount_total_overdue'] = round((float) $month_overdue * (float) $rstData['amount_default_interest_rate'], 2);
+            }
+        }
+        //sumamos los tres valores, monto, monto financiado y monto de interes por mora
+        $rstData['amount_total'] = round((float) $rstData['amount'] + (float) $rstData['amount_current_interest_rate'] + (float) $rstData['amount_total_overdue'], 2);
+
+        return $rstData;
+    }
+    /**
+     * MEtodo que encarga de obtner los metodos de pagos que esta permitido 
+     * en el sistema
+     * @return array
+     */
+    public function getPaymentMethods()
+    {
+        $sql = <<<SQL
+                SELECT
+                    *
+                FROM
+                    payment_method AS pm
+                WHERE
+                    pm.`status` = 'Activo'
+                ORDER BY
+                    pm.idPaymentMethod ASC;
+        SQL;
+        $rstData = $this->select_all($sql);
         return $rstData;
     }
 }

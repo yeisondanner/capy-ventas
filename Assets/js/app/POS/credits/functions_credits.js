@@ -8,57 +8,57 @@
   //elementos del modal de reporte
   const detailCustomerName = document.getElementById("detailCustomerName");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument",
+    "detailCustomerDocument"
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection",
+    "detailCustomerDirection"
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay",
+    "detailCustomerBillingDay"
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing",
+    "detailCustomerCreditLimitFinancing"
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest",
+    "detailCustomerMonthlyInterest"
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing",
+    "detailCustomerMonthlyInterestFinancing"
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit",
+    "detailCustomerCreditLimit"
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu",
+    "detailCustomerPercentConsu"
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent",
+    "detailCustomerIndicadorPercent"
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp",
+    "detailCustomerAmountDisp"
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start",
+    "modal-filter-date-start"
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
   const modalFilterSaleType = document.getElementById("modal-filter-sale-type");
   const modalFilterPaymentStatus = document.getElementById(
-    "modal-filter-payment-status",
+    "modal-filter-payment-status"
   );
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased",
+    "detailCustomerTotalPurchased"
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid",
+    "detailCustomerTotalPaid"
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt",
+    "detailCustomerTotalDebt"
   );
   //cuerpo de la tabla de creditos
   const customerSalesBody = document.getElementById("customerSalesBody");
@@ -295,7 +295,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -309,7 +309,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -323,7 +323,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -339,7 +339,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -353,7 +353,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -369,7 +369,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -390,7 +390,7 @@
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
             modalFilterSaleType.value ?? "All",
-            modalFilterPaymentStatus.value ?? "All",
+            modalFilterPaymentStatus.value ?? "All"
           );
         });
       });
@@ -411,7 +411,7 @@
     startDate,
     endDate,
     saleType,
-    paymentStatus,
+    paymentStatus
   ) {
     //return; //paramos temporalmente
     const formdata = new FormData();
@@ -431,7 +431,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading",
+      "loading"
     );
     try {
       const response = await fetch(endpoint, config);
@@ -600,25 +600,69 @@
   function btnPaymentItemCredit() {
     const btnPayment = document.querySelectorAll(".btn-payment");
     btnPayment.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        //Mostramos un sweet alert para mostrar el detalle del pago del credito seleccionado
-        Swal.fire({
-          target: document.getElementById("creditsReportModal"),
-          html: renderHtmlCreditPayment({}),
-          showCancelButton: true,
-          cancelButtonText: "<i class='bi bi-x-lg'></i> Cancelar",
-          showConfirmButton: true,
-          confirmButtonText: "<i class='bi bi-wallet'></i> Pagar",
-          // Importante: Desactivar estilos por defecto para usar Bootstrap
-          buttonsStyling: false,
-          // Forma recomendada de añadir clases CSS
-          customClass: {
-            confirmButton: "btn btn-primary me-2", // me-2 añade un margen si están pegados
-            cancelButton: "btn btn-secondary",
+      btn.addEventListener("click", async () => {
+        const idVoucher = btn.dataset.id;
+        const formdata = new FormData();
+        formdata.append("idVoucher", idVoucher);
+        const endpoint = `${base_url}/pos/Credits/getInfoCreditToPay`;
+        const config = {
+          method: "POST",
+          body: formdata,
+        };
+        //mostramos un loading
+
+        showAlert(
+          {
+            title: "Obteniendo informacion del credito",
+            message: "Por favor espere...Calculando intereses....",
+            icon: "info",
           },
-          // Opcional: Evitar que se cierre al hacer clic fuera si es un proceso de pago
-          allowOutsideClick: false,
-        });
+          "loading"
+        );
+        try {
+          const response = await fetch(endpoint, config);
+          const data = await response.json();
+          //
+          if (!data.status) {
+            showAlert({
+              title: data.title,
+              message: data.message,
+              icon: data.icon,
+              timer: data.timer,
+            });
+            if (data.url) {
+              setTimeout(() => {
+                window.location.href = data.url;
+              }, data.timer);
+            }
+            return;
+          }
+          //Mostramos un sweet alert para mostrar el detalle del pago del credito seleccionado
+          Swal.fire({
+            target: document.getElementById("creditsReportModal"),
+            html: renderHtmlCreditPayment(data.infoCredit),
+            showCancelButton: true,
+            cancelButtonText: "<i class='bi bi-x-lg'></i> Cancelar",
+            showConfirmButton: true,
+            confirmButtonText: "<i class='bi bi-wallet'></i> Pagar",
+            // Importante: Desactivar estilos por defecto para usar Bootstrap
+            buttonsStyling: false,
+            // Forma recomendada de añadir clases CSS
+            customClass: {
+              confirmButton: "btn btn-primary me-2", // me-2 añade un margen si están pegados
+              cancelButton: "btn btn-secondary",
+            },
+            // Opcional: Evitar que se cierre al hacer clic fuera si es un proceso de pago
+            allowOutsideClick: false,
+          });
+        } catch (error) {
+          showAlert({
+            title: "Ocurrio un error inesperado",
+            message: `Error al obtener la informacion del credito ${error.message}`,
+            icon: "error",
+          });
+        } finally {
+        }
       });
     });
   }
@@ -642,7 +686,7 @@
                     <h5 class="fw-bold mb-1 text-dark">Registrar Cobro</h5>
                     <!-- Badge sutil para el número de Voucher -->
                     <span class="fw-bold text-primary border border-primary border-opacity-10 rounded-pill px-3 py-1 bg-primary bg-opacity-10" style="font-size: 0.8rem;">
-                        <i class="bi bi-ticket-perforated me-1"></i>#0094
+                        <i class="bi bi-ticket-perforated me-1"></i>CV-${String(data.idVoucherHeader).padStart(8, "0")}
                     </span>
                 </div>
             </div>
@@ -659,7 +703,7 @@
                         <div class="p-2 bg-white border rounded h-100">
                             <small class="d-block text-dark text-uppercase fw-bold" style="font-size: 0.7rem;">Tipo Venta</small>
                             <span class="fw-bold text-primary" style="font-size: 0.8rem;">
-                                <i class="bi bi-tag-fill me-1"></i>Credito
+                                <i class="bi bi-tag-fill me-1"></i>${data.sale_type}
                             </span>
                         </div>
                     </div>
@@ -667,23 +711,24 @@
                         <div class="p-2 bg-white border rounded h-100">
                             <small class="d-block text-dark text-uppercase fw-bold" style="font-size: 0.7rem;">Fecha Registro</small>
                             <span class="fw-bold text-secondary" style="font-size: 0.8rem;">
-                                <i class="bi bi-calendar-check me-1"></i> 2023-07-25
+                                <i class="bi bi-calendar-check me-1"></i> ${data.date_time}
                             </span>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="p-2 bg-white border rounded h-100">
-                            <small class="d-block text-dark text-uppercase fw-bold" style="font-size: 0.7rem;">Vencimiento</small>
+                            <small class="d-block text-dark text-uppercase fw-bold" style="font-size: 0.7rem;" title="Fecha de vencimiento del crédito, se establece al momento de crear el crédito con la fecha que en ese momento tiene el usuario">Vencimiento</small>
                             <span class="fw-bold text-danger" style="font-size: 0.8rem;">
-                                <i class="bi bi-calendar-x me-1"></i>2023-10-25
+                                <i class="bi bi-calendar-x me-1"></i>${data.payment_deadline}
                             </span>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="p-2 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded h-100">
                             <small class="d-block text-danger text-uppercase fw-bold" style="font-size: 0.7rem;">Meses Vencidos</small>
-                            <span class="fw-bold text-danger fs-5" style="font-size: 0.8rem;">
-                                3 <small class="fs-6 fw-normal">meses</small>
+                            <span class="fw-bold text-danger fs-5 d-flex flex-column align-items-center" style="font-size: 0.8rem;">
+                            <small class="fw-normal text-muted" style="font-size: 0.675rem;">${data.total_dias} dias</small>
+                                <span>${data.month_overdue} <small class="fs-6 fw-normal">meses</small></span>                                
                             </span>
                         </div>
                     </div>
@@ -693,21 +738,21 @@
                 <div class="border-top pt-2 bg-white px-2 rounded-2 border-light">
                     <div class="d-flex justify-content-between small mb-1">
                         <span class="text-muted">Capital Base</span>
-                        <span class="fw-medium">${getcurrency} 400.00</span>
+                        <span class="fw-medium">${getcurrency} ${data.amount}</span>
                     </div>
                     <div class="d-flex justify-content-between small mb-1">
-                        <span class="text-primary">Financiamiento (5.00%)</span>
-                        <span class="fw-medium text-primary">+ ${getcurrency} 20.00</span>
+                        <span class="text-primary">Financiamiento (${data.current_interest_rate}%)</span>
+                        <span class="fw-medium text-primary">+ ${getcurrency} ${data.amount_current_interest_rate}</span>
                     </div>
                     <div class="d-flex justify-content-between small">
-                        <span class="text-danger">Mora (3.50% mensual)</span>
-                        <span class="fw-medium text-danger">+ ${getcurrency} 42.00</span>
+                        <span class="text-danger">Mora (${data.default_interest_rate}% mensual)</span>
+                        <span class="fw-medium text-danger">+ ${getcurrency} ${data.amount_total_overdue}</span>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-2">
                     <span class="small text-dark fw-bold text-uppercase">Total a Pagar</span>
-                    <span class="fs-3 fw-bold text-success">${getcurrency} 462.00</span>
+                    <span class="fs-3 fw-bold text-success">${getcurrency} ${data.amount_total}</span>
                 </div>
             </div>
 

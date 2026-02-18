@@ -118,6 +118,46 @@ class Credits extends Controllers
         toJson($arrData);
     }
     /**
+     * MEtodo que se encarga de obtner la informacion
+     * del credito seleccionado a pagar mediante su id de voucher
+     * y id del negocio el cual se pasan mediante el emtodo POST
+     * @return void
+     */
+    public function getInfoCreditToPay()
+    {
+        validate_permission_app(15, "r", false, false, false);
+        validateFields(["idVoucher"]);
+        $idVoucher = strClean($_POST['idVoucher']);
+        $idBusiness = (int) $this->getBusinessId();
+        validateFieldsEmpty([
+            "ID del voucher" => $idVoucher,
+        ]);
+        $data = $this->model->getInfoCreditToPay($idVoucher, $idBusiness);
+        if (empty($data)) {
+            $this->responseError('No se encontró el crédito seleccionado.');
+        }
+        $arrData = [
+            'infoCredit' => $data,
+            'status' => true
+        ];
+        toJson($arrData);
+    }
+    /**
+     * MEtodo que se encarga de obtner los metodos de pagos que esta permitido 
+     * en el sistema
+     * @return void
+     */
+    public function getPaymentMethods()
+    {
+        validate_permission_app(15, "r", false, false, false);
+        $data = $this->model->getPaymentMethods();
+        $arrData = [
+            'paymentMethods' => $data,
+            'status' => true
+        ];
+        toJson($arrData);
+    }
+    /**
      * Obtiene el identificador del negocio activo desde la sesión.
      *
      * @return int
@@ -145,6 +185,7 @@ class Credits extends Controllers
             'type' => 'error',
             'icon' => 'error',
             'status' => false,
+            'timer' => 2000,
         ];
 
         toJson($data);

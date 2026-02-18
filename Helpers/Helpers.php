@@ -324,7 +324,7 @@ function isCsrf($token = "", int $session = 0)
     if ($session === 0) {
         $name_sesion = config_sesion($session)['name'] ?? '';
         $nameVarToken = 'data_token';
-        $nameVarLoginInfo =  'login_info';
+        $nameVarLoginInfo = 'login_info';
         $table = "tb_user";
     } else if ($session === 1) {
         $name_sesion = config_sesion($session)['name'] ?? '';
@@ -1331,17 +1331,17 @@ function dateDifference($fechaInicio, $fechaFin)
 
     // Retornar los valores individuales y acumulados multiplicados por el signo
     return [
-        'años'           => $diferencia->y * $signo,
-        'meses'          => $diferencia->m * $signo,
-        'días'           => $diferencia->d * $signo,
-        'horas'          => $diferencia->h * $signo,
-        'minutos'        => $diferencia->i * $signo,
-        'segundos'       => $diferencia->s * $signo,
+        'años' => $diferencia->y * $signo,
+        'meses' => $diferencia->m * $signo,
+        'días' => $diferencia->d * $signo,
+        'horas' => $diferencia->h * $signo,
+        'minutos' => $diferencia->i * $signo,
+        'segundos' => $diferencia->s * $signo,
 
         // Totals (se calculan en absoluto y luego se aplica el signo al final)
-        'total_dias'     => $diferencia->days * $signo,
-        'total_horas'    => (($diferencia->days * 24) + $diferencia->h) * $signo,
-        'total_minutos'  => ((($diferencia->days * 24) + $diferencia->h) * 60 + $diferencia->i) * $signo,
+        'total_dias' => $diferencia->days * $signo,
+        'total_horas' => (($diferencia->days * 24) + $diferencia->h) * $signo,
+        'total_minutos' => ((($diferencia->days * 24) + $diferencia->h) * 60 + $diferencia->i) * $signo,
         'total_segundos' => ((((($diferencia->days * 24) + $diferencia->h) * 60) + $diferencia->i) * 60 + $diferencia->s) * $signo
     ];
 }
@@ -1496,9 +1496,9 @@ function get_option_and_permission_app()
     $fecha_vencimiento = $arrDataPlans['fecha_vencimiento']; #obtener la fecha de vencimiento del plan
     $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
     $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento); #calcular la diferencia entre las dos fechas
-    if ((int)$data_vencimiento['total_dias'] <= 0) {
+    if ((int) $data_vencimiento['total_dias'] <= 0) {
         //validamos que el plan este vencido 2 dias para poder cambiar al plan free o si el plan es el free registramos el plan free
-        if ((int)$data_vencimiento['total_dias'] <= -2 || (int)$arrDataPlans['idPlan'] === 1) {
+        if ((int) $data_vencimiento['total_dias'] <= -2 || (int) $arrDataPlans['idPlan'] === 1) {
             //cambiamos al plan free
             $objPermission->insert_plan_subscription_free($idUser);
             //redirigimos al usuario a la pantalla de inicio
@@ -1511,26 +1511,26 @@ function get_option_and_permission_app()
         unset($_SESSION[$nameVarWidgetAlert]);
     }
     //creamos una alerta indicando que faltan 3 dias para que el plan expire
-    if ((int)$data_vencimiento['total_dias'] <= 3) {
+    if ((int) $data_vencimiento['total_dias'] <= 3) {
         //creamos una variable de sesion que contenga  el widget de alerta
         $_SESSION[$nameVarWidgetAlert] = [
             // Configuración base
-            'type'   => 'expiration',      // Para identificar que se debe cargar este diseño específico
+            'type' => 'expiration',      // Para identificar que se debe cargar este diseño específico
             'status' => true,
-            'icon'   => 'bi-calendar-check', // Clase del icono de Bootstrap Icons
-            'color'  => 'warning',
+            'icon' => 'bi-calendar-check', // Clase del icono de Bootstrap Icons
+            'color' => 'warning',
 
             // Contenido Principal
-            'title'          => '¡Tu plan está por vencer!',
+            'title' => '¡Tu plan está por vencer!',
             'days_remaining' => $data_vencimiento['total_dias'], // Ej: 5
 
             // Textos descriptivos
-            'message_main'   => 'Te quedan <strong class="text-dark fs-6">' . $data_vencimiento['total_dias'] . ' días</strong> de servicio completo. Aprovecha para renovar y mantén tu negocio funcionando sin pausas.',
-            'message_note'   => 'Si no renuevas, tu cuenta pasará automáticamente al <strong>Plan Gratuito</strong>.',
+            'message_main' => 'Te quedan <strong class="text-dark fs-6">' . $data_vencimiento['total_dias'] . ' días</strong> de servicio completo. Aprovecha para renovar y mantén tu negocio funcionando sin pausas.',
+            'message_note' => 'Si no renuevas, tu cuenta pasará automáticamente al <strong>Plan Gratuito</strong>.',
 
             // Botón de Acción
             'btn_text' => 'Mantener mi plan',
-            'url'      => base_url() . '/pos/errors/plan_vencido',
+            'url' => base_url() . '/pos/errors/plan_vencido',
             'btn_icon' => 'bi bi-arrow-right',
             'btn_class' => 'btn btn-warning'
         ];
@@ -1544,7 +1544,7 @@ function get_option_and_permission_app()
     $dataOwnerBusiness = $objPermission->get_bussiness_owner($idUser, $idBusiness);
     if (!empty($dataOwnerBusiness)) {
         //Ahora consultamos los permisos del plan, que vistas y funciones tiene permitida
-        $arrPermissionsFunctions = $objPermission->get_permissions_functions((int)$arrDataPlans['idPlan']);
+        $arrPermissionsFunctions = $objPermission->get_permissions_functions((int) $arrDataPlans['idPlan']);
         if (isset($_SESSION[$nameVarPermission])) {
             unset($_SESSION[$nameVarPermission]);
         }
@@ -1569,7 +1569,7 @@ function get_option_and_permission_app()
         $fecha_vencimiento = $dataBusinessEmployee['plan_expiration_date']; #obtener la fecha de vencimiento del plan
         $fecha_actual = date("Y-m-d H:i:s"); #obtener la fecha actual
         $data_vencimiento = dateDifference($fecha_actual, $fecha_vencimiento);
-        if ((int)$data_vencimiento['total_dias'] <= 0) {
+        if ((int) $data_vencimiento['total_dias'] <= 0) {
             $plan_vencido = base_url() . "/pos/errors/plan_vencido";
             echo <<<HTML
                     <script>
@@ -1669,15 +1669,15 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
     $crudpermission = ['r' => 'read', 'c' => 'create', 'u' => 'update', 'd' => 'delete'];
     $crudpermissionpia = ['r' => 'pia_read', 'c' => 'pia_create', 'u' => 'pia_update', 'd' => 'pia_delete'];
     //id de interface
-    $idinterface = (int)$idinterface;
+    $idinterface = (int) $idinterface;
     //nombres iniciales de las variables de sesion
     $sessionName = config_sesion(1)['name'] ?? '';
     $nameVarBusiness = $sessionName . 'business_active';
     $nameVarLoginInfo = $sessionName . 'login_info';
     $nameVarMessagePermission = $sessionName . 'message_permission';
     //variables de negocio activo
-    $iduser = (int)$_SESSION[$nameVarLoginInfo]['idUser'];
-    $idbusiness = (int)$_SESSION[$nameVarBusiness]['idBusiness'];
+    $iduser = (int) $_SESSION[$nameVarLoginInfo]['idUser'];
+    $idbusiness = (int) $_SESSION[$nameVarBusiness]['idBusiness'];
     //requerimos el modelo de permisos
     require_once "./Models/POS/PermissionModel.php";
     $objPermission = new PermissionModel();
@@ -1703,10 +1703,11 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             } else {
                 $arrReturn = [
                     'status' => false,
-                    'title'  => 'Permisos insuficientes',
+                    'title' => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
-                    'icon'   => 'error',
+                    'icon' => 'error',
                     'url' => $no_permisos,
+                    'timer' => 2000,
                 ];
                 if (!$return) {
                     toJson($arrReturn);
@@ -1729,11 +1730,12 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             } else {
                 $arrReturn = [
                     'status' => false,
-                    'title'  => 'Permisos insuficientes',
+                    'title' => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
-                    'icon'   => 'error',
+                    'icon' => 'error',
                     'url' => $no_permisos,
                     'interface_status' => $result['interface_status'],
+                    'timer' => 2000,
 
                 ];
                 if (!$return) {
@@ -1754,11 +1756,13 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             } else {
                 $arrReturn = [
                     'status' => false,
-                    'title'  => 'Permisos insuficientes',
+                    'title' => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
-                    'icon'   => 'error',
+                    'icon' => 'error',
                     'url' => $no_permisos,
-                    'plans_interface_status' => $result['plans_interface_status']
+                    'plans_interface_status' => $result['plans_interface_status'],
+                    'timer' => 2000,
+
                 ];
                 if (!$return) {
                     toJson($arrReturn);
@@ -1778,11 +1782,13 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             } else {
                 $arrReturn = [
                     'status' => false,
-                    'title'  => 'Permisos insuficientes',
+                    'title' => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
-                    'icon'   => 'error',
+                    'icon' => 'error',
                     'url' => $no_permisos,
-                    'permission_status' => $result['permission_status']
+                    'permission_status' => $result['permission_status'],
+                    'timer' => 2000,
+
                 ];
                 if (!$return) {
                     toJson($arrReturn);
@@ -1793,7 +1799,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         /**
          * Validamos los permisos del crud general
          */
-        if ((int)$result[$crudpermissionpia[$permission]] === 0) {
+        if ((int) $result[$crudpermissionpia[$permission]] === 0) {
             if (isset($_SESSION[$nameVarMessagePermission])) {
                 unset($_SESSION[$nameVarMessagePermission]);
             }
@@ -1809,9 +1815,10 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             } else {
                 $arrReturn = [
                     'status' => false,
-                    'title'  => 'Permisos insuficientes',
+                    'title' => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
-                    'icon'   => 'error',
+                    'icon' => 'error',
+                    'timer' => 2000,
                     'url' => $no_permisos,
                     $crudpermissionpia[$permission] => $result[$crudpermissionpia[$permission]]
                 ];
@@ -1824,7 +1831,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         /**
          * Validacion a nivel de permisos del rol
          */
-        if ((int)$result[$crudpermission[$permission]] === 0) {
+        if ((int) $result[$crudpermission[$permission]] === 0) {
             $no_permisos = base_url() . "/pos/errors/no_permisos";
             if ($redirect) {
                 echo <<<HTML
@@ -1836,9 +1843,10 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             } else {
                 $arrReturn = [
                     'status' => false,
-                    'title'  => 'Permisos insuficientes',
+                    'title' => 'Permisos insuficientes',
                     'message' => 'No tienes permisos para realizar esta accion.',
-                    'icon'   => 'error',
+                    'icon' => 'error',
+                    'timer' => 2000,
                     'url' => $no_permisos,
                     $crudpermission[$permission] => $result[$crudpermission[$permission]]
                 ];
@@ -1850,9 +1858,10 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         }
         $arrReturn = [
             'status' => true,
-            'title'  => 'Permisos validados',
+            'title' => 'Permisos validados',
             'message' => 'Tienes permisos para realizar esta accion.',
-            'icon'   => 'success',
+            'icon' => 'success',
+            'timer' => 2000,
             $crudpermission[$permission] => $result[$crudpermission[$permission]]
         ];
         if (!$return) {
@@ -1879,11 +1888,12 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         } else {
             $arrReturn = [
                 'status' => false,
-                'title'  => 'Interfaz inactiva',
+                'title' => 'Interfaz inactiva',
                 'message' => 'La interfaz no se encuentra activa.',
-                'icon'   => 'error',
+                'icon' => 'error',
                 'url' => $no_permisos,
                 'ia_status' => $result['ia_status'] ?? 'Inactivo',
+                'timer' => 2000,
                 'create' => 0,
                 'read' => 0,
                 'update' => 0,
@@ -1908,11 +1918,12 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         } else {
             $arrReturn = [
                 'status' => false,
-                'title'  => 'Interfaz inactiva',
+                'title' => 'Interfaz inactiva',
                 'message' => 'La interfaz no se encuentra activa.',
-                'icon'   => 'error',
+                'icon' => 'error',
                 'url' => $no_permisos,
                 'ia_status' => $result['ia_status'] ?? 'Inactivo',
+                'timer' => 2000,
                 'create' => 0,
                 'read' => 0,
                 'update' => 0,
@@ -1938,11 +1949,12 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         } else {
             $arrReturn = [
                 'status' => false,
-                'title'  => 'Interfaz inactiva',
+                'title' => 'Interfaz inactiva',
                 'message' => 'La interfaz no se encuentra activa.',
-                'icon'   => 'error',
+                'icon' => 'error',
                 'url' => $no_permisos,
                 'ia_status' => $result['ia_status'] ?? 'Inactivo',
+                'timer' => 2000,
                 'create' => 0,
                 'read' => 0,
                 'update' => 0,
@@ -1957,7 +1969,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
     /**
      * Validamos los permisos del crud general
      */
-    if ((int)$result[$crudpermission[$permission]] === 0) {
+    if ((int) $result[$crudpermission[$permission]] === 0) {
         if (isset($_SESSION[$nameVarMessagePermission])) {
             unset($_SESSION[$nameVarMessagePermission]);
         }
@@ -1973,9 +1985,10 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         } else {
             $arrReturn = [
                 'status' => false,
-                'title'  => 'Permisos insuficientes',
+                'title' => 'Permisos insuficientes',
                 'message' => 'No tienes permisos para realizar esta accion.',
-                'icon'   => 'error',
+                'icon' => 'error',
+                'timer' => 2000,
                 'url' => $no_permisos,
                 $crudpermission[$permission] => $result[$crudpermission[$permission]]
             ];
@@ -1988,9 +2001,10 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
 
     $arrReturn = [
         'status' => true,
-        'title'  => 'Permisos validados',
+        'title' => 'Permisos validados',
         'message' => 'Tienes permisos para realizar esta accion.',
-        'icon'   => 'success',
+        'icon' => 'success',
+        'timer' => 2000,
         $crudpermission[$permission] => $result[$crudpermission[$permission]]
     ];
     if ($isPrintResult) {
@@ -2046,9 +2060,9 @@ function validateVerificationCode($codigoInput)
         return [
             'status' => false,
             'message' => 'No hay ningún correo electrónico verificado.',
-            'title'   => 'Verificación de código.',
-            'type'    => 'error',
-            'icon'    => 'error',
+            'title' => 'Verificación de código.',
+            'type' => 'error',
+            'icon' => 'error',
         ];
     }
 
@@ -2057,9 +2071,9 @@ function validateVerificationCode($codigoInput)
         return [
             'status' => false,
             'message' => 'El código ha expirado.',
-            'title'   => 'Verificación de código.',
-            'type'    => 'error',
-            'icon'    => 'error',
+            'title' => 'Verificación de código.',
+            'type' => 'error',
+            'icon' => 'error',
         ];
     }
 
@@ -2071,9 +2085,9 @@ function validateVerificationCode($codigoInput)
         return [
             'status' => true,
             'message' => 'Verificación exitosa.',
-            'title'   => 'Verificación.',
-            'type'    => 'success',
-            'icon'    => 'success',
+            'title' => 'Verificación.',
+            'type' => 'success',
+            'icon' => 'success',
             'code' => $codigoInput,
         ];
     }
@@ -2081,8 +2095,8 @@ function validateVerificationCode($codigoInput)
     return [
         'status' => false,
         'message' => 'El código es incorrecto, ingrese nuevamente un código válido.',
-        'title'   => 'Verificación de código.',
-        'type'    => 'error',
-        'icon'    => 'error',
+        'title' => 'Verificación de código.',
+        'type' => 'error',
+        'icon' => 'error',
     ];
 }
