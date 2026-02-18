@@ -345,4 +345,44 @@ class CreditsModel extends Mysql
         ];
         return $dataKPIS;
     }
+    /**
+     * Metodo que se encarga de obtener la informacion de un credito ah pagar 
+     * aqui se obtendra la información del credito a pagar con todo los valores calculados de creditos 
+     * actuales
+     * @param int $idcustomer
+     * @param int $idbussines
+     * @return array
+     */
+    public function getInfoCreditToPay(int $idCustomer, int $idBusiness)
+    {
+        $sql = <<<SQL
+                SELECT
+                        vh.idVoucherHeader,
+                        vh.sale_type,
+                        DATE(vh.date_time) AS 'date_time',
+                        DATE(vh.payment_deadline) AS 'payment_deadline',
+                        vh.amount,
+                        c.current_interest_rate,
+                        ROUND(
+                            (c.current_interest_rate / 100)* vh.amount,
+                            2
+                        ) AS 'amount_current_interest_rate',
+                        c.default_interest_rate,
+                        ROUND(
+                            (c.default_interest_rate / 100)* vh.amount,
+                            2
+                        ) AS 'amount_default_interest_rate'
+                    FROM
+                        voucher_header AS vh
+                        INNER JOIN customer AS c ON c.idCustomer = vh.customer_id
+                    WHERE
+                        vh.idVoucherHeader = ?
+                        AND vh.business_id = ?
+                    LIMIT
+                        1;
+        SQL;
+        $arrValues = [$idCustomer, $idBusiness];
+        $rstData = $this->select($sql, $arrValues);
+        return $rstData;
+    }
 }

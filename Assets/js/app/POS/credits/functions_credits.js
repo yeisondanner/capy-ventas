@@ -454,6 +454,7 @@
         icon: "error",
       });
     } finally {
+      btnPaymentItemCredit();
       swal.close();
     }
   }
@@ -561,7 +562,7 @@
       //cambiamos el tipo de boton
       let btnActions = "";
       if (sale.payment_status === "Pendiente") {
-        btnActions = `<button class="btn btn-sm btn-dark shadow-sm btn-payment"><i class="bi bi-wallet"></i></button>`;
+        btnActions = `<button class="btn btn-sm btn-dark shadow-sm btn-payment" data-id="${sale.idVoucherHeader}"><i class="bi bi-wallet"></i></button>`;
       } else {
         btnActions = `<button class="btn btn-sm btn-light border btn-view"><i class="bi bi-file-earmark-text"></i></button>`;
       }
@@ -592,5 +593,165 @@
       `;
       customerSalesBody.appendChild(row);
     });
+  }
+  /**
+   * Recorremos los botones de pago y mostramos el modal de pago
+   */
+  function btnPaymentItemCredit() {
+    const btnPayment = document.querySelectorAll(".btn-payment");
+    btnPayment.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        //Mostramos un sweet alert para mostrar el detalle del pago del credito seleccionado
+        Swal.fire({
+          target: document.getElementById("creditsReportModal"),
+          html: renderHtmlCreditPayment({}),
+          showCancelButton: true,
+          cancelButtonText: "<i class='bi bi-x-lg'></i> Cancelar",
+          showConfirmButton: true,
+          confirmButtonText: "<i class='bi bi-wallet'></i> Pagar",
+          // Importante: Desactivar estilos por defecto para usar Bootstrap
+          buttonsStyling: false,
+          // Forma recomendada de añadir clases CSS
+          customClass: {
+            confirmButton: "btn btn-primary me-2", // me-2 añade un margen si están pegados
+            cancelButton: "btn btn-secondary",
+          },
+          // Opcional: Evitar que se cierre al hacer clic fuera si es un proceso de pago
+          allowOutsideClick: false,
+        });
+      });
+    });
+  }
+  /**
+   * Renderiza el html para el modal de pago del credito
+   * @param {*} data
+   * @returns
+   */
+  function renderHtmlCreditPayment(data) {
+    return `
+        <!-- Cabecera Alineada a la Izquierda (Flexbox) -->
+        <div class="p-3 border-bottom">
+            <div class="d-flex align-items-start">
+                <!-- Icono a la izquierda -->
+                <div class="bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill shadow-sm me-3">
+                    <i class="bi bi-receipt-cutoff fs-3"></i>
+                </div>
+                
+                <!-- Títulos a la izquierda -->
+                <div class="d-flex flex-column align-items-start">
+                    <h5 class="fw-bold mb-1 text-dark">Registrar Cobro</h5>
+                    <!-- Badge sutil para el número de Voucher -->
+                    <span class="fw-bold text-primary border border-primary border-opacity-10 rounded-pill px-3 py-1 bg-primary bg-opacity-10" style="font-size: 0.8rem;">
+                        <i class="bi bi-ticket-perforated me-1"></i>#0094
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-4">
+            
+            <!-- 1. DETALLE DEL CRÉDITO (Cuadrícula Informativa) -->
+            <div class="bg-light border rounded-3 p-3 mb-4">
+                
+                <!-- Grid de Datos Clave -->
+                <div class="row g-2 mb-3">
+                    <div class="col-6">
+                        <div class="p-2 bg-white border rounded h-100">
+                            <small class="d-block text-dark text-uppercase fw-bold" style="font-size: 0.7rem;">Tipo Venta</small>
+                            <span class="fw-bold text-primary" style="font-size: 0.8rem;">
+                                <i class="bi bi-tag-fill me-1"></i>Credito
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-2 bg-white border rounded h-100">
+                            <small class="d-block text-dark text-uppercase fw-bold" style="font-size: 0.7rem;">Fecha Registro</small>
+                            <span class="fw-bold text-secondary" style="font-size: 0.8rem;">
+                                <i class="bi bi-calendar-check me-1"></i> 2023-07-25
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-2 bg-white border rounded h-100">
+                            <small class="d-block text-dark text-uppercase fw-bold" style="font-size: 0.7rem;">Vencimiento</small>
+                            <span class="fw-bold text-danger" style="font-size: 0.8rem;">
+                                <i class="bi bi-calendar-x me-1"></i>2023-10-25
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-2 bg-danger bg-opacity-10 border border-danger border-opacity-25 rounded h-100">
+                            <small class="d-block text-danger text-uppercase fw-bold" style="font-size: 0.7rem;">Meses Vencidos</small>
+                            <span class="fw-bold text-danger fs-5" style="font-size: 0.8rem;">
+                                3 <small class="fs-6 fw-normal">meses</small>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Desglose Económico -->
+                <div class="border-top pt-2 bg-white px-2 rounded-2 border-light">
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span class="text-muted">Capital Base</span>
+                        <span class="fw-medium">${getcurrency} 400.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between small mb-1">
+                        <span class="text-primary">Financiamiento (5.00%)</span>
+                        <span class="fw-medium text-primary">+ ${getcurrency} 20.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                        <span class="text-danger">Mora (3.50% mensual)</span>
+                        <span class="fw-medium text-danger">+ ${getcurrency} 42.00</span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center pt-3 border-top mt-2">
+                    <span class="small text-dark fw-bold text-uppercase">Total a Pagar</span>
+                    <span class="fs-3 fw-bold text-success">${getcurrency} 462.00</span>
+                </div>
+            </div>
+
+            <!-- 2. Formulario de Cobro -->
+            <div class="row g-3 text-start">
+                
+                <!-- A. Método -->
+                <div class="col-12">
+                    <label class="form-label small fw-bold text-primary text-uppercase mb-1">
+                        <i class="bi bi-credit-card me-1"></i>1. Método de Pago
+                    </label>
+                    <div class="input-group input-group shadow-sm">
+                        <span class="input-group-text bg-white border text-muted fw-bold"><i class="bi bi-credit-card me-1"></i></span>
+                        <select id="swal-method" class="form-select form-select shadow-sm border">
+                            <option value="1">💵 Efectivo</option>
+                            <option value="2">🏦 Transferencia</option>
+                            <option value="3">📱 Yape / Plin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- B. Recibido -->
+                <div class="col-12">
+                    <label class="form-label small fw-bold text-primary text-uppercase mb-1">
+                        <i class="bi bi-cash-stack me-1"></i>2. Efectivo Recibido
+                    </label>
+                    <div class="input-group input-group shadow-sm">
+                        <span class="input-group-text bg-white border text-muted fw-bold">${getcurrency}</span>
+                        <input id="swal-cash-received" type="number" step="0.01" class="form-control border fw-bold text-dark" placeholder="0.00">
+                    </div>
+                </div>
+
+                <!-- C. Vuelto -->
+                <div class="col-12 mt-3">
+                    <div class="p-3 rounded-3 border text-center position-relative bg-light" id="vuelto-container">
+                        <span class="position-absolute top-0 start-50 translate-middle badge bg-secondary rounded-pill px-3 border border-white shadow-sm">3. VUELTO</span>
+                        <div id="swal-vuelto-display" class="fs-2 fw-bold text-muted mt-2">
+                            ${getcurrency} 0.00
+                        </div>
+                        <small class="text-muted d-block pb-1" id="vuelto-label">Esperando ingreso...</small>
+                    </div>
+                </div>
+
+            </div>
+        </div>`;
   }
 })();

@@ -295,15 +295,15 @@
                                 <div class="form-text">Interés por pago tardío.</div>
                             </div>
                             <div class="col-6 col-md-6">
-                                <label for="txtCustomerCurrentInterest" class="form-label">Tasa financ. mensual
-                                    (%)</label>
+                                <label for="txtCustomerCurrentInterest" class="form-label">Tasa financiamiento (%)
+                                </label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-graph-up"></i></span>
                                     <input type="number" class="form-control" id="txtCustomerCurrentInterest"
                                         name="txtCustomerCurrentInterest" step="0.01" min="0" max="100"
                                         placeholder="0.00">
                                 </div>
-                                <div class="form-text">Interés por financiamiento.</div>
+                                <div class="form-text">Interés por financiamiento, esto solo se aplica una sola ves al monto que se financio o venta realizado a credito.</div>
                             </div>
                             <div class="col-6 col-md-6">
                                 <label for="txtCustomerBillingDate" class="form-label">Fecha de facturación <span
