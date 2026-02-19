@@ -158,6 +158,118 @@ class Credits extends Controllers
         toJson($arrData);
     }
     /**
+     * Metodo que se encarga de pagar el credito seleccionado individual
+     * @return void
+     */
+    public function setPaymentCreditIndividually()
+    {
+        validate_permission_app(15, "c", false, false, false);
+        $payment_date = date('Y-m-d H:i:s');
+        validateFields(["idvoucher", "paymentMethod"]);
+        $idvoucher = strClean($_POST["idvoucher"]);
+        $paymentMethod = strClean($_POST["paymentMethod"]);
+        $amountReceived = $_POST['amountReceived'] ?? 0.0;
+        $voucher_name = "Pago de credito realizada el " . $payment_date;
+        $typmovementvox = "Ingreso";
+        validateFieldsEmpty([
+            "ID DEL VOUCHER" => $idvoucher,
+            "METODO DE PAGO" => $paymentMethod
+        ]);
+        $idBusiness = (int) $this->getBusinessId();
+        //validamos si el id es numerico
+        if (!is_numeric($idvoucher)) {
+            $this->responseError('El ID del voucher debe ser numérico.');
+        }
+        //validamos que el metodo de pago sea numerico
+        if (!is_numeric($paymentMethod)) {
+            $this->responseError('El metodo de pago debe ser numérico.');
+        }
+        //validamos que el monto recibido sea numerico
+        if ($amountReceived > 0 && !empty($amountReceived) && !is_numeric($amountReceived)) {
+            $this->responseError('El monto recibido debe ser numérico.');
+        } else {
+            $amountReceived = 0;
+        }
+        //validamos si el credito existe
+        $dataCredit = $this->model->getInfoCreditToPay($idvoucher, $idBusiness);
+        if (empty($dataCredit)) {
+            $this->responseError('No se encontró el crédito seleccionado.');
+        }
+        //validamos si el metodo de pago existe en la base de datos
+        $dataPaymentMethod = $this->model->getPaymentMethod($paymentMethod);
+        if (empty($dataPaymentMethod)) {
+            $this->responseError('No se encontró el metodo de pago seleccionado.');
+        }
+        //validamos si el usuario tiene permiso de leer caja
+        $validationReadBox = (validate_permission_app(11, "r", false)) ? (int) validate_permission_app(11, "r", false)['read'] : 0;
+        //validamos si el usuario tiene permiso de leer caja
+        if ($validationReadBox === 1) {
+            //validamos si es obligatorio abrir caja antes de registrar una venta
+            $openBox = $_SESSION[$this->nameVarBusiness]['openBox'] ?? 'No';
+            //validamos si es necesario abrir caja para registrar la venta
+            if ($openBox === 'Si') {
+                $requestOpenBox = $this->model->selectOpenBoxByUser([
+                    'user_app_id' => $this->getUserId(),
+                    'business_id' => $idBusiness,
+                    'status' => 'Abierta',
+                    'year' => date('Y'),
+                    'month' => date('m'),
+                    'day' => date('d'),
+                ]);
+                if (!$requestOpenBox) {
+                    $this->responseError('No se podra realizar un pago de credito, mientras no abra caja. Para este negocio es obligatorio abrir caja.', 6000);
+                }
+            }
+        }
+        $updatePaymentCredit = $this->model->updatePaymentCredit([
+            'idVoucher' => $idvoucher,
+            'idBusiness' => $idBusiness,
+            'amount' => $dataCredit['amount_total'],
+            'how_much_do_i_pay' => $amountReceived,
+            'voucher_name' => $voucher_name,
+            'payment_method_id' => $paymentMethod,
+            'status' => 'Pagado',
+            'default_interest_rate' => $dataCredit['default_interest_rate'],
+            'amount_default_interest_rate' => $dataCredit['amount_total_overdue'],
+            'current_interest_rate' => $dataCredit['current_interest_rate'],
+            'amount_current_interest_rate' => $dataCredit['amount_current_interest_rate'],
+            'payment_date' => $payment_date
+        ]);
+        //validamos si la caja esta abierta para registrar la venta
+        $requestOpenBox = $this->model->selectOpenBoxByUser([
+            'user_app_id' => $this->getUserId(),
+            'business_id' => $idBusiness,
+            'status' => 'Abierta',
+            'year' => date('Y'),
+            'month' => date('m'),
+            'day' => date('d'),
+        ]);
+        //validar el registro de la venta en movimientos de caja (aun falta eso)
+        if (!$updatePaymentCredit) {
+            $this->responseError('No fue posible registrar el pago del crédito.');
+        }
+        //validamos si la caja esta abierta para registrar la venta
+        if ($requestOpenBox) {
+            //registramos el movimiento de la caja
+            $insertMovement = $this->model->insertBoxMovement([
+                'boxSessions_id' => $requestOpenBox['idBoxSessions'] ?? 0,
+                'type_movement' => $typmovementvox,
+                'concept' => $voucher_name,
+                'amount' => $dataCredit['amount_total'],
+                'payment_method' => (string) ($dataPaymentMethod['name'] ?? 'Efectivo'),
+                'reference_table' => 'voucher_header',
+                'reference_id' => $idvoucher,
+            ]);
+        }
+        toJson([
+            'status' => true,
+            'message' => 'Pago del crédito registrado correctamente.',
+            'title' => 'Pago del crédito',
+            'icon' => 'success',
+            'timer' => 2000
+        ]);
+    }
+    /**
      * Obtiene el identificador del negocio activo desde la sesión.
      *
      * @return int
@@ -189,5 +301,18 @@ class Credits extends Controllers
         ];
 
         toJson($data);
+    }
+    /**
+     * Obtiene el identificador del usuario POS autenticado.
+     *
+     * @return int
+     */
+    private function getUserId(): int
+    {
+        if (!isset($_SESSION[$this->nameVarLoginInfo]['idUser'])) {
+            $this->responseError('No se encontró información del usuario en la sesión.');
+        }
+
+        return (int) $_SESSION[$this->nameVarLoginInfo]['idUser'];
     }
 }

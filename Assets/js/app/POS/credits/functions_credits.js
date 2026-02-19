@@ -8,57 +8,57 @@
   //elementos del modal de reporte
   const detailCustomerName = document.getElementById("detailCustomerName");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument",
+    "detailCustomerDocument"
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection",
+    "detailCustomerDirection"
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay",
+    "detailCustomerBillingDay"
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing",
+    "detailCustomerCreditLimitFinancing"
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest",
+    "detailCustomerMonthlyInterest"
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing",
+    "detailCustomerMonthlyInterestFinancing"
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit",
+    "detailCustomerCreditLimit"
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu",
+    "detailCustomerPercentConsu"
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent",
+    "detailCustomerIndicadorPercent"
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp",
+    "detailCustomerAmountDisp"
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start",
+    "modal-filter-date-start"
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
   const modalFilterSaleType = document.getElementById("modal-filter-sale-type");
   const modalFilterPaymentStatus = document.getElementById(
-    "modal-filter-payment-status",
+    "modal-filter-payment-status"
   );
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased",
+    "detailCustomerTotalPurchased"
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid",
+    "detailCustomerTotalPaid"
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt",
+    "detailCustomerTotalDebt"
   );
   //cuerpo de la tabla de creditos
   const customerSalesBody = document.getElementById("customerSalesBody");
@@ -299,7 +299,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -313,7 +313,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -327,7 +327,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -343,7 +343,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -357,7 +357,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -373,7 +373,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -394,7 +394,7 @@
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
             modalFilterSaleType.value ?? "All",
-            modalFilterPaymentStatus.value ?? "All",
+            modalFilterPaymentStatus.value ?? "All"
           );
         });
       });
@@ -415,7 +415,7 @@
     startDate,
     endDate,
     saleType,
-    paymentStatus,
+    paymentStatus
   ) {
     //return; //paramos temporalmente
     const formdata = new FormData();
@@ -435,7 +435,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading",
+      "loading"
     );
     try {
       const response = await fetch(endpoint, config);
@@ -627,7 +627,7 @@
             message: "Por favor espere...Calculando intereses....",
             icon: "info",
           },
-          "loading",
+          "loading"
         );
         try {
           const response = await fetch(endpoint, config);
@@ -668,6 +668,57 @@
             allowOutsideClick: false,
             didOpen: async () => await getPaymentMethods(),
             //preconfirmamos el envio de la informacion al back
+            preConfirm: async (e) => {
+              const formdata = new FormData();
+              formdata.append("idvoucher", idVoucher);
+              const swalMethodPaymentSelect =
+                document.getElementById("swalMethodPaymentSelect") ?? 0;
+              const swalCashReceived =
+                document.getElementById("swalCashReceived") ?? 0;
+              formdata.append(
+                "paymentMethod",
+                swalMethodPaymentSelect.value ?? 0
+              );
+              //pasamos el vuelto
+              formdata.append("amountReceived", swalCashReceived.value ?? 0);
+              const config = {
+                method: "POST",
+                body: formdata,
+              };
+              const enpointPayment = `${base_url}/pos/Credits/setPaymentCreditIndividually`;
+              try {
+                const response = await fetch(enpointPayment, config);
+                const data = await response.json();
+                return data;
+              } catch (error) {
+                return {
+                  status: false,
+                  title: "Ocurrio un error inesperado",
+                  message: `Error al obtener la informacion del credito - ${error.message}`,
+                  icon: "error",
+                };
+              }
+            },
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              const data = result.value;
+              if (data.status) {
+                //recargamos la tabla de creditos
+                await getInformationDetailCredist(
+                  idCustomer,
+                  modalFilterDateStart.value,
+                  modalFilterDateEnd.value,
+                  modalFilterSaleType.value ?? "All",
+                  modalFilterPaymentStatus.value ?? "All"
+                );
+              }
+              showAlert({
+                title: data.title,
+                message: data.message,
+                icon: data.icon,
+                timer: data.timer,
+              });
+            }
           });
         } catch (error) {
           showAlert({
@@ -675,7 +726,6 @@
             message: `Error al obtener la informacion del credito - ${error.message}`,
             icon: "error",
           });
-        } finally {
         }
       });
     });
@@ -799,7 +849,7 @@
   async function getPaymentMethods() {
     //obtenemmos el select de metodo de pago
     const swalMethodPaymentSelect = document.getElementById(
-      "swalMethodPaymentSelect",
+      "swalMethodPaymentSelect"
     );
     if (!swalMethodPaymentSelect) return;
     //limpiamos el select
@@ -855,7 +905,7 @@
    */
   function typeMethodPayment(methodPayment) {
     const swalReceivesContainer = document.getElementById(
-      "swalReceivesContainer",
+      "swalReceivesContainer"
     );
     if (!swalReceivesContainer) return;
 
@@ -873,7 +923,7 @@
                   </div>
                   <!-- C. Vuelto -->
                   <div class="col-12 mt-3">
-                      <div class="p-3 rounded-3 border text-center position-relative bg-light bg-opacity-10" id="vuelto-container">
+                      <div class="p-3 rounded-3 border text-center position-relative bg-light bg-opacity-10" style="transition: all 0.3s ease-in-out;" id="vuelto-container">
                           <span class="position-absolute top-0 start-50 translate-middle badge bg-secondary rounded-pill px-3 border border-white shadow-sm">3. VUELTO</span>
                           <div id="swalVueltoDisplay" class="fs-2 fw-bold text-muted mt-2">
                               ${getcurrency} 0.00

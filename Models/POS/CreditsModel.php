@@ -4,11 +4,22 @@ class CreditsModel extends Mysql
     private int $idBusiness;
     private int $idCustomer;
     private int $idvoucher;
+    private int $idPaymentMethod;
     private string $search;
     private string $startDate;
     private string $endDate;
     private string $saleType;
     private string $paymentStatus;
+    private float $amount;
+    private float $how_much_do_i_pay;
+    private string $voucher_name;
+    private int $payment_method_id;
+    private string $status;
+    private float $default_interest_rate;
+    private float $amount_default_interest_rate;
+    private float $current_interest_rate;
+    private float $amount_current_interest_rate;
+    private string $payment_date;
     /**
      * Inicializa el modelo base y establece la conexión con la base de datos.
      */
@@ -398,9 +409,9 @@ class CreditsModel extends Mysql
         if (!empty($rstData['payment_deadline'])) {
             //calculamos la fecha de vencimiento
             $dataDate = dateDifference(date('Y-m-d'), $rstData['payment_deadline']);
-            $rstData['total_dias'] = abs($dataDate['total_dias']);
             //validamos si la fecha de vencimiento es menor a la fecha actual
             if ($dataDate['total_dias'] < 0) {
+                $rstData['total_dias'] = abs($dataDate['total_dias']);
                 //Convertimos a meses la cantidad de dias entre 30 dias
                 $month_overdue = abs(round($dataDate['total_dias'] / 30, 0));
                 //devolvemos el valor de la cantidad de meses de vencimiento
@@ -434,5 +445,130 @@ class CreditsModel extends Mysql
         SQL;
         $rstData = $this->select_all($sql);
         return $rstData;
+    }
+    /**
+     * MEtodo que se encarga de obtener el metodo de pago por id
+     * @param int $idPaymentMethod
+     * @return array
+     */
+    public function getPaymentMethod(int $idPaymentMethod)
+    {
+        $sql = <<<SQL
+                SELECT
+                    pm.idPaymentMethod AS 'id',
+                    pm.`name`,
+                    pm.`status`
+                FROM
+                    payment_method AS pm
+                WHERE
+                    pm.idPaymentMethod = ?
+                    AND pm.`status` = 'Activo'
+                LIMIT 1;
+        SQL;
+        $this->idPaymentMethod = $idPaymentMethod;
+        $arrValues = [$this->idPaymentMethod];
+        $rstData = $this->select($sql, $arrValues);
+        return $rstData;
+    }
+    /**
+     * MEtodo que se encarga de actualizar el estado del metodo de pago
+     * @param array $data
+     * @return bool
+     */
+    public function updatePaymentCredit(array $data)
+    {
+        $this->idvoucher = $data['idVoucher'];
+        $this->idBusiness = $data['idBusiness'];
+        $this->amount = $data['amount'];
+        $this->how_much_do_i_pay = $data['how_much_do_i_pay'];
+        $this->voucher_name = $data['voucher_name'];
+        $this->payment_method_id = $data['payment_method_id'];
+        $this->status = $data['status'];
+        $this->default_interest_rate = $data['default_interest_rate'];
+        $this->amount_default_interest_rate = $data['amount_default_interest_rate'];
+        $this->current_interest_rate = $data['current_interest_rate'];
+        $this->amount_current_interest_rate = $data['amount_current_interest_rate'];
+        $this->payment_date = $data['payment_date'];
+        $sqlUpdate = <<<SQL
+                UPDATE `voucher_header` 
+                SET `amount`=?, 
+                    `how_much_do_i_pay`=?, 
+                    `voucher_name`=?, 
+                    `payment_method_id`=?, 
+                    `status`=?, 
+                    `default_interest_rate`=?, 
+                    `amount_default_interest_rate`=?, 
+                    `current_interest_rate`=?, 
+                    `amount_current_interest_rate`=?, 
+                    `payment_date`=? 
+                WHERE  
+                    `idVoucherHeader`=?
+                    AND `business_id`=?;
+        SQL;
+        $arrValues = [
+            $this->amount,
+            $this->how_much_do_i_pay,
+            $this->voucher_name,
+            $this->payment_method_id,
+            $this->status,
+            $this->default_interest_rate,
+            $this->amount_default_interest_rate,
+            $this->current_interest_rate,
+            $this->amount_current_interest_rate,
+            $this->payment_date,
+            $this->idvoucher,
+            $this->idBusiness
+        ];
+        $rst = $this->update($sqlUpdate, $arrValues);
+        return $rst;
+    }
+    /**
+     * Metodo que se encarga de obtener si hay alguna caja abierta
+     * por el usuario que ha iniciado sesion
+     * @param array $data
+     * @return void
+     */
+    public function selectOpenBoxByUser(array $data)
+    {
+        $sql = <<<SQL
+               SELECT
+                    *
+                FROM
+                    box_sessions AS bs
+                    INNER JOIN box AS bx ON bx.idBox = bs.box_id
+                    INNER JOIN business AS b ON b.idBusiness=bx.business_id
+                WHERE
+                    bs.userapp_id = ?
+                    AND b.idBusiness=?
+                    AND bs.`status` = ?
+                    AND YEAR(bs.opening_date)= ?
+                    AND MONTH(bs.opening_date)= ?
+                    AND DAY(bs.opening_date)= ?;
+        SQL;
+        $result = $this->select($sql, [$data['user_app_id'], $data['business_id'], $data['status'], $data['year'], $data['month'], $data['day']]);
+        return $result;
+    }
+    /**
+     * MEtodo que se encarga de registra los movimiento de caja
+     * @param array $data
+     */
+    public function insertBoxMovement(array $data)
+    {
+        $sql = <<<SQL
+            INSERT INTO `box_movements` 
+            (`boxSessions_id`, `type_movement`, `concept`, `amount`, `payment_method`, `reference_table`, `reference_id`) 
+            VALUES 
+            (?, ?, ?, ?, ?, ?, ?);
+        SQL;
+        $result = $this->insert($sql, [
+            $data['boxSessions_id'],
+            $data['type_movement'],
+            $data['concept'],
+            $data['amount'],
+            $data['payment_method'],
+            $data['reference_table'],
+            $data['reference_id']
+        ]);
+        return $result;
     }
 }
