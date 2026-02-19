@@ -8,57 +8,57 @@
   //elementos del modal de reporte
   const detailCustomerName = document.getElementById("detailCustomerName");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument"
+    "detailCustomerDocument",
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection"
+    "detailCustomerDirection",
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay"
+    "detailCustomerBillingDay",
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing"
+    "detailCustomerCreditLimitFinancing",
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest"
+    "detailCustomerMonthlyInterest",
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing"
+    "detailCustomerMonthlyInterestFinancing",
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit"
+    "detailCustomerCreditLimit",
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu"
+    "detailCustomerPercentConsu",
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent"
+    "detailCustomerIndicadorPercent",
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp"
+    "detailCustomerAmountDisp",
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start"
+    "modal-filter-date-start",
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
   const modalFilterSaleType = document.getElementById("modal-filter-sale-type");
   const modalFilterPaymentStatus = document.getElementById(
-    "modal-filter-payment-status"
+    "modal-filter-payment-status",
   );
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased"
+    "detailCustomerTotalPurchased",
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid"
+    "detailCustomerTotalPaid",
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt"
+    "detailCustomerTotalDebt",
   );
   //cuerpo de la tabla de creditos
   const customerSalesBody = document.getElementById("customerSalesBody");
@@ -70,6 +70,10 @@
    * Variable que obtiene el id el cliente
    */
   let idCustomer;
+  /**
+   * Obtenemos el total del credito individual a pagar
+   */
+  let totalIndividualCredit;
   /**
    * Evento que se ejecuta cuando el DOM esta cargado
    */
@@ -295,7 +299,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -309,7 +313,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -323,7 +327,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -339,7 +343,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -353,7 +357,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -369,7 +373,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -390,7 +394,7 @@
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
             modalFilterSaleType.value ?? "All",
-            modalFilterPaymentStatus.value ?? "All"
+            modalFilterPaymentStatus.value ?? "All",
           );
         });
       });
@@ -411,7 +415,7 @@
     startDate,
     endDate,
     saleType,
-    paymentStatus
+    paymentStatus,
   ) {
     //return; //paramos temporalmente
     const formdata = new FormData();
@@ -431,7 +435,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading"
+      "loading",
     );
     try {
       const response = await fetch(endpoint, config);
@@ -442,6 +446,12 @@
           message: data.message,
           icon: data.icon,
         });
+        //si hay url redirigimos
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, data.timer);
+        }
         return;
       }
       renderCustomerCredits(data);
@@ -617,12 +627,12 @@
             message: "Por favor espere...Calculando intereses....",
             icon: "info",
           },
-          "loading"
+          "loading",
         );
         try {
           const response = await fetch(endpoint, config);
           const data = await response.json();
-          //
+          //validamos la respuesta del estado para mostrar el error o redirigir
           if (!data.status) {
             showAlert({
               title: data.title,
@@ -637,6 +647,8 @@
             }
             return;
           }
+          //guardamos el total del credito individual a pagar
+          totalIndividualCredit = data.infoCredit.amount_total;
           //Mostramos un sweet alert para mostrar el detalle del pago del credito seleccionado
           Swal.fire({
             target: document.getElementById("creditsReportModal"),
@@ -654,11 +666,13 @@
             },
             // Opcional: Evitar que se cierre al hacer clic fuera si es un proceso de pago
             allowOutsideClick: false,
+            didOpen: async () => await getPaymentMethods(),
+            //preconfirmamos el envio de la informacion al back
           });
         } catch (error) {
           showAlert({
             title: "Ocurrio un error inesperado",
-            message: `Error al obtener la informacion del credito ${error.message}`,
+            message: `Error al obtener la informacion del credito - ${error.message}`,
             icon: "error",
           });
         } finally {
@@ -766,37 +780,165 @@
                     </label>
                     <div class="input-group input-group shadow-sm">
                         <span class="input-group-text bg-white border text-muted fw-bold"><i class="bi bi-credit-card me-1"></i></span>
-                        <select id="swal-method" class="form-select form-select shadow-sm border">
-                            <option value="1">💵 Efectivo</option>
-                            <option value="2">🏦 Transferencia</option>
-                            <option value="3">📱 Yape / Plin</option>
+                        <select id="swalMethodPaymentSelect" class="form-select form-select shadow-sm border">
+                           --
                         </select>
                     </div>
                 </div>
 
                 <!-- B. Recibido -->
-                <div class="col-12">
-                    <label class="form-label small fw-bold text-primary text-uppercase mb-1">
-                        <i class="bi bi-cash-stack me-1"></i>2. Efectivo Recibido
-                    </label>
-                    <div class="input-group input-group shadow-sm">
-                        <span class="input-group-text bg-white border text-muted fw-bold">${getcurrency}</span>
-                        <input id="swal-cash-received" type="number" step="0.01" class="form-control border fw-bold text-dark" placeholder="0.00">
-                    </div>
+                <div id="swalReceivesContainer">                  
                 </div>
-
-                <!-- C. Vuelto -->
-                <div class="col-12 mt-3">
-                    <div class="p-3 rounded-3 border text-center position-relative bg-light" id="vuelto-container">
-                        <span class="position-absolute top-0 start-50 translate-middle badge bg-secondary rounded-pill px-3 border border-white shadow-sm">3. VUELTO</span>
-                        <div id="swal-vuelto-display" class="fs-2 fw-bold text-muted mt-2">
-                            ${getcurrency} 0.00
-                        </div>
-                        <small class="text-muted d-block pb-1" id="vuelto-label">Esperando ingreso...</small>
-                    </div>
-                </div>
-
             </div>
         </div>`;
+  }
+  /**
+   * Metodo para obtener los metodos de pago para el swal
+   * @returns
+   */
+  async function getPaymentMethods() {
+    //obtenemmos el select de metodo de pago
+    const swalMethodPaymentSelect = document.getElementById(
+      "swalMethodPaymentSelect",
+    );
+    if (!swalMethodPaymentSelect) return;
+    //limpiamos el select
+    swalMethodPaymentSelect.innerHTML = "";
+    const enpointMethodPayment = `${base_url}/pos/Credits/getPaymentMethods`;
+    //mostramos en el select un mensaje preparanado metodos de pagos
+    swalMethodPaymentSelect.innerHTML = `
+        <option value="">Preparando metodos de pagos...</option>
+    `;
+    //agregamos un loading al select
+    try {
+      const response = await fetch(enpointMethodPayment);
+      const data = await response.json();
+      if (!data.status) {
+        showAlert({
+          title: data.title,
+          message: data.message,
+          icon: data.icon,
+          timer: data.timer,
+        });
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, data.timer);
+        }
+        return;
+      }
+      //limpiamos el select
+      swalMethodPaymentSelect.innerHTML = "";
+      data.paymentMethods.forEach((paymentMethod) => {
+        swalMethodPaymentSelect.innerHTML += `
+                    <option value="${paymentMethod.id}">${paymentMethod.name}</option>
+                  `;
+      });
+    } catch (error) {
+      showAlert({
+        title: "Ocurrio un error inesperado",
+        message: `Error al obtener la informacion de los metodos de pagos - ${error.message}`,
+        icon: "error",
+      });
+    } finally {
+      //obtenemos el tipo de metodo de pago
+      typeMethodPayment(swalMethodPaymentSelect.value);
+      //agregamos el evento para obtener el tipo de metodo de pago
+      swalMethodPaymentSelect.addEventListener("change", () => {
+        typeMethodPayment(swalMethodPaymentSelect.value);
+      });
+    }
+  }
+  /**
+   * Metodo para obtener el tipo de metodo de pago
+   * @returns
+   */
+  function typeMethodPayment(methodPayment) {
+    const swalReceivesContainer = document.getElementById(
+      "swalReceivesContainer",
+    );
+    if (!swalReceivesContainer) return;
+
+    swalReceivesContainer.innerHTML = "";
+    if (methodPayment == 1) {
+      swalReceivesContainer.innerHTML = `
+                  <div class="col-12">
+                      <label class="form-label small fw-bold text-primary text-uppercase mb-1">
+                          <i class="bi bi-cash-stack me-1"></i>2. Efectivo Recibido
+                      </label>
+                      <div class="input-group input-group shadow-sm">
+                          <span class="input-group-text bg-white border text-muted fw-bold">${getcurrency}</span>
+                          <input id="swalCashReceived" type="number" step="0.01" min="${totalIndividualCredit}" max="99999999.99" class="form-control border fw-bold text-dark" placeholder="0.00">
+                      </div>
+                  </div>
+                  <!-- C. Vuelto -->
+                  <div class="col-12 mt-3">
+                      <div class="p-3 rounded-3 border text-center position-relative bg-light bg-opacity-10" id="vuelto-container">
+                          <span class="position-absolute top-0 start-50 translate-middle badge bg-secondary rounded-pill px-3 border border-white shadow-sm">3. VUELTO</span>
+                          <div id="swalVueltoDisplay" class="fs-2 fw-bold text-muted mt-2">
+                              ${getcurrency} 0.00
+                          </div>
+                          <small class="text-muted d-block pb-1" id="vuelto-label">Esperando ingreso...</small>
+                      </div>
+                  </div>
+      `;
+      //esperamos que se renderice
+      const swalCashReceived = document.getElementById("swalCashReceived");
+      if (swalCashReceived) {
+        swalCashReceived.addEventListener("input", calculateReturn);
+      }
+    } else {
+      //mostramos un mensaje en html que no es necesario hacer el calculo
+      swalReceivesContainer.innerHTML = `
+                  <div class="col-12">
+                      <div class="alert alert-info text-center" role="alert">
+                          <i class="bi bi-info-circle-fill me-2"></i>
+                          No es necesario hacer el calculo de vuelto para este metodo de pago.
+                      </div>
+                  </div>
+      `;
+    }
+  }
+  /**
+   * Metodo para calcular el vuelto
+   * @returns
+   */
+  function calculateReturn() {
+    const swalCashReceived = document.getElementById("swalCashReceived");
+    const swalVueltoDisplay = document.getElementById("swalVueltoDisplay");
+    const vueltoContainer = document.getElementById("vuelto-container");
+    const vueltoLabel = document.getElementById("vuelto-label");
+
+    if (
+      !swalCashReceived ||
+      !swalVueltoDisplay ||
+      !vueltoContainer ||
+      !vueltoLabel
+    )
+      return;
+    const cashReceived = swalCashReceived.value;
+    const vueltoString = (cashReceived - totalIndividualCredit).toFixed(2);
+    const vuelto = parseFloat(vueltoString);
+    swalVueltoDisplay.textContent = `${getcurrency} ${vuelto}`;
+    if (cashReceived <= 0) {
+      vueltoContainer.classList.remove("bg-light", "bg-danger", "bg-warning");
+      vueltoContainer.classList.add("bg-light");
+      swalVueltoDisplay.textContent = `${getcurrency} 0.00`;
+      vueltoLabel.textContent = "Esperando ingreso...";
+      return;
+    }
+    if (vuelto > 0) {
+      vueltoContainer.classList.remove("bg-light", "bg-danger", "bg-warning");
+      vueltoContainer.classList.add("bg-success");
+      vueltoLabel.textContent = "Vuelto";
+    } else if (vuelto === 0) {
+      vueltoContainer.classList.remove("bg-light", "bg-danger", "bg-success");
+      vueltoContainer.classList.add("bg-warning");
+      vueltoLabel.textContent = "Vuelto exacto";
+    } else {
+      vueltoContainer.classList.remove("bg-light", "bg-success", "bg-warning");
+      vueltoContainer.classList.add("bg-danger");
+      vueltoLabel.textContent = "Falta recibir";
+    }
   }
 })();

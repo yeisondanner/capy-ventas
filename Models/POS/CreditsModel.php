@@ -423,7 +423,8 @@ class CreditsModel extends Mysql
     {
         $sql = <<<SQL
                 SELECT
-                    *
+                    pm.idPaymentMethod AS 'id',
+                    pm.`name`
                 FROM
                     payment_method AS pm
                 WHERE
