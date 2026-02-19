@@ -75,6 +75,10 @@
    */
   let totalIndividualCredit;
   /**
+   * obtenemos el id del voucher
+   */
+  let idVoucher;
+  /**
    * Evento que se ejecuta cuando el DOM esta cargado
    */
   document.addEventListener("DOMContentLoaded", function () {
@@ -611,7 +615,7 @@
     const btnPayment = document.querySelectorAll(".btn-payment");
     btnPayment.forEach((btn) => {
       btn.addEventListener("click", async () => {
-        const idVoucher = btn.dataset.id;
+        idVoucher = btn.dataset.id;
         const formdata = new FormData();
         formdata.append("idVoucher", idVoucher);
         const endpoint = `${base_url}/pos/Credits/getInfoCreditToPay`;
@@ -666,38 +670,14 @@
             },
             // Opcional: Evitar que se cierre al hacer clic fuera si es un proceso de pago
             allowOutsideClick: false,
-            didOpen: async () => await getPaymentMethods(),
+            didOpen: async () => {
+              await getPaymentMethods();
+              // Lógica para el botón de desglose
+              desglosePaymentVoucherName();
+            },
             //preconfirmamos el envio de la informacion al back
             preConfirm: async (e) => {
-              const formdata = new FormData();
-              formdata.append("idvoucher", idVoucher);
-              const swalMethodPaymentSelect =
-                document.getElementById("swalMethodPaymentSelect") ?? 0;
-              const swalCashReceived =
-                document.getElementById("swalCashReceived") ?? 0;
-              formdata.append(
-                "paymentMethod",
-                swalMethodPaymentSelect.value ?? 0
-              );
-              //pasamos el vuelto
-              formdata.append("amountReceived", swalCashReceived.value ?? 0);
-              const config = {
-                method: "POST",
-                body: formdata,
-              };
-              const enpointPayment = `${base_url}/pos/Credits/setPaymentCreditIndividually`;
-              try {
-                const response = await fetch(enpointPayment, config);
-                const data = await response.json();
-                return data;
-              } catch (error) {
-                return {
-                  status: false,
-                  title: "Ocurrio un error inesperado",
-                  message: `Error al obtener la informacion del credito - ${error.message}`,
-                  icon: "error",
-                };
-              }
+              return await sendPaymentIndividualCredit();
             },
           }).then(async (result) => {
             if (result.isConfirmed) {
@@ -828,9 +808,9 @@
                     <label class="form-label small fw-bold text-primary text-uppercase mb-1">
                         <i class="bi bi-credit-card me-1"></i>1. Método de Pago
                     </label>
-                    <div class="input-group input-group shadow-sm">
+                    <div class="input-group">
                         <span class="input-group-text bg-white border text-muted fw-bold"><i class="bi bi-credit-card me-1"></i></span>
-                        <select id="swalMethodPaymentSelect" class="form-select form-select shadow-sm border">
+                        <select id="swalMethodPaymentSelect" class="form-select">
                            --
                         </select>
                     </div>
@@ -838,6 +818,30 @@
 
                 <!-- B. Recibido -->
                 <div id="swalReceivesContainer">                  
+                </div>
+
+                <!-- C. Detalle Adicional (Desglose) -->
+                <div class="col-12 mt-3">
+                     <button type="button" id="btnToggleDetail" class="btn btn-outline-secondary border-dashed w-100 fw-medium d-flex align-items-center justify-content-center py-2" style="border-style: dashed; border-width: 2px;" title="Agregar una nota o desglose al pago">
+                        <i class="bi bi-journal-plus me-2"></i>Agregar nombre del pago
+                     </button>
+                </div>
+
+                <!-- Contenedor Oculto para Nombre del Pago -->
+                <div id="containerDetailPayment" class="col-12 d-none animation-fade-in mt-2">
+                    <div class="card border-0 shadow-sm bg-light">
+                        <div class="card-body p-2">
+                            <label class="form-label small fw-bold text-muted text-uppercase mb-1 ms-1">
+                                <i class="bi bi-pen me-1"></i>Nombre del Pago
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0 text-primary">
+                                    <i class="bi bi-bookmark-fill"></i>
+                                </span>
+                                <input id="swalDetailPayment" type="text" class="form-control" placeholder="Escribe aquí el nombre del pago...">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>`;
@@ -916,9 +920,9 @@
                       <label class="form-label small fw-bold text-primary text-uppercase mb-1">
                           <i class="bi bi-cash-stack me-1"></i>2. Efectivo Recibido
                       </label>
-                      <div class="input-group input-group shadow-sm">
+                      <div class="input-group">
                           <span class="input-group-text bg-white border text-muted fw-bold">${getcurrency}</span>
-                          <input id="swalCashReceived" type="number" step="0.01" min="${totalIndividualCredit}" max="99999999.99" class="form-control border fw-bold text-dark" placeholder="0.00">
+                          <input id="swalCashReceived" type="number" step="0.01" min="${totalIndividualCredit}" max="99999999.99" class="form-control" placeholder="0.00">
                       </div>
                   </div>
                   <!-- C. Vuelto -->
@@ -989,6 +993,94 @@
       vueltoContainer.classList.remove("bg-light", "bg-success", "bg-warning");
       vueltoContainer.classList.add("bg-danger");
       vueltoLabel.textContent = "Falta recibir";
+    }
+  }
+  /**
+   * Metodo que se encarga de mostrar la interaccion con el desglose del nombre del pago
+   * @returns {void}
+   */
+  function desglosePaymentVoucherName() {
+    const btnToggleDetail = document.getElementById("btnToggleDetail");
+    const containerDetailPayment = document.getElementById(
+      "containerDetailPayment"
+    );
+    const swalDetailPayment = document.getElementById("swalDetailPayment");
+    if (btnToggleDetail && containerDetailPayment) {
+      btnToggleDetail.addEventListener("click", () => {
+        //limpiamos el input
+        swalDetailPayment.value = "";
+        containerDetailPayment.classList.toggle("d-none");
+        if (containerDetailPayment.classList.contains("d-none")) {
+          btnToggleDetail.innerHTML =
+            '<i class="bi bi-journal-plus me-2"></i>Agregar nombre del pago';
+          btnToggleDetail.classList.remove(
+            "text-danger",
+            "border-danger",
+            "bg-danger"
+          );
+          btnToggleDetail.classList.add("text-secondary", "border-secondary");
+        } else {
+          btnToggleDetail.innerHTML =
+            '<i class="bi bi-x-circle me-2"></i>Cancelar nombre del pago';
+          btnToggleDetail.classList.remove(
+            "text-secondary",
+            "border-secondary"
+          );
+          btnToggleDetail.classList.add(
+            "text-danger",
+            "border-danger",
+            "bg-danger",
+            "bg-opacity-10"
+          );
+          // Enfocar el input cuando se muestra
+          setTimeout(() => {
+            const inputDetail = document.getElementById("swalDetailPayment");
+            if (inputDetail) inputDetail.focus();
+          }, 100);
+        }
+      });
+    }
+  }
+  /**
+   * Metodo que se encarga de enviar la informacion al back para realizar el
+   * pago indvidual, esto es la funcion del preconfirm
+   * @returns {void}
+   */
+  async function sendPaymentIndividualCredit() {
+    const formdata = new FormData();
+    formdata.append("idvoucher", idVoucher);
+    const swalMethodPaymentSelect =
+      document.getElementById("swalMethodPaymentSelect") ?? 0;
+    const swalCashReceived = document.getElementById("swalCashReceived") ?? 0;
+    const swalDetailPayment =
+      document.getElementById("swalDetailPayment") ?? "";
+    //mostramos una alerta que el metodo de pago no a sid seleccionado
+    if (swalMethodPaymentSelect.value == 0) {
+      return Swal.showValidationMessage(
+        "Debe seleccionar un metodo de pago para continuar"
+      );
+    }
+    formdata.append("paymentMethod", swalMethodPaymentSelect.value ?? 0);
+    //pasamos el vuelto
+    formdata.append("amountReceived", swalCashReceived.value ?? 0);
+    formdata.append("detailPayment", swalDetailPayment.value ?? "");
+    const config = {
+      method: "POST",
+      body: formdata,
+    };
+    const enpointPayment = `${base_url}/pos/Credits/setPaymentCreditIndividually`;
+    Swal.showLoading();
+    try {
+      const response = await fetch(enpointPayment, config);
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return {
+        status: false,
+        title: "Ocurrio un error inesperado",
+        message: `Error al obtener la informacion del credito - ${error.message}`,
+        icon: "error",
+      };
     }
   }
 })();

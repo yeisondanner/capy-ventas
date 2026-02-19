@@ -169,13 +169,16 @@ class Credits extends Controllers
         $idvoucher = strClean($_POST["idvoucher"]);
         $paymentMethod = strClean($_POST["paymentMethod"]);
         $amountReceived = $_POST['amountReceived'] ?? 0.0;
-        $voucher_name = "Pago de credito realizada el " . $payment_date;
+        $voucher_name = strClean($_POST['detailPayment'] ?? "");
         $typmovementvox = "Ingreso";
         validateFieldsEmpty([
             "ID DEL VOUCHER" => $idvoucher,
             "METODO DE PAGO" => $paymentMethod
         ]);
         $idBusiness = (int) $this->getBusinessId();
+        if (empty($voucher_name)) {
+            $voucher_name = "Pago de credito realizada el " . $payment_date;
+        }
         //validamos si el id es numerico
         if (!is_numeric($idvoucher)) {
             $this->responseError('El ID del voucher debe ser numérico.');
