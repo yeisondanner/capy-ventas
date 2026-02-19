@@ -122,7 +122,11 @@ class MovementsModel extends Mysql
                     vh.idVoucherHeader AS 'id',
                     CONCAT(p.`names`, ' ', p.lastname) AS fullname,
                     vh.status,
-                    vh.sale_type
+                    vh.sale_type,
+                    vh.default_interest_rate,
+                    vh.current_interest_rate,
+                    vh.amount_default_interest_rate,
+                    vh.amount_current_interest_rate
                 FROM
                     voucher_header vh
                     INNER JOIN business AS b ON b.idBusiness = vh.business_id

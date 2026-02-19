@@ -206,9 +206,6 @@
     </div>
 </main>
 <?= footerPos($data) ?>
-
-
-
 <!-- Modal Comprobante -->
 <div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
@@ -307,7 +304,7 @@
                                         <td class="text-end small py-0" style="width: 120px;"><span
                                                 id="subtotal_amount">--</span></td>
                                     </tr>
-                                    <tr>
+                                    <tr class="border-top border-dark">
                                         <td class="text-end fw-bold small py-0">Descuento (<span
                                                 id="percentage_discount">0</span>%):</td>
                                         <td class="text-end text-danger small py-0"><span id="discount_amount">--</span>
@@ -317,6 +314,19 @@
                                         <td class="text-end fw-bold small py-0"><span id="tax_name">IGV</span> (<span
                                                 id="tax_percentage">0</span>%):</td>
                                         <td class="text-end small py-0"><span id="tax_amount">--</span></td>
+                                    </tr>
+                                    <!--Inpuestos -->
+                                    <tr class="border-top border-dark">
+                                        <td class="text-end fw-bold small py-0" title="Impuesto de financiamiento">
+                                            <span>Imp. Finac.</span> (<span id="input_finac_percentage">0</span>%):
+                                        </td>
+                                        <td class="text-end small py-0"><span id="input_finac_amount">--</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-end fw-bold small py-0" title="Impuesto por mora Mensual">
+                                            <span>Imp. Mor. Mens.</span> (<span id="input_mora_percentage">0</span>%):
+                                        </td>
+                                        <td class="text-end small py-0"><span id="input_mora_amount">--</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -346,7 +356,6 @@
         </div>
     </div>
 </div>
-
 <!-- Modal Gasto -->
 <div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
@@ -475,5 +484,4 @@
             </div>
         </div>
     </div>
-</div>
 </div>

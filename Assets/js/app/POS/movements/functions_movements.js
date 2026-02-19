@@ -577,13 +577,22 @@
           const descuento =
             (subtotal * Number(h.percentage_discount || 0)) / 100;
 
-          $("#subtotal_amount").text("S/ " + subtotal.toFixed(2));
-          $("#discount_amount").text("- S/ " + descuento.toFixed(2));
+          $("#subtotal_amount").text(`${getcurrency} ${subtotal}`);
+          $("#discount_amount").text(`${getcurrency} ${descuento}`);
           $("#tax_name").text(h.tax_name);
-          $("#tax_percentage").text(Number(h.tax_percentage).toFixed(2));
-          $("#tax_amount").text(getcurrency + Number(h.tax_amount).toFixed(2));
+          $("#tax_percentage").text(h.tax_percentage);
+          $("#tax_amount").text(`${getcurrency} ${h.tax_amount}`);
           $("#voucher_state").text(h.status);
           $("#voucher_type").text(h.sale_type);
+          //mostramos los datos de interes
+          $("#input_finac_percentage").text(h.current_interest_rate);
+          $("#input_finac_amount").text(
+            `${getcurrency} ${h.amount_current_interest_rate}`
+          );
+          $("#input_mora_percentage").text(h.default_interest_rate);
+          $("#input_mora_amount").text(
+            `${getcurrency} ${h.amount_default_interest_rate}`
+          );
           // === Detalle ===
           const $tbody = $("#tbodyVoucherDetails");
           $tbody.empty();
@@ -593,13 +602,13 @@
             <tr>
               <td>${item.stock_product}</td>
               <td>${item.name_product} (${item.unit_of_measurement})</td>
-              <td class="text-end">S/ ${Number(
+              <td class="text-end">${getcurrency} ${Number(
                 item.sales_price_product
-              ).toFixed(2)}</td>
-              <td class="text-end">S/ ${Number(
+              )}</td>
+              <td class="text-end">${getcurrency} ${Number(
                 item.sales_price_product * item.stock_product
               ).toFixed(2)}</td>
-|            </tr>
+            </tr>
           `);
           });
 

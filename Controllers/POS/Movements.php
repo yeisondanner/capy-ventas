@@ -184,15 +184,19 @@ class Movements extends Controllers
             'name_customer' => $headerRow['name_customer'],
             'direction_customer' => $headerRow['direction_customer'],
             'fullname' => $headerRow['fullname'],
-            'amount' => $headerRow['amount'],
-            'percentage_discount' => $headerRow['percentage_discount'],
+            'amount' => (float) number_format($headerRow['amount'], 2),
+            'percentage_discount' => (float) number_format($headerRow['percentage_discount'], 2),
             'logo' => base_url() . '/Loadfile/iconbusiness?f=' . $headerRow['logo'],
             'tax_name' => $headerRow['tax_name'],
-            'tax_percentage' => $headerRow['tax_percentage'],
-            'tax_amount' => $headerRow['tax_amount'],
+            'tax_percentage' => (float) number_format($headerRow['tax_percentage'], 2),
+            'tax_amount' => (float) number_format($headerRow['tax_amount'], 2),
             'sale_type' => $headerRow['sale_type'],
             'status' => $headerRow['status'],
             'id' => $headerRow['id'],
+            'default_interest_rate' => (float) number_format($headerRow['default_interest_rate'], 2),
+            'current_interest_rate' => (float) number_format($headerRow['current_interest_rate'], 2),
+            'amount_default_interest_rate' => (float) number_format($headerRow['amount_default_interest_rate'], 2),
+            'amount_current_interest_rate' => (float) number_format($headerRow['amount_current_interest_rate'], 2),
         ];
         $dataDetails = $rows['detail'];
         // Detalle (todas las filas)
@@ -202,13 +206,13 @@ class Movements extends Controllers
                 $details[] = [
                     'name_product' => $row['name_product'],
                     'unit_of_measurement' => $row['unit_of_measurement'],
-                    'sales_price_product' => $row['sales_price_product'],
-                    'stock_product' => $row['stock_product'],
+                    'sales_price_product' => (float) number_format($row['sales_price_product'], 2),
+                    'stock_product' => (float) number_format($row['stock_product'], 2),
                 ];
             }
         } else {
             $details[] = [
-                'sales_price_product' => $headerRow['amount'],
+                'sales_price_product' => (float) number_format($headerRow['amount'], 2),
                 'name_product' => $headerRow['voucher_name'] ?? 'Venta rápida',
                 'unit_of_measurement' => 'Servicio',
                 'stock_product' => 1,
