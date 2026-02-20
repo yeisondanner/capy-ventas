@@ -33,7 +33,7 @@ class MovementsModel extends Mysql
                     ) ELSE vh.voucher_name END AS 'name',
                     vh.amount AS 'amount',
                     pm.name AS 'method_payment',
-                    vh.date_time AS 'date_time',
+                    IFNULL(vh.payment_date,vh.date_time) AS 'date_time',
                     CONCAT(p.`names`, ' ', p.lastname) AS 'fullname'
                 FROM
                     voucher_header vh
@@ -56,7 +56,7 @@ class MovementsModel extends Mysql
                 $searchParam = '%' . $searchConcept . '%';
                 array_push($arrValues, $searchParam, $searchParam);
             }
-            $sql .= " ORDER BY vh.date_time DESC";
+            $sql .= " ORDER BY IFNULL(vh.payment_date,vh.date_time) DESC";
         } else if ($type_movements === 'expense') {
             /**
              * Seccion de obtener los gastos de acuerdo a los filtros proporcionados
@@ -108,7 +108,7 @@ class MovementsModel extends Mysql
                     vh.name_bussines,
                     vh.direction_bussines,
                     vh.document_bussines,
-                    vh.date_time,
+                    IFNULL(vh.payment_date,vh.date_time) AS 'date_time',
                     vh.name_customer,
                     vh.direction_customer,
                     vh.amount,

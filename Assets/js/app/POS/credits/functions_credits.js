@@ -843,6 +843,15 @@
 
                 </div>
           `,
+          showCancelButton: true,
+          cancelButtonText: '<i class="bi bi-x-lg"></i> Cerrar',
+          showConfirmButton: true,
+          confirmButtonText: `<i class="bi bi-card-image"></i> Exportar PNG`,
+          buttonsStyling: false,
+          customClass: {
+            confirmButton: "btn btn-outline-warning",
+            cancelButton: "btn btn-secondary",
+          },
         });
       });
     });
