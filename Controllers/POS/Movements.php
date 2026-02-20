@@ -197,6 +197,7 @@ class Movements extends Controllers
             'current_interest_rate' => (float) number_format($headerRow['current_interest_rate'], 2),
             'amount_default_interest_rate' => (float) number_format($headerRow['amount_default_interest_rate'], 2),
             'amount_current_interest_rate' => (float) number_format($headerRow['amount_current_interest_rate'], 2),
+            'payment_deadline' => $headerRow['payment_deadline'] ? dateFormat($headerRow['payment_deadline']) : 'No aplica',
         ];
         $dataDetails = $rows['detail'];
         // Detalle (todas las filas)

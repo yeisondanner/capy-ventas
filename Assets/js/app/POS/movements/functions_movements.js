@@ -584,6 +584,7 @@
           $("#tax_amount").text(`${getcurrency} ${h.tax_amount}`);
           $("#voucher_state").text(h.status);
           $("#voucher_type").text(h.sale_type);
+          $("#voucher_expiration_date").html(h.payment_deadline);
           //mostramos los datos de interes
           $("#input_finac_percentage").text(h.current_interest_rate);
           $("#input_finac_amount").text(

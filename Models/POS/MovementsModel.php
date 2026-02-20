@@ -47,8 +47,8 @@ class MovementsModel extends Mysql
 
             $arrValues = [$businessId];
             if ($minDate != null && $maxDate != null) {
-                $sql .= " AND DATE(vh.date_time) BETWEEN ? AND ?";
-                array_push($arrValues, $minDate, $maxDate);
+                $sql .= " AND (DATE(vh.date_time) BETWEEN ? AND ? OR DATE(vh.payment_date) BETWEEN ? AND ?)";
+                array_push($arrValues, $minDate, $maxDate, $minDate, $maxDate);
             }
             // Agregar filtro por concepto si se proporciona
             if ($searchConcept != null && !empty($searchConcept)) {
@@ -126,7 +126,8 @@ class MovementsModel extends Mysql
                     vh.default_interest_rate,
                     vh.current_interest_rate,
                     vh.amount_default_interest_rate,
-                    vh.amount_current_interest_rate
+                    vh.amount_current_interest_rate,
+                    IFNULL(DATE(vh.payment_deadline),NULL) AS 'payment_deadline'
                 FROM
                     voucher_header vh
                     INNER JOIN business AS b ON b.idBusiness = vh.business_id

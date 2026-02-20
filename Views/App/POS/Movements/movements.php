@@ -242,32 +242,36 @@
 
                     <!-- Title & Date -->
                     <div class="row mb-4">
-                        <div class="col-12 text-center">
+                        <div class="col-12 text-center border border-dark">
                             <h5 class="fw-bold text-decoration-underline text-uppercase">Comprobante de Venta</h5>
                         </div>
                     </div>
 
                     <!-- Details Grid -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-6">
+                    <div class="row mb-4">
+                        <div class="col-6 border-left border-top border-dark bg-light">
                             <label class="small text-uppercase text-muted fw-bold">Codigo de Venta:</label>
-                            <div class="fw-bold" id="voucher_code">--</div>
+                            <div class="fw-bold small" id="voucher_code">--</div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-3 border-top border-dark bg-light">
                             <label class="small text-uppercase text-muted fw-bold">Estado:</label>
-                            <div class="fw-bold" id="voucher_state">----</div>
+                            <div class="fw-bold small" id="voucher_state">----</div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-3 border-right border-top border-dark bg-light">
                             <label class="small text-uppercase text-muted fw-bold">Tipo Venta:</label>
-                            <div class="fw-bold" id="voucher_type">------</div>
+                            <div class="fw-bold small" id="voucher_type">------</div>
                         </div>
-                        <div class="col-6">
-                            <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión:</label>
-                            <div class="fw-bold" id="date_time">--</div>
+                        <div class="col-6 border-left border-bottom border-dark bg-light">
+                            <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión/pago:</label>
+                            <div class="fw-bold small" id="date_time">--</div>
                         </div>
-                        <div class="col-6 text-end">
+                        <div class="col-6 border-right border-bottom border-dark bg-light">
+                            <label class="small text-uppercase text-muted fw-bold">Fecha de Vencimiento:</label>
+                            <div class="fw-bold small" id="voucher_expiration_date">--</div>
+                        </div>
+                        <div class="col-12 text-end">
                             <label class="small text-uppercase text-muted fw-bold">Vendedor:</label>
-                            <div class="fw-bold" id="fullname">--</div>
+                            <div class="fw-bold small" id="fullname">--</div>
                         </div>
 
                         <div class="col-12 mt-3">
@@ -351,7 +355,8 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-warning" id="download-png"><i class="bi bi-card-image"></i>
                     Exportar PNG</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>
+                    Cerrar</button>
             </div>
         </div>
     </div>
