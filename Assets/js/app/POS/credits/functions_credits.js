@@ -8,57 +8,57 @@
   //elementos del modal de reporte
   const detailCustomerName = document.getElementById("detailCustomerName");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument"
+    "detailCustomerDocument",
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection"
+    "detailCustomerDirection",
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay"
+    "detailCustomerBillingDay",
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing"
+    "detailCustomerCreditLimitFinancing",
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest"
+    "detailCustomerMonthlyInterest",
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing"
+    "detailCustomerMonthlyInterestFinancing",
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit"
+    "detailCustomerCreditLimit",
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu"
+    "detailCustomerPercentConsu",
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent"
+    "detailCustomerIndicadorPercent",
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp"
+    "detailCustomerAmountDisp",
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start"
+    "modal-filter-date-start",
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
   const modalFilterSaleType = document.getElementById("modal-filter-sale-type");
   const modalFilterPaymentStatus = document.getElementById(
-    "modal-filter-payment-status"
+    "modal-filter-payment-status",
   );
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased"
+    "detailCustomerTotalPurchased",
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid"
+    "detailCustomerTotalPaid",
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt"
+    "detailCustomerTotalDebt",
   );
   //cuerpo de la tabla de creditos
   const customerSalesBody = document.getElementById("customerSalesBody");
@@ -303,7 +303,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -317,7 +317,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -331,7 +331,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -347,7 +347,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -361,7 +361,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -377,7 +377,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -398,7 +398,7 @@
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
             modalFilterSaleType.value ?? "All",
-            modalFilterPaymentStatus.value ?? "All"
+            modalFilterPaymentStatus.value ?? "All",
           );
         });
       });
@@ -419,7 +419,7 @@
     startDate,
     endDate,
     saleType,
-    paymentStatus
+    paymentStatus,
   ) {
     //return; //paramos temporalmente
     const formdata = new FormData();
@@ -439,7 +439,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading"
+      "loading",
     );
     try {
       const response = await fetch(endpoint, config);
@@ -632,7 +632,7 @@
             message: "Por favor espere...Calculando intereses....",
             icon: "info",
           },
-          "loading"
+          "loading",
         );
         try {
           const response = await fetch(endpoint, config);
@@ -690,7 +690,7 @@
                   modalFilterDateStart.value,
                   modalFilterDateEnd.value,
                   modalFilterSaleType.value ?? "All",
-                  modalFilterPaymentStatus.value ?? "All"
+                  modalFilterPaymentStatus.value ?? "All",
                 );
               }
               showAlert({
@@ -718,145 +718,69 @@
     const btnReportCredit = document.querySelectorAll(".btn-view");
     btnReportCredit.forEach((btn) => {
       btn.addEventListener("click", async () => {
-        const idCustomer = btn.dataset.id;
-        Swal.fire({
-          target: document.getElementById("creditsReportModal"),
-          html: `
-                <div class="receipt-container report-card-movements p-4 border rounded shadow-sm bg-white">
-                    <!-- Header -->
-                    <div class="row align-items-center mb-4 border-bottom pb-3">
-                        <div class="col-3 text-center">
-                            <img id="logo_voucher" src="" alt="Logo" class="img-fluid"
-                                style="max-height: 80px; filter: grayscale(100%);">
-                        </div>
-                        <div class="col-9 text-end">
-                            <h4 class="fw-bold text-uppercase mb-1" id="name_bussines">--</h4>
-                            <p class="mb-0 text-muted small" id="direction_bussines">--</p>
-                            <p class="mb-0 text-muted small">RUC: <span id="document_bussines">--</span></p>
-                        </div>
-                    </div>
+        const idVoucher = btn.dataset.id;
 
-                    <!-- Title & Date -->
-                    <div class="row mb-4">
-                        <div class="col-12 text-center border border-dark">
-                            <h5 class="fw-bold text-decoration-underline text-uppercase">Comprobante de Venta</h5>
-                        </div>
-                    </div>
-
-                    <!-- Details Grid -->
-                    <div class="row mb-4">
-                        <div class="col-6 border-left border-top border-dark bg-light">
-                            <label class="small text-uppercase text-muted fw-bold">Codigo de Venta:</label>
-                            <div class="fw-bold small" id="voucher_code">--</div>
-                        </div>
-                        <div class="col-3 border-top border-dark bg-light">
-                            <label class="small text-uppercase text-muted fw-bold">Estado:</label>
-                            <div class="fw-bold small" id="voucher_state">----</div>
-                        </div>
-                        <div class="col-3 border-right border-top border-dark bg-light">
-                            <label class="small text-uppercase text-muted fw-bold">Tipo Venta:</label>
-                            <div class="fw-bold small" id="voucher_type">------</div>
-                        </div>
-                        <div class="col-6 border-left border-bottom border-dark bg-light">
-                            <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión/pago:</label>
-                            <div class="fw-bold small" id="date_time">--</div>
-                        </div>
-                        <div class="col-6 border-right border-bottom border-dark bg-light">
-                            <label class="small text-uppercase text-muted fw-bold">Fecha de Vencimiento:</label>
-                            <div class="fw-bold small" id="voucher_expiration_date">--</div>
-                        </div>
-                        <div class="col-12 text-end">
-                            <label class="small text-uppercase text-muted fw-bold">Vendedor:</label>
-                            <div class="fw-bold small" id="fullname">--</div>
-                        </div>
-
-                        <div class="col-12 mt-3">
-                            <label class="small text-uppercase text-muted fw-bold">Cliente:</label>
-                            <div class="border-bottom border-dark pb-1 fs-5" id="name_customer">--</div>
-                            <div class="small text-muted" id="direction_customer">--</div>
-                        </div>
-                    </div>
-
-                    <!-- Product Details Table -->
-                    <div class="table-responsive mb-4">
-                        <table class="table table-bordered border-dark table-sm mb-0">
-                            <thead class="bg-light text-center">
-                                <tr>
-                                    <th style="width: 10%;">Cant.</th>
-                                    <th style="width: 50%;">Descripción</th>
-                                    <th style="width: 20%;">P. Unit</th>
-                                    <th style="width: 20%;">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbodyVoucherDetails">
-                                <!-- Dynamic Items -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Totals Section -->
-                    <div class="row justify-content-end">
-                        <div class="col-8">
-                            <table class="table table-sm table-borderless mb-0">
-                                <tbody>
-                                    <tr>
-                                        <td class="text-end fw-bold small py-0">Subtotal:</td>
-                                        <td class="text-end small py-0" style="width: 120px;"><span
-                                                id="subtotal_amount">--</span></td>
-                                    </tr>
-                                    <tr class="border-top border-dark">
-                                        <td class="text-end fw-bold small py-0">Descuento (<span
-                                                id="percentage_discount">0</span>%):</td>
-                                        <td class="text-end text-danger small py-0"><span id="discount_amount">--</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end fw-bold small py-0"><span id="tax_name">IGV</span> (<span
-                                                id="tax_percentage">0</span>%):</td>
-                                        <td class="text-end small py-0"><span id="tax_amount">--</span></td>
-                                    </tr>
-                                    <!--Inpuestos -->
-                                    <tr class="border-top border-dark">
-                                        <td class="text-end fw-bold small py-0" title="Impuesto de financiamiento">
-                                            <span>Imp. Finac.</span> (<span id="input_finac_percentage">0</span>%):
-                                        </td>
-                                        <td class="text-end small py-0"><span id="input_finac_amount">--</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end fw-bold small py-0" title="Impuesto por mora Mensual">
-                                            <span>Imp. Mor. Mens.</span> (<span id="input_mora_percentage">0</span>%):
-                                        </td>
-                                        <td class="text-end small py-0"><span id="input_mora_amount">--</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="p-2 border border-2 border-dark rounded bg-light mt-2 text-end">
-                                <label class="small text-uppercase text-muted fw-bold d-block">Total a Pagar</label>
-                                <span class="fs-4 fw-bold text-dark" id="total_amount">--</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- System Footer -->
-                    <div class="row mt-4">
-                        <div class="col-12 text-center d-flex align-items-center justify-content-center">
-                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo"
-                                style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
-                            <small class="text-muted fst-italic">Generado por Capy Ventas</small>
-                        </div>
-                    </div>
-
-                </div>
-          `,
-          showCancelButton: true,
-          cancelButtonText: '<i class="bi bi-x-lg"></i> Cerrar',
-          showConfirmButton: true,
-          confirmButtonText: `<i class="bi bi-card-image"></i> Exportar PNG`,
-          buttonsStyling: false,
-          customClass: {
-            confirmButton: "btn btn-outline-warning",
-            cancelButton: "btn btn-secondary",
+        showAlert(
+          {
+            title: "Cargando comprobante",
+            message: "Por favor espere...",
+            icon: "info",
           },
-        });
+          "loading",
+        );
+
+        const formdata = new FormData();
+        formdata.append("idVoucherHeader", idVoucher);
+
+        try {
+          const response = await fetch(`${base_url}/pos/Movements/getVoucher`, {
+            method: "POST",
+            body: formdata,
+          });
+          const res = await response.json();
+          swal.close();
+
+          if (!res.status) {
+            showAlert({
+              title: res.title,
+              message: res.message || "No se pudo cargar el comprobante",
+              icon: res.icon,
+            });
+            if (res.url) {
+              setTimeout(() => {
+                window.location.href = res.url;
+              }, 1000);
+            }
+            return;
+          }
+
+          Swal.fire({
+            target: document.getElementById("creditsReportModal"),
+            html: renderHtmlVoucherPayment(res.header, res.details),
+            showCancelButton: true,
+            cancelButtonText: '<i class="bi bi-x-lg"></i> Cerrar',
+            showConfirmButton: true,
+            confirmButtonText: `<i class="bi bi-card-image"></i> Exportar PNG`,
+            buttonsStyling: false,
+            customClass: {
+              confirmButton: "btn btn-outline-warning",
+              cancelButton: "btn btn-secondary",
+            },
+            preConfirm: () => {
+              exportToPng(
+                "voucherContainer",
+                `Comprobante_Venta_CV-${String(res.header.id).padStart(8, "0")}.png`,
+              );
+              return false; // Evita que se cierre el modal
+            },
+          });
+        } catch (error) {
+          showAlert({
+            title: "Ocurrio un error inesperado",
+            message: `Error al cargar el comprobante - ${error.message}`,
+            icon: "error",
+          });
+        }
       });
     });
   }
@@ -997,13 +921,214 @@
         </div>`;
   }
   /**
+   * Metodo para renderizar el html del comprobante de pago
+   * @param {*} h Datos de la cabecera
+   * @param {*} d Datos del detalle
+   * @returns
+   */
+  function renderHtmlVoucherPayment(h, d) {
+    const id_voucher = String(h.id).padStart(8, "0");
+    const voucher_code = `CV-${id_voucher}`;
+
+    let subtotal = 0;
+    let detailsHtml = "";
+    d.forEach((item) => {
+      subtotal += Number(item.sales_price_product) * item.stock_product;
+      detailsHtml += `
+        <tr>
+          <td>${item.stock_product}</td>
+          <td>${item.name_product} (${item.unit_of_measurement})</td>
+          <td class="text-end">${getcurrency} ${Number(item.sales_price_product)}</td>
+          <td class="text-end">${getcurrency} ${Number(item.sales_price_product * item.stock_product).toFixed(2)}</td>
+        </tr>
+      `;
+    });
+
+    const descuento = (subtotal * Number(h.percentage_discount || 0)) / 100;
+
+    return `
+           <div id="voucherContainer" class="receipt-container report-card-movements p-4 border rounded shadow-sm bg-white text-start">
+                    <!-- Header -->
+                    <div class="row align-items-center mb-4 border-bottom pb-3">
+                        <div class="col-3 text-center">
+                            <img id="logo_voucher" src="${h.logo}" alt="Logo" class="img-fluid"
+                                style="max-height: 80px; filter: grayscale(100%);">
+                        </div>
+                        <div class="col-9 text-end">
+                            <h4 class="fw-bold text-uppercase mb-1" id="name_bussines">${h.name_bussines}</h4>
+                            <p class="mb-0 text-muted small" id="direction_bussines">${h.direction_bussines}</p>
+                            <p class="mb-0 text-muted small">RUC: <span id="document_bussines">${h.document_bussines}</span></p>
+                        </div>
+                    </div>
+
+                    <!-- Title & Date -->
+                    <div class="row mb-4">
+                        <div class="col-12 text-center border border-dark">
+                            <h5 class="fw-bold text-decoration-underline text-uppercase mb-0 py-1">Comprobante de Venta</h5>
+                        </div>
+                    </div>
+
+                    <!-- Details Grid -->
+                    <div class="row mb-4">
+                        <div class="col-6 border-start border-top border-dark bg-light p-2">
+                            <label class="small text-uppercase text-muted fw-bold">Codigo de Venta:</label>
+                            <div class="fw-bold small" id="voucher_code">${voucher_code}</div>
+                        </div>
+                        <div class="col-3 border-top border-dark bg-light p-2">
+                            <label class="small text-uppercase text-muted fw-bold">Estado:</label>
+                            <div class="fw-bold small" id="voucher_state">${h.status}</div>
+                        </div>
+                        <div class="col-3 border-end border-top border-dark bg-light p-2">
+                            <label class="small text-uppercase text-muted fw-bold">Tipo Venta:</label>
+                            <div class="fw-bold small" id="voucher_type">${h.sale_type}</div>
+                        </div>
+                        <div class="col-6 border-start border-bottom border-dark bg-light p-2">
+                            <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión/pago:</label>
+                            <div class="fw-bold small" id="date_time">${h.date_time}</div>
+                        </div>
+                        <div class="col-6 border-end border-bottom border-dark bg-light p-2">
+                            <label class="small text-uppercase text-muted fw-bold">Fecha de Vencimiento:</label>
+                            <div class="fw-bold small" id="voucher_expiration_date">${h.payment_deadline}</div>
+                        </div>
+                        <div class="col-12 text-end mt-2">
+                            <label class="small text-uppercase text-muted fw-bold">Vendedor:</label>
+                            <div class="fw-bold small" id="fullname">${h.fullname}</div>
+                        </div>
+
+                        <div class="col-12 mt-3">
+                            <label class="small text-uppercase text-muted fw-bold">Cliente:</label>
+                            <div class="border-bottom border-dark pb-1 fs-5" id="name_customer">${h.name_customer}</div>
+                            <div class="small text-muted" id="direction_customer">${h.direction_customer}</div>
+                        </div>
+                    </div>
+
+                    <!-- Product Details Table -->
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered border-dark table-sm mb-0">
+                            <thead class="bg-light text-center">
+                                <tr>
+                                    <th style="width: 10%;">Cant.</th>
+                                    <th style="width: 50%;">Descripción</th>
+                                    <th style="width: 20%;">P. Unit</th>
+                                    <th style="width: 20%;">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyVoucherDetails">
+                                ${detailsHtml}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Totals Section -->
+                    <div class="row justify-content-end">
+                        <div class="col-8">
+                            <table class="table table-sm table-borderless mb-0">
+                                <tbody>
+                                    <tr>
+                                        <td class="text-end fw-bold small py-0">Subtotal:</td>
+                                        <td class="text-end small py-0" style="width: 120px;"><span
+                                                id="subtotal_amount">${getcurrency} ${subtotal.toFixed(2)}</span></td>
+                                    </tr>
+                                    <tr class="border-top border-dark">
+                                        <td class="text-end fw-bold small py-0">Descuento (<span
+                                                id="percentage_discount">${h.percentage_discount}</span>%):</td>
+                                        <td class="text-end text-danger small py-0"><span id="discount_amount">${getcurrency} ${descuento.toFixed(2)}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-end fw-bold small py-0"><span id="tax_name">${h.tax_name}</span> (<span
+                                                id="tax_percentage">${h.tax_percentage}</span>%):</td>
+                                        <td class="text-end small py-0"><span id="tax_amount">${getcurrency} ${h.tax_amount}</span></td>
+                                    </tr>
+                                    <!--Inpuestos -->
+                                    <tr class="border-top border-dark">
+                                        <td class="text-end fw-bold small py-0" title="Impuesto de financiamiento">
+                                            <span>Imp. Finac.</span> (<span id="input_finac_percentage">${h.current_interest_rate}</span>%):
+                                        </td>
+                                        <td class="text-end small py-0"><span id="input_finac_amount">${getcurrency} ${h.amount_current_interest_rate}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-end fw-bold small py-0" title="Impuesto por mora Mensual">
+                                            <span>Imp. Mor. Mens.</span> (<span id="input_mora_percentage">${h.default_interest_rate}</span>%):
+                                        </td>
+                                        <td class="text-end small py-0"><span id="input_mora_amount">${getcurrency} ${h.amount_default_interest_rate}</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="p-2 border border-2 border-dark rounded bg-light mt-2 text-end">
+                                <label class="small text-uppercase text-muted fw-bold d-block">Total a Pagar</label>
+                                <span class="fs-4 fw-bold text-dark" id="total_amount">S/ ${Number(h.amount).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- System Footer -->
+                    <div class="row mt-4">
+                        <div class="col-12 text-center d-flex align-items-center justify-content-center">
+                            <img src="${base_url}/Assets/capysm.png" alt="Logo"
+                                style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
+                            <small class="text-muted fst-italic">Generado por Capy Ventas</small>
+                        </div>
+                    </div>
+
+                </div>
+    `;
+  }
+
+  /**
+   * Metodo que se encarga de descargar el comprobante en formato PNG
+   */
+  const exportToPng = (elementId, filename) => {
+    const originalElement = document.getElementById(elementId);
+    if (!originalElement) return;
+
+    // 1. Clonar el elemento
+    const clone = originalElement.cloneNode(true);
+
+    // 2. Estilizar el clon para que se muestre completo
+    Object.assign(clone.style, {
+      position: "fixed",
+      top: "-9999px",
+      left: "-9999px",
+      width: originalElement.offsetWidth + "px", // Mismo ancho que el original
+      height: "auto", // Altura automática para mostrar todo el contenido
+      zIndex: "-1",
+      overflow: "visible", // Asegurar que no haya scroll oculto
+    });
+
+    // 3. Insertar el clon en el documento
+    document.body.appendChild(clone);
+
+    // 4. Generar el canvas desde el clon
+    html2canvas(clone, {
+      scale: 2, // Mejor resolución
+      useCORS: true,
+      scrollY: -window.scrollY, // Ajuste para evitar desplazamiento
+    })
+      .then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = imgData;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      })
+      .catch((err) => {
+        console.error("Error exporting PNG:", err);
+      })
+      .finally(() => {
+        // 5. Eliminar el clon
+        document.body.removeChild(clone);
+      });
+  };
+  /**
    * Metodo para obtener los metodos de pago para el swal
    * @returns
    */
   async function getPaymentMethods() {
     //obtenemmos el select de metodo de pago
     const swalMethodPaymentSelect = document.getElementById(
-      "swalMethodPaymentSelect"
+      "swalMethodPaymentSelect",
     );
     if (!swalMethodPaymentSelect) return;
     //limpiamos el select
@@ -1059,7 +1184,7 @@
    */
   function typeMethodPayment(methodPayment) {
     const swalReceivesContainer = document.getElementById(
-      "swalReceivesContainer"
+      "swalReceivesContainer",
     );
     if (!swalReceivesContainer) return;
 
@@ -1152,7 +1277,7 @@
   function desglosePaymentVoucherName() {
     const btnToggleDetail = document.getElementById("btnToggleDetail");
     const containerDetailPayment = document.getElementById(
-      "containerDetailPayment"
+      "containerDetailPayment",
     );
     const swalDetailPayment = document.getElementById("swalDetailPayment");
     if (btnToggleDetail && containerDetailPayment) {
@@ -1166,7 +1291,7 @@
           btnToggleDetail.classList.remove(
             "text-danger",
             "border-danger",
-            "bg-danger"
+            "bg-danger",
           );
           btnToggleDetail.classList.add("text-secondary", "border-secondary");
         } else {
@@ -1174,13 +1299,13 @@
             '<i class="bi bi-x-circle me-2"></i>Cancelar nombre del pago';
           btnToggleDetail.classList.remove(
             "text-secondary",
-            "border-secondary"
+            "border-secondary",
           );
           btnToggleDetail.classList.add(
             "text-danger",
             "border-danger",
             "bg-danger",
-            "bg-opacity-10"
+            "bg-opacity-10",
           );
           // Enfocar el input cuando se muestra
           setTimeout(() => {
@@ -1207,7 +1332,7 @@
     //mostramos una alerta que el metodo de pago no a sid seleccionado
     if (swalMethodPaymentSelect.value == 0) {
       return Swal.showValidationMessage(
-        "Debe seleccionar un metodo de pago para continuar"
+        "Debe seleccionar un metodo de pago para continuar",
       );
     }
     formdata.append("paymentMethod", swalMethodPaymentSelect.value ?? 0);
