@@ -206,9 +206,6 @@
     </div>
 </main>
 <?= footerPos($data) ?>
-
-
-
 <!-- Modal Comprobante -->
 <div class="modal fade" id="voucherModal" tabindex="-1" aria-labelledby="voucherModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
@@ -245,32 +242,36 @@
 
                     <!-- Title & Date -->
                     <div class="row mb-4">
-                        <div class="col-12 text-center">
+                        <div class="col-12 text-center border border-dark">
                             <h5 class="fw-bold text-decoration-underline text-uppercase">Comprobante de Venta</h5>
                         </div>
                     </div>
 
                     <!-- Details Grid -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-6">
+                    <div class="row mb-4">
+                        <div class="col-6 border-left border-top border-dark bg-light">
                             <label class="small text-uppercase text-muted fw-bold">Codigo de Venta:</label>
-                            <div class="fw-bold" id="voucher_code">--</div>
+                            <div class="fw-bold small" id="voucher_code">--</div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-3 border-top border-dark bg-light">
                             <label class="small text-uppercase text-muted fw-bold">Estado:</label>
-                            <div class="fw-bold" id="voucher_state">----</div>
+                            <div class="fw-bold small" id="voucher_state">----</div>
                         </div>
-                        <div class="col-3">
+                        <div class="col-3 border-right border-top border-dark bg-light">
                             <label class="small text-uppercase text-muted fw-bold">Tipo Venta:</label>
-                            <div class="fw-bold" id="voucher_type">------</div>
+                            <div class="fw-bold small" id="voucher_type">------</div>
                         </div>
-                        <div class="col-6">
-                            <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión:</label>
-                            <div class="fw-bold" id="date_time">--</div>
+                        <div class="col-6 border-left border-bottom border-dark bg-light">
+                            <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión/pago:</label>
+                            <div class="fw-bold small" id="date_time">--</div>
                         </div>
-                        <div class="col-6 text-end">
+                        <div class="col-6 border-right border-bottom border-dark bg-light">
+                            <label class="small text-uppercase text-muted fw-bold">Fecha de Vencimiento:</label>
+                            <div class="fw-bold small" id="voucher_expiration_date">--</div>
+                        </div>
+                        <div class="col-12 text-end">
                             <label class="small text-uppercase text-muted fw-bold">Vendedor:</label>
-                            <div class="fw-bold" id="fullname">--</div>
+                            <div class="fw-bold small" id="fullname">--</div>
                         </div>
 
                         <div class="col-12 mt-3">
@@ -307,7 +308,7 @@
                                         <td class="text-end small py-0" style="width: 120px;"><span
                                                 id="subtotal_amount">--</span></td>
                                     </tr>
-                                    <tr>
+                                    <tr class="border-top border-dark">
                                         <td class="text-end fw-bold small py-0">Descuento (<span
                                                 id="percentage_discount">0</span>%):</td>
                                         <td class="text-end text-danger small py-0"><span id="discount_amount">--</span>
@@ -317,6 +318,19 @@
                                         <td class="text-end fw-bold small py-0"><span id="tax_name">IGV</span> (<span
                                                 id="tax_percentage">0</span>%):</td>
                                         <td class="text-end small py-0"><span id="tax_amount">--</span></td>
+                                    </tr>
+                                    <!--Inpuestos -->
+                                    <tr class="border-top border-dark">
+                                        <td class="text-end fw-bold small py-0" title="Impuesto de financiamiento">
+                                            <span>Imp. Finac.</span> (<span id="input_finac_percentage">0</span>%):
+                                        </td>
+                                        <td class="text-end small py-0"><span id="input_finac_amount">--</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-end fw-bold small py-0" title="Impuesto por mora Mensual">
+                                            <span>Imp. Mor. Mens.</span> (<span id="input_mora_percentage">0</span>%):
+                                        </td>
+                                        <td class="text-end small py-0"><span id="input_mora_amount">--</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -341,12 +355,12 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-warning" id="download-png"><i class="bi bi-card-image"></i>
                     Exportar PNG</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>
+                    Cerrar</button>
             </div>
         </div>
     </div>
 </div>
-
 <!-- Modal Gasto -->
 <div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable">
@@ -475,5 +489,4 @@
             </div>
         </div>
     </div>
-</div>
 </div>

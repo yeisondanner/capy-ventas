@@ -658,6 +658,10 @@ class Sales extends Controllers
             if (!$paymentDeadline) {
                 $this->responseError('No se encontro informacion del cliente, por favor intente de nuevo o refresque la página.', 6000);
             }
+            //verificamos si la fecha de facturacion no es nula
+            if (empty($paymentDeadline["billing_date"])) {
+                $this->responseError('El cliente no tiene una fecha de facturacion configurada, configurela en el modulo de clientes.', 6000);
+            }
             //primero verificamos que la fecha de facturación sea mayor a la fecha que esta ingresando la venta
             $billing_date = $paymentDeadline["billing_date"];
             //obtenemos el dia de la fecha de facturación

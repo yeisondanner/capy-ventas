@@ -186,8 +186,7 @@
                                     <i class="bi bi-card-heading text-secondary fs-5 me-3"></i>
                                     <div>
                                         <span class="d-block text-muted" style="font-size: 0.8em;">DOCUMENTO</span>
-                                        <span class="fw-medium text-dark"
-                                            id="detailCustomerDocument">45.890.123</span>
+                                        <span class="fw-medium text-dark" id="detailCustomerDocument">45.890.123</span>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center mb-3">
@@ -222,14 +221,14 @@
                                     <div>
                                         <span class="d-block text-muted" style="font-size: 0.8em;">INTERES MENSUAL X
                                             MORA</span>
-                                        <span class="fw-medium text-dark"
-                                            id="detailCustomerMonthlyInterest">--</span>
+                                        <span class="fw-medium text-dark" id="detailCustomerMonthlyInterest">--</span>
                                     </div>
                                 </div>
                                 <div class="d-flex align-items-center mb-3">
                                     <i class="bi bi-calendar-check text-secondary fs-5 me-3"></i>
                                     <div>
-                                        <span class="d-block text-muted" style="font-size: 0.8em;">INTERES FINANCIAMIENTO</span>
+                                        <span class="d-block text-muted" style="font-size: 0.8em;">INTERES
+                                            FINANCIAMIENTO</span>
                                         <span class="fw-medium text-dark"
                                             id="detailCustomerMonthlyInterestFinancing">--</span>
                                     </div>
@@ -286,8 +285,7 @@
                                         </div>
                                     </div>
                                     <div class="col-6 col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                                        <label
-                                            class="form-label small text-muted text-uppercase fw-bold mb-1">Estado
+                                        <label class="form-label small text-muted text-uppercase fw-bold mb-1">Estado
                                             Pago</label>
                                         <div class="input-group input-group-sm">
                                             <span class="input-group-text"><i class="bi bi-cash"></i></span>
@@ -314,22 +312,22 @@
                             <!-- KPIs Rápidos -->
                             <div class="row g-0 border-bottom bg-light">
                                 <div class="col-4 border-end p-3 text-center">
-                                    <small class="text-uppercase text-muted fw-bold"
-                                        style="font-size: 0.7rem;">Total Comprado</small>
+                                    <small class="text-uppercase text-muted fw-bold" style="font-size: 0.7rem;">Total
+                                        Comprado</small>
                                     <div class="h5 mb-0 fw-bold tabular-nums text-dark"
                                         id="detailCustomerTotalPurchased">S/. --</div>
                                 </div>
                                 <div class="col-4 border-end p-3 text-center">
                                     <small class="text-uppercase text-muted fw-bold"
                                         style="font-size: 0.7rem;">Pagado</small>
-                                    <div class="h5 mb-0 fw-bold tabular-nums text-success"
-                                        id="detailCustomerTotalPaid">S/. --</div>
+                                    <div class="h5 mb-0 fw-bold tabular-nums text-success" id="detailCustomerTotalPaid">
+                                        S/. --</div>
                                 </div>
                                 <div class="col-4 p-3 text-center bg-danger bg-opacity-10">
-                                    <small class="text-uppercase text-danger fw-bold"
-                                        style="font-size: 0.7rem;">Deuda Pendiente</small>
-                                    <div class="h5 mb-0 fw-bold tabular-nums text-danger"
-                                        id="detailCustomerTotalDebt">S/. --</div>
+                                    <small class="text-uppercase text-danger fw-bold" style="font-size: 0.7rem;">Deuda
+                                        Pendiente</small>
+                                    <div class="h5 mb-0 fw-bold tabular-nums text-danger" id="detailCustomerTotalDebt">
+                                        S/. --</div>
                                 </div>
                             </div>
 
@@ -342,8 +340,7 @@
                                                 Fecha</th>
                                             <th class="py-3 small text-muted text-uppercase fw-bold border-0">
                                                 Comprobante</th>
-                                            <th
-                                                class="py-3 small text-muted text-uppercase fw-bold border-0 text-end">
+                                            <th class="py-3 small text-muted text-uppercase fw-bold border-0 text-end">
                                                 Monto</th>
                                             <th
                                                 class="py-3 small text-muted text-uppercase fw-bold border-0 text-center">
@@ -396,7 +393,8 @@
                                         <tr class="table-danger border-start border-4 border-danger">
                                             <td class="ps-4 text-nowrap fw-bold text-danger">
                                                 <div class="fw-medium">12/10/2023</div>
-                                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-10"
+                                                <span
+                                                    class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-10"
                                                     style="font-size: 0.65em;">Vencido 4 dias</span>
                                             </td>
                                             <td>
@@ -418,7 +416,8 @@
                                         <tr class="table-danger border-start border-4 border-danger">
                                             <td class="ps-4 text-nowrap fw-bold text-danger">
                                                 <div class="fw-medium">15/10/2023</div>
-                                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10"
+                                                <span
+                                                    class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-10"
                                                     style="font-size: 0.65em;">A tiempo</span>
                                             </td>
                                             <td>
@@ -469,7 +468,8 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar <i
+                        class="bi bi-x-lg"></i></button>
                 <button class="btn btn-outline-primary shadow-sm"><i class="bi bi-wallet2 me-1"></i> Pagar
                     Todo</button>
             </div>

@@ -1,0 +1,47 @@
+.table#table tbody td {
+  vertical-align: middle;
+}
+
+/* Mejorar la apariencia de la tabla en dispositivos móviles */
+.dtr-details {
+  text-align: left;
+}
+
+.dtr-data {
+  word-break: break-word;
+}
+
+/* Mejorar estéticamente las tarjetas */
+.card-enhanced {
+  transition: all 0.3s ease-in-out;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.card-enhanced:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Estilo para el contenedor del icono */
+.icon-container {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+/* Mejorar el texto en las tarjetas */
+.card-enhanced .small.text-muted {
+  font-size: 0.85rem;
+}
+
+.card-enhanced .fw-semibold.fs-5 {
+  font-size: 1.25rem;
+}
+
+.report-card-movements {
+  border: 2px solid #ddd;
+  max-width: 100%;
+  margin: 0 auto;
+  font-family: "Courier New", Courier, monospace;
+}

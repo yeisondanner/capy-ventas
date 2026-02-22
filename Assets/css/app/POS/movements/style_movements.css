@@ -2,14 +2,6 @@
   vertical-align: middle;
 }
 
-.modal .form-label {
-  font-weight: 600;
-}
-
-.modal .btn-close {
-  box-shadow: none;
-}
-
 /* Mejorar la apariencia de la tabla en dispositivos móviles */
 .dtr-details {
   text-align: left;

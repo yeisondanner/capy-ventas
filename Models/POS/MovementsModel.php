@@ -33,7 +33,7 @@ class MovementsModel extends Mysql
                     ) ELSE vh.voucher_name END AS 'name',
                     vh.amount AS 'amount',
                     pm.name AS 'method_payment',
-                    vh.date_time AS 'date_time',
+                    IFNULL(vh.payment_date,vh.date_time) AS 'date_time',
                     CONCAT(p.`names`, ' ', p.lastname) AS 'fullname'
                 FROM
                     voucher_header vh
@@ -47,8 +47,8 @@ class MovementsModel extends Mysql
 
             $arrValues = [$businessId];
             if ($minDate != null && $maxDate != null) {
-                $sql .= " AND DATE(vh.date_time) BETWEEN ? AND ?";
-                array_push($arrValues, $minDate, $maxDate);
+                $sql .= " AND (DATE(vh.date_time) BETWEEN ? AND ? OR DATE(vh.payment_date) BETWEEN ? AND ?)";
+                array_push($arrValues, $minDate, $maxDate, $minDate, $maxDate);
             }
             // Agregar filtro por concepto si se proporciona
             if ($searchConcept != null && !empty($searchConcept)) {
@@ -56,7 +56,7 @@ class MovementsModel extends Mysql
                 $searchParam = '%' . $searchConcept . '%';
                 array_push($arrValues, $searchParam, $searchParam);
             }
-            $sql .= " ORDER BY vh.date_time DESC";
+            $sql .= " ORDER BY IFNULL(vh.payment_date,vh.date_time) DESC";
         } else if ($type_movements === 'expense') {
             /**
              * Seccion de obtener los gastos de acuerdo a los filtros proporcionados
@@ -108,7 +108,7 @@ class MovementsModel extends Mysql
                     vh.name_bussines,
                     vh.direction_bussines,
                     vh.document_bussines,
-                    vh.date_time,
+                    IFNULL(vh.payment_date,vh.date_time) AS 'date_time',
                     vh.name_customer,
                     vh.direction_customer,
                     vh.amount,
@@ -122,7 +122,12 @@ class MovementsModel extends Mysql
                     vh.idVoucherHeader AS 'id',
                     CONCAT(p.`names`, ' ', p.lastname) AS fullname,
                     vh.status,
-                    vh.sale_type
+                    vh.sale_type,
+                    vh.default_interest_rate,
+                    vh.current_interest_rate,
+                    vh.amount_default_interest_rate,
+                    vh.amount_current_interest_rate,
+                    IFNULL(DATE(vh.payment_deadline),NULL) AS 'payment_deadline'
                 FROM
                     voucher_header vh
                     INNER JOIN business AS b ON b.idBusiness = vh.business_id
