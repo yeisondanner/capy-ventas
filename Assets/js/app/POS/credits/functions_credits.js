@@ -8,57 +8,57 @@
   //elementos del modal de reporte
   const detailCustomerName = document.getElementById("detailCustomerName");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument",
+    "detailCustomerDocument"
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection",
+    "detailCustomerDirection"
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay",
+    "detailCustomerBillingDay"
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing",
+    "detailCustomerCreditLimitFinancing"
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest",
+    "detailCustomerMonthlyInterest"
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing",
+    "detailCustomerMonthlyInterestFinancing"
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit",
+    "detailCustomerCreditLimit"
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu",
+    "detailCustomerPercentConsu"
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent",
+    "detailCustomerIndicadorPercent"
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp",
+    "detailCustomerAmountDisp"
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start",
+    "modal-filter-date-start"
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
   const modalFilterSaleType = document.getElementById("modal-filter-sale-type");
   const modalFilterPaymentStatus = document.getElementById(
-    "modal-filter-payment-status",
+    "modal-filter-payment-status"
   );
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased",
+    "detailCustomerTotalPurchased"
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid",
+    "detailCustomerTotalPaid"
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt",
+    "detailCustomerTotalDebt"
   );
   //cuerpo de la tabla de creditos
   const customerSalesBody = document.getElementById("customerSalesBody");
@@ -303,7 +303,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -317,7 +317,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -331,7 +331,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -347,7 +347,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -361,7 +361,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -377,7 +377,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -398,7 +398,7 @@
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
             modalFilterSaleType.value ?? "All",
-            modalFilterPaymentStatus.value ?? "All",
+            modalFilterPaymentStatus.value ?? "All"
           );
         });
       });
@@ -419,7 +419,7 @@
     startDate,
     endDate,
     saleType,
-    paymentStatus,
+    paymentStatus
   ) {
     //return; //paramos temporalmente
     const formdata = new FormData();
@@ -439,7 +439,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading",
+      "loading"
     );
     try {
       const response = await fetch(endpoint, config);
@@ -632,7 +632,7 @@
             message: "Por favor espere...Calculando intereses....",
             icon: "info",
           },
-          "loading",
+          "loading"
         );
         try {
           const response = await fetch(endpoint, config);
@@ -690,7 +690,7 @@
                   modalFilterDateStart.value,
                   modalFilterDateEnd.value,
                   modalFilterSaleType.value ?? "All",
-                  modalFilterPaymentStatus.value ?? "All",
+                  modalFilterPaymentStatus.value ?? "All"
                 );
               }
               showAlert({
@@ -726,14 +726,14 @@
             message: "Por favor espere...",
             icon: "info",
           },
-          "loading",
+          "loading"
         );
 
         const formdata = new FormData();
         formdata.append("idVoucherHeader", idVoucher);
 
         try {
-          const response = await fetch(`${base_url}/pos/Movements/getVoucher`, {
+          const response = await fetch(`${base_url}/pos/Credits/getVoucher`, {
             method: "POST",
             body: formdata,
           });
@@ -769,7 +769,7 @@
             preConfirm: () => {
               exportToPng(
                 "voucherContainer",
-                `Comprobante_Venta_CV-${String(res.header.id).padStart(8, "0")}.png`,
+                `Comprobante_Venta_CV-${String(res.header.id).padStart(8, "0")}.png`
               );
               return false; // Evita que se cierre el modal
             },
@@ -1128,7 +1128,7 @@
   async function getPaymentMethods() {
     //obtenemmos el select de metodo de pago
     const swalMethodPaymentSelect = document.getElementById(
-      "swalMethodPaymentSelect",
+      "swalMethodPaymentSelect"
     );
     if (!swalMethodPaymentSelect) return;
     //limpiamos el select
@@ -1184,7 +1184,7 @@
    */
   function typeMethodPayment(methodPayment) {
     const swalReceivesContainer = document.getElementById(
-      "swalReceivesContainer",
+      "swalReceivesContainer"
     );
     if (!swalReceivesContainer) return;
 
@@ -1277,7 +1277,7 @@
   function desglosePaymentVoucherName() {
     const btnToggleDetail = document.getElementById("btnToggleDetail");
     const containerDetailPayment = document.getElementById(
-      "containerDetailPayment",
+      "containerDetailPayment"
     );
     const swalDetailPayment = document.getElementById("swalDetailPayment");
     if (btnToggleDetail && containerDetailPayment) {
@@ -1291,7 +1291,7 @@
           btnToggleDetail.classList.remove(
             "text-danger",
             "border-danger",
-            "bg-danger",
+            "bg-danger"
           );
           btnToggleDetail.classList.add("text-secondary", "border-secondary");
         } else {
@@ -1299,13 +1299,13 @@
             '<i class="bi bi-x-circle me-2"></i>Cancelar nombre del pago';
           btnToggleDetail.classList.remove(
             "text-secondary",
-            "border-secondary",
+            "border-secondary"
           );
           btnToggleDetail.classList.add(
             "text-danger",
             "border-danger",
             "bg-danger",
-            "bg-opacity-10",
+            "bg-opacity-10"
           );
           // Enfocar el input cuando se muestra
           setTimeout(() => {
@@ -1332,7 +1332,7 @@
     //mostramos una alerta que el metodo de pago no a sid seleccionado
     if (swalMethodPaymentSelect.value == 0) {
       return Swal.showValidationMessage(
-        "Debe seleccionar un metodo de pago para continuar",
+        "Debe seleccionar un metodo de pago para continuar"
       );
     }
     formdata.append("paymentMethod", swalMethodPaymentSelect.value ?? 0);

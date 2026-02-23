@@ -571,4 +571,82 @@ class CreditsModel extends Mysql
         ]);
         return $result;
     }
+    /**
+     * Devuelve el detalle de un comprobante (voucher) del negocio activo.
+     *
+     * @param int $voucherId
+     * @param int $businessId
+     * @return array{detail: array, header: mixed}
+     */
+    public function select_voucher(int $voucherId, int $businessId): array
+    {
+        $sqlHeader = <<<SQL
+            SELECT
+                    vh.name_bussines,
+                    vh.direction_bussines,
+                    vh.document_bussines,
+                    IFNULL(vh.payment_date,vh.date_time) AS 'date_time',
+                    vh.name_customer,
+                    vh.direction_customer,
+                    vh.amount,
+                    vh.percentage_discount,
+                    vh.voucher_name,
+                    vh.tax_name,
+                    vh.tax_percentage,
+                    vh.tax_amount,
+                    vh.sale_type,
+                    b.logo,
+                    vh.idVoucherHeader AS 'id',
+                    CONCAT(p.`names`, ' ', p.lastname) AS fullname,
+                    vh.status,
+                    vh.sale_type,
+                    vh.default_interest_rate,
+                    vh.current_interest_rate,
+                    vh.amount_default_interest_rate,
+                    vh.amount_current_interest_rate,
+                    IFNULL(DATE(vh.payment_deadline),NULL) AS 'payment_deadline'
+                FROM
+                    voucher_header vh
+                    INNER JOIN business AS b ON b.idBusiness = vh.business_id
+                    INNER JOIN user_app ua ON vh.user_app_id = ua.idUserApp
+                    INNER JOIN people p ON ua.people_id = p.idPeople
+                WHERE
+                    vh.idVoucherHeader = ?
+                    AND vh.business_id = ?
+                LIMIT 1;
+        SQL;
+        $sqlDetail = <<<SQL
+                SELECT
+                    vh.name_bussines,
+                    vh.direction_bussines,
+                    vh.document_bussines,
+                    vh.date_time,
+                    vh.name_customer,
+                    vh.direction_customer,
+                    vd.name_product,
+                    vd.unit_of_measurement,
+                    vd.sales_price_product,
+                    vh.amount,
+                    vh.percentage_discount,
+                    vd.stock_product,
+                    b.logo,
+                    CONCAT(p.`names`, ' ', p.lastname) AS fullname
+                FROM
+                    voucher_detail vd
+                    INNER JOIN voucher_header vh ON vd.voucherheader_id = vh.idVoucherHeader
+                    INNER JOIN business AS b ON b.idBusiness=vh.business_id
+                    INNER JOIN user_app ua ON vh.user_app_id = ua.idUserApp
+                    INNER JOIN people p ON ua.people_id = p.idPeople
+                WHERE vh.idVoucherHeader = ?
+                AND vh.business_id = ?
+                ORDER BY vd.name_product ASC;
+            SQL;
+
+        $header = $this->select($sqlHeader, [$voucherId, $businessId]);
+        $detail = $this->select_all($sqlDetail, [$voucherId, $businessId]);
+        return [
+            'header' => $header,
+            'detail' => $detail
+        ];
+    }
 }
