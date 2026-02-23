@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="tile rounded-5 border shadow-sm">
-                <ul class="nav nav-pills nav-fill">
+                <ul class="nav nav-pills nav-fill gap-2">
                     <li class="nav-item">
                         <a class="nav-link border border-primary shadow-sm rounded-5"
                             href="<?= base_url() ?>/pos/movements"><i class="bi bi-pc-display-horizontal fs-4"></i>
