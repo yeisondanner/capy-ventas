@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="tile rounded-5 border shadow-sm">
-                <ul class="nav nav-pills nav-fill">
+                <ul class="nav nav-pills nav-fill gap-2">
                     <li class="nav-item">
                         <a class="nav-link border border-primary shadow-sm rounded-5"
                             href="<?= base_url() ?>/pos/movements"><i class="bi bi-pc-display-horizontal fs-4"></i>
@@ -345,6 +345,9 @@
                                             <th
                                                 class="py-3 small text-muted text-uppercase fw-bold border-0 text-center">
                                                 Estado</th>
+                                            <th class="py-3 small text-muted text-uppercase fw-bold border-0 text-center">
+                                                <input type="checkbox" name="checkAllCredits" id="checkAllCredits" class="form-check-input">
+                                            </th>
                                             <th
                                                 class="pe-4 py-3 small text-muted text-uppercase fw-bold border-0 text-end">
                                                 Acción</th>
@@ -463,15 +466,15 @@
 
                 </div>
                 <!-- ======================================================= -->
-                <!-- FIN DEL CONTENIDO                             -->
+                <!-- FIN DEL CONTENIDO                                       -->
                 <!-- ======================================================= -->
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar <i
                         class="bi bi-x-lg"></i></button>
-                <button class="btn btn-outline-primary shadow-sm"><i class="bi bi-wallet2 me-1"></i> Pagar
-                    Todo</button>
+                <button class="btn btn-outline-primary shadow-sm" style="transition: all 300ms ease-in-out;" disabled
+                    id="btn-pay-selected-credits" onclick="alert('En desarrollo')"><i class="bi bi-ban me-1"></i> No disponible</button>
             </div>
         </div>
     </div>

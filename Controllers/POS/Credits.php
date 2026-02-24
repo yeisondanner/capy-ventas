@@ -272,6 +272,94 @@ class Credits extends Controllers
             'timer' => 2000
         ]);
     }
+
+    /**
+     * Devuelve el detalle de un comprobante (voucher) del negocio activo.
+     *
+     * @return void
+     */
+    public function getVoucher(): void
+    {
+        validate_permission_app(15, "r", false, false, false);
+
+        if (!$_POST) {
+            $this->responseError('Solicitud inválida.');
+        }
+
+        $idVoucherHeader = intval($_POST['idVoucherHeader'] ?? 0);
+
+        if ($idVoucherHeader <= 0) {
+            $this->responseError('Identificador de comprobante no válido.');
+        }
+
+        // ID del negocio desde la sesión
+        $businessId = $this->getBusinessId();
+
+        $rows = $this->model->select_voucher($idVoucherHeader, $businessId);
+
+        if (empty($rows)) {
+            $arrResponse = [
+                'status' => false,
+                'msg' => 'No se encontraron datos para este comprobante.'
+            ];
+            toJson($arrResponse);
+            return;
+        }
+
+        // Cabecera desde la primera fila
+        $headerRow = $rows['header'];
+
+        $header = [
+            'name_bussines' => $headerRow['name_bussines'],
+            'direction_bussines' => $headerRow['direction_bussines'],
+            'document_bussines' => $headerRow['document_bussines'],
+            'date_time' => dateFormat($headerRow['date_time']),
+            'name_customer' => $headerRow['name_customer'],
+            'direction_customer' => $headerRow['direction_customer'],
+            'fullname' => $headerRow['fullname'],
+            'amount' => (float) number_format($headerRow['amount'], 2),
+            'percentage_discount' => (float) number_format($headerRow['percentage_discount'], 2),
+            'logo' => base_url() . '/Loadfile/iconbusiness?f=' . $headerRow['logo'],
+            'tax_name' => $headerRow['tax_name'],
+            'tax_percentage' => (float) number_format($headerRow['tax_percentage'], 2),
+            'tax_amount' => (float) number_format($headerRow['tax_amount'], 2),
+            'sale_type' => $headerRow['sale_type'],
+            'status' => $headerRow['status'],
+            'id' => $headerRow['id'],
+            'default_interest_rate' => (float) number_format($headerRow['default_interest_rate'], 2),
+            'current_interest_rate' => (float) number_format($headerRow['current_interest_rate'], 2),
+            'amount_default_interest_rate' => (float) number_format($headerRow['amount_default_interest_rate'], 2),
+            'amount_current_interest_rate' => (float) number_format($headerRow['amount_current_interest_rate'], 2),
+            'payment_deadline' => $headerRow['payment_deadline'] ? dateFormat($headerRow['payment_deadline']) : 'No aplica',
+        ];
+        $dataDetails = $rows['detail'];
+        // Detalle (todas las filas)
+        $details = [];
+        if ($dataDetails) {
+            foreach ($dataDetails as $row) {
+                $details[] = [
+                    'name_product' => $row['name_product'],
+                    'unit_of_measurement' => $row['unit_of_measurement'],
+                    'sales_price_product' => (float) number_format($row['sales_price_product'], 2),
+                    'stock_product' => (float) number_format($row['stock_product'], 2),
+                ];
+            }
+        } else {
+            $details[] = [
+                'sales_price_product' => (float) number_format($headerRow['amount'], 2),
+                'name_product' => $headerRow['voucher_name'] ?? 'Venta rápida',
+                'unit_of_measurement' => 'Servicio',
+                'stock_product' => 1,
+            ];
+        }
+        $arrResponse = [
+            'status' => true,
+            'header' => $header,
+            'details' => $details,
+        ];
+
+        toJson($arrResponse);
+    }
     /**
      * Obtiene el identificador del negocio activo desde la sesión.
      *

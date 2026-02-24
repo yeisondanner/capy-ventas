@@ -100,7 +100,13 @@ class MovementsModel extends Mysql
         });
         return $arrMovements;
     }
-
+    /**
+     * Devuelve el detalle de un comprobante (voucher) del negocio activo.
+     *
+     * @param int $voucherId
+     * @param int $businessId
+     * @return array{detail: array, header: mixed}
+     */
     public function select_voucher(int $voucherId, int $businessId): array
     {
         $sqlHeader = <<<SQL
