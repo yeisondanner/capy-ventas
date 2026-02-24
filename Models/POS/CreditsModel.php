@@ -160,7 +160,7 @@ class CreditsModel extends Mysql
      * Aqui se detallan los creditos del cliente
      * @param int $idCustomer
      * @param int $idBusiness
-     * @return void
+     * @return array
      */
     public function getCreditsCustomer(int $idCustomer, int $idBusiness, string $startDate, string $endDate, string $saleType, string $paymentStatus)
     {
@@ -235,9 +235,11 @@ class CreditsModel extends Mysql
             "default_interest_rate" => 0,
             "current_interest_rate" => 0,
             "amount_default_interest_rate" => 0,
-            "amount_current_interest_rate" => 0
+            "amount_current_interest_rate" => 0,
+            "month_overdue" => 0
         ];
         foreach ($dataCredits as $key => $value) {
+            $dataCredits[$key]['month_overdue'] = 0;
             //Validamos si el credito tiene fecha de vencimiento y que su estado sea pendiente
             if (!empty($value['payment_deadline']) && $value['payment_status'] == 'Pendiente') {
                 //sumamos el monto del interes financiado
@@ -248,6 +250,7 @@ class CreditsModel extends Mysql
                     $dataCredits[$key]['date_status'] = 'Vencido ' . abs($dataDate['total_dias']) . ' dias';
                     //meses vencidos, converitmos a positivo
                     $month_overdue = abs(round($dataDate['total_dias'] / 30, 0));
+                    $dataCredits[$key]['month_overdue'] = $month_overdue;
                     if ($month_overdue > 0) {
                         //multiplicamos la cantidad de meses vencidos para obtener el valor de cuanto a crecido el interes por mora
                         $amount_overdue = (float) $month_overdue * (float) $value['amount_default_interest_rate'];
@@ -324,6 +327,7 @@ class CreditsModel extends Mysql
         $total_pendiente = 0.00;
         $total_anulado = 0.00;
         foreach ($rstData as $key => $value) {
+            $rstData[$key]['month_overdue'] = 0;
             if ($value['status'] == 'Pagado') {
                 $total_pagado += (float) $value['amount'];
             } else if ($value['status'] == 'Pendiente') {
@@ -336,6 +340,7 @@ class CreditsModel extends Mysql
                     if ($dataDate['total_dias'] < 0) {
                         //Convertimos a meses la cantidad de dias entre 30 dias
                         $month_overdue = abs(round($dataDate['total_dias'] / 30, 0));
+                        $rstData[$key]['month_overdue'] = $month_overdue;
                         if ($month_overdue > 0) {
                             //multiplicamos la cantidad de meses vencidos para obtener el valor de cuanto a crecido el interes por mora
                             $amount_overdue = (float) $month_overdue * (float) $value['amount_default_interest_rate'];

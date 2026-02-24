@@ -9,60 +9,64 @@
   const detailCustomerName = document.getElementById("detailCustomerName");
   const checkAllCredits = document.getElementById("checkAllCredits");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument",
+    "detailCustomerDocument"
   );
   const btnPaySelectedCredits = document.getElementById(
-    "btn-pay-selected-credits",
+    "btn-pay-selected-credits"
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection",
+    "detailCustomerDirection"
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay",
+    "detailCustomerBillingDay"
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing",
+    "detailCustomerCreditLimitFinancing"
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest",
+    "detailCustomerMonthlyInterest"
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing",
+    "detailCustomerMonthlyInterestFinancing"
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit",
+    "detailCustomerCreditLimit"
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu",
+    "detailCustomerPercentConsu"
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent",
+    "detailCustomerIndicadorPercent"
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp",
+    "detailCustomerAmountDisp"
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start",
+    "modal-filter-date-start"
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
   const modalFilterSaleType = document.getElementById("modal-filter-sale-type");
   const modalFilterPaymentStatus = document.getElementById(
-    "modal-filter-payment-status",
+    "modal-filter-payment-status"
   );
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased",
+    "detailCustomerTotalPurchased"
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid",
+    "detailCustomerTotalPaid"
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt",
+    "detailCustomerTotalDebt"
+  );
+  //elemento del template de pago de creditos seleccionados
+  const templatePaymentCreditSelected = document.getElementById(
+    "template-payment-credit-selected"
   );
   //cuerpo de la tabla de creditos
   const customerSalesBody = document.getElementById("customerSalesBody");
@@ -307,7 +311,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -321,7 +325,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -335,7 +339,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -351,7 +355,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -365,7 +369,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -381,7 +385,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -402,7 +406,7 @@
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
             modalFilterSaleType.value ?? "All",
-            modalFilterPaymentStatus.value ?? "All",
+            modalFilterPaymentStatus.value ?? "All"
           );
         });
       });
@@ -423,7 +427,7 @@
     startDate,
     endDate,
     saleType,
-    paymentStatus,
+    paymentStatus
   ) {
     //return; //paramos temporalmente
     const formdata = new FormData();
@@ -443,7 +447,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading",
+      "loading"
     );
     try {
       const response = await fetch(endpoint, config);
@@ -476,6 +480,7 @@
       btnReportItemCredit();
       checkAllCreditsAction();
       checkCreditSelected();
+      paySelectedCredits();
       swal.close();
     }
   }
@@ -585,7 +590,15 @@
       let inputCheck = "";
       if (sale.payment_status === "Pendiente") {
         btnActions = `<button class="btn btn-sm btn-dark shadow-sm btn-payment" data-id="${sale.idVoucherHeader}"><i class="bi bi-wallet"></i></button>`;
-        inputCheck = `<input type="checkbox" name="" id="" class="form-check-input form-check-input-sm select-credit" data-id="${sale.idVoucherHeader}" data-amount="${sale.amount}">`;
+        inputCheck = `<input type="checkbox" name="" id="" class="form-check-input form-check-input-sm select-credit" 
+                                              data-id="${sale.idVoucherHeader}" 
+                                              data-amount="${sale.amount}" 
+                                              data-month_overdue="${sale.month_overdue}" 
+                                              data-amount_current_interest_rate="${sale.amount_current_interest_rate}" 
+                                              data-amount_default_interest_rate="${sale.amount_default_interest_rate}" 
+                                              data-payment_deadline="${sale.payment_deadline}"
+                                              data-days_overdue="${sale.days_overdue}" 
+                        >`;
       } else {
         btnActions = `<button class="btn btn-sm btn-light border btn-view" data-id="${sale.idVoucherHeader}"><i class="bi bi-file-earmark-text"></i></button>`;
         inputCheck = "";
@@ -623,6 +636,7 @@
   }
   /**
    * Recorremos los botones de pago y mostramos el modal de pago
+   * Esto te permite pagar el credito individualmente
    */
   function btnPaymentItemCredit() {
     const btnPayment = document.querySelectorAll(".btn-payment");
@@ -644,7 +658,7 @@
             message: "Por favor espere...Calculando intereses....",
             icon: "info",
           },
-          "loading",
+          "loading"
         );
         try {
           const response = await fetch(endpoint, config);
@@ -702,7 +716,7 @@
                   modalFilterDateStart.value,
                   modalFilterDateEnd.value,
                   modalFilterSaleType.value ?? "All",
-                  modalFilterPaymentStatus.value ?? "All",
+                  modalFilterPaymentStatus.value ?? "All"
                 );
               }
               showAlert({
@@ -725,6 +739,7 @@
   }
   /**
    * Recorremos los botones de ver voucher de creditos o pagos al contado
+   * Aqui se genera el modal para mostrar el voucher
    */
   function btnReportItemCredit() {
     const btnReportCredit = document.querySelectorAll(".btn-view");
@@ -738,7 +753,7 @@
             message: "Por favor espere...",
             icon: "info",
           },
-          "loading",
+          "loading"
         );
 
         const formdata = new FormData();
@@ -781,7 +796,7 @@
             preConfirm: () => {
               exportToPng(
                 "voucherContainer",
-                `Comprobante_Venta_CV-${String(res.header.id).padStart(8, "0")}.png`,
+                `Comprobante_Venta_CV-${String(res.header.id).padStart(8, "0")}.png`
               );
               return false; // Evita que se cierre el modal
             },
@@ -1140,7 +1155,7 @@
   async function getPaymentMethods() {
     //obtenemmos el select de metodo de pago
     const swalMethodPaymentSelect = document.getElementById(
-      "swalMethodPaymentSelect",
+      "swalMethodPaymentSelect"
     );
     if (!swalMethodPaymentSelect) return;
     //limpiamos el select
@@ -1191,12 +1206,61 @@
     }
   }
   /**
+   * Metodo para obtener los metodos de pago para el swal pero este
+   * pago se hace para todos los creditos
+   * @returns
+   */
+  async function getPaymentMethodsForPaymentAll() {
+    //obtenemmos el select de metodo de pago
+    const selectMetodoSwal = document.getElementById("selectMetodoSwal");
+    if (!selectMetodoSwal) return;
+    //limpiamos el select
+    selectMetodoSwal.innerHTML = "";
+    const enpointMethodPayment = `${base_url}/pos/Credits/getPaymentMethods`;
+    //mostramos en el select un mensaje preparanado metodos de pagos
+    selectMetodoSwal.innerHTML = `
+        <option value="">Preparando metodos de pagos...</option>
+    `;
+    //agregamos un loading al select
+    try {
+      const response = await fetch(enpointMethodPayment);
+      const data = await response.json();
+      if (!data.status) {
+        showAlert({
+          title: data.title,
+          message: data.message,
+          icon: data.icon,
+          timer: data.timer,
+        });
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, data.timer);
+        }
+        return;
+      }
+      //limpiamos el select
+      selectMetodoSwal.innerHTML = "";
+      data.paymentMethods.forEach((paymentMethod) => {
+        selectMetodoSwal.innerHTML += `
+                    <option value="${paymentMethod.id}">${paymentMethod.name}</option>
+                  `;
+      });
+    } catch (error) {
+      showAlert({
+        title: "Ocurrio un error inesperado",
+        message: `Error al obtener la informacion de los metodos de pagos - ${error.message}`,
+        icon: "error",
+      });
+    }
+  }
+  /**
    * Metodo para obtener el tipo de metodo de pago
    * @returns
    */
   function typeMethodPayment(methodPayment) {
     const swalReceivesContainer = document.getElementById(
-      "swalReceivesContainer",
+      "swalReceivesContainer"
     );
     if (!swalReceivesContainer) return;
 
@@ -1289,7 +1353,7 @@
   function desglosePaymentVoucherName() {
     const btnToggleDetail = document.getElementById("btnToggleDetail");
     const containerDetailPayment = document.getElementById(
-      "containerDetailPayment",
+      "containerDetailPayment"
     );
     const swalDetailPayment = document.getElementById("swalDetailPayment");
     if (btnToggleDetail && containerDetailPayment) {
@@ -1303,7 +1367,7 @@
           btnToggleDetail.classList.remove(
             "text-danger",
             "border-danger",
-            "bg-danger",
+            "bg-danger"
           );
           btnToggleDetail.classList.add("text-secondary", "border-secondary");
         } else {
@@ -1311,13 +1375,13 @@
             '<i class="bi bi-x-circle me-2"></i>Cancelar nombre del pago';
           btnToggleDetail.classList.remove(
             "text-secondary",
-            "border-secondary",
+            "border-secondary"
           );
           btnToggleDetail.classList.add(
             "text-danger",
             "border-danger",
             "bg-danger",
-            "bg-opacity-10",
+            "bg-opacity-10"
           );
           // Enfocar el input cuando se muestra
           setTimeout(() => {
@@ -1344,7 +1408,7 @@
     //mostramos una alerta que el metodo de pago no a sid seleccionado
     if (swalMethodPaymentSelect.value == 0) {
       return Swal.showValidationMessage(
-        "Debe seleccionar un metodo de pago para continuar",
+        "Debe seleccionar un metodo de pago para continuar"
       );
     }
     formdata.append("paymentMethod", swalMethodPaymentSelect.value ?? 0);
@@ -1427,7 +1491,7 @@
 
         //Obtener todos los marcados para calcular el total
         const checkedInputs = document.querySelectorAll(
-          ".select-credit:checked",
+          ".select-credit:checked"
         );
         let totalAmount = 0;
         //recorremos los checkboxes marcados para obtener el total
@@ -1454,5 +1518,215 @@
         }
       });
     });
+  }
+  /**
+   * Metodo que se encarga de pagar los creditos seleccionados
+   */
+  function paySelectedCredits() {
+    btnPaySelectedCredits.addEventListener("click", () => {
+      Swal.fire({
+        target: document.getElementById("creditsReportModal"),
+        html: renderHtmlPaymentSelectedCredits(),
+        showCancelButton: true,
+        cancelButtonText: "<i class='bi bi-x-lg'></i> Cancelar",
+        showConfirmButton: true,
+        confirmButtonText: "<i class='bi bi-wallet'></i> Pagar",
+        didOpen: () => {
+          renderHtmlTableDetailLiquidation();
+          getPaymentMethodsForPaymentAll();
+        },
+        buttonsStyling: false,
+        customClass: {
+          popup: "w-50",
+          confirmButton: "btn btn-primary me-2",
+          cancelButton: "btn btn-secondary",
+        },
+      });
+    });
+  }
+  /**
+   * Metodo que se encarga de renderizar el html para el pago de los creditos seleccionados
+   * @returns {string} - El html para el pago de los creditos seleccionados
+   */
+  function renderHtmlPaymentSelectedCredits() {
+    return `
+        <div class="text-start px-2">
+              <div class="border-bottom mb-3 pb-3">
+                  <div class="d-flex align-items-start">
+                      <!-- Icono a la izquierda -->
+                      <div class="bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill shadow-sm me-3">
+                          <i class="bi bi-receipt-cutoff fs-3"></i>
+                      </div>
+                      
+                      <!-- Títulos a la izquierda -->
+                      <div class="d-flex flex-column align-items-start">
+                          <h5 class="fw-bold mb-1 text-dark">Registrar Pago de Créditos</h5>
+                          <!-- Badge sutil para el número de Voucher -->
+                          <span class="text-muted" style="font-size: 0.8rem;">
+                              <i class="bi bi-info-circle me-1"></i>Aquí se podra realizar el pago de los creditos seleccionados anteriormente en el modal de reportes de creditos
+                          </span>
+                      </div>
+                  </div>
+              </div>
+              <!-- SECCIÓN 1: DETALLE DE DEUDA CON FINANCIAMIENTO -->
+              <div class="mb-3">
+                  <label class="form-label fw-bold small text-uppercase text-muted tracking-widest mb-2">
+                      <i class="bi bi-receipt me-1"></i> Detalle de Liquidación
+                  </label>
+                  <div class="table-responsive border rounded-3 bg-white shadow-sm">
+                      <table class="table table-sm table-hover mb-0 align-middle" style="font-size: 0.8rem;">
+                          <thead class="bg-light border-bottom text-muted" style="font-size: 0.7rem;">
+                              <tr title="Detalle de liquidación" class="table-info">
+                                  <th class="ps-3 py-2">VENCIMIENTO</th>
+                                  <th class="py-2 text-center">CAPITAL</th>
+                                  <th class="py-2 text-center" >MORA (1%) MENSUAL</th>
+                                  <th class="py-2 text-center">FINAN. (0%)</th>
+                                  <th class="text-end pe-3 py-2">SUBTOTAL</th>
+                              </tr>
+                          </thead>
+                          <tbody id="detailLiquidation">                              
+                          </tbody>
+                          <tfoot class="border-top bg-light">
+                              <tr class="fw-bold text-dark">
+                                  <td colspan="4" class="ps-3 py-2 text-uppercase" style="font-size: 0.7rem;">Monto Total a
+                                      Cobrar</td>
+                                  <td class="text-end pe-3 py-2 h5 mb-0 text-primary" id="totalAmount">${getcurrency} 16.00</td>
+                              </tr>
+                          </tfoot>
+                      </table>
+                  </div>
+              </div>
+
+              <!-- SECCIÓN 2: FORMULARIO DE PAGO -->
+              <div class="row g-3">
+                  <div class="col-md-6">
+                      <div class="mb-3">
+                          <label class="form-label fw-bold small text-secondary">MÉTODO DE PAGO</label>
+                          <div class="input-group input-group-sm">
+                              <span class="input-group-text bg-white border-end-0" id="icon-metodo">
+                                  <i class="bi bi-cash-coin text-primary"></i>
+                              </span>
+                              <select class="form-select border-start-0 ps-0 fw-bold" id="selectMetodoSwal">
+                                  
+                              </select>
+                          </div>
+                      </div>
+                      <div class="mb-0 text-start">
+                          <label class="form-label fw-bold small text-secondary">REFERENCIA</label>
+                          <input type="text" class="form-control form-control-sm bg-light border-0" placeholder="Opcional...">
+                      </div>
+                  </div>
+
+                  <!-- CALCULADORA ESTÁNDAR -->
+                  <div class="col-md-6">
+                      <div class="p-2 border rounded bg-white shadow-sm">
+                          <label class="form-label fw-bold" style="font-size: 0.65rem; color: #6c757d;">RECIBIDO
+                              (OPCIONAL)</label>
+                          <div class="input-group input-group-sm mb-2">
+                              <span class="input-group-text bg-light border-end-0">S/</span>
+                              <input type="number" class="form-control border-start-0 ps-1 fw-bold" id="recibidoSwal"
+                                  placeholder="0.00">
+                              <button class="btn btn-outline-secondary" type="button" onclick="setMontoExacto(16.00)">
+                                  <i class="bi bi-check2"></i>
+                              </button>
+                          </div>
+                          <div class="d-flex justify-content-between align-items-center pt-1 border-top">
+                              <span class="fw-bold text-muted" style="font-size: 0.7rem;">VUELTO:</span>
+                              <div class="d-flex align-items-center">
+                                  <span id="vueltoBadgeSwal" class="badge bg-light text-secondary me-2"
+                                      style="font-size: 0.6rem;">INFO</span>
+                                  <span class="fw-bold h5 mb-0 text-dark" id="vueltoTextSwal">S/ 0.00</span>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <!-- SECCIÓN 3: IMPACTO EN CUENTA -->
+              <div class="mt-3 pt-3 border-top">
+                  <div class="row align-items-center">
+                      <div class="col-7">
+                          <div class="small text-muted mb-1" style="font-size: 0.7rem;">Línea de crédito post-pago:</div>
+                          <div class="fw-bold" style="font-size: 0.85rem;">
+                              <span class="text-secondary">S/ 27.70</span>
+                              <i class="bi bi-arrow-right mx-1 text-primary"></i>
+                              <span class="text-success">S/ 11.70</span>
+                          </div>
+                      </div>
+                      <div class="col-5 text-end">
+                          <div class="form-check form-switch d-inline-block">
+                              <input class="form-check-input" type="checkbox" id="printTicket" checked>
+                              <label class="form-check-label small fw-bold text-secondary" for="printTicket"
+                                  style="font-size: 0.7rem;">Ticket</label>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>`;
+  }
+  /**
+   * Renderiza la tabla de detalle de liquidación
+   */
+  function renderHtmlTableDetailLiquidation() {
+    const detailContainer = document.getElementById("detailLiquidation");
+    const totalDisplay = document.getElementById("totalAmount");
+    const checkedElements = document.querySelectorAll(".select-credit:checked");
+
+    // Configuramos un formateador de moneda una sola vez
+    const formatter = new Intl.NumberFormat("es-PE", {
+      style: "currency",
+      currency: "PEN", // Cambia a tu moneda local o usa la variable getcurrency
+    });
+
+    let total = 0;
+
+    const htmlRows = Array.from(checkedElements)
+      .map((element) => {
+        // 1. Desestructuración y conversión inmediata
+        const {
+          month_overdue,
+          amount_default_interest_rate: defInt,
+          amount_current_interest_rate: curInt,
+          amount,
+          days_overdue,
+          payment_deadline,
+        } = element.dataset;
+
+        const nMonthOverdue = parseFloat(month_overdue) || 0;
+        const nAmount = parseFloat(amount) || 0;
+        const nCurInt = parseFloat(curInt) || 0;
+        const nDefInt = parseFloat(defInt) || 0;
+
+        // 2. Cálculos
+        const amountMoraMes = nMonthOverdue * nDefInt;
+        const capital = nAmount - (amountMoraMes + nCurInt);
+        total += nAmount;
+
+        // 3. Lógica de Estilos (Clases y Badges)
+        const isOverdue = parseInt(days_overdue) < 0;
+        const classDate = isOverdue
+          ? "ps-3 py-2 border-start border-danger border-4 fw-bold text-danger"
+          : "ps-3 py-2 fw-bold text-dark";
+
+        const badgeOverdue =
+          isOverdue && nMonthOverdue > 0
+            ? `<br><span class="badge bg-danger small">${nMonthOverdue} mes${nMonthOverdue > 1 ? "es" : ""} vencido</span>`
+            : "";
+
+        // 4. Retornamos el string de la fila
+        return `
+      <tr>
+        <td class="${classDate}">${payment_deadline} ${badgeOverdue}</td>
+        <td class="text-secondary text-center">${formatter.format(capital)}</td>
+        <td class="text-muted text-center">${formatter.format(amountMoraMes)}</td>
+        <td class="text-muted text-center">${formatter.format(nCurInt)}</td>
+        <td class="text-end pe-3 fw-bold">${formatter.format(nAmount)}</td>
+      </tr>`;
+      })
+      .join("");
+
+    // 5. Una sola inserción al DOM (más rápido)
+    detailContainer.innerHTML = htmlRows;
+    totalDisplay.textContent = formatter.format(total);
   }
 })();

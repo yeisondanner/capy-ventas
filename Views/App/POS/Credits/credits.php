@@ -337,7 +337,7 @@
                                     <thead class="bg-light sticky-top">
                                         <tr>
                                             <th class="ps-4 py-3 small text-muted text-uppercase fw-bold border-0">
-                                                Fecha</th>
+                                                Fecha Venta</th>
                                             <th class="py-3 small text-muted text-uppercase fw-bold border-0">
                                                 Comprobante</th>
                                             <th class="py-3 small text-muted text-uppercase fw-bold border-0 text-end">
@@ -345,8 +345,10 @@
                                             <th
                                                 class="py-3 small text-muted text-uppercase fw-bold border-0 text-center">
                                                 Estado</th>
-                                            <th class="py-3 small text-muted text-uppercase fw-bold border-0 text-center">
-                                                <input type="checkbox" name="checkAllCredits" id="checkAllCredits" class="form-check-input">
+                                            <th
+                                                class="py-3 small text-muted text-uppercase fw-bold border-0 text-center">
+                                                <input type="checkbox" name="checkAllCredits" id="checkAllCredits"
+                                                    class="form-check-input">
                                             </th>
                                             <th
                                                 class="pe-4 py-3 small text-muted text-uppercase fw-bold border-0 text-end">
@@ -474,7 +476,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar <i
                         class="bi bi-x-lg"></i></button>
                 <button class="btn btn-outline-primary shadow-sm" style="transition: all 300ms ease-in-out;" disabled
-                    id="btn-pay-selected-credits" onclick="alert('En desarrollo')"><i class="bi bi-ban me-1"></i> No disponible</button>
+                    id="btn-pay-selected-credits"><i class="bi bi-ban me-1"></i> No disponible</button>
             </div>
         </div>
     </div>
