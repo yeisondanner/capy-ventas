@@ -474,7 +474,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar <i
                         class="bi bi-x-lg"></i></button>
                 <button class="btn btn-outline-primary shadow-sm" style="transition: all 300ms ease-in-out;" disabled
-                    id="btn-pay-selected-credits"><i class="bi bi-ban me-1"></i> No disponible</button>
+                    id="btn-pay-selected-credits" onclick="alert('En desarrollo')"><i class="bi bi-ban me-1"></i> No disponible</button>
             </div>
         </div>
     </div>
