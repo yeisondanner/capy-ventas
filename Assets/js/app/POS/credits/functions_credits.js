@@ -9,64 +9,64 @@
   const detailCustomerName = document.getElementById("detailCustomerName");
   const checkAllCredits = document.getElementById("checkAllCredits");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument"
+    "detailCustomerDocument",
   );
   const btnPaySelectedCredits = document.getElementById(
-    "btn-pay-selected-credits"
+    "btn-pay-selected-credits",
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection"
+    "detailCustomerDirection",
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay"
+    "detailCustomerBillingDay",
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing"
+    "detailCustomerCreditLimitFinancing",
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest"
+    "detailCustomerMonthlyInterest",
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing"
+    "detailCustomerMonthlyInterestFinancing",
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit"
+    "detailCustomerCreditLimit",
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu"
+    "detailCustomerPercentConsu",
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent"
+    "detailCustomerIndicadorPercent",
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp"
+    "detailCustomerAmountDisp",
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start"
+    "modal-filter-date-start",
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
   const modalFilterSaleType = document.getElementById("modal-filter-sale-type");
   const modalFilterPaymentStatus = document.getElementById(
-    "modal-filter-payment-status"
+    "modal-filter-payment-status",
   );
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased"
+    "detailCustomerTotalPurchased",
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid"
+    "detailCustomerTotalPaid",
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt"
+    "detailCustomerTotalDebt",
   );
   //elemento del template de pago de creditos seleccionados
   const templatePaymentCreditSelected = document.getElementById(
-    "template-payment-credit-selected"
+    "template-payment-credit-selected",
   );
   //cuerpo de la tabla de creditos
   const customerSalesBody = document.getElementById("customerSalesBody");
@@ -311,7 +311,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -325,7 +325,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -339,7 +339,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -355,7 +355,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -369,7 +369,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -385,7 +385,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All"
+          modalFilterPaymentStatus.value ?? "All",
         );
       });
     }
@@ -406,7 +406,7 @@
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
             modalFilterSaleType.value ?? "All",
-            modalFilterPaymentStatus.value ?? "All"
+            modalFilterPaymentStatus.value ?? "All",
           );
         });
       });
@@ -427,7 +427,7 @@
     startDate,
     endDate,
     saleType,
-    paymentStatus
+    paymentStatus,
   ) {
     //return; //paramos temporalmente
     const formdata = new FormData();
@@ -447,7 +447,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading"
+      "loading",
     );
     try {
       const response = await fetch(endpoint, config);
@@ -658,7 +658,7 @@
             message: "Por favor espere...Calculando intereses....",
             icon: "info",
           },
-          "loading"
+          "loading",
         );
         try {
           const response = await fetch(endpoint, config);
@@ -698,13 +698,36 @@
             // Opcional: Evitar que se cierre al hacer clic fuera si es un proceso de pago
             allowOutsideClick: false,
             didOpen: async () => {
-              await getPaymentMethods();
+              await getPaymentMethods("swalMethodPaymentSelect");
+
               // Lógica para el botón de desglose
               desglosePaymentVoucherName();
+              //obtenemmos el select de metodo de pago
+              const swalMethodPaymentSelect = document.getElementById(
+                "swalMethodPaymentSelect",
+              );
+              if (!swalMethodPaymentSelect) return;
+              //obtenemos el tipo de metodo de pago
+              typeMethodPayment(swalMethodPaymentSelect.value);
+              //agregamos el evento para obtener el tipo de metodo de pago
+              swalMethodPaymentSelect.addEventListener("change", () => {
+                typeMethodPayment(swalMethodPaymentSelect.value);
+              });
             },
             //preconfirmamos el envio de la informacion al back
             preConfirm: async (e) => {
-              return await sendPaymentIndividualCredit();
+              const methodPay =
+                document.getElementById("swalMethodPaymentSelect") ?? 0;
+              const amountCashReceived =
+                document.getElementById("swalCashReceived") ?? 0;
+              const detailPay =
+                document.getElementById("swalDetailPayment") ?? "";
+              return await sendPaymentIndividualCredit(
+                idVoucher,
+                methodPay.value,
+                amountCashReceived.value,
+                detailPay.value,
+              );
             },
           }).then(async (result) => {
             if (result.isConfirmed) {
@@ -716,7 +739,7 @@
                   modalFilterDateStart.value,
                   modalFilterDateEnd.value,
                   modalFilterSaleType.value ?? "All",
-                  modalFilterPaymentStatus.value ?? "All"
+                  modalFilterPaymentStatus.value ?? "All",
                 );
               }
               showAlert({
@@ -753,7 +776,7 @@
             message: "Por favor espere...",
             icon: "info",
           },
-          "loading"
+          "loading",
         );
 
         const formdata = new FormData();
@@ -790,13 +813,13 @@
             confirmButtonText: `<i class="bi bi-card-image"></i> Exportar PNG`,
             buttonsStyling: false,
             customClass: {
-              confirmButton: "btn btn-outline-warning",
+              confirmButton: "btn btn-outline-warning me-2",
               cancelButton: "btn btn-secondary",
             },
             preConfirm: () => {
               exportToPng(
                 "voucherContainer",
-                `Comprobante_Venta_CV-${String(res.header.id).padStart(8, "0")}.png`
+                `Comprobante_Venta_CV-${String(res.header.id).padStart(8, "0")}.png`,
               );
               return false; // Evita que se cierre el modal
             },
@@ -1152,11 +1175,9 @@
    * Metodo para obtener los metodos de pago para el swal
    * @returns
    */
-  async function getPaymentMethods() {
+  async function getPaymentMethods(selectId) {
     //obtenemmos el select de metodo de pago
-    const swalMethodPaymentSelect = document.getElementById(
-      "swalMethodPaymentSelect"
-    );
+    const swalMethodPaymentSelect = document.getElementById(selectId);
     if (!swalMethodPaymentSelect) return;
     //limpiamos el select
     swalMethodPaymentSelect.innerHTML = "";
@@ -1196,62 +1217,6 @@
         message: `Error al obtener la informacion de los metodos de pagos - ${error.message}`,
         icon: "error",
       });
-    } finally {
-      //obtenemos el tipo de metodo de pago
-      typeMethodPayment(swalMethodPaymentSelect.value);
-      //agregamos el evento para obtener el tipo de metodo de pago
-      swalMethodPaymentSelect.addEventListener("change", () => {
-        typeMethodPayment(swalMethodPaymentSelect.value);
-      });
-    }
-  }
-  /**
-   * Metodo para obtener los metodos de pago para el swal pero este
-   * pago se hace para todos los creditos
-   * @returns
-   */
-  async function getPaymentMethodsForPaymentAll() {
-    //obtenemmos el select de metodo de pago
-    const selectMetodoSwal = document.getElementById("selectMetodoSwal");
-    if (!selectMetodoSwal) return;
-    //limpiamos el select
-    selectMetodoSwal.innerHTML = "";
-    const enpointMethodPayment = `${base_url}/pos/Credits/getPaymentMethods`;
-    //mostramos en el select un mensaje preparanado metodos de pagos
-    selectMetodoSwal.innerHTML = `
-        <option value="">Preparando metodos de pagos...</option>
-    `;
-    //agregamos un loading al select
-    try {
-      const response = await fetch(enpointMethodPayment);
-      const data = await response.json();
-      if (!data.status) {
-        showAlert({
-          title: data.title,
-          message: data.message,
-          icon: data.icon,
-          timer: data.timer,
-        });
-        if (data.url) {
-          setTimeout(() => {
-            window.location.href = data.url;
-          }, data.timer);
-        }
-        return;
-      }
-      //limpiamos el select
-      selectMetodoSwal.innerHTML = "";
-      data.paymentMethods.forEach((paymentMethod) => {
-        selectMetodoSwal.innerHTML += `
-                    <option value="${paymentMethod.id}">${paymentMethod.name}</option>
-                  `;
-      });
-    } catch (error) {
-      showAlert({
-        title: "Ocurrio un error inesperado",
-        message: `Error al obtener la informacion de los metodos de pagos - ${error.message}`,
-        icon: "error",
-      });
     }
   }
   /**
@@ -1260,7 +1225,7 @@
    */
   function typeMethodPayment(methodPayment) {
     const swalReceivesContainer = document.getElementById(
-      "swalReceivesContainer"
+      "swalReceivesContainer",
     );
     if (!swalReceivesContainer) return;
 
@@ -1353,7 +1318,7 @@
   function desglosePaymentVoucherName() {
     const btnToggleDetail = document.getElementById("btnToggleDetail");
     const containerDetailPayment = document.getElementById(
-      "containerDetailPayment"
+      "containerDetailPayment",
     );
     const swalDetailPayment = document.getElementById("swalDetailPayment");
     if (btnToggleDetail && containerDetailPayment) {
@@ -1367,7 +1332,7 @@
           btnToggleDetail.classList.remove(
             "text-danger",
             "border-danger",
-            "bg-danger"
+            "bg-danger",
           );
           btnToggleDetail.classList.add("text-secondary", "border-secondary");
         } else {
@@ -1375,13 +1340,13 @@
             '<i class="bi bi-x-circle me-2"></i>Cancelar nombre del pago';
           btnToggleDetail.classList.remove(
             "text-secondary",
-            "border-secondary"
+            "border-secondary",
           );
           btnToggleDetail.classList.add(
             "text-danger",
             "border-danger",
             "bg-danger",
-            "bg-opacity-10"
+            "bg-opacity-10",
           );
           // Enfocar el input cuando se muestra
           setTimeout(() => {
@@ -1395,26 +1360,29 @@
   /**
    * Metodo que se encarga de enviar la informacion al back para realizar el
    * pago indvidual, esto es la funcion del preconfirm
+   * @param {number} idvoucher - id del voucher
+   * @param {number} methodPay - metodo de pago
+   * @param {number} amountCashReceived - cantidad de dinero recibido
+   * @param {string} detailPay - detalle del pago
    * @returns {void}
    */
-  async function sendPaymentIndividualCredit() {
+  async function sendPaymentIndividualCredit(
+    idvoucher,
+    methodPay,
+    amountCashReceived,
+    detailPay,
+  ) {
     const formdata = new FormData();
-    formdata.append("idvoucher", idVoucher);
-    const swalMethodPaymentSelect =
-      document.getElementById("swalMethodPaymentSelect") ?? 0;
-    const swalCashReceived = document.getElementById("swalCashReceived") ?? 0;
-    const swalDetailPayment =
-      document.getElementById("swalDetailPayment") ?? "";
-    //mostramos una alerta que el metodo de pago no a sid seleccionado
-    if (swalMethodPaymentSelect.value == 0) {
+    formdata.append("idvoucher", idvoucher); //mostramos una alerta que el metodo de pago no a sid seleccionado
+    if (methodPay == 0) {
       return Swal.showValidationMessage(
-        "Debe seleccionar un metodo de pago para continuar"
+        "Debe seleccionar un metodo de pago para continuar",
       );
     }
-    formdata.append("paymentMethod", swalMethodPaymentSelect.value ?? 0);
+    formdata.append("paymentMethod", methodPay);
     //pasamos el vuelto
-    formdata.append("amountReceived", swalCashReceived.value ?? 0);
-    formdata.append("detailPayment", swalDetailPayment.value ?? "");
+    formdata.append("amountReceived", amountCashReceived);
+    formdata.append("detailPayment", detailPay);
     const config = {
       method: "POST",
       body: formdata,
@@ -1491,7 +1459,7 @@
 
         //Obtener todos los marcados para calcular el total
         const checkedInputs = document.querySelectorAll(
-          ".select-credit:checked"
+          ".select-credit:checked",
         );
         let totalAmount = 0;
         //recorremos los checkboxes marcados para obtener el total
@@ -1533,7 +1501,7 @@
         confirmButtonText: "<i class='bi bi-wallet'></i> Pagar",
         didOpen: () => {
           renderHtmlTableDetailLiquidation();
-          getPaymentMethodsForPaymentAll();
+          getPaymentMethods("selectMethodPaymentAll");
         },
         buttonsStyling: false,
         customClass: {
@@ -1606,14 +1574,14 @@
                               <span class="input-group-text bg-white border-end-0" id="icon-metodo">
                                   <i class="bi bi-cash-coin text-primary"></i>
                               </span>
-                              <select class="form-select border-start-0 ps-0 fw-bold" id="selectMetodoSwal">
+                              <select class="form-select ps-0 fw-bold" id="selectMethodPaymentAll">
                                   
                               </select>
                           </div>
                       </div>
                       <div class="mb-0 text-start">
-                          <label class="form-label fw-bold small text-secondary">REFERENCIA</label>
-                          <input type="text" class="form-control form-control-sm bg-light border-0" placeholder="Opcional...">
+                          <label class="form-label fw-bold small text-secondary">NOMBRE O DESCRIPCIÓN BREVE</label>
+                          <input type="text" class="form-control form-control-sm bg-light" id="descriptionPaymentAll" placeholder="Opcional...">
                       </div>
                   </div>
 
@@ -1624,7 +1592,7 @@
                               (OPCIONAL)</label>
                           <div class="input-group input-group-sm mb-2">
                               <span class="input-group-text bg-light border-end-0">S/</span>
-                              <input type="number" class="form-control border-start-0 ps-1 fw-bold" id="recibidoSwal"
+                              <input type="number" class="form-control ps-1 fw-bold" id="recibidoPaymentAll"
                                   placeholder="0.00">
                               <button class="btn btn-outline-secondary" type="button" onclick="setMontoExacto(16.00)">
                                   <i class="bi bi-check2"></i>
