@@ -9,64 +9,64 @@
   const detailCustomerName = document.getElementById("detailCustomerName");
   const checkAllCredits = document.getElementById("checkAllCredits");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument",
+    "detailCustomerDocument"
   );
   const btnPaySelectedCredits = document.getElementById(
-    "btn-pay-selected-credits",
+    "btn-pay-selected-credits"
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection",
+    "detailCustomerDirection"
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay",
+    "detailCustomerBillingDay"
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing",
+    "detailCustomerCreditLimitFinancing"
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest",
+    "detailCustomerMonthlyInterest"
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing",
+    "detailCustomerMonthlyInterestFinancing"
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit",
+    "detailCustomerCreditLimit"
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu",
+    "detailCustomerPercentConsu"
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent",
+    "detailCustomerIndicadorPercent"
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp",
+    "detailCustomerAmountDisp"
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start",
+    "modal-filter-date-start"
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
   const modalFilterSaleType = document.getElementById("modal-filter-sale-type");
   const modalFilterPaymentStatus = document.getElementById(
-    "modal-filter-payment-status",
+    "modal-filter-payment-status"
   );
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased",
+    "detailCustomerTotalPurchased"
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid",
+    "detailCustomerTotalPaid"
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt",
+    "detailCustomerTotalDebt"
   );
   //elemento del template de pago de creditos seleccionados
   const templatePaymentCreditSelected = document.getElementById(
-    "template-payment-credit-selected",
+    "template-payment-credit-selected"
   );
   //cuerpo de la tabla de creditos
   const customerSalesBody = document.getElementById("customerSalesBody");
@@ -311,7 +311,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -325,7 +325,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -339,7 +339,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -355,7 +355,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -369,7 +369,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -385,7 +385,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -406,7 +406,7 @@
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
             modalFilterSaleType.value ?? "All",
-            modalFilterPaymentStatus.value ?? "All",
+            modalFilterPaymentStatus.value ?? "All"
           );
         });
       });
@@ -427,7 +427,7 @@
     startDate,
     endDate,
     saleType,
-    paymentStatus,
+    paymentStatus
   ) {
     //return; //paramos temporalmente
     const formdata = new FormData();
@@ -447,7 +447,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading",
+      "loading"
     );
     try {
       const response = await fetch(endpoint, config);
@@ -658,7 +658,7 @@
             message: "Por favor espere...Calculando intereses....",
             icon: "info",
           },
-          "loading",
+          "loading"
         );
         try {
           const response = await fetch(endpoint, config);
@@ -704,7 +704,7 @@
               desglosePaymentVoucherName();
               //obtenemmos el select de metodo de pago
               const swalMethodPaymentSelect = document.getElementById(
-                "swalMethodPaymentSelect",
+                "swalMethodPaymentSelect"
               );
               if (!swalMethodPaymentSelect) return;
               //obtenemos el tipo de metodo de pago
@@ -716,17 +716,30 @@
             },
             //preconfirmamos el envio de la informacion al back
             preConfirm: async (e) => {
-              const methodPay =
-                document.getElementById("swalMethodPaymentSelect") ?? 0;
-              const amountCashReceived =
-                document.getElementById("swalCashReceived") ?? 0;
-              const detailPay =
-                document.getElementById("swalDetailPayment") ?? "";
+              const methodPay = document.getElementById(
+                "swalMethodPaymentSelect"
+              )
+                ? document.getElementById("swalMethodPaymentSelect").value
+                : 0;
+              const amountCashReceived = document.getElementById(
+                "swalCashReceived"
+              )
+                ? document.getElementById("swalCashReceived").value
+                : 0;
+              const detailPay = document.getElementById("swalDetailPayment")
+                ? document.getElementById("swalDetailPayment").value
+                : "";
+              if (methodPay == 0) {
+                return Swal.showValidationMessage(
+                  "Debe seleccionar un metodo de pago para continuar"
+                );
+              }
+              Swal.showLoading();
               return await sendPaymentIndividualCredit(
                 idVoucher,
-                methodPay.value,
-                amountCashReceived.value,
-                detailPay.value,
+                methodPay,
+                amountCashReceived,
+                detailPay
               );
             },
           }).then(async (result) => {
@@ -739,7 +752,7 @@
                   modalFilterDateStart.value,
                   modalFilterDateEnd.value,
                   modalFilterSaleType.value ?? "All",
-                  modalFilterPaymentStatus.value ?? "All",
+                  modalFilterPaymentStatus.value ?? "All"
                 );
               }
               showAlert({
@@ -776,7 +789,7 @@
             message: "Por favor espere...",
             icon: "info",
           },
-          "loading",
+          "loading"
         );
 
         const formdata = new FormData();
@@ -819,7 +832,7 @@
             preConfirm: () => {
               exportToPng(
                 "voucherContainer",
-                `Comprobante_Venta_CV-${String(res.header.id).padStart(8, "0")}.png`,
+                `Comprobante_Venta_CV-${String(res.header.id).padStart(8, "0")}.png`
               );
               return false; // Evita que se cierre el modal
             },
@@ -1225,7 +1238,7 @@
    */
   function typeMethodPayment(methodPayment) {
     const swalReceivesContainer = document.getElementById(
-      "swalReceivesContainer",
+      "swalReceivesContainer"
     );
     if (!swalReceivesContainer) return;
 
@@ -1318,7 +1331,7 @@
   function desglosePaymentVoucherName() {
     const btnToggleDetail = document.getElementById("btnToggleDetail");
     const containerDetailPayment = document.getElementById(
-      "containerDetailPayment",
+      "containerDetailPayment"
     );
     const swalDetailPayment = document.getElementById("swalDetailPayment");
     if (btnToggleDetail && containerDetailPayment) {
@@ -1332,7 +1345,7 @@
           btnToggleDetail.classList.remove(
             "text-danger",
             "border-danger",
-            "bg-danger",
+            "bg-danger"
           );
           btnToggleDetail.classList.add("text-secondary", "border-secondary");
         } else {
@@ -1340,13 +1353,13 @@
             '<i class="bi bi-x-circle me-2"></i>Cancelar nombre del pago';
           btnToggleDetail.classList.remove(
             "text-secondary",
-            "border-secondary",
+            "border-secondary"
           );
           btnToggleDetail.classList.add(
             "text-danger",
             "border-danger",
             "bg-danger",
-            "bg-opacity-10",
+            "bg-opacity-10"
           );
           // Enfocar el input cuando se muestra
           setTimeout(() => {
@@ -1370,15 +1383,10 @@
     idvoucher,
     methodPay,
     amountCashReceived,
-    detailPay,
+    detailPay
   ) {
     const formdata = new FormData();
     formdata.append("idvoucher", idvoucher); //mostramos una alerta que el metodo de pago no a sid seleccionado
-    if (methodPay == 0) {
-      return Swal.showValidationMessage(
-        "Debe seleccionar un metodo de pago para continuar",
-      );
-    }
     formdata.append("paymentMethod", methodPay);
     //pasamos el vuelto
     formdata.append("amountReceived", amountCashReceived);
@@ -1388,7 +1396,6 @@
       body: formdata,
     };
     const enpointPayment = `${base_url}/pos/Credits/setPaymentCreditIndividually`;
-    Swal.showLoading();
     try {
       const response = await fetch(enpointPayment, config);
       const data = await response.json();
@@ -1433,6 +1440,9 @@
       } else {
         btnPaySelectedCredits.disabled = true;
         btnPaySelectedCredits.style.cursor = "not-allowed";
+        btnPaySelectedCredits.innerHTML = `<i
+                        class="bi bi-ban me-1"></i> No disponible`;
+        checkAllCredits.checked = false;
         showAlert({
           title: "Acción no valida",
           message:
@@ -1459,7 +1469,7 @@
 
         //Obtener todos los marcados para calcular el total
         const checkedInputs = document.querySelectorAll(
-          ".select-credit:checked",
+          ".select-credit:checked"
         );
         let totalAmount = 0;
         //recorremos los checkboxes marcados para obtener el total
@@ -1503,29 +1513,61 @@
           renderHtmlTableDetailLiquidation();
           getPaymentMethods("selectMethodPaymentAll");
         },
-        preConfirm: () => {
-          //obtenemos todos los checkboxes marcados
+        preConfirm: async () => {
+          // 1. Captura de datos
           const checkedInputs = document.querySelectorAll(
-            ".select-credit:checked",
+            ".select-credit:checked"
           );
           const paymentMethodAll = document.getElementById(
-            "selectMethodPaymentAll",
-          ).value;
-          const amountCashReceived =
-            document.getElementById("recibidoPaymentAll").value;
+            "selectMethodPaymentAll"
+          )
+            ? document.getElementById("selectMethodPaymentAll").value
+            : 0;
+          const amountCashReceived = document.getElementById(
+            "recibidoPaymentAll"
+          )
+            ? document.getElementById("recibidoPaymentAll").value
+            : 0;
           const descriptionPaymentAll = document.getElementById(
-            "descriptionPaymentAll",
-          ).value;
-          checkedInputs.forEach(async (element) => {
-            idVoucher = element.dataset.id;
-            await sendPaymentIndividualCredit(
-              idVoucher,
-              paymentMethodAll,
-              amountCashReceived,
-              descriptionPaymentAll,
+            "descriptionPaymentAll"
+          )
+            ? document.getElementById("descriptionPaymentAll").value
+            : "";
+
+          // 2. Validación
+          if (paymentMethodAll == 0) {
+            return Swal.showValidationMessage(
+              "Debe seleccionar un método de pago para continuar"
             );
-          });
-          return true;
+          }
+
+          // 3. Activamos el estado de carga
+          Swal.showLoading();
+
+          let resultPay = [];
+
+          try {
+            // 4. Bucle secuencial: Espera a que cada pago termine antes de pasar al siguiente
+            for (const element of checkedInputs) {
+              const idVoucher = element.dataset.id;
+
+              const response = await sendPaymentIndividualCredit(
+                idVoucher,
+                paymentMethodAll,
+                amountCashReceived,
+                descriptionPaymentAll
+              );
+
+              resultPay.push(response);
+            }
+            // 5. Retornamos el array con todos los resultados al .then()
+            return resultPay;
+          } catch (error) {
+            console.error("Error en el proceso secuencial:", error);
+            return Swal.showValidationMessage(
+              `Ocurrió un error inesperado: ${error.message}`
+            );
+          }
         },
         buttonsStyling: false,
         customClass: {
@@ -1535,6 +1577,20 @@
         },
       }).then((result) => {
         if (result.isConfirmed) {
+          const resultPays = result.value; // Array con las respuestas de los pagos
+
+          // Usamos una función anónima async para poder usar await
+          (async () => {
+            for (const element of resultPays) {
+              // Esperamos a que la alerta se cierre antes de pasar a la siguiente
+              await showAlert({
+                title: element.title,
+                message: element.message,
+                icon: element.icon,
+                timer: element.timer,
+              });
+            }
+          })();
         }
       });
     });
