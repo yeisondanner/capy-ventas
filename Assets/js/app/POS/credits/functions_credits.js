@@ -1503,12 +1503,39 @@
           renderHtmlTableDetailLiquidation();
           getPaymentMethods("selectMethodPaymentAll");
         },
+        preConfirm: () => {
+          //obtenemos todos los checkboxes marcados
+          const checkedInputs = document.querySelectorAll(
+            ".select-credit:checked",
+          );
+          const paymentMethodAll = document.getElementById(
+            "selectMethodPaymentAll",
+          ).value;
+          const amountCashReceived =
+            document.getElementById("recibidoPaymentAll").value;
+          const descriptionPaymentAll = document.getElementById(
+            "descriptionPaymentAll",
+          ).value;
+          checkedInputs.forEach(async (element) => {
+            idVoucher = element.dataset.id;
+            await sendPaymentIndividualCredit(
+              idVoucher,
+              paymentMethodAll,
+              amountCashReceived,
+              descriptionPaymentAll,
+            );
+          });
+          return true;
+        },
         buttonsStyling: false,
         customClass: {
           popup: "w-50",
           confirmButton: "btn btn-primary me-2",
           cancelButton: "btn btn-secondary",
         },
+      }).then((result) => {
+        if (result.isConfirmed) {
+        }
       });
     });
   }
