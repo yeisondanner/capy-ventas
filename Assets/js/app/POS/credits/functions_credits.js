@@ -1684,7 +1684,7 @@
                               <span class="input-group-text bg-light border-end-0">S/</span>
                               <input type="number" class="form-control ps-1 fw-bold" id="recibidoPaymentAll"
                                   placeholder="0.00">
-                              <button class="btn btn-outline-secondary" type="button" onclick="setMontoExacto(16.00)">
+                              <button class="btn btn-outline-secondary" type="button" id="btnSetMontoExacto" onclick="recibidoPaymentAll.value = this.dataset.amount">
                                   <i class="bi bi-check2"></i>
                               </button>
                           </div>
@@ -1729,6 +1729,7 @@
     const detailContainer = document.getElementById("detailLiquidation");
     const totalDisplay = document.getElementById("totalAmount");
     const checkedElements = document.querySelectorAll(".select-credit:checked");
+    const btnSetMontoExacto = document.getElementById("btnSetMontoExacto");
 
     // Configuramos un formateador de moneda una sola vez
     const formatter = new Intl.NumberFormat("es-PE", {
@@ -1786,5 +1787,6 @@
     // 5. Una sola inserción al DOM (más rápido)
     detailContainer.innerHTML = htmlRows;
     totalDisplay.textContent = formatter.format(total);
+    btnSetMontoExacto.setAttribute("data-amount", total);
   }
 })();
