@@ -266,7 +266,7 @@ class Credits extends Controllers
         }
         toJson([
             'status' => true,
-            'message' => 'Pago del crédito registrado correctamente.',
+            'message' => 'Pago del crédito CV-' . str_pad($idvoucher, 8, '0', STR_PAD_LEFT) . ' registrado correctamente.',
             'title' => 'Pago del crédito',
             'icon' => 'success',
             'timer' => 2000
