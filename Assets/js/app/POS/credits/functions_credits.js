@@ -92,6 +92,9 @@
    */
   let total = 0;
 
+  let percentageInterestDefault = 0;
+  let percentageInterestCurrent = 0;
+
   /**
    * Evento que se ejecuta cuando el DOM esta cargado
    */
@@ -522,6 +525,12 @@
     detailCustomerCreditLimitFinancing.textContent = `${getcurrency} ${data.customer.credit_limit > 0 ? data.customer.credit_limit : "Ilimitado"}`;
     detailCustomerMonthlyInterest.textContent = `${parseFloat(data.customer.default_interest_rate).toFixed(2)}%`;
     detailCustomerMonthlyInterestFinancing.textContent = `${parseFloat(data.customer.current_interest_rate).toFixed(2)}%`;
+    percentageInterestDefault = parseFloat(
+      data.customer.default_interest_rate
+    ).toFixed(2);
+    percentageInterestCurrent = parseFloat(
+      data.customer.current_interest_rate
+    ).toFixed(2);
     /**
      * Fin de la información del cliente
      */
@@ -760,6 +769,8 @@
                   modalFilterSaleType.value ?? "All",
                   modalFilterPaymentStatus.value ?? "All"
                 );
+                //recargamos la tabla principal
+                table.ajax.reload("", false);
               }
               showAlert({
                 title: data.title,
@@ -1516,6 +1527,7 @@
         cancelButtonText: "<i class='bi bi-x-lg'></i> Cancelar",
         showConfirmButton: true,
         confirmButtonText: "<i class='bi bi-wallet'></i> Pagar",
+        allowOutsideClick: false,
         didOpen: () => {
           renderHtmlTableDetailLiquidation();
           getPaymentMethods("selectMethodPaymentAll");
@@ -1601,6 +1613,7 @@
           confirmButton: "btn btn-primary me-2",
           cancelButton: "btn btn-secondary",
         },
+        //HACEMOS QUE NO SE CIERRE EL SWEET CUANDO HAGAO CLIC EN OTRO LADO
       }).then(async (result) => {
         if (result.isConfirmed) {
           //recargamos todo el contenido
@@ -1614,6 +1627,8 @@
           );
           const resultPays = result.value; // Array con las respuestas de los pagos
           //recorremos el array de resultados y mostramos las alertas una por una con un delay de 1 segundo
+          //recargamos la tabla principal
+          table.ajax.reload("", false);
           resultPays.forEach((element, index) => {
             setTimeout(() => {
               showAlert({
@@ -1663,8 +1678,8 @@
                               <tr title="Detalle de liquidación" class="table-info">
                                   <th class="ps-3 py-2">VENCIMIENTO</th>
                                   <th class="py-2 text-center">CAPITAL</th>
-                                  <th class="py-2 text-center" >MORA (1%) MENSUAL</th>
-                                  <th class="py-2 text-center">FINAN. (0%)</th>
+                                  <th class="py-2 text-center" >MORA (${percentageInterestDefault}%) MENSUAL</th>
+                                  <th class="py-2 text-center">FINAN. (${percentageInterestCurrent}%)</th>
                                   <th class="text-end pe-3 py-2">SUBTOTAL</th>
                               </tr>
                           </thead>
@@ -1725,27 +1740,6 @@
                       </div>
                   </div>
               </div>
-
-              <!-- SECCIÓN 3: IMPACTO EN CUENTA -->
-              <div class="mt-3 pt-3 border-top">
-                  <div class="row align-items-center">
-                      <div class="col-7">
-                          <div class="small text-muted mb-1" style="font-size: 0.7rem;">Línea de crédito post-pago:</div>
-                          <div class="fw-bold" style="font-size: 0.85rem;">
-                              <span class="text-secondary">S/ 27.70</span>
-                              <i class="bi bi-arrow-right mx-1 text-primary"></i>
-                              <span class="text-success">S/ 11.70</span>
-                          </div>
-                      </div>
-                      <div class="col-5 text-end">
-                          <div class="form-check form-switch d-inline-block">
-                              <input class="form-check-input" type="checkbox" id="printTicket" checked>
-                              <label class="form-check-label small fw-bold text-secondary" for="printTicket"
-                                  style="font-size: 0.7rem;">Ticket</label>
-                          </div>
-                      </div>
-                  </div>
-              </div>
           </div>`;
   }
   /**
@@ -1793,17 +1787,17 @@
         return `
       <tr>
         <td class="${classDate}">${payment_deadline} ${badgeOverdue}</td>
-        <td class="text-secondary text-center">${getcurrency} ${capital}</td>
-        <td class="text-muted text-center">${getcurrency} ${amountMoraMes}</td>
-        <td class="text-muted text-center">${getcurrency} ${nCurInt}</td>
-        <td class="text-end pe-3 fw-bold">${getcurrency} ${nAmount}</td>
+        <td class="text-secondary text-center">${getcurrency} ${capital.toFixed(2)}</td>
+        <td class="text-muted text-center">${getcurrency} ${amountMoraMes.toFixed(2)}</td>
+        <td class="text-muted text-center">${getcurrency} ${nCurInt.toFixed(2)}</td>
+        <td class="text-end pe-3 fw-bold">${getcurrency} ${nAmount.toFixed(2)}</td>
       </tr>`;
       })
       .join("");
 
     // 5. Una sola inserción al DOM (más rápido)
     detailContainer.innerHTML = htmlRows;
-    totalDisplay.textContent = `${getcurrency} ${total}`;
+    totalDisplay.textContent = `${getcurrency} ${total.toFixed(2)}`;
     btnSetMontoExacto.setAttribute("data-amount", total);
   }
   /**
