@@ -9,64 +9,64 @@
   const detailCustomerName = document.getElementById("detailCustomerName");
   const checkAllCredits = document.getElementById("checkAllCredits");
   const detailCustomerDocument = document.getElementById(
-    "detailCustomerDocument",
+    "detailCustomerDocument"
   );
   const btnPaySelectedCredits = document.getElementById(
-    "btn-pay-selected-credits",
+    "btn-pay-selected-credits"
   );
   const detailCustomerStatus = document.getElementById("detailCustomerStatus");
   const detailCustomerCode = document.getElementById("detailCustomerCode");
   const detailCustomerPhone = document.getElementById("detailCustomerPhone");
   const detailCustomerDirection = document.getElementById(
-    "detailCustomerDirection",
+    "detailCustomerDirection"
   );
   const detailCustomerBillingDay = document.getElementById(
-    "detailCustomerBillingDay",
+    "detailCustomerBillingDay"
   );
   const detailCustomerCreditLimitFinancing = document.getElementById(
-    "detailCustomerCreditLimitFinancing",
+    "detailCustomerCreditLimitFinancing"
   );
   const detailCustomerMonthlyInterest = document.getElementById(
-    "detailCustomerMonthlyInterest",
+    "detailCustomerMonthlyInterest"
   );
   const detailCustomerMonthlyInterestFinancing = document.getElementById(
-    "detailCustomerMonthlyInterestFinancing",
+    "detailCustomerMonthlyInterestFinancing"
   );
   const detailCustomerCreditLimit = document.getElementById(
-    "detailCustomerCreditLimit",
+    "detailCustomerCreditLimit"
   );
   const detailCustomerPercentConsu = document.getElementById(
-    "detailCustomerPercentConsu",
+    "detailCustomerPercentConsu"
   );
   const detailCustomerIndicadorPercent = document.getElementById(
-    "detailCustomerIndicadorPercent",
+    "detailCustomerIndicadorPercent"
   );
   const detailCustomerAmountDisp = document.getElementById(
-    "detailCustomerAmountDisp",
+    "detailCustomerAmountDisp"
   );
   const modalFilterDateStart = document.getElementById(
-    "modal-filter-date-start",
+    "modal-filter-date-start"
   );
   const modalFilterDateEnd = document.getElementById("modal-filter-date-end");
   const modalFilterBtn = document.getElementById("modal-filter-btn");
   const modalFilterReset = document.getElementById("modal-filter-reset");
   const modalFilterSaleType = document.getElementById("modal-filter-sale-type");
   const modalFilterPaymentStatus = document.getElementById(
-    "modal-filter-payment-status",
+    "modal-filter-payment-status"
   );
   //elementos del modal de reporte de creditos
   const detailCustomerTotalPurchased = document.getElementById(
-    "detailCustomerTotalPurchased",
+    "detailCustomerTotalPurchased"
   );
   const detailCustomerTotalPaid = document.getElementById(
-    "detailCustomerTotalPaid",
+    "detailCustomerTotalPaid"
   );
   const detailCustomerTotalDebt = document.getElementById(
-    "detailCustomerTotalDebt",
+    "detailCustomerTotalDebt"
   );
   //elemento del template de pago de creditos seleccionados
   const templatePaymentCreditSelected = document.getElementById(
-    "template-payment-credit-selected",
+    "template-payment-credit-selected"
   );
   //cuerpo de la tabla de creditos
   const customerSalesBody = document.getElementById("customerSalesBody");
@@ -86,6 +86,12 @@
    * obtenemos el id del voucher
    */
   let idVoucher;
+  /**
+   * Obtenemos el total del credito individual a pagar y
+   * total credito general
+   */
+  let total = 0;
+
   /**
    * Evento que se ejecuta cuando el DOM esta cargado
    */
@@ -311,7 +317,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -325,7 +331,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -339,7 +345,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -355,7 +361,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -369,7 +375,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -385,7 +391,7 @@
           modalFilterDateStart.value,
           modalFilterDateEnd.value,
           modalFilterSaleType.value ?? "All",
-          modalFilterPaymentStatus.value ?? "All",
+          modalFilterPaymentStatus.value ?? "All"
         );
       });
     }
@@ -406,7 +412,7 @@
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
             modalFilterSaleType.value ?? "All",
-            modalFilterPaymentStatus.value ?? "All",
+            modalFilterPaymentStatus.value ?? "All"
           );
         });
       });
@@ -427,7 +433,7 @@
     startDate,
     endDate,
     saleType,
-    paymentStatus,
+    paymentStatus
   ) {
     //return; //paramos temporalmente
     const formdata = new FormData();
@@ -447,7 +453,7 @@
         message: "Por favor espere...",
         icon: "info",
       },
-      "loading",
+      "loading"
     );
     try {
       const response = await fetch(endpoint, config);
@@ -658,7 +664,7 @@
             message: "Por favor espere...Calculando intereses....",
             icon: "info",
           },
-          "loading",
+          "loading"
         );
         try {
           const response = await fetch(endpoint, config);
@@ -704,7 +710,7 @@
               desglosePaymentVoucherName();
               //obtenemmos el select de metodo de pago
               const swalMethodPaymentSelect = document.getElementById(
-                "swalMethodPaymentSelect",
+                "swalMethodPaymentSelect"
               );
               if (!swalMethodPaymentSelect) return;
               //obtenemos el tipo de metodo de pago
@@ -717,12 +723,12 @@
             //preconfirmamos el envio de la informacion al back
             preConfirm: async (e) => {
               const methodPay = document.getElementById(
-                "swalMethodPaymentSelect",
+                "swalMethodPaymentSelect"
               )
                 ? document.getElementById("swalMethodPaymentSelect").value
                 : 0;
               const amountCashReceived = document.getElementById(
-                "swalCashReceived",
+                "swalCashReceived"
               )
                 ? document.getElementById("swalCashReceived").value
                 : 0;
@@ -731,7 +737,7 @@
                 : "";
               if (methodPay == 0) {
                 return Swal.showValidationMessage(
-                  "Debe seleccionar un metodo de pago para continuar",
+                  "Debe seleccionar un metodo de pago para continuar"
                 );
               }
               Swal.showLoading();
@@ -739,7 +745,7 @@
                 idVoucher,
                 methodPay,
                 amountCashReceived,
-                detailPay,
+                detailPay
               );
             },
           }).then(async (result) => {
@@ -752,7 +758,7 @@
                   modalFilterDateStart.value,
                   modalFilterDateEnd.value,
                   modalFilterSaleType.value ?? "All",
-                  modalFilterPaymentStatus.value ?? "All",
+                  modalFilterPaymentStatus.value ?? "All"
                 );
               }
               showAlert({
@@ -789,7 +795,7 @@
             message: "Por favor espere...",
             icon: "info",
           },
-          "loading",
+          "loading"
         );
 
         const formdata = new FormData();
@@ -832,7 +838,7 @@
             preConfirm: () => {
               exportToPng(
                 "voucherContainer",
-                `Comprobante_Venta_CV-${String(res.header.id).padStart(8, "0")}.png`,
+                `Comprobante_Venta_CV-${String(res.header.id).padStart(8, "0")}.png`
               );
               return false; // Evita que se cierre el modal
             },
@@ -1238,7 +1244,7 @@
    */
   function typeMethodPayment(methodPayment) {
     const swalReceivesContainer = document.getElementById(
-      "swalReceivesContainer",
+      "swalReceivesContainer"
     );
     if (!swalReceivesContainer) return;
 
@@ -1300,8 +1306,9 @@
     )
       return;
     const cashReceived = swalCashReceived.value;
-    const vueltoString = (cashReceived - totalIndividualCredit).toFixed(2);
-    const vuelto = parseFloat(vueltoString);
+    const vueltoString = (cashReceived - totalIndividualCredit).toFixed(1);
+    //redondeamos a 1 decimal y agregamos un 0 al final
+    const vuelto = parseFloat(vueltoString + "0");
     swalVueltoDisplay.textContent = `${getcurrency} ${vuelto}`;
     if (cashReceived <= 0) {
       vueltoContainer.classList.remove("bg-light", "bg-danger", "bg-warning");
@@ -1331,7 +1338,7 @@
   function desglosePaymentVoucherName() {
     const btnToggleDetail = document.getElementById("btnToggleDetail");
     const containerDetailPayment = document.getElementById(
-      "containerDetailPayment",
+      "containerDetailPayment"
     );
     const swalDetailPayment = document.getElementById("swalDetailPayment");
     if (btnToggleDetail && containerDetailPayment) {
@@ -1345,7 +1352,7 @@
           btnToggleDetail.classList.remove(
             "text-danger",
             "border-danger",
-            "bg-danger",
+            "bg-danger"
           );
           btnToggleDetail.classList.add("text-secondary", "border-secondary");
         } else {
@@ -1353,13 +1360,13 @@
             '<i class="bi bi-x-circle me-2"></i>Cancelar nombre del pago';
           btnToggleDetail.classList.remove(
             "text-secondary",
-            "border-secondary",
+            "border-secondary"
           );
           btnToggleDetail.classList.add(
             "text-danger",
             "border-danger",
             "bg-danger",
-            "bg-opacity-10",
+            "bg-opacity-10"
           );
           // Enfocar el input cuando se muestra
           setTimeout(() => {
@@ -1383,7 +1390,7 @@
     idvoucher,
     methodPay,
     amountCashReceived,
-    detailPay,
+    detailPay
   ) {
     const formdata = new FormData();
     formdata.append("idvoucher", idvoucher); //mostramos una alerta que el metodo de pago no a sid seleccionado
@@ -1469,7 +1476,7 @@
 
         //Obtener todos los marcados para calcular el total
         const checkedInputs = document.querySelectorAll(
-          ".select-credit:checked",
+          ".select-credit:checked"
         );
         let totalAmount = 0;
         //recorremos los checkboxes marcados para obtener el total
@@ -1512,24 +1519,43 @@
         didOpen: () => {
           renderHtmlTableDetailLiquidation();
           getPaymentMethods("selectMethodPaymentAll");
+          const recibidoPaymentAll =
+            document.getElementById("recibidoPaymentAll");
+          recibidoPaymentAll.addEventListener("input", function () {
+            const received = parseFloat(this.value) || 0;
+            calculateVueltoAllPay(received);
+          });
+          const btnSetMontoExacto =
+            document.getElementById("btnSetMontoExacto");
+          btnSetMontoExacto.addEventListener("click", function () {
+            const total = parseFloat(this.dataset.amount) || 0;
+            recibidoPaymentAll.value = total;
+            calculateVueltoAllPay(total);
+          });
+          const selectMethodPaymentAll = document.getElementById(
+            "selectMethodPaymentAll"
+          );
+          selectMethodPaymentAll.addEventListener("change", function () {
+            typeMethodPaymentAll(this.value);
+          });
         },
         preConfirm: async () => {
           // 1. Captura de datos
           const checkedInputs = document.querySelectorAll(
-            ".select-credit:checked",
+            ".select-credit:checked"
           );
           const paymentMethodAll = document.getElementById(
-            "selectMethodPaymentAll",
+            "selectMethodPaymentAll"
           )
             ? document.getElementById("selectMethodPaymentAll").value
             : 0;
           const amountCashReceived = document.getElementById(
-            "recibidoPaymentAll",
+            "recibidoPaymentAll"
           )
             ? document.getElementById("recibidoPaymentAll").value
             : 0;
           const descriptionPaymentAll = document.getElementById(
-            "descriptionPaymentAll",
+            "descriptionPaymentAll"
           )
             ? document.getElementById("descriptionPaymentAll").value
             : "";
@@ -1537,7 +1563,7 @@
           // 2. Validación
           if (paymentMethodAll == 0) {
             return Swal.showValidationMessage(
-              "Debe seleccionar un método de pago para continuar",
+              "Debe seleccionar un método de pago para continuar"
             );
           }
 
@@ -1555,7 +1581,7 @@
                 idVoucher,
                 paymentMethodAll,
                 amountCashReceived,
-                descriptionPaymentAll,
+                descriptionPaymentAll
               );
 
               resultPay.push(response);
@@ -1565,7 +1591,7 @@
           } catch (error) {
             console.error("Error en el proceso secuencial:", error);
             return Swal.showValidationMessage(
-              `Ocurrió un error inesperado: ${error.message}`,
+              `Ocurrió un error inesperado: ${error.message}`
             );
           }
         },
@@ -1584,7 +1610,7 @@
             modalFilterDateStart.value,
             modalFilterDateEnd.value,
             modalFilterSaleType.value ?? "All",
-            modalFilterPaymentStatus.value ?? "All",
+            modalFilterPaymentStatus.value ?? "All"
           );
           const resultPays = result.value; // Array con las respuestas de los pagos
           //recorremos el array de resultados y mostramos las alertas una por una con un delay de 1 segundo
@@ -1657,7 +1683,7 @@
 
               <!-- SECCIÓN 2: FORMULARIO DE PAGO -->
               <div class="row g-3">
-                  <div class="col-md-6">
+                  <div class="col-md-6" id="methodPaymentAll" style="transition: all 0.3s ease;">
                       <div class="mb-3">
                           <label class="form-label fw-bold small text-secondary">MÉTODO DE PAGO</label>
                           <div class="input-group input-group-sm">
@@ -1676,7 +1702,7 @@
                   </div>
 
                   <!-- CALCULADORA ESTÁNDAR -->
-                  <div class="col-md-6">
+                  <div class="col-md-6" id="calculatorPaymentAll" style="transition: all 0.3s ease;">
                       <div class="p-2 border rounded bg-white shadow-sm">
                           <label class="form-label fw-bold" style="font-size: 0.65rem; color: #6c757d;">RECIBIDO
                               (OPCIONAL)</label>
@@ -1684,16 +1710,16 @@
                               <span class="input-group-text bg-light border-end-0">S/</span>
                               <input type="number" class="form-control ps-1 fw-bold" id="recibidoPaymentAll"
                                   placeholder="0.00">
-                              <button class="btn btn-outline-secondary" type="button" id="btnSetMontoExacto" onclick="recibidoPaymentAll.value = this.dataset.amount">
+                              <button class="btn btn-outline-secondary" type="button" id="btnSetMontoExacto">
                                   <i class="bi bi-check2"></i>
                               </button>
                           </div>
                           <div class="d-flex justify-content-between align-items-center pt-1 border-top">
-                              <span class="fw-bold text-muted" style="font-size: 0.7rem;">VUELTO:</span>
+                              <span class="fw-bold text-muted" style="font-size: 0.7rem; transition: all 0.3s ease;">VUELTO:</span>
                               <div class="d-flex align-items-center">
-                                  <span id="vueltoBadgeSwal" class="badge bg-light text-secondary me-2"
-                                      style="font-size: 0.6rem;">INFO</span>
-                                  <span class="fw-bold h5 mb-0 text-dark" id="vueltoTextSwal">S/ 0.00</span>
+                                  <span id="vueltoBadgeAll" class="badge bg-light text-secondary me-2"
+                                      style="font-size: 0.6rem; transition: all 0.3s ease;">INFO</span>
+                                  <span class="fw-bold h5 mb-0 text-dark" id="vueltoTextAll">S/ 0.00</span>
                               </div>
                           </div>
                       </div>
@@ -1730,15 +1756,6 @@
     const totalDisplay = document.getElementById("totalAmount");
     const checkedElements = document.querySelectorAll(".select-credit:checked");
     const btnSetMontoExacto = document.getElementById("btnSetMontoExacto");
-
-    // Configuramos un formateador de moneda una sola vez
-    const formatter = new Intl.NumberFormat("es-PE", {
-      style: "currency",
-      currency: "PEN", // Cambia a tu moneda local o usa la variable getcurrency
-    });
-
-    let total = 0;
-
     const htmlRows = Array.from(checkedElements)
       .map((element) => {
         // 1. Desestructuración y conversión inmediata
@@ -1776,17 +1793,55 @@
         return `
       <tr>
         <td class="${classDate}">${payment_deadline} ${badgeOverdue}</td>
-        <td class="text-secondary text-center">${formatter.format(capital)}</td>
-        <td class="text-muted text-center">${formatter.format(amountMoraMes)}</td>
-        <td class="text-muted text-center">${formatter.format(nCurInt)}</td>
-        <td class="text-end pe-3 fw-bold">${formatter.format(nAmount)}</td>
+        <td class="text-secondary text-center">${getcurrency} ${capital}</td>
+        <td class="text-muted text-center">${getcurrency} ${amountMoraMes}</td>
+        <td class="text-muted text-center">${getcurrency} ${nCurInt}</td>
+        <td class="text-end pe-3 fw-bold">${getcurrency} ${nAmount}</td>
       </tr>`;
       })
       .join("");
 
     // 5. Una sola inserción al DOM (más rápido)
     detailContainer.innerHTML = htmlRows;
-    totalDisplay.textContent = formatter.format(total);
+    totalDisplay.textContent = `${getcurrency} ${total}`;
     btnSetMontoExacto.setAttribute("data-amount", total);
+  }
+  /**
+   * Calcula el vuelto del modal de pago general
+   * @param {number} received Monto recibido
+   */
+  function calculateVueltoAllPay(received) {
+    const vueltoTextAll = document.getElementById("vueltoTextAll");
+    const vueltoBadgeAll = document.getElementById("vueltoBadgeAll");
+    const vuelto = received - total;
+    //redondeamos a 1 decimal y agregamos un 0 al final
+    vueltoTextAll.textContent = `${getcurrency} ${vuelto.toFixed(1)}0`;
+    //eliminamos el atributo class
+    vueltoBadgeAll.removeAttribute("class");
+    if (vuelto > 0) {
+      vueltoBadgeAll.textContent = "VUELTO";
+      vueltoBadgeAll.setAttribute("class", "badge bg-success text-white");
+    } else if (vuelto < 0) {
+      vueltoBadgeAll.textContent = "DEBE";
+      vueltoBadgeAll.setAttribute("class", "badge bg-danger text-white");
+    } else {
+      vueltoBadgeAll.textContent = "PAGO EXACTO";
+      vueltoBadgeAll.setAttribute("class", "badge bg-secondary text-white");
+    }
+  }
+  function typeMethodPaymentAll(value) {
+    const methodPaymentAll = document.getElementById("methodPaymentAll");
+    const calculatorPaymentAll = document.getElementById(
+      "calculatorPaymentAll"
+    );
+    if (value == 1) {
+      methodPaymentAll.classList.remove("col-md-12");
+      methodPaymentAll.classList.add("col-md-6");
+      calculatorPaymentAll.classList.remove("d-none");
+    } else {
+      methodPaymentAll.classList.remove("col-md-6");
+      methodPaymentAll.classList.add("col-md-12");
+      calculatorPaymentAll.classList.add("d-none");
+    }
   }
 })();
