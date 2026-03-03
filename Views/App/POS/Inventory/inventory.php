@@ -97,6 +97,20 @@
                         </div>
                     </div>
                     <div class="col-md-6">
+                        <label for="txtProductCode" class="form-label">Código <span
+                                class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <button class="btn btn-outline-secondary" type="button" id="btnGenerateCode">
+                                <i class="bi bi-upc"></i>
+                            </button>
+                            <input type="text" class="form-control" id="txtProductCode" name="txtProductCode"
+                                maxlength="255" required placeholder="Ej. 123456789">
+                            <button class="btn btn-outline-secondary" type="button" id="btnScanCode">
+                                <i class="bi bi-camera"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
                         <label for="txtProductName" class="form-label">Nombre <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-box-seam"></i></span>
@@ -104,7 +118,7 @@
                                 maxlength="255" required placeholder="Ej. Café molido premium">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="txtProductCategory" class="form-label">Categoría <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
@@ -114,7 +128,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="txtProductSupplier" class="form-label">Proveedor <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
@@ -124,7 +138,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <label for="txtProductMeasurement" class="form-label">Unidad de medida <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">

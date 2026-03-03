@@ -1609,7 +1609,7 @@
         },
         buttonsStyling: false,
         customClass: {
-          popup: "w-50",
+          popup: "container",
           confirmButton: "btn btn-primary me-2",
           cancelButton: "btn btn-secondary",
         },
