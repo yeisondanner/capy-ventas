@@ -37,12 +37,12 @@ class Inventory extends Controllers
     {
         validate_permission_app(3, "r");
         $data = [
-            'page_id'          => 3,
-            'page_title'       => 'Inventario de productos',
+            'page_id' => 3,
+            'page_title' => 'Inventario de productos',
             'page_description' => 'Gestiona los productos disponibles en tu negocio.',
-            'page_container'   => 'Inventory',
-            'page_view'        => 'inventory',
-            'page_js_css'      => 'inventory',
+            'page_container' => 'Inventory',
+            'page_view' => 'inventory',
+            'page_js_css' => 'inventory',
         ];
         $this->views->getView($this, "inventory", $data, "POS");
     }
@@ -58,9 +58,9 @@ class Inventory extends Controllers
         $validationUpdate = (int) validate_permission_app(3, "u", false)['update'];
         $validationDelete = (int) validate_permission_app(3, "d", false)['delete'];
         $businessId = $this->getBusinessId();
-        $products   = $this->model->selectProducts($businessId);
-        $currency   = getCurrency();
-        $counter    = 1;
+        $products = $this->model->selectProducts($businessId);
+        $currency = getCurrency();
+        $counter = 1;
         foreach ($products as $key => $product) {
             $productName = htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8');
             $categoryName = htmlspecialchars($product['category'], ENT_QUOTES, 'UTF-8');
@@ -71,16 +71,16 @@ class Inventory extends Controllers
             //agregamos un icono de una flechita arriba si la ganacia es mayor a 0 de color verde y una flechita abajo si la ganacia es menor a 0 de color rojo
             $gainIcon = $gain > 0 ? '<i class="bi bi-arrow-up text-success"></i>' : '<i class="bi bi-arrow-down text-danger"></i>';
 
-            $products[$key]['cont']        = $counter;
-            $products[$key]['name']        = $productName;
-            $products[$key]['category']    = $categoryName;
-            $products[$key]['supplier']    = $supplierName;
+            $products[$key]['cont'] = $counter;
+            $products[$key]['name'] = $productName;
+            $products[$key]['category'] = $categoryName;
+            $products[$key]['supplier'] = $supplierName;
             $products[$key]['measurement'] = $measurementName;
-            $products[$key]['stock']       = $formattedStock . ' ' . $measurementName;
+            $products[$key]['stock'] = $formattedStock . ' ' . $measurementName;
             $products[$key]['purchase_price'] = $currency . ' ' . formatMoney((float) $product['purchase_price']);
-            $products[$key]['sales_price']    = $currency . ' ' . formatMoney((float) $product['sales_price']);
-            $products[$key]['gain']         =  $gainIcon . $currency . ' ' . $gain;
-            $products[$key]['status']         = $product['status'] === 'Activo'
+            $products[$key]['sales_price'] = $currency . ' ' . formatMoney((float) $product['sales_price']);
+            $products[$key]['gain'] = $gainIcon . $currency . ' ' . $gain;
+            $products[$key]['status'] = $product['status'] === 'Activo'
                 ? '<span class="badge badge-success bg-success"><i class="bi bi-check-circle"></i> Activo</span>'
                 : '<span class="badge badge-secondary bg-secondary"><i class="bi bi-slash-circle"></i> Inactivo</span>';
             //definimos los botones de accion
@@ -136,17 +136,17 @@ class Inventory extends Controllers
             'txtProductSalesPrice'
         ];
         validateFields($requiredFields);
-        $businessId    = $this->getBusinessId();
-        $name          = ucwords(strClean($_POST['txtProductName'] ?? ''));
-        $categoryId    = (int) ($_POST['txtProductCategory'] ?? 0);
+        $businessId = $this->getBusinessId();
+        $name = ucwords(strClean($_POST['txtProductName'] ?? ''));
+        $categoryId = (int) ($_POST['txtProductCategory'] ?? 0);
         $measurementId = (int) ($_POST['txtProductMeasurement'] ?? 0);
-        $supplierId    = (int) ($_POST['txtProductSupplier'] ?? 0);
-        $stock         = $this->resolveOptionalStock($_POST['txtProductStock'] ?? null);
-        $purchase      = $this->sanitizeDecimal($_POST['txtProductPurchasePrice'] ?? '0', 'precio de compra');
-        $sales         = $this->sanitizeDecimal($_POST['txtProductSalesPrice'] ?? '0', 'precio de venta');
-        $status        = 'Activo';
-        $description   = strClean($_POST['txtProductDescription'] ?? '');
-        $flInput       = $_FILES['flInput'];
+        $supplierId = (int) ($_POST['txtProductSupplier'] ?? 0);
+        $stock = $this->resolveOptionalStock($_POST['txtProductStock'] ?? null);
+        $purchase = $this->sanitizeDecimal($_POST['txtProductPurchasePrice'] ?? '0', 'precio de compra');
+        $sales = $this->sanitizeDecimal($_POST['txtProductSalesPrice'] ?? '0', 'precio de venta');
+        $status = 'Activo';
+        $description = strClean($_POST['txtProductDescription'] ?? '');
+        $flInput = $_FILES['flInput'];
         if ($name === '') {
             $this->responseError('El nombre del producto es obligatorio.');
         }
@@ -192,16 +192,16 @@ class Inventory extends Controllers
         }
 
         $payload = [
-            'category_id'    => $categoryId,
-            'name'           => $name,
-            'stock'          => $stock,
+            'category_id' => $categoryId,
+            'name' => $name,
+            'stock' => $stock,
             'purchase_price' => $purchase,
-            'sales_price'    => $sales,
+            'sales_price' => $sales,
             'measurement_id' => $measurementId,
-            'description'    => $description,
-            'status'         => $status,
-            'supplier_id'    => $supplierId,
-            'is_public'      => $statusChbx,
+            'description' => $description,
+            'status' => $status,
+            'supplier_id' => $supplierId,
+            'is_public' => $statusChbx,
         ];
 
         $productId = $this->model->insertProduct($payload);
@@ -236,10 +236,10 @@ class Inventory extends Controllers
         }
 
         $data = [
-            'title'  => 'Registro exitoso',
+            'title' => 'Registro exitoso',
             'message' => 'El producto se registró correctamente.',
-            'type'   => 'success',
-            'icon'   => 'success',
+            'type' => 'success',
+            'icon' => 'success',
             'status' => true,
         ];
 
@@ -265,41 +265,41 @@ class Inventory extends Controllers
         }
 
         $businessId = $this->getBusinessId();
-        $product    = $this->model->selectProduct($productId, $businessId);
+        $product = $this->model->selectProduct($productId, $businessId);
 
         if (empty($product)) {
             $this->responseError('No se encontró el producto solicitado.');
         }
 
         $currencySymbol = getCurrency();
-        $images         = $this->model->selectProductFile($productId);
+        $images = $this->model->selectProductFile($productId);
 
         $data = [
             'status' => true,
-            'data'   => [
-                'idProduct'      => (int) $product['idProduct'],
-                'category_id'    => (int) $product['category_id'],
-                'category_name'  => $product['category_name'] ?? '',
+            'data' => [
+                'idProduct' => (int) $product['idProduct'],
+                'category_id' => (int) $product['category_id'],
+                'category_name' => $product['category_name'] ?? '',
                 'measurement_id' => (int) $product['measurement_id'],
                 'measurement_name' => $product['measurement_name'] ?? '',
-                'supplier_id'    => (int) $product['supplier_id'],
-                'supplier_name'  => $product['supplier_name'] ?? '',
-                'name'           => $product['name'],
-                'stock'          => (float) $product['stock'],
-                'stock_text'     => number_format((float) $product['stock'], 2, SPD, SPM)
+                'supplier_id' => (int) $product['supplier_id'],
+                'supplier_name' => $product['supplier_name'] ?? '',
+                'name' => $product['name'],
+                'stock' => (float) $product['stock'],
+                'stock_text' => number_format((float) $product['stock'], 2, SPD, SPM)
                     . ' ' . ($product['measurement_name'] ?? ''),
                 'purchase_price' => (float) $product['purchase_price'],
                 'purchase_price_text' => $currencySymbol . ' '
                     . formatMoney((float) $product['purchase_price']),
-                'sales_price'    => (float) $product['sales_price'],
-                'sales_price_text'    => $currencySymbol . ' '
+                'sales_price' => (float) $product['sales_price'],
+                'sales_price_text' => $currencySymbol . ' '
                     . formatMoney((float) $product['sales_price']),
-                'description'    => $product['description'] ?? '',
-                'status'         => $product['status'],
+                'description' => $product['description'] ?? '',
+                'status' => $product['status'],
                 'currency_symbol' => $currencySymbol,
-                'images'         => $images ?? [],
-                'image_main'     => $product['image_main'] ?? '',
-                'is_public'     => $product['is_public'] ?? 'No',
+                'images' => $images ?? [],
+                'image_main' => $product['image_main'] ?? '',
+                'is_public' => $product['is_public'] ?? 'No',
             ],
         ];
 
@@ -344,18 +344,18 @@ class Inventory extends Controllers
             }
         }
 
-        $businessId    = $this->getBusinessId();
-        $productId     = (int) ($_POST['update_txtProductId'] ?? 0);
-        $name          = ucwords(strClean($_POST['update_txtProductName'] ?? ''));
-        $categoryId    = (int) ($_POST['update_txtProductCategory'] ?? 0);
+        $businessId = $this->getBusinessId();
+        $productId = (int) ($_POST['update_txtProductId'] ?? 0);
+        $name = ucwords(strClean($_POST['update_txtProductName'] ?? ''));
+        $categoryId = (int) ($_POST['update_txtProductCategory'] ?? 0);
         $measurementId = (int) ($_POST['update_txtProductMeasurement'] ?? 0);
-        $supplierId    = (int) ($_POST['update_txtProductSupplier'] ?? 0);
-        $stock         = $this->resolveOptionalStock($_POST['update_txtProductStock'] ?? null);
-        $purchase      = $this->sanitizeDecimal($_POST['update_txtProductPurchasePrice'] ?? '0', 'precio de compra');
-        $sales         = $this->sanitizeDecimal($_POST['update_txtProductSalesPrice'] ?? '0', 'precio de venta');
-        $status        =  'Activo';
-        $description   = strClean($_POST['update_txtProductDescription'] ?? '');
-        $flInput       = $_FILES['update_flInput'];
+        $supplierId = (int) ($_POST['update_txtProductSupplier'] ?? 0);
+        $stock = $this->resolveOptionalStock($_POST['update_txtProductStock'] ?? null);
+        $purchase = $this->sanitizeDecimal($_POST['update_txtProductPurchasePrice'] ?? '0', 'precio de compra');
+        $sales = $this->sanitizeDecimal($_POST['update_txtProductSalesPrice'] ?? '0', 'precio de venta');
+        $status = 'Activo';
+        $description = strClean($_POST['update_txtProductDescription'] ?? '');
+        $flInput = $_FILES['update_flInput'];
         if ($productId <= 0) {
             $this->responseError('Identificador de producto inválido.');
         }
@@ -409,17 +409,17 @@ class Inventory extends Controllers
         }
 
         $payload = [
-            'idProduct'      => $productId,
-            'category_id'    => $categoryId,
-            'name'           => $name,
-            'stock'          => $stock,
+            'idProduct' => $productId,
+            'category_id' => $categoryId,
+            'name' => $name,
+            'stock' => $stock,
             'purchase_price' => $purchase,
-            'sales_price'    => $sales,
+            'sales_price' => $sales,
             'measurement_id' => $measurementId,
-            'description'    => $description,
-            'status'         => $status,
-            'supplier_id'    => $supplierId,
-            'is_public'      => $statusChbx,
+            'description' => $description,
+            'status' => $status,
+            'supplier_id' => $supplierId,
+            'is_public' => $statusChbx,
         ];
 
         $updated = $this->model->updateProduct($payload);
@@ -454,10 +454,10 @@ class Inventory extends Controllers
             $this->model->insert_product_file($arrValues);
         }
         $data = [
-            'title'  => 'Actualización exitosa',
+            'title' => 'Actualización exitosa',
             'message' => 'La información del producto se actualizó correctamente.',
-            'type'   => 'success',
-            'icon'   => 'success',
+            'type' => 'success',
+            'icon' => 'success',
             'status' => true,
         ];
 
@@ -488,7 +488,7 @@ class Inventory extends Controllers
         }
 
         $businessId = $this->getBusinessId();
-        $product    = $this->model->selectProduct($productId, $businessId);
+        $product = $this->model->selectProduct($productId, $businessId);
 
         if (empty($product)) {
             $this->responseError('El producto seleccionado no existe o no pertenece a tu negocio.');
@@ -509,10 +509,10 @@ class Inventory extends Controllers
         }
 
         $data = [
-            'title'  => 'Producto eliminado',
+            'title' => 'Producto eliminado',
             'message' => 'El producto se eliminó correctamente.',
-            'type'   => 'success',
-            'icon'   => 'success',
+            'type' => 'success',
+            'icon' => 'success',
             'status' => true,
         ];
 
@@ -531,7 +531,7 @@ class Inventory extends Controllers
 
         toJson([
             'status' => true,
-            'data'   => $data,
+            'data' => $data,
         ]);
     }
 
@@ -545,10 +545,10 @@ class Inventory extends Controllers
         //VALIDACION DE PERMISOS
         validate_permission_app(10, "r", false, false, false);
         $businessId = $this->getBusinessId();
-        $data       = $this->model->selectCategoryList($businessId);
+        $data = $this->model->selectCategoryList($businessId);
         toJson([
             'status' => true,
-            'data'   => $data,
+            'data' => $data,
         ]);
     }
 
@@ -569,14 +569,14 @@ class Inventory extends Controllers
         $this->validateCsrfToken($_POST['token'] ?? '', $userId);
 
         $rawName = $_POST['txtCategoryName'] ?? '';
-        $name    = ucwords(strClean($rawName));
+        $name = ucwords(strClean($rawName));
 
         if ($name === '') {
             $this->responseError('El nombre de la categoría es obligatorio.');
         }
 
         $businessId = $this->getBusinessId();
-        $existing   = $this->model->selectCategoryByName($name, $businessId);
+        $existing = $this->model->selectCategoryByName($name, $businessId);
 
         if (!empty($existing)) {
             $this->responseError('Ya existe una categoría con el mismo nombre en tu negocio.');
@@ -588,10 +588,10 @@ class Inventory extends Controllers
         }
 
         toJson([
-            'title'  => 'Categoría registrada',
+            'title' => 'Categoría registrada',
             'message' => 'La categoría se registró correctamente.',
-            'type'   => 'success',
-            'icon'   => 'success',
+            'type' => 'success',
+            'icon' => 'success',
             'status' => true,
         ]);
     }
@@ -613,8 +613,8 @@ class Inventory extends Controllers
         $this->validateCsrfToken($_POST['token'] ?? '', $userId);
 
         $categoryId = (int) ($_POST['categoryId'] ?? 0);
-        $rawName    = $_POST['txtCategoryName'] ?? '';
-        $name       = ucwords(strClean($rawName));
+        $rawName = $_POST['txtCategoryName'] ?? '';
+        $name = ucwords(strClean($rawName));
 
         if ($categoryId <= 0) {
             $this->responseError('No fue posible identificar la categoría seleccionada.');
@@ -625,7 +625,7 @@ class Inventory extends Controllers
         }
 
         $businessId = $this->getBusinessId();
-        $category   = $this->model->findCategory($categoryId, $businessId);
+        $category = $this->model->findCategory($categoryId, $businessId);
 
         if (empty($category)) {
             $this->responseError('La categoría seleccionada no existe o no pertenece a tu negocio.');
@@ -646,10 +646,10 @@ class Inventory extends Controllers
         }
 
         toJson([
-            'title'  => 'Categoría actualizada',
+            'title' => 'Categoría actualizada',
             'message' => 'La categoría se actualizó correctamente.',
-            'type'   => 'success',
-            'icon'   => 'success',
+            'type' => 'success',
+            'icon' => 'success',
             'status' => true,
         ]);
     }
@@ -676,7 +676,7 @@ class Inventory extends Controllers
         }
 
         $categoryId = (int) ($payload['id'] ?? 0);
-        $token      = (string) ($payload['token'] ?? '');
+        $token = (string) ($payload['token'] ?? '');
 
         if ($categoryId <= 0) {
             $this->responseError('No fue posible identificar la categoría seleccionada.');
@@ -686,7 +686,7 @@ class Inventory extends Controllers
         $this->validateCsrfToken($token, $userId);
 
         $businessId = $this->getBusinessId();
-        $category   = $this->model->findCategory($categoryId, $businessId);
+        $category = $this->model->findCategory($categoryId, $businessId);
 
         if (empty($category)) {
             $this->responseError('La categoría seleccionada no existe o no pertenece a tu negocio.');
@@ -705,11 +705,11 @@ class Inventory extends Controllers
             }
 
             toJson([
-                'title'   => 'Categoría desactivada',
+                'title' => 'Categoría desactivada',
                 'message' => 'La categoría tiene registros asociados, por lo que se desactivó y se ocultó del listado.',
-                'type'    => 'success',
-                'icon'    => 'success',
-                'status'  => true,
+                'type' => 'success',
+                'icon' => 'success',
+                'status' => true,
             ]);
 
             return;
@@ -721,11 +721,11 @@ class Inventory extends Controllers
         }
 
         toJson([
-            'title'   => 'Categoría eliminada',
+            'title' => 'Categoría eliminada',
             'message' => 'La categoría se eliminó correctamente.',
-            'type'    => 'success',
-            'icon'    => 'success',
-            'status'  => true,
+            'type' => 'success',
+            'icon' => 'success',
+            'status' => true,
         ]);
     }
 
@@ -740,7 +740,7 @@ class Inventory extends Controllers
 
         toJson([
             'status' => true,
-            'data'   => $data,
+            'data' => $data,
         ]);
     }
 
@@ -752,11 +752,11 @@ class Inventory extends Controllers
     public function getSuppliers(): void
     {
         $businessId = $this->getBusinessId();
-        $data       = $this->model->selectSuppliers($businessId);
+        $data = $this->model->selectSuppliers($businessId);
 
         toJson([
             'status' => true,
-            'data'   => $data,
+            'data' => $data,
         ]);
     }
 
@@ -1041,10 +1041,10 @@ class Inventory extends Controllers
         $updateStatus = $this->model->update_status_product_file($id, 'Inactivo');
         if ($updateStatus) {
             toJson([
-                'title'  => 'Imagen eliminada',
+                'title' => 'Imagen eliminada',
                 'message' => 'La imagen se elimino correctamente.',
-                'type'   => 'success',
-                'icon'   => 'success',
+                'type' => 'success',
+                'icon' => 'success',
                 'status' => true,
             ]);
         } else {
@@ -1062,10 +1062,10 @@ class Inventory extends Controllers
     private function responseError(string $message): void
     {
         $data = [
-            'title'  => 'Ocurrió un error',
+            'title' => 'Ocurrió un error',
             'message' => $message,
-            'type'   => 'error',
-            'icon'   => 'error',
+            'type' => 'error',
+            'icon' => 'error',
             'status' => false,
         ];
 

@@ -42,7 +42,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Acciones</th>
-                                    <th>Nombre</th>
+                                    <th></th>Nombre</th>
                                     <th>Categoría</th>
                                     <th>Proveedor</th>
                                     <th>Stock</th>
@@ -97,8 +97,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <label for="txtProductCode" class="form-label">Código <span
-                                class="text-danger">*</span></label>
+                        <label for="txtProductCode" class="form-label">Código <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <button class="btn btn-outline-secondary" type="button" id="btnGenerateCode">
                                 <i class="bi bi-upc"></i>
