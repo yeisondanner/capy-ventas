@@ -47,6 +47,7 @@ class CreditsModel extends Mysql
                     c.default_interest_rate,
                     c.current_interest_rate,
                     c.billing_date,
+                    DATE(vh.payment_deadline) AS 'payment_deadline',
                     -- Suma condicional: solo suma si es 'Credito', de lo contrario suma 0
                     IFNULL(
                         SUM(
@@ -71,16 +72,17 @@ class CreditsModel extends Mysql
             array_push($arrValues, $this->search, $this->search);
         }
         if (!empty($startDate) && $startDate != null && !empty($endDate) && $endDate != null) {
-            $sql .= "AND (DATE(c.billing_date) BETWEEN ? AND ?)";
+            $sql .= "AND (DATE(vh.payment_deadline) BETWEEN ? AND ?)";
             $this->startDate = $startDate;
             $this->endDate = $endDate;
             array_push($arrValues, $this->startDate, $this->endDate);
         }
         $sql .= <<<SQL
                 GROUP BY
-                    c.idCustomer
+                    c.idCustomer,
+                    vh.payment_deadline
                 ORDER BY
-                    vh.registration_date DESC;
+                    vh.payment_deadline DESC;
         SQL;
         return $this->select_all($sql, $arrValues);
     }
