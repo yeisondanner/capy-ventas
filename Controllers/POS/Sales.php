@@ -560,11 +560,13 @@ class Sales extends Controllers
         $totalAmountNoTax = max($subtotal - $discountAmount, 0);
         $totalAmountTax = $totalAmountNoTax * ($tax / 100);
         $totalAmount = $totalAmountNoTax + $totalAmountTax;
+        // Sintaxis nueva de PHP 8.4 (Class Member Access on Instantiation)
+        $saleDateTime = (new DateTime())->format('Y-m-d H:i:s');
 
-        $saleDateTime = date('Y-m-d H:i:s');
-        if ($saleDate !== '') {
+        if (!empty($saleDate)) {
+            // Podemos encadenar directamente si estamos seguros del formato
             $date = DateTime::createFromFormat('Y-m-d', $saleDate);
-            if ($date !== false) {
+            if ($date) {
                 $saleDateTime = $date->format('Y-m-d') . ' ' . date('H:i:s');
             }
         }
@@ -668,8 +670,12 @@ class Sales extends Controllers
             $billing_date_day = date('d', strtotime($billing_date));
             //obtenemos el dia de la fecha de la venta
             $saleDate_day = date('d', strtotime($saleDateTime));
+            //obtenemos el mes de la fecha de la venta
+            $saleDate_month = date('m', strtotime($saleDateTime));
+            //obtenemos el año de la fecha de la venta
+            $saleDate_year = date('Y', strtotime($saleDateTime));
             //armamos la fecha de facturacion actual con el presente
-            $billing_date = date('Y') . '-' . date('m') . '-' . $billing_date_day;
+            $billing_date = $saleDate_year . '-' . $saleDate_month . '-' . $billing_date_day;
             //si el dia de la venta es mayor al dia de la fecha de facturación armamos la fecha para el proximo mes
             if ($saleDate_day > $billing_date_day) {
                 $billing_date = date('Y-m-d', strtotime('+1 month', strtotime($billing_date)));
