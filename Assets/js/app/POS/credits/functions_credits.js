@@ -1823,6 +1823,10 @@
       vueltoBadgeAll.setAttribute("class", "badge bg-secondary text-white");
     }
   }
+  /**
+   * Calcula el vuelto del modal de pago general
+   * @param {number} received Monto recibido
+   */
   function typeMethodPaymentAll(value) {
     const methodPaymentAll = document.getElementById("methodPaymentAll");
     const calculatorPaymentAll = document.getElementById(
