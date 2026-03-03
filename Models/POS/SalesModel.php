@@ -104,15 +104,15 @@ class SalesModel extends Mysql
 
         $result = $this->select_all($sql, [$this->idBusiness]);
         foreach ($result as $key => $value) {
-            $consumed = $this->selectDebtTotal($value['idCustomer'], $this->idBusiness)['credit_total'];
-            $result[$key]['consumed'] = $consumed;
+            $consumed = $this->selectDebtTotal($value['idCustomer'], $this->idBusiness)['credit_total'] ?? 0;
+            $result[$key]['consumed'] = round($consumed, 2);
             //calulamos cuando es en porcentaje de uso del credito limite
             $percentage = 0;
-            if ($value['credit_limit'] > 0) {
-                $percentage = ($consumed / $value['credit_limit']) * 100;
+            if (($value['credit_limit'] ?? 0) > 0) {
+                $percentage = round(($consumed / ($value['credit_limit'] ?? 0)) * 100, 2);
             }
             $result[$key]['percentage'] = $percentage > 100 ? 100 : $percentage; //si el porcentaje es mayor a 100, se coloca 100
-            $available = $value['credit_limit'] - $consumed;
+            $available = round(($value['credit_limit'] ?? 0) - $consumed, 2);
             $result[$key]['available'] = $available > 0 ? $available : 0;
         }
         return $result;
