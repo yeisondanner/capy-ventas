@@ -126,14 +126,14 @@ class Inventory extends Controllers
         } else {
             $statusChbx = 'No';
         }
-        $this->validateCsrfToken($_POST['token'] ?? '', $userId);
         $requiredFields = [
             'txtProductName',
             'txtProductCategory',
             'txtProductMeasurement',
             'txtProductSupplier',
             'txtProductPurchasePrice',
-            'txtProductSalesPrice'
+            'txtProductSalesPrice',
+            'txtProductCode'
         ];
         validateFields($requiredFields);
         $businessId = $this->getBusinessId();
@@ -146,11 +146,17 @@ class Inventory extends Controllers
         $sales = $this->sanitizeDecimal($_POST['txtProductSalesPrice'] ?? '0', 'precio de venta');
         $status = 'Activo';
         $description = strClean($_POST['txtProductDescription'] ?? '');
+        $code = strClean($_POST['txtProductCode'] ?? '');
         $flInput = $_FILES['flInput'];
-        if ($name === '') {
-            $this->responseError('El nombre del producto es obligatorio.');
-        }
-
+        validateFieldsEmpty([
+            'NOMBRE DEL PRODUCTO' => $name,
+            'CODIGO DEL PRODUCTO' => $code,
+            'CATEGORIA' => $categoryId,
+            'UNIDAD DE MEDIDA' => $measurementId,
+            'PROVEEDOR' => $supplierId,
+            'PRECIO DE COMPRA' => $purchase,
+            'PRECIO DE VENTA' => $sales
+        ]);
         if ($categoryId <= 0) {
             $this->responseError('Debes seleccionar una categoría válida.');
         }
@@ -161,6 +167,10 @@ class Inventory extends Controllers
 
         if ($supplierId <= 0) {
             $this->responseError('Debes seleccionar un proveedor válido.');
+        }
+        //verificamos que el codigo tenga una longitud de 50 caracteres
+        if (strlen($code) > 50) {
+            $this->responseError('El código no puede exceder los 50 caracteres.');
         }
         //validamos que el campo no este vacio
         if (!empty($flInput['name'])) {
@@ -181,11 +191,9 @@ class Inventory extends Controllers
         if ($sales > 99999999.99) {
             $this->responseError('El precio de venta no puede exceder los 11 dígitos.');
         }
-
         $this->ensureCategoryBelongsToBusiness($categoryId, $businessId);
         $this->ensureMeasurementExists($measurementId);
         $this->ensureSupplierBelongsToBusiness($supplierId, $businessId);
-
         $existingProduct = $this->model->selectProductByName($name, $businessId);
         if (!empty($existingProduct)) {
             $this->responseError('Ya existe un producto con el mismo nombre en tu negocio.');
@@ -202,6 +210,7 @@ class Inventory extends Controllers
             'status' => $status,
             'supplier_id' => $supplierId,
             'is_public' => $statusChbx,
+            'code' => $code,
         ];
 
         $productId = $this->model->insertProduct($payload);
@@ -300,6 +309,7 @@ class Inventory extends Controllers
                 'images' => $images ?? [],
                 'image_main' => $product['image_main'] ?? '',
                 'is_public' => $product['is_public'] ?? 'No',
+                'bar_code' => $product['bar_code'] ?? '',
             ],
         ];
 
@@ -318,9 +328,7 @@ class Inventory extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
         $userId = $this->getUserId();
-        $this->validateCsrfToken($_POST['token'] ?? '', $userId);
         //validamos si chkProductStatus esta activo o inactivo
         if (isset($_POST['update_chkProductStatus']) && $_POST['update_chkProductStatus'] === 'on') {
             $statusChbx = 'Si';
@@ -335,7 +343,8 @@ class Inventory extends Controllers
             'update_txtProductSupplier',
             'update_txtProductStock',
             'update_txtProductPurchasePrice',
-            'update_txtProductSalesPrice'
+            'update_txtProductSalesPrice',
+            'update_txtProductCode'
         ];
 
         foreach ($requiredFields as $field) {
@@ -356,12 +365,22 @@ class Inventory extends Controllers
         $status = 'Activo';
         $description = strClean($_POST['update_txtProductDescription'] ?? '');
         $flInput = $_FILES['update_flInput'];
+        $code = strClean($_POST['update_txtProductCode'] ?? '');
+        validateFieldsEmpty([
+            'NOMBRE DEL PRODUCTO' => $name,
+            'CODIGO DEL PRODUCTO' => $code,
+            'CATEGORIA' => $categoryId,
+            'UNIDAD DE MEDIDA' => $measurementId,
+            'PROVEEDOR' => $supplierId,
+            'PRECIO DE COMPRA' => $purchase,
+            'PRECIO DE VENTA' => $sales
+        ]);
+        //verificamos que el codigo tenga una longitud de 50 caracteres
+        if (strlen($code) > 50) {
+            $this->responseError('El código no puede exceder los 50 caracteres.');
+        }
         if ($productId <= 0) {
             $this->responseError('Identificador de producto inválido.');
-        }
-
-        if ($name === '') {
-            $this->responseError('El nombre del producto es obligatorio.');
         }
 
         if ($categoryId <= 0) {
@@ -420,6 +439,7 @@ class Inventory extends Controllers
             'status' => $status,
             'supplier_id' => $supplierId,
             'is_public' => $statusChbx,
+            'code' => $code,
         ];
 
         $updated = $this->model->updateProduct($payload);
@@ -786,26 +806,6 @@ class Inventory extends Controllers
         }
 
         return (int) $_SESSION[$this->nameVarLoginInfo]['idUser'];
-    }
-
-    /**
-     * Valida el token CSRF proporcionado por el cliente.
-     *
-     * @param string $token  Token recibido.
-     * @param int    $userId Identificador del usuario autenticado.
-     *
-     * @return void
-     */
-    private function validateCsrfToken(string $token, int $userId): void
-    {
-        if (empty($token) || empty($_SESSION['data_token']['token'])) {
-            $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
-        }
-
-        $sessionToken = (string) $_SESSION['data_token']['token'];
-        if (!hash_equals($sessionToken, (string) $token)) {
-            $this->responseError('La sesión ha expirado, actualiza la página e inténtalo nuevamente.');
-        }
     }
 
     /**

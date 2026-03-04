@@ -42,7 +42,8 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Acciones</th>
-                                    <th></th>Nombre</th>
+                                    <th>Código</th>
+                                    <th>Nombre</th>
                                     <th>Categoría</th>
                                     <th>Proveedor</th>
                                     <th>Stock</th>
@@ -81,7 +82,6 @@
                 </div>
             </div>
             <div class="modal-body">
-                <?= csrf(); ?>
                 <div class="row g-3">
                     <div class="col-md-12 d-flex justify-content-center">
                         <div class="card-body p-4">
@@ -103,7 +103,7 @@
                                 <i class="bi bi-upc"></i>
                             </button>
                             <input type="text" class="form-control" id="txtProductCode" name="txtProductCode"
-                                maxlength="255" required placeholder="Ej. 123456789">
+                                maxlength="50" required placeholder="Ej. 123456789">
                             <button class="btn btn-outline-secondary" type="button" id="btnScanCode">
                                 <i class="bi bi-camera"></i>
                             </button>
@@ -256,6 +256,11 @@
                             </div>
 
                             <div class="small">
+                                <div class="mb-2">
+                                    <label class="text-muted fw-bold d-block text-uppercase small"
+                                        style="font-size: 0.7rem;">Código</label>
+                                    <span id="reportProductCode">-</span>
+                                </div>
                                 <div class="mb-2">
                                     <label class="text-muted fw-bold d-block text-uppercase small"
                                         style="font-size: 0.7rem;">Categoría</label>
@@ -443,6 +448,21 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="update_txtProductCode" class="form-label">Código <span
+                                class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <button class="btn btn-outline-secondary" type="button" id="btnGenerateCode">
+                                <i class="bi bi-upc"></i>
+                            </button>
+                            <input type="text" class="form-control" id="update_txtProductCode"
+                                name="update_txtProductCode" maxlength="50" required
+                                placeholder="Ej. 123456789">
+                            <button class="btn btn-outline-secondary" type="button" id="btnScanCode">
+                                <i class="bi bi-camera"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="col-md-6">

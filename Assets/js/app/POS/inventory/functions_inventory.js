@@ -138,15 +138,16 @@
     setReportField("reportProductName", product.name || "Producto sin nombre");
     setReportField(
       "reportProductCategory",
-      product.category_name || "Sin categoría asignada"
+      product.category_name || "Sin categoría asignada",
     );
+    setReportField("reportProductCode", product.bar_code || "Sin código");
     setReportField(
       "reportProductSupplier",
-      product.supplier_name || "Sin proveedor asignado"
+      product.supplier_name || "Sin proveedor asignado",
     );
     setReportField(
       "reportProductMeasurement",
-      product.measurement_name || "Sin unidad registrada"
+      product.measurement_name || "Sin unidad registrada",
     );
     const currency =
       typeof product.currency_symbol === "string"
@@ -160,12 +161,12 @@
     const purchaseText =
       product.purchase_price_text ||
       `${currency ? `${currency} ` : ""}${Number(
-        product.purchase_price || 0
+        product.purchase_price || 0,
       ).toFixed(2)}`;
     const saleText =
       product.sales_price_text ||
       `${currency ? `${currency} ` : ""}${Number(
-        product.sales_price || 0
+        product.sales_price || 0,
       ).toFixed(2)}`;
 
     const description =
@@ -291,18 +292,18 @@
 
       if (!categoriesJson.status) {
         throw new Error(
-          categoriesJson.message || "No fue posible cargar las categorías"
+          categoriesJson.message || "No fue posible cargar las categorías",
         );
       }
       if (!measurementsJson.status) {
         throw new Error(
           measurementsJson.message ||
-            "No fue posible cargar las unidades de medida"
+            "No fue posible cargar las unidades de medida",
         );
       }
       if (!suppliersJson.status) {
         throw new Error(
-          suppliersJson.message || "No fue posible cargar los proveedores"
+          suppliersJson.message || "No fue posible cargar los proveedores",
         );
       }
 
@@ -322,34 +323,34 @@
       populateSelect(
         document.getElementById("txtProductCategory"),
         cachedCategories,
-        "Selecciona una categoría"
+        "Selecciona una categoría",
       );
       populateSelect(
         document.getElementById("update_txtProductCategory"),
         cachedCategories,
-        "Selecciona una categoría"
+        "Selecciona una categoría",
       );
 
       populateSelect(
         document.getElementById("txtProductSupplier"),
         cachedSuppliers,
-        "Selecciona un proveedor"
+        "Selecciona un proveedor",
       );
       populateSelect(
         document.getElementById("update_txtProductSupplier"),
         cachedSuppliers,
-        "Selecciona un proveedor"
+        "Selecciona un proveedor",
       );
 
       populateSelect(
         document.getElementById("txtProductMeasurement"),
         cachedMeasurements,
-        "Selecciona una unidad"
+        "Selecciona una unidad",
       );
       populateSelect(
         document.getElementById("update_txtProductMeasurement"),
         cachedMeasurements,
-        "Selecciona una unidad"
+        "Selecciona una unidad",
       );
     } catch (error) {
       console.error("Error cargando selectores", error);
@@ -520,7 +521,7 @@
           title: "Procesando",
           message: "Por favor, espera mientras se procesa la categoría.",
         },
-        "loading"
+        "loading",
       );
       const formData = new FormData(form);
       const nameValue = (formData.get("txtCategoryName") || "")
@@ -593,7 +594,7 @@
     }
 
     const currentCategory = categoryList.find(
-      (item) => Number.parseInt(item.idCategory, 10) === categoryId
+      (item) => Number.parseInt(item.idCategory, 10) === categoryId,
     );
 
     if (!currentCategory) {
@@ -639,7 +640,7 @@
         const newName = (value || "").trim();
         if (!newName) {
           Swal.showValidationMessage(
-            "Debes ingresar un nombre para la categoría."
+            "Debes ingresar un nombre para la categoría.",
           );
           return false;
         }
@@ -647,7 +648,7 @@
         const token = getSecurityToken();
         if (!token) {
           Swal.showValidationMessage(
-            "No se encontró el token de seguridad. Actualiza la página e inténtalo nuevamente."
+            "No se encontró el token de seguridad. Actualiza la página e inténtalo nuevamente.",
           );
           return false;
         }
@@ -663,7 +664,7 @@
             {
               method: "POST",
               body: formData,
-            }
+            },
           );
 
           if (!response.ok) {
@@ -673,7 +674,7 @@
           const data = await response.json();
           if (!data.status) {
             Swal.showValidationMessage(
-              data.message || "No fue posible actualizar la categoría."
+              data.message || "No fue posible actualizar la categoría.",
             );
             if (data.url) {
               setTimeout(() => {
@@ -687,7 +688,7 @@
         } catch (error) {
           console.error("Error actualizando categoría", error);
           Swal.showValidationMessage(
-            "No fue posible actualizar la categoría. Inténtalo nuevamente."
+            "No fue posible actualizar la categoría. Inténtalo nuevamente.",
           );
           return false;
         }
@@ -731,7 +732,7 @@
     }
 
     const currentCategory = categoryList.find(
-      (item) => Number.parseInt(item.idCategory, 10) === categoryId
+      (item) => Number.parseInt(item.idCategory, 10) === categoryId,
     );
 
     if (
@@ -781,7 +782,7 @@
           title: "Eliminando categoría...",
           message: "Por favor, espera mientras se elimina la categoría.",
         },
-        "loading"
+        "loading",
       );
       try {
         const response = await fetch(
@@ -790,7 +791,7 @@
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: categoryId, token }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -840,7 +841,7 @@
         event.preventDefault();
         const id = Number.parseInt(
           editButton.getAttribute("data-id") || "0",
-          10
+          10,
         );
         promptCategoryEdition(id);
         return;
@@ -851,7 +852,7 @@
         event.preventDefault();
         const id = Number.parseInt(
           deleteButton.getAttribute("data-id") || "0",
-          10
+          10,
         );
         const name = deleteButton.getAttribute("data-name") || "";
         confirmDeleteCategory(id, name);
@@ -880,6 +881,7 @@
       columns: [
         { data: "cont" },
         { data: "actions", orderable: false, searchable: false },
+        { data: "bar_code" },
         { data: "name" },
         { data: "category" },
         { data: "supplier" },
@@ -903,21 +905,21 @@
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
           className: "btn btn-sm btn-outline-secondary my-2",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
           className: "btn btn-sm btn-outline-success my-2",
           title: "Productos",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
           className: "btn btn-sm btn-outline-info my-2",
           title: "Productos",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
         },
         {
           extend: "pdfHtml5",
@@ -926,7 +928,7 @@
           orientation: "portrait",
           pageSize: "A4",
           title: "Productos",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
         },
       ],
       columnDefs: [
@@ -986,17 +988,17 @@
     populateSelect(
       document.getElementById("txtProductCategory"),
       cachedCategories,
-      "Selecciona una categoría"
+      "Selecciona una categoría",
     );
     populateSelect(
       document.getElementById("txtProductSupplier"),
       cachedSuppliers,
-      "Selecciona un proveedor"
+      "Selecciona un proveedor",
     );
     populateSelect(
       document.getElementById("txtProductMeasurement"),
       cachedMeasurements,
-      "Selecciona una unidad"
+      "Selecciona una unidad",
     );
 
     showModal(modalCreate);
@@ -1041,17 +1043,17 @@
           populateSelect(
             document.getElementById("txtProductCategory"),
             cachedCategories,
-            "Selecciona una categoría"
+            "Selecciona una categoría",
           );
           populateSelect(
             document.getElementById("txtProductSupplier"),
             cachedSuppliers,
-            "Selecciona un proveedor"
+            "Selecciona un proveedor",
           );
           populateSelect(
             document.getElementById("txtProductMeasurement"),
             cachedMeasurements,
-            "Selecciona una unidad"
+            "Selecciona una unidad",
           );
           hideModal(modalCreate);
           productsTable.ajax.reload(null, false);
@@ -1085,7 +1087,7 @@
           {
             method: "POST",
             body: formData,
-          }
+          },
         );
 
         if (!response.ok) {
@@ -1191,7 +1193,7 @@
           title: "Eliminando producto...",
           text: "Por favor, espera mientras se elimina el producto.",
         },
-        "loading"
+        "loading",
       );
       try {
         const response = await fetch(
@@ -1200,7 +1202,7 @@
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: productId, token }),
-          }
+          },
         );
 
         if (!response.ok) {
@@ -1243,7 +1245,7 @@
     showAlert({ title: "Cargando producto..." }, "loading-float");
     try {
       const response = await fetch(
-        `${base_url}/pos/Inventory/getProduct?id=${productId}`
+        `${base_url}/pos/Inventory/getProduct?id=${productId}`,
       );
       if (!response.ok) {
         throw new Error(`Error ${response.status}`);
@@ -1272,19 +1274,21 @@
       populateSelect(
         document.getElementById("update_txtProductCategory"),
         cachedCategories,
-        "Selecciona una categoría"
+        "Selecciona una categoría",
       );
       populateSelect(
         document.getElementById("update_txtProductSupplier"),
         cachedSuppliers,
-        "Selecciona un proveedor"
+        "Selecciona un proveedor",
       );
       populateSelect(
         document.getElementById("update_txtProductMeasurement"),
         cachedMeasurements,
-        "Selecciona una unidad"
+        "Selecciona una unidad",
       );
       document.getElementById("update_txtProductId").value = product.idProduct;
+      document.getElementById("update_txtProductCode").value =
+        product.bar_code || "";
       document.getElementById("update_txtProductName").value = product.name;
       document.getElementById("update_txtProductCategory").value =
         `${product.category_id}`;
@@ -1354,7 +1358,7 @@
 
     try {
       const response = await fetch(
-        `${base_url}/pos/Inventory/getProduct?id=${productId}`
+        `${base_url}/pos/Inventory/getProduct?id=${productId}`,
       );
       if (!response.ok) {
         throw new Error(`Error ${response.status}`);

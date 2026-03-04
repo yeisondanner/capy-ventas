@@ -19,6 +19,7 @@ class InventoryModel extends Mysql
         $sql = <<<SQL
             SELECT
                 p.idProduct,
+                IFNULL(p.bar_code, 'Sin código') AS bar_code,
                 p.category_id,
                 p.name,
                 p.stock,
@@ -94,9 +95,9 @@ class InventoryModel extends Mysql
     {
         $sql = <<<SQL
             INSERT INTO product
-                (category_id, name, stock, purchase_price, sales_price, measurement_id, description, status, supplier_id,is_public)
+                (category_id, name, stock, purchase_price, sales_price, measurement_id, description, status, supplier_id,is_public,bar_code)
             VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);
         SQL;
 
         $params = [
@@ -109,7 +110,8 @@ class InventoryModel extends Mysql
             $data['description'] !== '' ? $data['description'] : null,
             $data['status'],
             $data['supplier_id'],
-            $data['is_public']
+            $data['is_public'],
+            $data['code']
         ];
 
         return (int) $this->insert($sql, $params);
@@ -136,7 +138,8 @@ class InventoryModel extends Mysql
                 description = ?,
                 status = ?,
                 supplier_id = ?,
-                is_public = ?
+                is_public = ?,
+                bar_code = ?
             WHERE idProduct = ?
             LIMIT 1;
         SQL;
@@ -152,6 +155,7 @@ class InventoryModel extends Mysql
             $data['status'],
             $data['supplier_id'],
             $data['is_public'],
+            $data['code'],
             $data['idProduct'],
         ];
 
