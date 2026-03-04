@@ -499,9 +499,6 @@ class Inventory extends Controllers
 
         $input = json_decode(file_get_contents('php://input'), true) ?? [];
         $userId = $this->getUserId();
-
-        $this->validateCsrfToken($input['token'] ?? '', $userId);
-
         $productId = isset($input['id']) ? (int) $input['id'] : 0;
         if ($productId <= 0) {
             $this->responseError('Identificador de producto inválido.');
