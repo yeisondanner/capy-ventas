@@ -583,7 +583,7 @@ class Inventory extends Controllers
         }
 
         $userId = $this->getUserId();
-        $this->validateCsrfToken($_POST['token'] ?? '', $userId);
+
 
         $rawName = $_POST['txtCategoryName'] ?? '';
         $name = ucwords(strClean($rawName));
@@ -627,7 +627,7 @@ class Inventory extends Controllers
         }
 
         $userId = $this->getUserId();
-        $this->validateCsrfToken($_POST['token'] ?? '', $userId);
+
 
         $categoryId = (int) ($_POST['categoryId'] ?? 0);
         $rawName = $_POST['txtCategoryName'] ?? '';
@@ -700,7 +700,6 @@ class Inventory extends Controllers
         }
 
         $userId = $this->getUserId();
-        $this->validateCsrfToken($token, $userId);
 
         $businessId = $this->getBusinessId();
         $category = $this->model->findCategory($categoryId, $businessId);
