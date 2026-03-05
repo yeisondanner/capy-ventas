@@ -552,6 +552,7 @@ class Box extends Controllers
     // TODO: Endpoint para registrar un gasto
     public function setExpense()
     {
+        validate_permission_app(14, "c", false, false, false);
         // * Validamos que llegue el metodo POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');

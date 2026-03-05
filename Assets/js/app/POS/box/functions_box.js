@@ -441,6 +441,11 @@ export class Box {
       }
     }
     this.#mostrarAlerta(response);
+    if (response.url) {
+      setTimeout(() => {
+        window.location.href = response.url;
+      }, response.timer ?? 1000);
+    }
   };
 
   // ==========================================
