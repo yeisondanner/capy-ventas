@@ -600,9 +600,19 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 <div class="modal fade" id="modalMovementBox" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg overflow-hidden">
-            <div class="modal-header border-bottom-0 py-3 bg-primary text-white">
-                <h5 class="fw-bold mb-0">Venta Rápida</h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-primary text-white border-bottom-0 py-2">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
+                        <i class="bi bi-rocket-takeoff fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="voucherModalLabel">Registrar venta libre</h5>
+                        <p class="mb-0 small text-white text-opacity-75">Aqui podras registrar las ventas libres que no afectan el inventario, son ventas rapidas</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
             </div>
             <div class="modal-body p-4">
                 <div class="d-flex align-items-center gap-3 p-2 pe-3 border rounded-pill bg-body-tertiary mb-3">
