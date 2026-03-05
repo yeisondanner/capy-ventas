@@ -707,11 +707,21 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 
 <!-- Modal: Retirar movimiento movimiento -->
 <div class="modal fade" id="modalRetireMovementBox" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-md">
         <div class="modal-content border-0 shadow-lg overflow-hidden">
-            <div class="modal-header border-bottom-0 py-3 bg-danger text-white">
-                <h5 class="fw-bold mb-0">Retiro Rápido</h5>
-                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-danger border-bottom-0 py-2">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
+                        <i class="bi bi-receipt fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="voucherModalLabel">Registrar gasto</h5>
+                        <p class="mb-0 small text-dark text-opacity-75">Aqui podras registrar los gastos que se realizan en el dia</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
             </div>
             <div class="modal-body p-4">
                 <div class="d-flex align-items-center gap-3 p-2 pe-3 border rounded-pill bg-body-tertiary mb-3">
@@ -770,23 +780,27 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="mb-3">
-                    <label class="small text-muted fw-bold text-uppercase mb-2" for="retire_payment_method">Metodo de pago (<span
-                            class="text-danger">*</span>)</label>
-                    <select class="form-select" id="retire_payment_method" name="retire_payment_method">
-                        <option disabled>Seleccionar</option>
-                        <option value="1" selected>Efectivo</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label class="small text-muted fw-bold text-uppercase mb-2">Nombre del gasto</label>
-                    <div class="input-group">
-                        <input placeholder="Gasto en ..." type="text" id="retire_name"
-                            class="form-control shadow-none bg-white">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label class="small text-muted fw-bold text-uppercase mb-2" for="retire_payment_method">Metodo de pago (<span
+                                    class="text-danger">*</span>)</label>
+                            <select class="form-select" id="retire_payment_method" name="retire_payment_method">
+                                <option disabled>Seleccionar</option>
+                                <option value="1" selected>Efectivo</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="mb-4">
+                            <label class="small text-muted fw-bold text-uppercase mb-2">Nombre del gasto</label>
+                            <div class="input-group">
+                                <input placeholder="Gasto en ..." type="text" id="retire_name"
+                                    class="form-control shadow-none bg-white">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-floating mb-3">

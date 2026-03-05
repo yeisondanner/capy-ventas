@@ -556,11 +556,9 @@ class Box extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
         // * Decodificamos la cadena de texto en formato JSON para validar
         $raw = file_get_contents('php://input');
         $data = json_decode($raw, true);
-
         $description = ($data["description"] == '' || $data["description"] === null) ? null : $data["description"];
         $date = strClean($data["date"]);
         $amount = (float)strClean($data["amount"]);
@@ -570,7 +568,6 @@ class Box extends Controllers
         $payment_method = (int)strClean($data["payment_method"]);
         $status_expense_header = (int)$data["status_expense_header"];
         $type_movement = "Egreso";
-
         // * Validamos que no este vacio los campos
         validateFieldsEmpty(array(
             "NOMBRE DEL GASTO" => $expense_name,
@@ -580,35 +577,28 @@ class Box extends Controllers
             "METODO DE PAGO" => $payment_method,
             "CATEGORIA DE GASTOS" => $expense_category,
         ));
-
         // * Validamos que el monto sea mayor que 0
         if ($amount <= 0) {
             $this->responseError("El monto ingresaado debe ser mayor que 0.");
         }
-
         // * Consultamos el ID del negocio
         $businessId = $this->getBusinessId();
-
         // * validamos si desde el inicio de sesión se requiere una caja aperturada
         $boxSessions = $this->validateBoxIfRequired($businessId);
-
         // * Validamos que el proveedor exista y pertenesca al negocio
         $issetSupplier = $this->model->issetSupplier($businessId, $supplier);
         if (!$issetSupplier) {
             $this->responseError("Seleccione un proveedor valido.");
         }
-
         // * Validamos que la categoria de gastos exista
         $issetExpenseCategory = $this->model->issetExpenseCategory($expense_category);
         if (!$issetExpenseCategory) {
             $this->responseError("Seleccione una categoria de gastos valida.");
         }
-
         // * Validamos que sea una fecha valida
         if (!$this->validateDate($date)) {
             $this->responseError("La fecha ingresada no es valida.");
         }
-
         // * Formateamos el nombre del gasto
         if ($expense_name === '' || $expense_name === null) {
             $expense_name = "Sin nombre - " . date("d/m/Y", strtotime($date));
@@ -616,19 +606,18 @@ class Box extends Controllers
             // Siempre agregar la fecha al final
             $expense_name = $expense_name . " - " . date("d/m/Y", strtotime($date));
         }
-
         // * Validamos que exista el metodo de pago
         $issetPaymentMethod = $this->model->issetPaymentMethod($payment_method);
         if (!$issetPaymentMethod) {
             $this->responseError("Seleccione un método de pago valido.");
         }
-
         // * Consultamos la fecha y hora actual
-        $fecha_actual = date('Y-m-d H:i:s');
-
+        $fecha_actual = $date;
+        if (empty($date)) {
+            $fecha_actual = date('Y-m-d H:i:s');
+        }
         // * Consultamos el ID del usuario
         $userId = $this->getUserId();
-
         // * registramos el egreso en la bd
         $expense = $this->model->insertExpenseHeader(
             $businessId,
@@ -642,11 +631,9 @@ class Box extends Controllers
             $issetPaymentMethod["idPaymentMethod"],
             $description
         );
-
         if (!$expense) {
             $this->responseError("Error al registrar el gasto");
         }
-
         // * validamos si es necesario abrir caja para registrar la venta
         if ($boxSessions) {
             // * Registramos el movimiento
@@ -659,7 +646,6 @@ class Box extends Controllers
                 "expense_economic",
                 $expense
             );
-
             if (!$movement_box) {
                 toJson([
                     'title'   => 'Gestión de Caja',
@@ -671,7 +657,6 @@ class Box extends Controllers
                 ]);
             }
         }
-
         toJson([
             'title'   => 'Registro de Gasto',
             'message' => 'Gasto registrado correctamente.',
