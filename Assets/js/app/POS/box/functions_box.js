@@ -238,7 +238,7 @@ export class Box {
       // Visual: Input y Botón Guardar (Verde)
       this.#btnSaveMovement
         .removeClass("btn-danger")
-        .addClass("btn-success")
+        .addClass("btn-primary")
         .html('<i class="bi bi-check2-circle me-2"></i> Registrar Ingreso');
 
       // Visual: Icono
@@ -253,7 +253,7 @@ export class Box {
 
       // Visual: Input y Botón Guardar (Rojo)
       this.#btnSaveMovement
-        .removeClass("btn-success")
+        .removeClass("btn-primary")
         .addClass("btn-danger")
         .html('<i class="bi bi-dash-circle me-2"></i> Registrar Retiro');
 
@@ -320,8 +320,6 @@ export class Box {
         title: "Monto inválido",
         message: "Ingrese un monto mayor a 0.",
       });
-
-    if (!description) description = "Venta rápida";
     if (!customer)
       return this.#mostrarAlerta({
         icon: "warning",
@@ -354,6 +352,11 @@ export class Box {
       if (response.status_movement_header === 1) {
         this.#handleClickAbrirModalGestion(); // Recargar gestión para ver el nuevo saldo
       }
+    }
+    if (response.url) {
+      setTimeout(() => {
+        window.location.href = response.url;
+      }, response.timer ?? 1000);
     }
     this.#mostrarAlerta(response);
   };

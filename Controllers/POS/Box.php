@@ -456,6 +456,7 @@ class Box extends Controllers
     // TODO: Endpoint para registrar una nuevo movimiento
     public function setBoxMovement()
     {
+        validate_permission_app(1, "c", false, false, false);
         // * Validamos que llegue el metodo POST
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
@@ -475,7 +476,6 @@ class Box extends Controllers
 
         // * Validamos que no este vacio los campos
         validateFieldsEmpty(array(
-            "DESCRIPCION DEL MOVIMIENTO" => $description,
             "MONTO DEL MOVIMIENTO" => $amount,
             "TIPO DE MOVIMIENTO" => $type_movement,
             "CLIENTE" => $customer,
@@ -508,24 +508,30 @@ class Box extends Controllers
             $this->responseError("Seleccione un metodo de pago valido.");
         }
 
-        // * Calculamos el impuesto si esta activo el check
-        $tax = null;
-        $taxname = null;
-        $tax_amount = null;
+        // * Calculamos el impuesto si esta activo el check para ello inicializamos por defecto
+        $tax = 0.0;
+        $taxname = $this->getTaxBusiness()["taxname"];
+        $tax_amount = 0.0;
 
         if ($check_tax) {
             // * Consultamos el impuesto
             $tax = (float) $this->getTaxBusiness()["tax"];
-            $taxname = $this->getTaxBusiness()["taxname"];
             $tax_amount = $tax * $amount / 100;
             $amount = $amount + $tax_amount;
         }
 
         // * Consultamos la fecha y hora actual
         $fecha_actual = date('Y-m-d H:i:s');
-
+        //preparamos la informacion del cliente
+        $fullnamecustomer = $issetCustomer['fullname'];
+        $directioncustomer = $issetCustomer['direction'];
+        $idcustomer = $issetCustomer['idCustomer'];
+        //colocamos el nombre por defecto a la venta si viene vacio
+        if (empty($description)) {
+            $description = "Venta libre el " . $fecha_actual;
+        }
         // * Registramos los datos del ingreso en el header
-        $voucher = $this->model->insertVoucherHeader("Sin cliente", "Sin cliente", $_SESSION[$this->nameVarBusiness]["business"], $_SESSION[$this->nameVarBusiness]["document_number"], $_SESSION[$this->nameVarBusiness]["direction"], $fecha_actual, $amount, $taxname, $tax, $tax_amount, $description, $payment_method, $businessId, $userId);
+        $voucher = $this->model->insertVoucherHeader($idcustomer, $fullnamecustomer, $directioncustomer, $_SESSION[$this->nameVarBusiness]["business"], $_SESSION[$this->nameVarBusiness]["document_number"], $_SESSION[$this->nameVarBusiness]["direction"], $fecha_actual, $amount, $taxname, $tax, $tax_amount, $description, $payment_method, $businessId, $userId);
         if (!$voucher) {
             $this->responseError('Error al registrar la venta de ' . $description . '.');
         }

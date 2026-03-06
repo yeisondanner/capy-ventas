@@ -18,7 +18,7 @@ headerPos($data); ?>
                 <div class="col-12 col-lg-4">
                     <div class=" btn-group w-100">
                         <button class="btn btn-primary btn-nav" data-header="0" id="btnOpenModalMovement">
-                            <i class="bi bi-rocket"></i> Venta rápida <i class="bi bi-cash-coin ms-1"></i>
+                            <i class="bi bi-rocket"></i> Venta Libre <i class="bi bi-cash-coin ms-1"></i>
                         </button>
                         <button class="btn btn-danger btn-nav" data-header="0" id="btnOpenModalRetireCash">
                             <i class="bi bi-trash"></i> Gasto <i class="bi bi-cash-coin ms-1"></i>

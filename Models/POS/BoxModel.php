@@ -1,6 +1,7 @@
 <?php
 class BoxModel extends Mysql
 {
+    protected int $idCustomer;
     protected int $businessId;
     protected int $boxId;
     protected string $status;
@@ -160,9 +161,14 @@ class BoxModel extends Mysql
         $this->customerId = $customerId;
         $sql = <<<SQL
             SELECT
-                *
-            FROM customer
-            WHERE business_id = ? AND idCustomer = ?
+                c.idCustomer,
+                c.fullname,
+                IFNULL(c.direction, "-") AS direction
+            FROM
+                customer AS c
+            WHERE
+                c.business_id = ?
+                AND c.idCustomer = ?
             LIMIT 1;
         SQL;
 
@@ -471,8 +477,9 @@ class BoxModel extends Mysql
         return (int) $this->insert($sql, [$this->boxSessionsId, $this->type, $this->notes, $this->amount, $this->paymentMethod, $this->referenceTable, $this->referenceId]);
     }
 
-    public function insertVoucherHeader(string $nameCustomer, string $directionCustomer, string $nameBussines, string $documentBussines, string $directionBussines, string $dateTime, float $amount, $taxName, $taxPercentage, $tax_amount, string $voucherName, int $paymentMethod, int $businessId, int $userId)
+    public function insertVoucherHeader(int $idcustomer, string $nameCustomer, string $directionCustomer, string $nameBussines, string $documentBussines, string $directionBussines, string $dateTime, float $amount, $taxName, $taxPercentage, $tax_amount, string $voucherName, int $paymentMethod, int $businessId, int $userId)
     {
+        $this->idCustomer = $idcustomer;
         $this->nameCustomer = $nameCustomer;
         $this->directionCustomer = $directionCustomer;
         $this->nameBussines = $nameBussines;
@@ -489,11 +496,11 @@ class BoxModel extends Mysql
         $this->userId = $userId;
         $sql = <<<SQL
             INSERT INTO voucher_header
-                (name_customer, direction_customer, name_bussines, document_bussines, direction_bussines, date_time, amount, tax_name, tax_percentage, tax_amount, voucher_name, payment_method_id, business_id, user_app_id)
+                (customer_id, name_customer, direction_customer, name_bussines, document_bussines, direction_bussines, date_time, amount, tax_name, tax_percentage, tax_amount, voucher_name, payment_method_id, business_id, user_app_id)
             VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);
         SQL;
-        return (int) $this->insert($sql, [$this->nameCustomer, $this->directionCustomer, $this->nameBussines, $this->documentBussines, $this->directionBussines, $this->dateTime, $this->amount, $this->taxName, $this->taxPercentage, $this->tax_amount, $this->voucherName, $this->paymentMethod, $this->businessId, $this->userId]);
+        return (int) $this->insert($sql, [$this->idCustomer, $this->nameCustomer, $this->directionCustomer, $this->nameBussines, $this->documentBussines, $this->directionBussines, $this->dateTime, $this->amount, $this->taxName, $this->taxPercentage, $this->tax_amount, $this->voucherName, $this->paymentMethod, $this->businessId, $this->userId]);
     }
 
     public function insertExpenseHeader(int $businessId, int $expenseCategoryId, int $supplierId, float $amount, string $expenseName, string $date, string $status, int $userId, int $paymentMethodId, $description)
