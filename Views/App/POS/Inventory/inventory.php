@@ -44,6 +44,7 @@
                                     <th>Acciones</th>
                                     <th>Código</th>
                                     <th>Nombre</th>
+                                    <th>Vencimiento</th>
                                     <th>Categoría</th>
                                     <th>Proveedor</th>
                                     <th>Stock</th>

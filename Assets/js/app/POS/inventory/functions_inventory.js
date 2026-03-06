@@ -883,6 +883,46 @@
         { data: "actions", orderable: false, searchable: false },
         { data: "bar_code" },
         { data: "name" },
+        {
+          data: "expiration_date",
+          render: (data, type, row) => {
+            if (data != "-") {
+              const totalDays = row.days_expiration.total_dias;
+              if (totalDays <= 10) {
+                let badgeClass = "bg-info text-dark";
+                let icon = "bi-info-circle";
+                let textDays = `${totalDays} ${totalDays === 1 ? "día" : "días"}`;
+
+                if (totalDays < 0) {
+                  badgeClass = "bg-danger";
+                  icon = "bi-exclamation-octagon";
+                  const pastDays = Math.abs(totalDays);
+                  textDays = `Vencido hace ${pastDays} ${pastDays === 1 ? "día" : "días"}`;
+                } else if (totalDays === 0) {
+                  badgeClass = "bg-danger";
+                  icon = "bi-exclamation-octagon";
+                  textDays = "Vence hoy";
+                } else if (totalDays <= 1) {
+                  badgeClass = "bg-danger";
+                  icon = "bi-exclamation-octagon";
+                } else if (totalDays <= 5) {
+                  badgeClass = "bg-warning text-dark";
+                  icon = "bi-exclamation-triangle";
+                }
+
+                return `
+                  <div class="d-flex flex-column align-items-center justify-content-center">
+                    <span class="fw-bold mb-1 small">${data}</span>
+                    <span class="badge rounded-pill ${badgeClass}" title="Próximo a vencer">
+                      <i class="bi ${icon} me-1"></i>${textDays}
+                    </span>
+                  </div>
+                `;
+              }
+            }
+            return data;
+          },
+        },
         { data: "category" },
         { data: "supplier" },
         { data: "stock" },
@@ -899,27 +939,39 @@
           },
         },
       ],
+      createdRow: function (row, data, dataIndex) {
+        if (data.expiration_date != "-") {
+          const totalDays = data.days_expiration.total_dias;
+          if (totalDays <= 1) {
+            $(row).addClass("table-danger");
+          } else if (totalDays <= 5) {
+            $(row).addClass("table-warning");
+          } else if (totalDays <= 10) {
+            $(row).addClass("table-info");
+          }
+        }
+      },
       dom: "lBfrtip",
       buttons: [
         {
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
           className: "btn btn-sm btn-outline-secondary my-2",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
           className: "btn btn-sm btn-outline-success my-2",
           title: "Productos",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
           className: "btn btn-sm btn-outline-info my-2",
           title: "Productos",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
         },
         {
           extend: "pdfHtml5",
@@ -928,7 +980,7 @@
           orientation: "portrait",
           pageSize: "A4",
           title: "Productos",
-          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10] },
+          exportOptions: { columns: [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] },
         },
       ],
       columnDefs: [

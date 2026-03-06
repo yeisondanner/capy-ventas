@@ -45,7 +45,8 @@ class InventoryModel extends Mysql
                 c.name AS category,
                 m.name AS measurement,
                 s.company_name AS supplier,
-                p.is_public
+                p.is_public,
+                IFNULL(DATE(p.expiration_date),'-') as 'expiration_date'
             FROM product AS p
             INNER JOIN category AS c ON c.idCategory = p.category_id
             INNER JOIN measurement AS m ON m.idMeasurement = p.measurement_id
