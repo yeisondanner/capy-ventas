@@ -810,14 +810,6 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         style="height: 100px; resize: none;"></textarea>
                     <label for="retire_description" class="text-muted">Descripción o Comentario</label>
                 </div>
-                <div class="alert alert-light border border-2 rounded-4 d-flex align-items-center gap-3 p-3">
-                    <div class="bg-danger-subtle text-danger py-1 px-2 rounded-circle" id="movement_icon_wrapper">
-                        <i class="bi bi-wallet2 fs-5"></i>
-                    </div>
-                    <div class="small text-muted lh-sm">
-                        Este movimiento afectará el <strong>Arqueo Final</strong> y el saldo actual de la caja.
-                    </div>
-                </div>
                 <div class="d-grid">
                     <button type="button" id="btnSaveRetireCash"
                         class="btn btn-danger btn-lg rounded-pill fw-bold shadow-sm">
