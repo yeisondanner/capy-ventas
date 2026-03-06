@@ -1,7 +1,20 @@
 <?php
 class InventoryModel extends Mysql
 {
-    private int $idProduct;
+    protected int $idProduct;
+    protected string $name;
+    protected float $stock;
+    protected float $purchase_price;
+    protected float $sales_price;
+    protected int $measurement_id;
+    protected string $description;
+    protected string $status;
+    protected int $supplier_id;
+    protected string $is_public;
+    protected string $code;
+    protected string $expiration_date;
+    protected int $userapp_id;
+    protected int $category_id;
     public function __construct()
     {
         parent::__construct();
@@ -95,23 +108,97 @@ class InventoryModel extends Mysql
     {
         $sql = <<<SQL
             INSERT INTO product
-                (category_id, name, stock, purchase_price, sales_price, measurement_id, description, status, supplier_id,is_public,bar_code)
+                (category_id, name, stock, purchase_price, sales_price, measurement_id, description, status, supplier_id,is_public,bar_code,expiration_date)
             VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);
         SQL;
+        $this->category_id = $data['category_id'];
+        $this->name = $data['name'];
+        $this->stock = $data['stock'];
+        $this->purchase_price = $data['purchase_price'];
+        $this->sales_price = $data['sales_price'];
+        $this->measurement_id = $data['measurement_id'];
+        $this->description = $data['description'];
+        $this->status = $data['status'];
+        $this->supplier_id = $data['supplier_id'];
+        $this->is_public = $data['is_public'];
+        $this->code = $data['code'];
+        $this->expiration_date = $data['expiration_date'];
 
         $params = [
-            $data['category_id'],
-            $data['name'],
-            $data['stock'],
-            $data['purchase_price'],
-            $data['sales_price'],
-            $data['measurement_id'],
-            $data['description'] !== '' ? $data['description'] : null,
-            $data['status'],
-            $data['supplier_id'],
-            $data['is_public'],
-            $data['code']
+            $this->category_id,
+            $this->name,
+            $this->stock,
+            $this->purchase_price,
+            $this->sales_price,
+            $this->measurement_id,
+            $this->description !== '' ? $this->description : null,
+            $this->status,
+            $this->supplier_id,
+            $this->is_public,
+            $this->code,
+            $this->expiration_date !== '' ? $this->expiration_date : null
+
+        ];
+
+        return (int) $this->insert($sql, $params);
+    }
+    /**
+     * Metodo que se encarga de registra el historial del producto
+     */
+    public function insertProductHistory(array $data)
+    {
+        $sql = <<<SQL
+            INSERT INTO `product_history` 
+            (
+            `product_id`, 
+            `category_id`, 
+            `bar_code`, 
+            `name`, 
+            `stock`, 
+            `purchase_price`, 
+            `sales_price`, 
+            `measurement_id`, 
+            `description`, 
+            `status`,
+            `expiration_date`, 
+            `supplier_id`, 
+            `is_public`, 
+            `userapp_id`
+            ) 
+            VALUES 
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);
+
+        SQL;
+        $this->idProduct = $data['idProduct'];
+        $this->category_id = $data['category_id'];
+        $this->code = $data['code'];
+        $this->name = $data['name'];
+        $this->stock = $data['stock'];
+        $this->purchase_price = $data['purchase_price'];
+        $this->sales_price = $data['sales_price'];
+        $this->measurement_id = $data['measurement_id'];
+        $this->description = $data['description'];
+        $this->status = $data['status'];
+        $this->expiration_date = $data['expiration_date'];
+        $this->supplier_id = $data['supplier_id'];
+        $this->is_public = $data['is_public'];
+        $this->userapp_id = $data['user_id'];
+        $params = [
+            $this->idProduct,
+            $this->category_id,
+            $this->code,
+            $this->name,
+            $this->stock,
+            $this->purchase_price,
+            $this->sales_price,
+            $this->measurement_id,
+            $this->description !== '' ? $this->description : null,
+            $this->status,
+            $this->expiration_date !== '' ? $this->expiration_date : null,
+            $this->supplier_id,
+            $this->is_public,
+            $this->userapp_id
         ];
 
         return (int) $this->insert($sql, $params);
@@ -499,6 +586,31 @@ class InventoryModel extends Mysql
 
         return is_array($result) ? $result : [];
     }
+
+    /**
+     * Busca un producto por código dentro del negocio indicado.
+     *
+     * @param string $code       Código del producto.
+     * @param int    $businessId Identificador del negocio.
+     *
+     * @return array
+     */
+    public function selectProductByCode(string $code, int $businessId): array
+    {
+        $sql = <<<SQL
+            SELECT p.idProduct
+            FROM product AS p
+            INNER JOIN category AS c ON c.idCategory = p.category_id
+            WHERE c.business_id = ?
+              AND p.bar_code = ?
+            LIMIT 1;
+        SQL;
+
+        $result = $this->select($sql, [$businessId, $code]);
+
+        return is_array($result) ? $result : [];
+    }
+
     /**
      * Metodo que consulta si el producto
      * no esta relacionado a alguna venta

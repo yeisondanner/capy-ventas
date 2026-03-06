@@ -146,6 +146,7 @@ class Inventory extends Controllers
         $sales = $this->sanitizeDecimal($_POST['txtProductSalesPrice'] ?? '0', 'precio de venta');
         $status = 'Activo';
         $description = strClean($_POST['txtProductDescription'] ?? '');
+        $dateExpiration = strClean($_POST['txtProductDateExpirated'] ?? '');
         $code = strClean($_POST['txtProductCode'] ?? '');
         $flInput = $_FILES['flInput'];
         validateFieldsEmpty([
@@ -199,6 +200,12 @@ class Inventory extends Controllers
             $this->responseError('Ya existe un producto con el mismo nombre en tu negocio.');
         }
 
+        $existingProductCode = $this->model->selectProductByCode($code, $businessId);
+        if (!empty($existingProductCode)) {
+            $this->responseError('Ya existe un producto con el mismo código de registro en tu negocio.');
+        }
+
+
         $payload = [
             'category_id' => $categoryId,
             'name' => $name,
@@ -211,11 +218,20 @@ class Inventory extends Controllers
             'supplier_id' => $supplierId,
             'is_public' => $statusChbx,
             'code' => $code,
+            'expiration_date' => $dateExpiration,
+            'user_id' => $this->getUserId(),
+            'idProduct' => 0
         ];
 
         $productId = $this->model->insertProduct($payload);
         if ($productId <= 0) {
             $this->responseError('No fue posible registrar el producto, inténtalo nuevamente.');
+        }
+        //actualizamos el id del usuario
+        $payload['idProduct'] = $productId;
+        $productHistoryId = $this->model->insertProductHistory($payload);
+        if ($productHistoryId <= 0) {
+            $this->responseError('No fue posible registrar el historial del producto, inténtalo nuevamente.');
         }
         //validamos que el campo no este vacio
         if (!empty($flInput['name'])) {
@@ -425,6 +441,11 @@ class Inventory extends Controllers
         $existingProduct = $this->model->selectProductByName($name, $businessId);
         if (!empty($existingProduct) && (int) $existingProduct['idProduct'] !== $productId) {
             $this->responseError('Ya existe otro producto con el mismo nombre en tu negocio.');
+        }
+
+        $existingProductCode = $this->model->selectProductByCode($code, $businessId);
+        if (!empty($existingProductCode) && (int) $existingProductCode['idProduct'] !== $productId) {
+            $this->responseError('Ya existe otro producto con el mismo código de registro en tu negocio.');
         }
 
         $payload = [

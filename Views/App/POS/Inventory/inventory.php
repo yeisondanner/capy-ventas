@@ -83,7 +83,7 @@
             </div>
             <div class="modal-body">
                 <div class="row g-3">
-                    <div class="col-md-12 d-flex justify-content-center">
+                    <div class="col-12 col-md-12 d-flex justify-content-center">
                         <div class="card-body p-4">
                             <div class="logo-upload-area mb-3" onclick="document.getElementById('flInput').click()">
                                 <img src="<?= base_url(); ?>/Loadfile/iconproducts?f=product.png" id="logoPreview"
@@ -96,20 +96,20 @@
                             <input type="file" class="d-none" id="flInput" name="flInput" accept="image/*">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-12 col-lg-6">
                         <label for="txtProductCode" class="form-label">Código <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <button class="btn btn-outline-secondary" type="button" id="btnGenerateCode">
+                            <button class="btn btn-outline-secondary" type="button" id="btnGenerateCode" onclick="Swal.fire({title: 'En desarrollo'})">
                                 <i class="bi bi-upc"></i>
                             </button>
                             <input type="text" class="form-control" id="txtProductCode" name="txtProductCode"
                                 maxlength="50" required placeholder="Ej. 123456789">
-                            <button class="btn btn-outline-secondary" type="button" id="btnScanCode">
+                            <button class="btn btn-outline-secondary" type="button" id="btnScanCode" onclick="Swal.fire({title: 'En desarrollo'})">
                                 <i class="bi bi-camera"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-12 col-lg-6">
                         <label for="txtProductName" class="form-label">Nombre <span class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-box-seam"></i></span>
@@ -117,7 +117,7 @@
                                 maxlength="255" required placeholder="Ej. Café molido premium">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <label for="txtProductCategory" class="form-label">Categoría <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
@@ -127,7 +127,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <label for="txtProductSupplier" class="form-label">Proveedor <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
@@ -137,7 +137,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <label for="txtProductMeasurement" class="form-label">Unidad de medida <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
@@ -148,7 +148,14 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <label for="txtProductDateExpirated" class="form-label">Fecha de vencimiento(Opcional)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-calendar-range"></i></span>
+                            <input type="date" name="txtProductDateExpirated" id="txtProductDateExpirated" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4">
                         <label for="txtProductStock" class="form-label">Stock (opcional)</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-sort-numeric-up-alt"></i></span>
@@ -156,7 +163,7 @@
                                 id="txtProductStock" name="txtProductStock" placeholder="0.00">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <label for="txtProductPurchasePrice" class="form-label">Precio compra <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
@@ -165,7 +172,7 @@
                                 id="txtProductPurchasePrice" name="txtProductPurchasePrice" required placeholder="0.00">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-12 col-lg-4">
                         <label for="txtProductSalesPrice" class="form-label">Precio venta <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
