@@ -34,10 +34,10 @@
         <i class="bi bi-whatsapp me-2"></i> ¿Tienes problemas con el registro?
     </a>
     <!-- TODO: Essential javascripts for application to work-->
-    <script src="<?= media() ?>/js/libraries/POS/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>
+    <script src="<?= media() ?>/js/libraries/POS/plugins/jquery/v3.7.0/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/popper.min.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
-    <script src="<?= media() ?>/js/libraries/POS/SweerAlert2.js?<?= versionSystem() ?>"></script>
+    <script src="<?= media() ?>/js/libraries/POS/plugins/SweetAlert2/v11.26.3/SweerAlert2.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
     <script type="module" src="<?= media() ?>/js/app/POS/account/functions_account_api.js?<?= versionSystem() ?>"></script>
     <script type="module" src="<?= media() ?>/js/app/POS/account/functions_account.js?<?= versionSystem() ?>"></script>
