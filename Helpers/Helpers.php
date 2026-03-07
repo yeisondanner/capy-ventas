@@ -1659,38 +1659,45 @@ function get_widget_plan(string $plan)
 function validate_permission_app(int $idinterface, string $permission, bool $redirect = true, bool $return = true, bool $isPrintResult = true)
 {
     /**
-     * Validamos que el usuario no sea dueño del negocio
-     * si fuere dueño del negocio tiene todos los permisos por defecto
-     * lo unico que se deberia validar es los permisos del plan nada mas
-     */
-    /**
-     * Array de permisos
+     * Array de mapas para los permisos CRUD regulares y los permisos del plan (PIA = Plan Interface App)
+     * 'r' = Leer, 'c' = Crear, 'u' = Actualizar, 'd' = Eliminar
      */
     $crudpermission = ['r' => 'read', 'c' => 'create', 'u' => 'update', 'd' => 'delete'];
     $crudpermissionpia = ['r' => 'pia_read', 'c' => 'pia_create', 'u' => 'pia_update', 'd' => 'pia_delete'];
-    //id de interface
+
+    // Convertimos el ID de la interface a entero por seguridad
     $idinterface = (int) $idinterface;
-    //nombres iniciales de las variables de sesion
+
+    // Obtenemos los nombres de las variables de sesión basados en la configuración base
     $sessionName = config_sesion(1)['name'] ?? '';
     $nameVarBusiness = $sessionName . 'business_active';
     $nameVarLoginInfo = $sessionName . 'login_info';
     $nameVarMessagePermission = $sessionName . 'message_permission';
-    //variables de negocio activo
+
+    // Obtenemos los identificadores del usuario activo y negocio activo
     $iduser = (int) $_SESSION[$nameVarLoginInfo]['idUser'];
     $idbusiness = (int) $_SESSION[$nameVarBusiness]['idBusiness'];
-    //requerimos el modelo de permisos
+
+    // Requerimos e instanciamos el modelo encargado de consultar los permisos a la base de datos
     require_once "./Models/POS/PermissionModel.php";
     $objPermission = new PermissionModel();
+
     /**
-     * validamos si el usuario es dueño o 
-     * no del negocio activo, si fuere dueño, 
-     * tiene acceso a todos los permisos que el plan permite, 
-     * caso contrario responde a un rol de usuario el cual esta limitado a permisos
+     * Validamos si el usuario actual es o no dueño del negocio activo.
+     * Si es dueño, tiene acceso a todos los permisos que permite el plan del negocio.
+     * Si es un empleado (no dueño), sus permisos estarán limitados según su rol asignado.
      */
     $dataOwnerBusiness = $objPermission->get_bussiness_owner($iduser, $idbusiness);
+
+    /**
+     * BLOQUE PARA TRABAJADORES (NO DUEÑOS)
+     */
     if (!$dataOwnerBusiness) {
+
+        // Consultamos los permisos específicos configurados para el empleado sobre esa interfaz
         $result = $objPermission->get_permission_interface($iduser, $idbusiness, $idinterface);
 
+        // Si la consulta no devuelve resultados, el empleado no tiene configurado ningún permiso para esta interfaz
         if (!$result) {
             $no_permisos = base_url() . "/pos/errors/no_permisos";
             if ($redirect) {
@@ -1719,10 +1726,13 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 return $arrReturn;
             }
         }
+
         /**
-         * Validacion de estados de acuerdo a la tabla
+         * Validaciones y restricciones de estado (Interfaz de App, Plan del negocio y Permisos)
          */
-        if ($result['interface_status'] !== 'Activo') {
+
+        // 1. Verificamos que la interfaz a la que se intenta acceder esté globalmente "Activa"
+        if ($result['interface_status'] != 'Activo') {
             $no_permisos = base_url() . "/pos/errors/estado_interfaz";
             if ($redirect) {
                 echo <<<HTML
@@ -1752,7 +1762,9 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 return $arrReturn;
             }
         }
-        if ($result['plans_interface_status'] !== 'Activo') {
+
+        // 2. Verificamos que el plan actual adquirido por el negocio permita acceso legal a esta interfaz
+        if ($result['plans_interface_status'] != 'Activo') {
             $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
             if ($redirect) {
                 echo <<<HTML
@@ -1769,7 +1781,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                     'icon' => 'error',
                     'url' => $no_permisos,
                     'plans_interface_status' => $result['plans_interface_status'],
-                    'timer' => 2000,
+                    'timer' => 100000,
                     'create' => 0,
                     'read' => 0,
                     'update' => 0,
@@ -1782,7 +1794,9 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 return $arrReturn;
             }
         }
-        if ($result['permission_status'] !== 'Activo') {
+
+        // 3. Verificamos que el permiso asignado temporalmente o definitivamente al rol del empleado no esté Inactivo
+        if ($result['permission_status'] != 'Activo') {
             $no_permisos = base_url() . "/pos/errors/estado_permisos";
             if ($redirect) {
                 echo <<<HTML
@@ -1812,10 +1826,12 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 return $arrReturn;
             }
         }
+
         /**
-         * Validamos los permisos del crud general
+         * Validamos si la acción directa que el usuario quiere realizar (leer, crear, etc.)
+         * está disponible de acuerdo AL PLAN DEL NEGOCIO ("crudpermissionpia").
          */
-        if ((int) $result[$crudpermissionpia[$permission]] === 0) {
+        if ((int) $result[$crudpermissionpia[$permission]] == 0) {
             if (isset($_SESSION[$nameVarMessagePermission])) {
                 unset($_SESSION[$nameVarMessagePermission]);
             }
@@ -1844,10 +1860,12 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 return $arrReturn;
             }
         }
+
         /**
-         * Validacion a nivel de permisos del rol
+         * Validamos si el empleado tiene permitida la acción (leer, crear, etc.)
+         * según su ROL DENTRO DEL NEGOCIO.
          */
-        if ((int) $result[$crudpermission[$permission]] === 0) {
+        if ((int) $result[$crudpermission[$permission]] == 0) {
             $no_permisos = base_url() . "/pos/errors/no_permisos";
             if ($redirect) {
                 echo <<<HTML
@@ -1872,6 +1890,8 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                 return $arrReturn;
             }
         }
+
+        // Si el empleado supera todas las validaciones anteriores, declaramos que sí cuenta con los permisos necesarios
         $arrReturn = [
             'status' => true,
             'title' => 'Permisos validados',
@@ -1880,19 +1900,26 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             'timer' => 2000,
             $crudpermission[$permission] => $result[$crudpermission[$permission]]
         ];
+
         if ($isPrintResult) {
             if (!$return) {
                 toJson($arrReturn);
             }
             return $arrReturn;
         }
+        return;
     }
+
     /**
-     * validamos que el usuario tenga permisos de acceso 
-     * a la seccion segun el plan
+     * BLOQUE PARA EL DUEÑO DEL NEGOCIO
+     */
+    /**
+     * Si el usuario en sesión es el responsable/dueño del negocio, 
+     * validamos únicamente que exista el enlace Interfaz <---> Plan que contrató
      */
     $result = $objPermission->get_permission_interface_owner($iduser, $idinterface);
-    //validacion de cuando el resultado es vacio
+
+    // Si no devuelve resultados, significa que el plan/interfaz no se pudo vincular
     if (!$result) {
         $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
 
@@ -1923,8 +1950,9 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             return $arrReturn;
         }
     }
-    //verificacion de cuando la interface app esta inactiva
-    if ($result['ia_status'] !== 'Activo') {
+
+    // Verificamos de forma general si la interfaz per se no ha sido desactivada
+    if ($result['ia_status'] != 'Activo') {
         $no_permisos = base_url() . "/pos/errors/estado_interfaz";
         if ($redirect) {
             echo <<<HTML
@@ -1953,8 +1981,9 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             return $arrReturn;
         }
     }
-    //verificacion de cuando el plan de la interface app esta inactiva
-    if ($result['pia_status'] !== 'Activo') {
+
+    // Verificamos explícitamente si la interfaz está disponible todavía dentro del respectivo plan
+    if ($result['pia_status'] != 'Activo') {
         $no_permisos = base_url() . "/pos/errors/estado_plan_interfaz";
 
         if ($redirect) {
@@ -1984,10 +2013,12 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
             return $arrReturn;
         }
     }
+
     /**
-     * Validamos los permisos del crud general
+     * Valida que la acción que pretende realizar el dueño 
+     * no esté restringida a nivel superior en el plan que él ha adquirido.
      */
-    if ((int) $result[$crudpermission[$permission]] === 0) {
+    if ((int) $result[$crudpermission[$permission]] == 0) {
         if (isset($_SESSION[$nameVarMessagePermission])) {
             unset($_SESSION[$nameVarMessagePermission]);
         }
@@ -2017,6 +2048,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         }
     }
 
+    // Si el dueño ha superado todas estas barreras, su acceso o acción se valida como permitida
     $arrReturn = [
         'status' => true,
         'title' => 'Permisos validados',
@@ -2025,6 +2057,8 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         'timer' => 2000,
         $crudpermission[$permission] => $result[$crudpermission[$permission]]
     ];
+
+    // Realizamos la última comprobación y finalizamos retornando o dándole un echo vía Json
     if ($isPrintResult) {
         if (!$return) {
             toJson($arrReturn);

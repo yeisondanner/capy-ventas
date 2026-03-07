@@ -31,7 +31,7 @@ export default class ReadBox {
           if (json.url) {
             setTimeout(() => {
               window.location.href = json.url;
-            }, 1000);
+            }, json.timer ?? 1000);
           }
           // Importante: serverSide espera que los datos vengan en json.data
           return json;
@@ -186,7 +186,7 @@ export default class ReadBox {
             const endDate = new Date(
               today.getFullYear(),
               today.getMonth() + 1,
-              0
+              0,
             ).getDate();
             minDate = startDate;
             maxDate =
