@@ -67,7 +67,7 @@ class Sales extends Controllers
      */
     public function getProducts(): void
     {
-        validate_permission_app(1, "r", false);
+        validate_permission_app(1, "r", false, false, false);
         $businessId = $this->getBusinessId();
         $products = $this->model->selectProducts($businessId);
         if (!$products) {

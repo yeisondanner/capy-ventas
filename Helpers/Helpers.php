@@ -1859,15 +1859,17 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
         $arrReturn = [
             'status' => true,
             'title' => 'Permisos validados',
-            'message' => 'Tienes permisos para realizar esta accion.',
+            'message' => 'Tienes permisos para realizar esta accion como trabajador del negocio.',
             'icon' => 'success',
             'timer' => 2000,
             $crudpermission[$permission] => $result[$crudpermission[$permission]]
         ];
-        if (!$return) {
-            toJson($arrReturn);
+        if ($isPrintResult) {
+            if (!$return) {
+                toJson($arrReturn);
+            }
+            return $arrReturn;
         }
-        return $arrReturn;
     }
     /**
      * validamos que el usuario tenga permisos de acceso 
