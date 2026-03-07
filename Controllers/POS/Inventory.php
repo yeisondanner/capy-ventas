@@ -195,6 +195,12 @@ class Inventory extends Controllers
         if ($sales > 99999999.99) {
             $this->responseError('El precio de venta no puede exceder los 11 dígitos.');
         }
+
+        if (!strtotime($dateExpiration)) {
+            $this->responseError('La fecha de vencimiento no es válida.');
+        }
+
+
         $this->ensureCategoryBelongsToBusiness($categoryId, $businessId);
         $this->ensureMeasurementExists($measurementId);
         $this->ensureSupplierBelongsToBusiness($supplierId, $businessId);
@@ -329,6 +335,7 @@ class Inventory extends Controllers
                 'image_main' => $product['image_main'] ?? '',
                 'is_public' => $product['is_public'] ?? 'No',
                 'bar_code' => $product['bar_code'] ?? '',
+                'expiration_date' => $product['expiration_date'] ?? '',
             ],
         ];
 
@@ -383,6 +390,7 @@ class Inventory extends Controllers
         $sales = $this->sanitizeDecimal($_POST['update_txtProductSalesPrice'] ?? '0', 'precio de venta');
         $status = 'Activo';
         $description = strClean($_POST['update_txtProductDescription'] ?? '');
+        $dateExpiration = strClean($_POST['update_txtProductDateExpirated'] ?? '');
         $flInput = $_FILES['update_flInput'];
         $code = strClean($_POST['update_txtProductCode'] ?? '');
         validateFieldsEmpty([
@@ -425,6 +433,10 @@ class Inventory extends Controllers
         if ($sales > 99999999.99) {
             $this->responseError('El precio de venta no puede exceder los 11 dígitos.');
         }
+
+        if (!strtotime($dateExpiration)) {
+            $this->responseError('La fecha de vencimiento no es válida.');
+        }
         //validamos que el campo no este vacio
         if (!empty($flInput['name'])) {
             //validamos si el archivo es valido de acuerdo al tipo de archivo
@@ -464,6 +476,7 @@ class Inventory extends Controllers
             'supplier_id' => $supplierId,
             'is_public' => $statusChbx,
             'code' => $code,
+            'date_expiration' => $dateExpiration,
         ];
 
         $updated = $this->model->updateProduct($payload);

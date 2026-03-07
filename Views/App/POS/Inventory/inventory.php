@@ -100,12 +100,14 @@
                     <div class="col-12 col-md-12 col-lg-6">
                         <label for="txtProductCode" class="form-label">Código <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <button class="btn btn-outline-secondary" type="button" id="btnGenerateCode" onclick="Swal.fire({title: 'En desarrollo'})">
+                            <button class="btn btn-outline-secondary" type="button" id="btnGenerateCode"
+                                onclick="Swal.fire({title: 'En desarrollo'})">
                                 <i class="bi bi-upc"></i>
                             </button>
                             <input type="text" class="form-control" id="txtProductCode" name="txtProductCode"
                                 maxlength="50" required placeholder="Ej. 123456789">
-                            <button class="btn btn-outline-secondary" type="button" id="btnScanCode" onclick="Swal.fire({title: 'En desarrollo'})">
+                            <button class="btn btn-outline-secondary" type="button" id="btnScanCode"
+                                onclick="Swal.fire({title: 'En desarrollo'})">
                                 <i class="bi bi-camera"></i>
                             </button>
                         </div>
@@ -153,7 +155,8 @@
                         <label for="txtProductDateExpirated" class="form-label">Fecha de vencimiento(Opcional)</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-calendar-range"></i></span>
-                            <input type="date" name="txtProductDateExpirated" id="txtProductDateExpirated" class="form-control">
+                            <input type="date" name="txtProductDateExpirated" id="txtProductDateExpirated"
+                                class="form-control">
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-4">
@@ -278,6 +281,11 @@
                                     <label class="text-muted fw-bold d-block text-uppercase small"
                                         style="font-size: 0.7rem;">Proveedor</label>
                                     <span id="reportProductSupplier">-</span>
+                                </div>
+                                <div class="mb-2">
+                                    <label class="text-muted fw-bold d-block text-uppercase small"
+                                        style="font-size: 0.7rem;">Fecha de expiración</label>
+                                    <span id="reportProductExpirationDate">-</span>
                                 </div>
                                 <div class="mb-2">
                                     <label class="text-muted fw-bold d-block text-uppercase small"
@@ -414,7 +422,7 @@
                 <?= csrf(); ?>
                 <input type="hidden" name="update_txtProductId" id="update_txtProductId">
                 <div class="row g-3">
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-6 col-lg-5 col-xl-4">
                         <div class="card-body p-4">
                             <div class="logo-upload-area mb-3"
                                 onclick="document.getElementById('update_flInput').click()">
@@ -429,7 +437,7 @@
                                 accept="image/*">
                         </div>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-12 col-md-6 col-lg-7 col-xl-8">
                         <div class="accordion accordion-flush border rounded-3 bg-light" id="listAccordionImages">
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="flush-headingOne">
@@ -458,7 +466,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-12 col-lg-6">
                         <label for="update_txtProductCode" class="form-label">Código <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
@@ -466,14 +474,13 @@
                                 <i class="bi bi-upc"></i>
                             </button>
                             <input type="text" class="form-control" id="update_txtProductCode"
-                                name="update_txtProductCode" maxlength="50" required
-                                placeholder="Ej. 123456789">
+                                name="update_txtProductCode" maxlength="50" required placeholder="Ej. 123456789">
                             <button class="btn btn-outline-secondary" type="button" id="btnScanCode">
                                 <i class="bi bi-camera"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-12 col-lg-6">
                         <label for="update_txtProductName" class="form-label">Nombre <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
@@ -482,7 +489,7 @@
                                 name="update_txtProductName" maxlength="255" required>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <label for="update_txtProductCategory" class="form-label">Categoría <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
@@ -493,7 +500,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <label for="update_txtProductSupplier" class="form-label">Proveedor <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
@@ -504,7 +511,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-12 col-md-6 col-lg-6">
                         <label for="update_txtProductMeasurement" class="form-label">Unidad de medida <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
@@ -515,7 +522,16 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-6 col-lg-6">
+                        <label for="update_txtProductDateExpirated" class="form-label">Fecha de
+                            vencimiento(Opcional)</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-calendar-range"></i></span>
+                            <input type="date" name="update_txtProductDateExpirated" id="update_txtProductDateExpirated"
+                                class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-lg-4">
                         <label for="update_txtProductStock" class="form-label">Stock (opcional)</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-sort-numeric-up-alt"></i></span>
@@ -523,7 +539,7 @@
                                 name="update_txtProductStock">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-6 col-lg-4">
                         <label for="update_txtProductPurchasePrice" class="form-label">Precio compra
                             <?= getCurrency() ?> <span class="text-danger">*</span></label>
                         <div class="input-group">
@@ -532,7 +548,7 @@
                                 id="update_txtProductPurchasePrice" name="update_txtProductPurchasePrice" required>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-12 col-md-12 col-lg-4">
                         <label for="update_txtProductSalesPrice" class="form-label">Precio venta
                             <?= getCurrency() ?><span class="text-danger">*</span></label>
                         <div class="input-group">

@@ -227,7 +227,8 @@ class InventoryModel extends Mysql
                 status = ?,
                 supplier_id = ?,
                 is_public = ?,
-                bar_code = ?
+                bar_code = ?,
+                expiration_date = ?
             WHERE idProduct = ?
             LIMIT 1;
         SQL;
@@ -244,6 +245,7 @@ class InventoryModel extends Mysql
             $data['supplier_id'],
             $data['is_public'],
             $data['code'],
+            $data['date_expiration'] !== '' ? $data['date_expiration'] : null,
             $data['idProduct'],
         ];
 
