@@ -1,27 +1,68 @@
-<!-- TODO: jquery - falta actualizar-->
-<script src="<?= media() ?>/js/libraries/POS/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>
-<!-- TODO: boostrap.min.js -->
-<script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
-<!-- Data table plugin-->
-<script type="text/javascript" src="<?= media() ?>/js/libraries/POS/plugins/jquery.dataTables.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" src="<?= media() ?>/js/libraries/POS/plugins/dataTables.min.js?<?= versionSystem() ?>"></script>
+<!-- ==========================================
+     1. LIBRERÍAS CORE DE LA APLICACIÓN
+     ========================================== -->
+<!-- jQuery: Librería esencial requerida por Bootstrap y múltiples plugins como DataTables. (TODO: falta actualizar a la última versión) -->
+<script src="<?= media() ?>/js/libraries/POS/plugins/jquery/v3.7.0/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>
 
-<!-- Buttons for DataTables-->
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/dataTables.buttons.min.js?<?= versionSystem() ?>"></script>
-<!-- Autofill for DataTables-->
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/dataTables.autoFill.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/dataTables.colReorder.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/colReorder.bootstrap5.min.js?<?= versionSystem() ?>"></script>
-<!--Libreria de generacion de reportes-->
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/dataTables.bootstrap5.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/jszip.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/pdfmake.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/vfs_fonts.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript"
-    src="<?= media() ?>/js/libraries/Admin/plugins/buttons.html5.min.js?<?= versionSystem() ?>"></script>
-<!-- TODO: libreria principal main-->
-<script src="<?= media() ?>/js/libraries/POS/plugins/chart.umd.min.js?<?= versionSystem() ?>"></script>
+<!-- Bootstrap: Framework CSS y JS básico para el diseño, estructura de la UI, grids y componentes interactivos modales (TODO: verificar versión) -->
+<script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
+
+
+<!-- ==========================================
+     2. DATATABLES - NÚCLEO Y ADAPTACIÓN VISUAL
+     ========================================== -->
+<!-- DataTables Core: Motor principal para el manejo avanzado, paginación, búsqueda y renderizado de las tablas de datos -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/jquery.dataTables.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.7/dataTables.min.js?<?= versionSystem() ?>"></script>
+
+<!-- DataTables Bootstrap 5: Capa de integración para asegurar que las tablas y sus controles luzcan nativos de Bootstrap 5 -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/dataTables.bootstrap5.min.js?<?= versionSystem() ?>"></script>
+
+
+<!-- ==========================================
+     3. DATATABLES - FUNCIONES DE INTERFAZ AVANZADA (PLUGINS)
+     ========================================== -->
+<!-- AutoFill: Extiende DataTables permitiendo rellenar celdas arrastrando y soltando al puro estilo de Excel -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/dataTables.autoFill.min.js?<?= versionSystem() ?>"></script>
+
+<!-- ColReorder: Permite a los usuarios reorganizar dinámicamente el orden de las columnas de las tablas usando Drag & Drop -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/dataTables.colReorder.min.js?<?= versionSystem() ?>"></script>
+<!-- ColReorder Bootstrap 5: Capa de estilización para asegurar que el reordenamiento se vea bien en componentes Bootstrap 5 -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/colReorder.bootstrap5.min.js?<?= versionSystem() ?>"></script>
+
+
+<!-- ==========================================
+     4. DATATABLES - EXPORTACIÓN Y GENERACIÓN DE REPORTES
+     ========================================== -->
+<!-- Botones Base: Plugin núcleo que proporciona a las tablas la API general para gestionar cualquier tipo de botón -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/dataTables.buttons.min.js?<?= versionSystem() ?>"></script>
+<!-- Botones HTML5: Habilita los botones específicos para exportar a formatos modernos basados en navegador como Excel (XLSX), CSV o PDF -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/buttons.html5.min.js?<?= versionSystem() ?>"></script>
+
+<!-- JSZip: Dependencia estricta para DataTables al intentar empaquetar y generar archivos comprimidos requeridos por el formato Excel (.xlsx) -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/jszip.min.js?<?= versionSystem() ?>"></script>
+
+<!-- pdfMake y VFS Fonts: Dependencias requeridas por DataTables para generar documentos en PDF. Aportan la capacidad de dibujo PDF y almacenamiento temporal de fuentes -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/pdfmake.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/vfs_fonts.js?<?= versionSystem() ?>"></script>
+
+
+<!-- ==========================================
+     5. LIBRERÍAS DE UTILIDAD GRÁFICA Y UX DE TERCEROS
+     ========================================== -->
+<!-- Chart.js: Herramienta empleada para la visualización de datos estadísticos avanzados mediante distintos tipos de gráficas interactivas -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/v4.5.1/chart.umd.min.js?<?= versionSystem() ?>"></script>
+
+<!-- SweetAlert2: Librería moderna (TODO) que reemplaza las aburridas alertas estándar (alert()) de JS con ventanas emergentes elegantes, modales dinámicos y responsivos -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/SweetAlert2/v11.26.3/SweerAlert2.js?<?= versionSystem() ?>"></script>
+
+
+<!-- ==========================================
+     6. ARCHIVO PRINCIPAL DE LA APLICACIÓN (MAIN)
+     ========================================== -->
+<!-- Main JS (TODO): Archivo que contiene la inicialización general de la app, variables del DOM, y listeners globales. Debe cargarse al final porque depende del core -->
 <script src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
+
 <!-- TODO: Librerias de la view-->
 <?php
 //variables de las rutas del js
