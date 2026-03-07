@@ -1708,6 +1708,10 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                     'icon' => 'error',
                     'url' => $no_permisos,
                     'timer' => 2000,
+                    'create' => 0,
+                    'read' => 0,
+                    'update' => 0,
+                    'delete' => 0
                 ];
                 if (!$return) {
                     toJson($arrReturn);
@@ -1736,6 +1740,10 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                     'url' => $no_permisos,
                     'interface_status' => $result['interface_status'],
                     'timer' => 2000,
+                    'create' => 0,
+                    'read' => 0,
+                    'update' => 0,
+                    'delete' => 0
 
                 ];
                 if (!$return) {
@@ -1762,6 +1770,10 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                     'url' => $no_permisos,
                     'plans_interface_status' => $result['plans_interface_status'],
                     'timer' => 2000,
+                    'create' => 0,
+                    'read' => 0,
+                    'update' => 0,
+                    'delete' => 0
 
                 ];
                 if (!$return) {
@@ -1788,6 +1800,10 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                     'url' => $no_permisos,
                     'permission_status' => $result['permission_status'],
                     'timer' => 2000,
+                    'create' => 0,
+                    'read' => 0,
+                    'update' => 0,
+                    'delete' => 0
 
                 ];
                 if (!$return) {
