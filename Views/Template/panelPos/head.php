@@ -35,11 +35,11 @@ get_option_and_permission_app();
     <meta name="description" content="<?= getSystemInfo()["c_description"] ?>">
     <!-- Main CSS-->
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/plugins/DataTables/v2.3.4/dataTables.min.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/plugins/DataTables/v2.3.4/dataTables.bootstrap.min.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/plugins/DataTables/v2.3.4/buttons.bootstrap5.min.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/plugins/DataTables/v2.3.4/autoFill.bootstrap5.min.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/plugins/DataTables/v2.3.4/colReorder.bootstrap5.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/dataTables.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/dataTables.bootstrap.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/buttons.bootstrap5.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/autoFill.bootstrap5.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/colReorder.bootstrap5.min.css?<?= versionSystem() ?>">
     <!-- Font-icon css-->
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css?<?= versionSystem() ?>">
     <!--TODO: Cargamos el icono de la pagina-->

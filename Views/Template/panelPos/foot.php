@@ -13,7 +13,7 @@
      ========================================== -->
 <!-- DataTables Core: Motor principal para el manejo avanzado, paginación, búsqueda y renderizado de las tablas de datos -->
 <script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/jquery.dataTables.min.js?<?= versionSystem() ?>"></script>
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.7/dataTables.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/dataTables.min.js?<?= versionSystem() ?>"></script>
 
 <!-- DataTables Bootstrap 5: Capa de integración para asegurar que las tablas y sus controles luzcan nativos de Bootstrap 5 -->
 <script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/dataTables.bootstrap5.min.js?<?= versionSystem() ?>"></script>
@@ -46,16 +46,19 @@
 <script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/pdfmake.min.js?<?= versionSystem() ?>"></script>
 <script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/DataTables/v2.3.4/vfs_fonts.js?<?= versionSystem() ?>"></script>
 
+<!-- Chart.js: Herramienta empleada para la visualización de datos estadísticos avanzados mediante distintos tipos de gráficas interactivas -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/chartjs/v4.5.1/chart.umd.min.js?<?= versionSystem() ?>"></script>
 
 <!-- ==========================================
      5. LIBRERÍAS DE UTILIDAD GRÁFICA Y UX DE TERCEROS
      ========================================== -->
 <!-- Chart.js: Herramienta empleada para la visualización de datos estadísticos avanzados mediante distintos tipos de gráficas interactivas -->
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/v4.5.1/chart.umd.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/chartjs/v4.5.1/chart.umd.min.js?<?= versionSystem() ?>"></script>
 
 <!-- SweetAlert2: Librería moderna (TODO) que reemplaza las aburridas alertas estándar (alert()) de JS con ventanas emergentes elegantes, modales dinámicos y responsivos -->
 <script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/SweetAlert2/v11.26.3/SweerAlert2.js?<?= versionSystem() ?>"></script>
-
+<!-- html2canvas: Librería para capturar y convertir el contenido de una página web en una imagen -->
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/html2canvas.min.js?<?= versionSystem() ?>"></script>
 
 <!-- ==========================================
      6. ARCHIVO PRINCIPAL DE LA APLICACIÓN (MAIN)
