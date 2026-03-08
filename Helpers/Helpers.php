@@ -482,16 +482,21 @@ function isSession(int $sesion = 0)
             if (session_status() === PHP_SESSION_NONE) {
                 session_start(config_sesion(1));
             }
-            if (isset($_SESSION[$nameVarLogin])) {
-            } else if (!isset($_SESSION[$nameVarLogin]) && isset($_COOKIE[$nameVarLogin])) {
-                $_SESSION[$nameVarLogin] = $_COOKIE[$nameVarLogin];
-                $_SESSION[$nameVarLoginInfo] = json_decode($_COOKIE[$nameVarLoginInfo], true);
-                header("Location: " . base_url() . "/pos/LogOut");
-            } else {
-                //obtener ip
-                $ip = obtenerIP();
-                header("Location: " . base_url() . "/pos/LogOut");
+            // 1. Si NO existe la sesión, intentamos recuperarla de las cookies
+            if (!isset($_SESSION[$nameVarLogin])) {
+                if (isset($_COOKIE[$nameVarLogin]) && isset($_COOKIE[$nameVarLoginInfo])) {
+                    // Reconstruimos la sesión desde la cookie
+                    $_SESSION[$nameVarLogin] = $_COOKIE[$nameVarLogin];
+                    $_SESSION[$nameVarLoginInfo] = json_decode($_COOKIE[$nameVarLoginInfo], true);
+                    // Aquí podrías agregar otras variables necesarias, como business_active
+                } else {
+                    // Si no hay sesión Y no hay cookies, entonces cerramos
+                    $ip = obtenerIP();
+                    header("Location: " . base_url() . "/pos/LogOut");
+                    exit(); // IMPORTANTE: Detener la ejecución
+                }
             }
+            // Si llega aquí, es porque o ya tenía sesión o la recuperó de la cookie exitosamente.
             break;
         default:
             # code...
