@@ -205,7 +205,10 @@ class Business extends Controllers
         if (!$business) {
             $this->responseError('El negocio seleccionado no pertenece a tu cuenta.');
         }
+        //guardamos la sesion
         $_SESSION[$this->nameVarBusiness] = $business;
+        //guardamos la cookie
+        setcookie($this->nameVarBusiness, json_encode($business), time() + (86400 * 30), "/");
         toJson([
             'status'  => true,
             'title'   => 'Negocio seleccionado',

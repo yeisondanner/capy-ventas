@@ -9,6 +9,7 @@ class LogOut extends Controllers
         $nameSession = config_sesion(1)['name'];
         $nameVarLogin = $nameSession . 'login';
         $nameVarLoginInfo = $nameSession . 'login_info';
+        $nameVarBusiness = $nameSession . 'business_active';
         if (isset($_SESSION[$nameVarLogin])) {
             if (!isset($_SESSION[$nameVarLoginInfo])) {
                 //actualizamos el estado de online del usuario
@@ -18,6 +19,7 @@ class LogOut extends Controllers
                 setcookie($nameSession, "", time() - 3600, "/"); // 86400 = 1 day
                 setcookie($nameVarLoginInfo, "", time() - 3600, "/"); // 86400 = 1 day
                 setcookie($nameVarLogin, "", time() - 3600, "/"); // 86400 = 1 day 
+                setcookie($nameVarBusiness, "", time() - 3600, "/"); // 86400 = 1 day 
                 unset($nameSession);
                 header("Location: " . $urlReturn);
                 die();

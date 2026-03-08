@@ -110,6 +110,7 @@ class Login extends Controllers
 		//creamos las cookies para el usuario
 		setcookie($nameVarLoginInfo, $data_session, time() + (86400 * 30), "/"); // 86400 = 1 day => 30 days
 		setcookie($nameVarLogin, true, time() + (86400 * 30), "/"); // 86400 = 1 day => 30 days
+		setcookie($nameVarBusiness, json_encode($bussiness), time() + (86400 * 30), "/");
 		//preparamos las alertas de bienvenida
 		$nombres = $request["names"];
 		$apellidos = $request['lastname'];

@@ -479,15 +479,17 @@ function isSession(int $sesion = 0)
             $name_sesion = config_sesion(1)['name'];
             $nameVarLogin = $name_sesion . 'login';
             $nameVarLoginInfo = $name_sesion . 'login_info';
+            $nameVarBusiness = $name_sesion . 'business_active';
             if (session_status() === PHP_SESSION_NONE) {
                 session_start(config_sesion(1));
             }
             // 1. Si NO existe la sesión, intentamos recuperarla de las cookies
             if (!isset($_SESSION[$nameVarLogin])) {
-                if (isset($_COOKIE[$nameVarLogin]) && isset($_COOKIE[$nameVarLoginInfo])) {
+                if (isset($_COOKIE[$nameVarLogin]) && isset($_COOKIE[$nameVarLoginInfo]) && isset($_COOKIE[$nameVarBusiness])) {
                     // Reconstruimos la sesión desde la cookie
                     $_SESSION[$nameVarLogin] = $_COOKIE[$nameVarLogin];
                     $_SESSION[$nameVarLoginInfo] = json_decode($_COOKIE[$nameVarLoginInfo], true);
+                    $_SESSION[$nameVarBusiness] = json_decode($_COOKIE[$nameVarBusiness], true);
                     // Aquí podrías agregar otras variables necesarias, como business_active
                 } else {
                     // Si no hay sesión Y no hay cookies, entonces cerramos
