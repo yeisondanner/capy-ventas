@@ -18,7 +18,7 @@
   const btnBackToStep2 = document.getElementById("btnBackToStep2");
   const btnDesktopToStep3 = document.getElementById("btnDesktopToStep3");
   const btnDesktopBackToStep2 = document.getElementById(
-    "btnDesktopBackToStep2"
+    "btnDesktopBackToStep2",
   );
   const btnEmptyCart = document.getElementById("btnEmptyCart");
 
@@ -37,7 +37,7 @@
     document.getElementById("popularCategories");
   const inputNombreVenta = document.getElementById("nombreVenta");
   const btnGuardarNombreVenta = document.getElementById(
-    "btnGuardarNombreVenta"
+    "btnGuardarNombreVenta",
   );
   const divMontoPaga = document.getElementById("divMontoPaga");
 
@@ -50,31 +50,31 @@
   //contenedores de los inputs
   const fechaVentaContainer = document.getElementById("fechaVentaContainer");
   const paymentMethodContainer = document.getElementById(
-    "paymentMethodContainer"
+    "paymentMethodContainer",
   );
   //contenedor del card de cliente donde se la informacion del cliente
   const customerCardContainer = document.getElementById(
-    "customerCardContainer"
+    "customerCardContainer",
   );
   const customerCardFullname = document.getElementById("customerCardFullname");
   const customerCardDocumentType = document.getElementById(
-    "customerCardDocumentType"
+    "customerCardDocumentType",
   );
   const customerCardDocumentNumber = document.getElementById(
-    "customerCardDocumentNumber"
+    "customerCardDocumentNumber",
   );
   const customerCardCreditLimit = document.getElementById(
-    "customerCardCreditLimit"
+    "customerCardCreditLimit",
   );
   const customerCardConsumed = document.getElementById("customerCardConsumed");
   const customerCardAvailable = document.getElementById(
-    "customerCardAvailable"
+    "customerCardAvailable",
   );
   const customerCardProgressBar = document.getElementById(
-    "customerCardProgressBar"
+    "customerCardProgressBar",
   );
   const customerCardProgressValue = document.getElementById(
-    "customerCardProgressValue"
+    "customerCardProgressValue",
   );
   //elemento de lacabecera del modal de cobro
   const modalCobroHeader = document.getElementById("modalCobroHeader");
@@ -346,11 +346,11 @@
         //actualizamos la barra de progreso
         customerCardProgressBar.setAttribute(
           "aria-valuenow",
-          customer.consumed
+          customer.consumed,
         );
         customerCardProgressValue.setAttribute(
           "style",
-          "width: " + customer.percentage + "%"
+          "width: " + customer.percentage + "%",
         );
         customerCardProgressValue.textContent = customer.percentage + "%";
         //Cambiamos los colores de la barra de progreso de acuerdo al consumo
@@ -748,7 +748,7 @@
             {
               method: "POST",
               body: formdata,
-            }
+            },
           );
 
           if (!response.ok) {
@@ -876,7 +876,7 @@
               // Buscamos el botón de cobrar visible en el paso 3
               // Generalmente es uno de la clase .btn-cobrar
               const btnCobrarVisible = Array.from(botonesCobrar).find(
-                (b) => b.offsetParent !== null
+                (b) => b.offsetParent !== null,
               );
               if (btnCobrarVisible) {
                 event.preventDefault();
@@ -888,7 +888,7 @@
             // Mantenemos comportamiento directo a cobrar o navegación simple
             // Buscamos si hay un botón de cobrar visible
             const btnCobrarVisible = Array.from(botonesCobrar).find(
-              (b) => b.offsetParent !== null
+              (b) => b.offsetParent !== null,
             );
             if (btnCobrarVisible) {
               event.preventDefault();
@@ -1040,7 +1040,7 @@
       const matchesTerm = matchesProduct(product, lastSearchTerm);
       const matchesPopularCategory = matchesCategory(
         product.category,
-        normalizedCategory
+        normalizedCategory,
       );
 
       return matchesTerm && matchesPopularCategory;
@@ -1077,7 +1077,7 @@
     if (!popularCategoriesContainer) return;
 
     const buttons = popularCategoriesContainer.querySelectorAll(
-      "button[data-category]"
+      "button[data-category]",
     );
 
     buttons.forEach((button) => {
@@ -1117,7 +1117,7 @@
 
     popularCategoriesContainer.innerHTML = "";
     popularCategoriesContainer.appendChild(
-      createCategoryButton("Todos", "all")
+      createCategoryButton("Todos", "all"),
     );
 
     const validCategories = Array.isArray(categories) ? categories : [];
@@ -1149,7 +1149,7 @@
         title: "Cargando productos...",
         message: "Por favor, espera un momento...",
       },
-      "loading"
+      "loading",
     );
     try {
       const response = await fetch(url);
@@ -1182,7 +1182,7 @@
           position: "bottom-end",
           timer: 200,
         },
-        "float"
+        "float",
       );
     }
   }
@@ -1234,7 +1234,7 @@
       if (!data.status) return;
 
       renderCustomersOptions(
-        Array.isArray(data.customers) ? data.customers : []
+        Array.isArray(data.customers) ? data.customers : [],
       );
     } catch (error) {
       console.error("No se pudo cargar el listado de clientes", error);
@@ -1259,7 +1259,7 @@
       if (!data.status) return;
 
       renderPaymentMethodOptions(
-        Array.isArray(data.payment_methods) ? data.payment_methods : []
+        Array.isArray(data.payment_methods) ? data.payment_methods : [],
       );
     } catch (error) {
       console.error("No se pudo cargar el listado de metodos de pago", error);
@@ -1382,7 +1382,7 @@
       "col-6",
       "col-md-4",
       "col-xl-3",
-      "product-card-wrapper"
+      "product-card-wrapper",
     );
     buttonProduct.classList.add("product-card");
     spanCounter.classList.add("product-counter-badge");
@@ -1411,7 +1411,7 @@
     spanPrice.textContent = getcurrency + product.price;
     spanName.textContent = product.product;
     spanStock.dataset.stock = stock;
-    spanStock.innerHTML = `<i class="bi bi-info-circle"></i> ${stock} disponibles`;
+    spanStock.innerHTML = `<i class="bi bi-info-circle"></i> ${stock} ${product.measurement} disp.`;
     //unificamos para el card completo
     buttonProduct.appendChild(spanCounter);
     buttonProduct.appendChild(divImg);
@@ -1467,7 +1467,7 @@
       "btn-outline-danger",
       "btn-sm",
       "rounded-circle",
-      "btn-delete-cart"
+      "btn-delete-cart",
     );
     divControls.classList.add("basket-controls");
     divPriceLine.classList.add("basket-price-line", "text-muted", "mt-1");
@@ -1480,7 +1480,7 @@
     inputQty.classList.add(
       "form-control",
       "text-center",
-      "cart-quantity-input"
+      "cart-quantity-input",
     );
     spanPrefix.classList.add("input-group-text");
     inputPrice.classList.add("form-control", "text-end", "cart-price-input");
@@ -1491,7 +1491,7 @@
     //llenamos la data
     divIcon.innerHTML = `<img src="${product.photo}" class="img-fluid basket-icon" alt="${product.product}">`;
     spanName.textContent = product.product;
-    spanStock.textContent = `${parseFloat(product.stock)} Disponibles`;
+    spanStock.textContent = `${parseFloat(product.stock)} ${product.measurement} disp.`;
     btnDelete.innerHTML = `<i class="bi bi-trash"></i>`;
     btnMinus.innerHTML = `<i class="bi bi-dash"></i>`;
     btnPlus.innerHTML = `<i class="bi bi-plus"></i>`;
@@ -1506,7 +1506,7 @@
     inputPrice.readOnly = true;
     inputPrice.setAttribute(
       "aria-label",
-      "Precio total del producto en canasta"
+      "Precio total del producto en canasta",
     );
     inputPrice.setAttribute("tabindex", "-1");
     divPriceLine.innerHTML = `Precio por <span class="fw-semibold">${quantity}</span> ${product.measurement}: <span class="fw-semibold">${getcurrency} ${amount}</span>`;
@@ -1554,7 +1554,7 @@
         "bg-warning",
         "bg-danger",
         "text-white",
-        "text-dark"
+        "text-dark",
       );
       if (isNaN(stock)) return;
 
@@ -1588,7 +1588,7 @@
           counter.textContent = safeValue;
           counter.setAttribute(
             "aria-label",
-            "Productos seleccionados: " + safeValue
+            "Productos seleccionados: " + safeValue,
           );
         }
       }
@@ -2105,10 +2105,10 @@
           <td>${item.stock_product}</td>
           <td>${item.name_product} (${item.unit_of_measurement})</td>
           <td class="text-end">S/ ${Number(item.sales_price_product).toFixed(
-            2
+            2,
           )}</td>
           <td class="text-end">S/ ${Number(
-            item.sales_price_product * item.stock_product
+            item.sales_price_product * item.stock_product,
           ).toFixed(2)}</td>
         </tr>
       `);
@@ -2171,7 +2171,7 @@
     }
 
     printWindow.document.write(
-      "<html><head><title>Imprimir Comprobante</title>"
+      "<html><head><title>Imprimir Comprobante</title>",
     );
 
     // Copiar estilos de la página actual
