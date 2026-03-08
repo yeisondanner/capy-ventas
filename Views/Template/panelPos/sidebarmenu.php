@@ -84,14 +84,14 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                 <!-- Opciones -->
                 <div class="list-group list-group-flush">
                     <?php
-                    if ($data_menu(8) && $data_menu(8)['update'] === '1'):
-                        ?>
+                    if ($data_menu(8) && $data_menu(8)['update'] == 1):
+                    ?>
                         <a href="<?= base_url() ?>/pos/business/configuration"
                             class="list-group-item list-group-item-action d-flex align-items-center gap-2 px-0">
                             <i class="bi bi-gear"></i>
                             <span>Configuraciones</span>
                         </a>
-                        <?php
+                    <?php
                     endif;
                     ?>
                     <?php
