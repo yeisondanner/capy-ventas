@@ -16,14 +16,14 @@
             <div class="tile rounded-3">
                 <div class="tile-body d-flex flex-wrap gap-2">
                     <?php
-                    $inventory =  validate_permission_app(3, "c", false)['create'];
+                    $inventory = validate_permission_app(3, "c", false)['create'];
                     if ($inventory == 1): ?>
                         <button class="btn btn-outline-primary btn-sm" type="button" id="btnOpenProductModal">
                             <i class="bi bi-plus-lg"></i> Agregar nuevo producto
                         </button>
                     <?php endif; ?>
                     <?php
-                    $category =  validate_permission_app(10, "r", false)['read'];
+                    $category = validate_permission_app(10, "r", false)['read'];
                     if ($category == 1): ?>
                         <button class="btn btn-outline-info btn-sm" type="button" id="btnOpenCategoryModal">
                             <i class="bi bi-collection"></i> Categorías
@@ -227,7 +227,7 @@
 <!-- Modal: Reporte de producto -->
 <div class="modal fade" id="modalProductReport" tabindex="-1" aria-labelledby="modalProductReportLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content shadow border-0">
 
             <!-- Encabezado -->
@@ -252,7 +252,7 @@
                 <div class="row g-3">
 
                     <!-- Columna Izquierda: Imagen y Datos Básicos -->
-                    <div class="col-md-5">
+                    <div class="col-12 col-md-6 col-xl-3">
                         <div class="bg-white p-3 border rounded shadow-sm h-100">
                             <!-- Contenedor con proporción fija 4:3 para la imagen principal -->
                             <div class="ratio ratio-4x3 mb-3">
@@ -301,45 +301,138 @@
                         </div>
                     </div>
                     <!-- Columna Derecha: Métricas, Galería y Descripción -->
-                    <div class="col-md-7">
-                        <!-- Métricas -->
-                        <div class="row g-2 mb-3">
-                            <div class="col-4">
-                                <div class="p-2 border rounded bg-white text-center">
-                                    <small class="text-muted d-block fw-bold text-uppercase"
-                                        style="font-size: 0.65rem;">Stock</small>
-                                    <span class="h6 mb-0 fw-bold text-primary" id="reportProductStock">0</span>
+                    <div class="col-12 col-md-6 col-xl-9">
+                        <div class="row g-2">
+                            <!-- Métricas -->
+                            <div class="col-12 mb-3">
+                                <div class="row g-2">
+                                    <div class="col-4">
+                                        <div class="p-2 border rounded bg-white text-center">
+                                            <small class="text-muted d-block fw-bold text-uppercase"
+                                                style="font-size: 0.65rem;">Stock</small>
+                                            <span class="h6 mb-0 fw-bold text-primary" id="reportProductStock">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="p-2 border rounded bg-white text-center">
+                                            <small class="text-muted d-block fw-bold text-uppercase"
+                                                style="font-size: 0.65rem;">Compra</small>
+                                            <span class="h6 mb-0 fw-bold text-dark"
+                                                id="reportProductPurchase">$0.00</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="p-2 border rounded bg-white text-center">
+                                            <small class="text-muted d-block fw-bold text-uppercase"
+                                                style="font-size: 0.65rem;">Venta</small>
+                                            <span class="h6 mb-0 fw-bold text-success"
+                                                id="reportProductSale">$0.00</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="p-2 border rounded bg-white text-center">
-                                    <small class="text-muted d-block fw-bold text-uppercase"
-                                        style="font-size: 0.65rem;">Compra</small>
-                                    <span class="h6 mb-0 fw-bold text-dark" id="reportProductPurchase">$0.00</span>
+                            <!-- Galería Visual con Proporción 1:1 (Cuadrada) -->
+                            <div class="col-12 col-md-7 col-xl-6 bg-white p-3 border rounded shadow-sm mb-3">
+                                <label class="text-muted fw-bold d-block text-uppercase small mb-2"
+                                    style="font-size: 0.7rem;">Galería de Fotos</label>
+                                <div class="row g-2 overflow-y-auto" style="max-height: 200px;" id="listReportImages">
+                                    --
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="p-2 border rounded bg-white text-center">
-                                    <small class="text-muted d-block fw-bold text-uppercase"
-                                        style="font-size: 0.65rem;">Venta</small>
-                                    <span class="h6 mb-0 fw-bold text-success" id="reportProductSale">$0.00</span>
+                            <!-- Descripción -->
+                            <div class="col-12 col-md-5 col-xl-6 bg-white p-3 border rounded shadow-sm mb-3">
+                                <label class="text-muted fw-bold d-block text-uppercase small mb-1 border-bottom pb-1"
+                                    style="font-size: 0.7rem;">Descripción</label>
+                                <p class="mb-0 small text-secondary" id="reportProductDescription">Sin descripción
+                                    registrada.</p>
+                            </div>
+                            <!-- Historial del Producto -->
+                            <div class="col-12 bg-white p-3 border rounded shadow-sm h-100">
+                                <label class="text-muted fw-bold d-block text-uppercase small mb-2 border-bottom pb-1"
+                                    style="font-size: 0.7rem;"><i class="bi bi-clock-history me-1"></i> Historial de
+                                    modificaciones</label>
+                                <div id="sectionTableReport" class="table-responsive mt-2 h-100"
+                                    style="max-height: 350px; overflow-y: auto;">
+                                    <table class="table table-sm table-hover table-bordered mb-0 align-middle"
+                                        style="font-size: 0.85rem;" id="reportTableHistoryProduct">
+                                        <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
+                                            <tr>
+                                                <th style="min-width: 120px;">Fecha / Hora</th>
+                                                <th>Usuario</th>
+                                                <th>Nombre</th>
+                                                <th>Vencimiento</th>
+                                                <th>Stock</th>
+                                                <th>P. Compra</th>
+                                                <th>P. Venta</th>
+                                                <th class="text-center">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyProductHistory">
+                                            <!-- Ejemplos estáticos de cómo se vería el historial -->
+                                            <tr>
+                                                <td class="text-muted">10/03/2026 <br><small>10:30 AM</small></td>
+                                                <td><i class="bi bi-person-circle me-1"></i> Admin</td>
+                                                <td>Café molido premium</td>
+                                                <td>30/12/2026</td>
+                                                <td class="text-primary fw-bold">150.00</td>
+                                                <td>$5.00</td>
+                                                <td class="text-success fw-bold">$12.50</td>
+                                                <td class="text-center">
+                                                    <button class="btn btn-sm btn-outline-info" title="Ver detalle"
+                                                        type="button">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="text-muted">01/03/2026 <br><small>08:00 AM</small></td>
+                                                <td><i class="bi bi-person-circle me-1"></i> Admin</td>
+                                                <td>Café molido premium</td>
+                                                <td>30/12/2026</td>
+                                                <td>50.00</td>
+                                                <td>$5.00</td>
+                                                <td>$10.00</td>
+                                                <td class="text-center">
+                                                    <button class="btn btn-sm btn-outline-info" title="Ver detalle"
+                                                        type="button">
+                                                        <i class="bi bi-eye"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                        <tfoot class="table-warning">
+                                            <tr>
+                                                <th colspan="4" class="text-end text-uppercase">Total:</th>
+                                                <th id="totalStockFooter" class="text-primary fw-bold text-start">0.00
+                                                </th>
+                                                <th colspan="3"></th>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
+
+                                <!-- Contenedor genérico para restricciones (Planes o Permisos) -->
+                                <div id="restrictionPromptContainer" class="d-none text-center p-4">
+                                    <div id="restrictionIconWrapper"
+                                        class="mb-3 d-inline-flex p-3 rounded-circle bg-info bg-opacity-10 text-info">
+                                        <i id="restrictionIcon" class="bi bi-gem fs-2"></i>
+                                    </div>
+                                    <h5 id="restrictionTitle" class="fw-bold text-dark mb-2">
+                                        Historial completo disponible en planes superiores
+                                    </h5>
+                                    <p id="restrictionMessage" class="text-muted small mb-3">
+                                        Actualiza tu plan para ver el historial detallado de modificaciones y auditoría
+                                        de este producto.
+                                    </p>
+                                    <a id="restrictionActionBtn" href="<?= base_url() ?>/pos/dashboard"
+                                        class="btn btn-primary btn-sm rounded-pill px-4">
+                                        <i id="restrictionActionIcon" class="bi bi-arrow-up-circle"></i>
+                                        <span id="restrictionActionText">Mejorar mi plan</span>
+                                    </a>
+                                </div>
+
                             </div>
-                        </div>
-                        <!-- Galería Visual con Proporción 1:1 (Cuadrada) -->
-                        <div class="bg-white p-3 border rounded shadow-sm mb-3">
-                            <label class="text-muted fw-bold d-block text-uppercase small mb-2"
-                                style="font-size: 0.7rem;">Galería de Fotos</label>
-                            <div class="row g-2 overflow-y-auto" style="max-height: 200px;" id="listReportImages">
-                                --
-                            </div>
-                        </div>
-                        <!-- Descripción -->
-                        <div class="bg-white p-3 border rounded shadow-sm">
-                            <label class="text-muted fw-bold d-block text-uppercase small mb-1 border-bottom pb-1"
-                                style="font-size: 0.7rem;">Descripción</label>
-                            <p class="mb-0 small text-secondary" id="reportProductDescription">Sin descripción
-                                registrada.</p>
+
                         </div>
                     </div>
                 </div>

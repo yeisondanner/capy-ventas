@@ -191,12 +191,127 @@
     //recorremos todas las imagenes para mostrar
     images.forEach((item) => {
       const divcard = document.createElement("div");
-      divcard.classList.add("col-4");
+      divcard.classList.add(
+        "col-xl-1",
+        "col-lg-2",
+        "col-md-3",
+        "col-sm-4",
+        "col-6"
+      );
       divcard.innerHTML = `<div class="ratio ratio-1x1">
                              <img src="${base_url}/Loadfile/iconproducts?f=${item.name}" class="rounded border object-fit-cover" alt="Vista 1">
                           </div>`;
       listReportImages.appendChild(divcard);
     });
+    const product_history = product.product_history || [];
+    //inicializamos el data tables
+    if ($.fn.DataTable.isDataTable("#reportTableHistoryProduct")) {
+      $("#reportTableHistoryProduct").DataTable().clear().destroy();
+    }
+
+    $("#reportTableHistoryProduct").DataTable({
+      data: product_history,
+      columns: [
+        { data: "registration_date_product" },
+        { data: "fullname_user" },
+        { data: "name_product" },
+        { data: "expiration_date_product" },
+        {
+          data: "stock_product",
+          render: function (data, type, row) {
+            return `${data} ${row.measurement}`;
+          },
+        },
+        { data: "purchase_price_product" },
+        { data: "sales_price_product" },
+        { data: null, defaultContent: "" },
+      ],
+      columnDefs: [
+        {
+          targets: 7,
+          data: null,
+          render: function (data, type, row) {
+            return `<button class="btn btn-sm btn-outline-secondary edit-product" data-id="${row.id}"><i class="bi bi-file-earmark-text"></i></button>`;
+          },
+        },
+      ],
+      dom: "lBfrtip",
+      buttons: [
+        {
+          extend: "copyHtml5",
+          text: "<i class='bi bi-clipboard'></i> Copiar",
+          className: "btn btn-sm btn-outline-secondary my-2",
+          exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] },
+        },
+        {
+          extend: "excelHtml5",
+          text: "<i class='bi bi-file-earmark-excel'></i> Excel",
+          className: "btn btn-sm btn-outline-success my-2",
+          title: "Historial del Producto " + product.name,
+          exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] },
+        },
+        {
+          extend: "csvHtml5",
+          text: "<i class='bi bi-filetype-csv'></i> CSV",
+          className: "btn btn-sm btn-outline-info my-2",
+          title: "Historial del Producto " + product.name,
+          exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] },
+        },
+        {
+          extend: "pdfHtml5",
+          text: "<i class='bi bi-filetype-pdf'></i> PDF",
+          className: "btn btn-sm btn-outline-danger my-2",
+          orientation: "portrait",
+          pageSize: "A4",
+          title: "Historial del Producto " + product.name,
+          exportOptions: { columns: [0, 1, 2, 3, 4, 5, 6] },
+        },
+      ],
+      language: {
+        url: `${rootUrl}/Assets/js/libraries/POS/Spanish-datatables.json`,
+      },
+      footerCallback: function (row, data, start, end, display) {
+        let api = this.api();
+        let intVal = function (i) {
+          return typeof i === "string"
+            ? i.replace(/[\$,]/g, "") * 1
+            : typeof i === "number"
+              ? i
+              : 0;
+        };
+        let totalStock = api
+          .column(4, { search: "applied" })
+          .data()
+          .reduce(function (a, b) {
+            return intVal(a) + intVal(b);
+          }, 0);
+        $(api.column(4).footer()).html(
+          totalStock.toFixed(2) + " " + product.measurement_name
+        );
+      },
+      drawCallback: () => {
+        document
+          .querySelectorAll(
+            "#reportTableHistoryProduct_wrapper .dataTables_paginate > .pagination"
+          )
+          .forEach((el) => {
+            el.classList.add("pagination-sm", "mt-2");
+          });
+      },
+    });
+    document.getElementById("sectionTableReport").classList.remove("d-none");
+    document
+      .getElementById("restrictionPromptContainer")
+      .classList.add("d-none");
+    //verificamos si tiene permisos para acceder a ver el historial
+    if (!product.permission_history.status) {
+      document.getElementById("sectionTableReport").classList.add("d-none");
+      document
+        .getElementById("restrictionPromptContainer")
+        .classList.remove("d-none");
+      $("#restrictionTitle").text(product.permission_history.title);
+      $("#restrictionMessage").text(product.permission_history.message);
+    }
     renderReportStatus(product.status || "");
   }
 

@@ -97,6 +97,38 @@ class InventoryModel extends Mysql
 
         return is_array($result) ? $result : [];
     }
+    /**
+     * Recupera todo el historial del producto echo a lo largo del tiempo
+     *
+     * @param int $productId  Identificador del producto.
+     * @return array
+     */
+    public function selectProductHistory(int $productId): array
+    {
+        $sql = <<<SQL
+            SELECT
+                ph.idProductHistory,
+                CONCAT(p.`names`, ' ', p.lastname) AS 'fullname_user',
+                ph.`name` AS 'name_product',
+                ph.expiration_date AS 'expiration_date_product',
+                ph.stock AS 'stock_product',
+                ph.sales_price AS 'sales_price_product',
+                ph.purchase_price AS 'purchase_price_product',
+                ph.registration_date AS 'registration_date_product',
+                m.`name` AS 'measurement'
+            FROM
+                product_history AS ph
+                INNER JOIN user_app AS ua ON ua.idUserApp = ph.userapp_id
+                INNER JOIN people AS p ON p.idPeople = ua.people_id
+                INNER JOIN measurement AS m ON m.idMeasurement = ph.measurement_id
+            WHERE 
+                ph.product_id=?
+                AND 
+                ph.`status`='Activo';
+        SQL;
+
+        return $this->select_all($sql, [$productId]);
+    }
 
     /**
      * Inserta un nuevo producto en la base de datos.
@@ -245,7 +277,7 @@ class InventoryModel extends Mysql
             $data['supplier_id'],
             $data['is_public'],
             $data['code'],
-            $data['date_expiration'] !== '' ? $data['date_expiration'] : null,
+            $data['expiration_date'] !== '' ? $data['expiration_date'] : null,
             $data['idProduct'],
         ];
 

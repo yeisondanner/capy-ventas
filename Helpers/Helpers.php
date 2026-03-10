@@ -861,11 +861,8 @@ function resizeAndCompressImage($sourcePath, $destinationPath, $maxSizeMB = 2, $
 
     // Guardar la imagen final
     file_put_contents($destinationPath, $imageData);
-
-    // Liberar memoria
-    imagedestroy($sourceImage);
-    imagedestroy($resizedImage);
-
+    //limpiar variables
+    unset($sourcePath, $destinationPath, $maxSizeMB, $newWidth, $newHeight, $maxSizeBytes, $width, $height, $type, $sourceImage, $resizedImage, $quality, $imageData, $fileSize);
     return true;
 }
 /**
