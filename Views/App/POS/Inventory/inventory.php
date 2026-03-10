@@ -412,7 +412,8 @@
                                 </div>
 
                                 <!-- Contenedor genérico para restricciones (Planes o Permisos) -->
-                                <div id="restrictionPromptContainer" class="d-none text-center p-4">
+                                <div id="restrictionPromptContainer" style="max-height: 350px;"
+                                    class="d-none text-center p-4">
                                     <div id="restrictionIconWrapper"
                                         class="mb-3 d-inline-flex p-3 rounded-circle bg-info bg-opacity-10 text-info">
                                         <i id="restrictionIcon" class="bi bi-gem fs-2"></i>
