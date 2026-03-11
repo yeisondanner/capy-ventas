@@ -304,6 +304,12 @@ class Inventory extends Controllers
         if (empty($product)) {
             $this->responseError('No se encontró el producto solicitado.');
         }
+        //perpimision for history
+        $history = validate_permission_app(16, "r", false, true, true);
+        $productHistory = [];
+        if ($history['status']) {
+            $productHistory = $this->model->selectProductHistory($productId);
+        }
 
         $currencySymbol = getCurrency();
         $images = $this->model->selectProductFile($productId);
@@ -336,6 +342,8 @@ class Inventory extends Controllers
                 'is_public' => $product['is_public'] ?? 'No',
                 'bar_code' => $product['bar_code'] ?? '',
                 'expiration_date' => $product['expiration_date'] ?? '',
+                'product_history' => $productHistory ?? [],
+                'permission_history' => $history
             ],
         ];
 
@@ -464,7 +472,6 @@ class Inventory extends Controllers
         }
 
         $payload = [
-            'idProduct' => $productId,
             'category_id' => $categoryId,
             'name' => $name,
             'stock' => $stock,
@@ -476,12 +483,18 @@ class Inventory extends Controllers
             'supplier_id' => $supplierId,
             'is_public' => $statusChbx,
             'code' => $code,
-            'date_expiration' => $dateExpiration,
+            'expiration_date' => $dateExpiration,
+            'user_id' => $this->getUserId(),
+            'idProduct' => $productId,
         ];
 
         $updated = $this->model->updateProduct($payload);
         if (!$updated) {
             $this->responseError('No fue posible actualizar el producto, inténtalo nuevamente.');
+        }
+        $productHistoryId = $this->model->insertProductHistory($payload);
+        if ($productHistoryId <= 0) {
+            $this->responseError('No fue posible registrar el historial del producto, inténtalo nuevamente.');
         }
 
         //validamos que el campo no este vacio
