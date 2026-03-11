@@ -1641,12 +1641,12 @@ function get_widget_plan(string $plan)
         ],
         'Pro' => [
             'sm' => <<<HTML
-                <span class="badge bg-success text-white shadow"><i class="bi bi-award-fill"></i> Pro</span>
+                <span class="badge bg-success text-white shadow"><i class="bi bi-award-fill"></i> Pro Mensual</span>
             HTML,
         ],
-        'Full Max' => [
+        'Pro Anual' => [
             'sm' => <<<HTML
-                <span class="badge bg-danger text-white shadow"><i class="bi bi-heart-fill"></i> Full Max</span>
+                <span class="badge bg-success text-white shadow"><i class="bi -award-fill"></i> Pro Anual</span>
             HTML,
         ]
     );
