@@ -1,3 +1,6 @@
 {
-    "livePreview.defaultPreviewPath": "/vali-admin-master b5/vali-admin-master/docs/blank-page.html"
+  "livePreview.defaultPreviewPath": "/vali-admin-master b5/vali-admin-master/docs/blank-page.html",
+  "diffEditor.useInlineViewWhenSpaceIsLimited": true,
+  "diffEditor.wordWrap": "inherit",
+  "diffEditor.renderSideBySideInlineBreakpoint": 900
 }

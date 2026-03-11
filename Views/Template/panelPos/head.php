@@ -37,11 +37,11 @@ get_option_and_permission_app();
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/dataTables.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/dataTables.bootstrap.min.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/buttons.bootstrap5.min.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/autoFill.bootstrap5.min.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/colReorder.bootstrap5.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/Buttons/v3.2.6/buttons.bootstrap5.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/AutoFill/v2.7.1/autoFill.bootstrap5.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/ColReorder/v2.1.2/colReorder.bootstrap5.min.css?<?= versionSystem() ?>">
     <!-- Font-icon css-->
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/BootstrapIcons/v1.13.1/bootstrap-icons.min.css?<?= versionSystem() ?>">
     <!--TODO: Cargamos el icono de la pagina-->
     <link rel="shortcut icon" type="image/png" href="<?= media() ?>/capysm.png?<?= versionSystem() ?>">
     <!-- CSS de la vista -->
