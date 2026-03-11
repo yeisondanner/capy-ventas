@@ -500,6 +500,8 @@
       colReorder: true,
       stateSave: true,
       autoFill: false,
+      //ocultamos el buscador de datatable
+      searching: false,
       iDisplayLength: 10,
       order: [[0, "asc"]],
       language: {
