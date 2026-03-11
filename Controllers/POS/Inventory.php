@@ -195,9 +195,11 @@ class Inventory extends Controllers
         if ($sales > 99999999.99) {
             $this->responseError('El precio de venta no puede exceder los 11 dígitos.');
         }
-
-        if (!strtotime($dateExpiration)) {
-            $this->responseError('La fecha de vencimiento no es válida.');
+        //validamos que la fecha de vencimiento sea valida
+        if (!empty($dateExpiration)) {
+            if (!strtotime($dateExpiration)) {
+                $this->responseError('La fecha de vencimiento no es válida.');
+            }
         }
 
 
