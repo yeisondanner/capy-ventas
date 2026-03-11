@@ -1750,6 +1750,8 @@
     const totalDisplay = document.getElementById("totalAmount");
     const checkedElements = document.querySelectorAll(".select-credit:checked");
     const btnSetMontoExacto = document.getElementById("btnSetMontoExacto");
+    //limpiamos el total
+    total = 0;
     const htmlRows = Array.from(checkedElements)
       .map((element) => {
         // 1. Desestructuración y conversión inmediata
