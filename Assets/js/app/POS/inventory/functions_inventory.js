@@ -984,6 +984,7 @@
    */
   function initTable() {
     productsTable = $("#table").DataTable({
+      pagingType: "full_numbers",
       processing: true,
       ajax: {
         url: `${base_url}/pos/Inventory/getProducts`,
