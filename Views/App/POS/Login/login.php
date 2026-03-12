@@ -87,13 +87,16 @@
         </div>
     </section>
     <!-- TODO: Essential javascripts for application to work-->
-    <script
+    <script type="text/javascript" language="javascript"
         src="<?= media() ?>/js/libraries/POS/plugins/Jquery/v3.7.0/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>
-    <script src="<?= media() ?>/js/libraries/POS/popper.min.js?<?= versionSystem() ?>"></script>
-    <script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
-    <script
+    <script type="text/javascript" language="javascript"
+        src="<?= media() ?>/js/libraries/POS/popper.min.js?<?= versionSystem() ?>"></script>
+    <script type="text/javascript" language="javascript"
+        src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
+    <script type="text/javascript" language="javascript"
         src="<?= media() ?>/js/libraries/POS/plugins/SweetAlert2/v11.26.3/SweerAlert2.js?<?= versionSystem() ?>"></script>
-    <script src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
+    <script type="text/javascript" language="javascript"
+        src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
     <script type="module"
         src="<?= media() ?>/js/app/POS/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
 </body>
