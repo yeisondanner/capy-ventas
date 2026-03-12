@@ -74,7 +74,7 @@ class Inventory extends Controllers
             $gainIcon = $gain > 0 ? '<i class="bi bi-arrow-up text-success"></i>' : '<i class="bi bi-arrow-down text-danger"></i>';
 
             $products[$key]['cont'] = $counter;
-            $products[$key]['name'] = $productName;
+            $products[$key]['name'] = decodeUniversalText($productName);
             $products[$key]['category'] = $categoryName;
             $products[$key]['supplier'] = $supplierName;
             $products[$key]['measurement'] = $measurementName;
@@ -326,7 +326,7 @@ class Inventory extends Controllers
                 'measurement_name' => $product['measurement_name'] ?? '',
                 'supplier_id' => (int) $product['supplier_id'],
                 'supplier_name' => $product['supplier_name'] ?? '',
-                'name' => $product['name'],
+                'name' => decodeUniversalText($product['name']),
                 'stock' => (float) $product['stock'],
                 'stock_text' => number_format((float) $product['stock'], 2, SPD, SPM)
                     . ' ' . ($product['measurement_name'] ?? ''),
@@ -336,7 +336,7 @@ class Inventory extends Controllers
                 'sales_price' => (float) $product['sales_price'],
                 'sales_price_text' => $currencySymbol . ' '
                     . formatMoney((float) $product['sales_price']),
-                'description' => $product['description'] ?? '',
+                'description' => decodeUniversalText($product['description'] ?? ''),
                 'status' => $product['status'],
                 'currency_symbol' => $currencySymbol,
                 'images' => $images ?? [],
