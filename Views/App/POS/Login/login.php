@@ -9,9 +9,10 @@
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css?<?= versionSystem() ?>">
     <link rel="shortcut icon" href="<?= media() ?>/capysm.png?<?= versionSystem() ?>" type="image/x-icon">
     <!-- Font-icon css-->
-    <link rel="stylesheet" href="<?= media() ?>/css/libraries/POS/bootstrap-icons.min.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/Admin/toastr.min.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/app/POS/login/style_login.css?<?= versionSystem() ?>">
+    <link rel="stylesheet"
+        href="<?= media() ?>/css/libraries/POS/plugins/BootstrapIcons/v1.13.1/bootstrap-icons.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css"
+        href="<?= media() ?>/css/app/POS/login/style_login.css?<?= versionSystem() ?>">
     <title>Inicio de Sesion | Capy Ventas</title>
     <script>
         const base_url = "<?= base_url() ?>/pos";
@@ -28,7 +29,8 @@
         <div class="login-box shadow">
             <form class="login-form" id="formLogin" autocomplete="off">
                 <div class="login-head">
-                    <img src="<?= media() ?>/capysm.png" alt="" class="img-fluid rounded-circle" style="width: 50px; height: 50px;">
+                    <img src="<?= media() ?>/capysm.png" alt="" class="img-fluid rounded-circle"
+                        style="width: 50px; height: 50px;">
                     <h3>
                         Capy Ventas
                     </h3>
@@ -59,18 +61,22 @@
 
                 <div class="mb-3 password text-center text-sm-end">
                     <p class="mb-0">
-                        <span class="text-primary align-items-center"><i class="bi bi-x-diamond-fill"></i> <a class="semibold-text" href="./resetpassword">¿Olvidaste tu contraseña?</a></span>
+                        <span class="text-primary align-items-center"><i class="bi bi-x-diamond-fill"></i> <a
+                                class="semibold-text" href="./resetpassword">¿Olvidaste tu contraseña?</a></span>
                     </p>
                 </div>
 
                 <div class="mb-3 btn-container d-grid">
-                    <button class="btn btn-primary btn-block d-flex align-items-center justify-content-center" id="btnLogin"><i class="bi bi-box-arrow-in-right me-2 fs-5"></i>Ingresar</button>
+                    <button class="btn btn-primary btn-block d-flex align-items-center justify-content-center"
+                        id="btnLogin"><i class="bi bi-box-arrow-in-right me-2 fs-5"></i>Ingresar</button>
                 </div>
 
                 <div class="contacto">
-                    <p class="mb-0 d-flex flex-column-reverse align-items-center flex-sm-row justify-content-sm-between">
+                    <p
+                        class="mb-0 d-flex flex-column-reverse align-items-center flex-sm-row justify-content-sm-between">
                         <span>¿No tienes cuenta en <strong>Capy Ventas</strong>?</span>
-                        <span class="text-primary"><i class="bi bi-person-fill-add"></i> <a class="semibold-text" href="./account">Crear Cuenta</a></span>
+                        <span class="text-primary"><i class="bi bi-person-fill-add"></i> <a class="semibold-text"
+                                href="./account">Crear Cuenta</a></span>
                     </p>
                 </div>
                 <div class="d-flex justify-content-center py-2">
@@ -81,12 +87,15 @@
         </div>
     </section>
     <!-- TODO: Essential javascripts for application to work-->
-    <script src="<?= media() ?>/js/libraries/POS/plugins/jquery/v3.7.0/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>
+    <script
+        src="<?= media() ?>/js/libraries/POS/plugins/Jquery/v3.7.0/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/popper.min.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
-    <script src="<?= media() ?>/js/libraries/POS/plugins/SweetAlert2/v11.26.3/SweerAlert2.js?<?= versionSystem() ?>"></script>
+    <script
+        src="<?= media() ?>/js/libraries/POS/plugins/SweetAlert2/v11.26.3/SweerAlert2.js?<?= versionSystem() ?>"></script>
     <script src="<?= media() ?>/js/libraries/POS/main.js?<?= versionSystem() ?>"></script>
-    <script type="module" src="<?= media() ?>/js/app/POS/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
+    <script type="module"
+        src="<?= media() ?>/js/app/POS/<?= strtolower($data["page_container"]) ?>/functions_<?= $data["page_js_css"] ?>.js?<?= versionSystem() ?>"></script>
 </body>
 
 </html>

@@ -2,7 +2,7 @@
      1. LIBRERÍAS CORE DE LA APLICACIÓN
      ========================================== -->
 <!-- jQuery: Librería esencial requerida por Bootstrap y múltiples plugins como DataTables. (TODO: falta actualizar a la última versión) -->
-<script src="<?= media() ?>/js/libraries/POS/plugins/jquery/v3.7.0/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>
+<script src="<?= media() ?>/js/libraries/POS/plugins/Jquery/v3.7.0/jquery-3.7.0.min.js?<?= versionSystem() ?>"></script>
 
 <!-- Bootstrap: Framework CSS y JS básico para el diseño, estructura de la UI, grids y componentes interactivos modales (TODO: verificar versión) -->
 <script src="<?= media() ?>/js/libraries/POS/bootstrap.min.js?<?= versionSystem() ?>"></script>
@@ -49,7 +49,7 @@
 <script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/PDFMake/v0.1.36/vfs_fonts.js?<?= versionSystem() ?>"></script>
 
 <!-- Chart.js: Herramienta empleada para la visualización de datos estadísticos avanzados mediante distintos tipos de gráficas interactivas -->
-<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/ChartJs/v4.5.1/chart.umd.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/ChartJs/v4.3.0/chart.js?<?= versionSystem() ?>"></script>
 
 <!-- ==========================================
      5. LIBRERÍAS DE UTILIDAD GRÁFICA Y UX DE TERCEROS
