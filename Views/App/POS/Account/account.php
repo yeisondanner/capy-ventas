@@ -10,7 +10,7 @@
     <link rel="shortcut icon" href="<?= media() ?>/capysm.png?<?= versionSystem() ?>" type="image/x-icon">
     <!-- Font-icon css-->
     <link rel="stylesheet"
-        href="<?= media() ?>/css/libraries/POS/plugins/Bootstrapicons/v1.13.1/bootstrap-icons.min.css?<?= versionSystem() ?>">
+        href="<?= media() ?>/css/libraries/POS/plugins/BootstrapIcons/v1.13.1/bootstrap-icons.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css"
         href="<?= media() ?>/css/app/POS/account/style_account.css?<?= versionSystem() ?>">
     <title>Registro | Capy Ventas</title>

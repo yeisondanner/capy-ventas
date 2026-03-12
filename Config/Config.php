@@ -61,12 +61,12 @@ const SPM = ",";
 const SMONEY = "S/";
 
 //Datos envio de correo
-const MAIL_HOST = "mail.shaday-pe.com";
-const MAIL_PORT = 465;
-const MAIL_USER = "notificacion@shaday-pe.com";
-const MAIL_PASSWORD = "j+HtQ}]ECq*q2[gJ";
-const MAIL_ENCRYPTION = "ssl";
-const MAIL_FROM = "notificacion@shaday-pe.com"; //nombre del remitente
+const MAIL_HOST = "mail.sersa.pe";
+const MAIL_PORT = 587;
+const MAIL_USER = "ycarhuapoma@sersa.pe";
+const MAIL_PASSWORD = "r,5GosMF=ORBT*GH";
+const MAIL_ENCRYPTION = "tls";
+const MAIL_FROM = "ycarhuapoma@sersa.pe"; //nombre del remitente
 const MAIL_REMITENTE = "CAPY VENTAS";
 //Variables de encriptacion
 const METHOD = "AES-256-CBC";
