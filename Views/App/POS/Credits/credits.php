@@ -91,10 +91,11 @@
             <div class="tile rounded-3">
                 <div class="tile-body">
                     <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
-                        <table class="table table-sm table-hover table-bordered table-striped table-responsive"
+                        <table class="table table-sm table-hover table-bordered table-striped display nowrap w-100"
                             id="table">
                             <thead class="thead-light">
                                 <tr>
+                                    <th></th>
                                     <th>#</th>
                                     <th>Acciones</th>
                                     <th>Cliente</th>
