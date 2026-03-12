@@ -90,7 +90,7 @@ export default class ReadBox {
         },
         {
           data: "difference",
-          className: "text-end",
+          className: "text-center",
           orderable: true,
           render: (data, type, row) => {
             //validamos si la diferencia es positiva o negativa le agregamos un icono
@@ -105,7 +105,7 @@ export default class ReadBox {
         },
         {
           data: "closing_date",
-          className: "text-center",
+          className: "text-end",
           orderable: true,
           render: (data, type, row) => {
             return `<span  class="" data-bs-toggle="tooltip" data-bs-placement="top" title="Esta fecha es la fecha en que se cerró la caja"><i class="bi bi-info-circle text-primary"></i> ${data}</span>`;
