@@ -29,6 +29,8 @@
 <script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/ColReorder/v2.1.2/dataTables.colReorder.min.js?<?= versionSystem() ?>"></script>
 <!-- ColReorder Bootstrap 5: Capa de estilización para asegurar que el reordenamiento se vea bien en componentes Bootstrap 5 -->
 <script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/ColReorder/v2.1.2/colReorder.bootstrap5.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/Responsive/v3.0.8/dataTables.responsive.min.js?<?= versionSystem() ?>"></script>
+<script type="text/javascript" language="javascript" src="<?= media() ?>/js/libraries/POS/plugins/Responsive/v3.0.8/responsive.bootstrap5.min.js?<?= versionSystem() ?>"></script>
 
 
 <!-- ==========================================

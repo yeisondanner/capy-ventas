@@ -37,6 +37,7 @@ get_option_and_permission_app();
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/dataTables.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/dataTables.bootstrap.min.css?<?= versionSystem() ?>">
+    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/Responsive/v3.0.8/responsive.bootstrap5.mincss?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/Buttons/v3.2.6/buttons.bootstrap5.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/AutoFill/v2.7.1/autoFill.bootstrap5.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/ColReorder/v2.1.2/colReorder.bootstrap5.min.css?<?= versionSystem() ?>">
