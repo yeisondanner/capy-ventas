@@ -19,6 +19,7 @@ export default class ReadBox {
     //cargamos la tabla
     this.table.DataTable({
       responsive: true,
+      processing: true,
       ajax: {
         url: `${base_url}/pos/Boxhistory/loadBoxHistory`,
         data: function (d) {
@@ -38,10 +39,26 @@ export default class ReadBox {
         },
       },
       columns: [
-        { data: "cont" },
+        {
+          data: "",
+          className: "dtr-control",
+          orderable: false,
+          searchable: false,
+          targets: 0,
+          width: "10px",
+          defaultContent: `<i class="bi bi-plus text-primary h3"></i>`,
+        },
+        {
+          data: "cont",
+          className: "text-center",
+          searchable: false,
+          orderable: true,
+        },
         {
           data: null,
           className: "text-center",
+          searchable: false,
+          orderable: false,
           render: function (data, type, row) {
             return `<div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
                         <button type="button" title="Ver reporte" class="btn btn-sm btn-outline-secondary report-item" data-id="${row.idBoxSessions}"><i class="bi bi-file-text"></i></button>
@@ -50,6 +67,7 @@ export default class ReadBox {
         },
         {
           data: "fullname",
+          orderable: true,
           render: (data, type, row) => {
             return `<i class="bi bi-person-circle text-primary"></i> ${data}`;
           },
@@ -57,6 +75,7 @@ export default class ReadBox {
         {
           data: "initial_amount",
           className: "text-end",
+          orderable: true,
           render: (data, type, row) => {
             return `${getcurrency} ${data}`;
           },
@@ -64,6 +83,7 @@ export default class ReadBox {
         {
           data: "expected_amount",
           className: "text-end",
+          orderable: true,
           render: (data, type, row) => {
             return `${getcurrency} ${data}`;
           },
@@ -71,6 +91,7 @@ export default class ReadBox {
         {
           data: "difference",
           className: "text-end",
+          orderable: true,
           render: (data, type, row) => {
             //validamos si la diferencia es positiva o negativa le agregamos un icono
             if (row.difference > 0) {
@@ -85,6 +106,7 @@ export default class ReadBox {
         {
           data: "closing_date",
           className: "text-center",
+          orderable: true,
           render: (data, type, row) => {
             return `<span  class="" data-bs-toggle="tooltip" data-bs-placement="top" title="Esta fecha es la fecha en que se cerró la caja"><i class="bi bi-info-circle text-primary"></i> ${data}</span>`;
           },
@@ -96,21 +118,21 @@ export default class ReadBox {
           extend: "copyHtml5",
           text: "<i class='bi bi-clipboard'></i> Copiar",
           className: "btn btn-sm btn-outline-secondary my-2",
-          exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
+          exportOptions: { columns: [1, 3, 4, 5, 6, 7] },
         },
         {
           extend: "excelHtml5",
           text: "<i class='bi bi-file-earmark-excel'></i> Excel",
           className: "btn btn-sm btn-outline-success my-2",
           title: "Historial de cierre de cajas",
-          exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
+          exportOptions: { columns: [1, 3, 4, 5, 6, 7] },
         },
         {
           extend: "csvHtml5",
           text: "<i class='bi bi-filetype-csv'></i> CSV",
           className: "btn btn-sm btn-outline-info my-2",
           title: "Historial de cierre de cajas",
-          exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
+          exportOptions: { columns: [1, 3, 4, 5, 6, 7] },
         },
         {
           extend: "pdfHtml5",
@@ -119,15 +141,15 @@ export default class ReadBox {
           orientation: "portrait",
           pageSize: "A4",
           title: "Historial de cierre de cajas",
-          exportOptions: { columns: [0, 1, 2, 3, 4, 5] },
+          exportOptions: { columns: [1, 3, 4, 5, 6, 7] },
         },
       ],
       keyTable: true,
-      processing: true,
       destroy: true,
       colReorder: true,
       stateSave: true,
       autoFill: false,
+      searching: true,
       iDisplayLength: 10,
       order: [[0, "asc"]],
       language: {
@@ -186,7 +208,7 @@ export default class ReadBox {
             const endDate = new Date(
               today.getFullYear(),
               today.getMonth() + 1,
-              0,
+              0
             ).getDate();
             minDate = startDate;
             maxDate =

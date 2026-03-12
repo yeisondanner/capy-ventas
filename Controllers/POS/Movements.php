@@ -205,7 +205,7 @@ class Movements extends Controllers
         if ($dataDetails) {
             foreach ($dataDetails as $row) {
                 $details[] = [
-                    'name_product' => $row['name_product'],
+                    'name_product' => decodeUniversalText($row['name_product']),
                     'unit_of_measurement' => $row['unit_of_measurement'],
                     'sales_price_product' => (float) number_format($row['sales_price_product'], 2),
                     'stock_product' => (float) number_format($row['stock_product'], 2),

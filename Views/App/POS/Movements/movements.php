@@ -184,7 +184,8 @@
                 </div>
                 <div class="tile-body">
                     <div class="bg-light rounded-3 border p-1">
-                        <table class="table table-sm table-hover table-bordered table-striped display nowrap w-100" id="table">
+                        <table class="table table-sm table-hover table-bordered table-striped display nowrap w-100"
+                            id="table">
                             <thead class="thead-light">
                                 <tr>
                                     <th></th>

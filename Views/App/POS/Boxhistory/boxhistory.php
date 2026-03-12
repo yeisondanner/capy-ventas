@@ -93,19 +93,20 @@
         <div class="col-md-12">
             <div class="tile rounded-3">
                 <div class="tile-body">
-                    <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
-                        <table class="table table-sm table-hover table-bordered table-striped table-responsive"
-                            id="table" data-token="<?= csrf(false); ?>">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Acciones</th>
-                                    <th>Usuario</th>
-                                    <th>Se abrió</th>
-                                    <th>Se cerró</th>
-                                    <th>Diferencia</th>
-                                    <th>Fecha y Hora</th>
-                                </tr>
+                    <div class="bg-light rounded-3 border p-1">
+                        <table class="table table-sm table-hover table-bordered table-striped display nowrap w-100"
+                            id="table" ">
+                            <thead class=" thead-light">
+                            <tr>
+                                <th></th>
+                                <th>#</th>
+                                <th>Acciones</th>
+                                <th>Usuario</th>
+                                <th>Se abrió</th>
+                                <th>Se cerró</th>
+                                <th>Diferencia</th>
+                                <th>Fecha y Hora</th>
+                            </tr>
                             </thead>
                             <tbody></tbody>
                         </table>
