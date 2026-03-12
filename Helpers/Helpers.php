@@ -238,6 +238,34 @@ function strClean($strCadena)
     // 7. Devolver cadena limpia
     return $string;
 }
+/**
+ * Decodifica universalmente entidades HTML, incluyendo cadenas con doble codificación.
+ * Es perfecto para restaurar datos que fueron limpiados con 'htmlspecialchars' (Paso 6)
+ * antes de mostrarlos en la pantalla o enviarlos al frontend.
+ *
+ * @param string $encodedText El texto codificado que proviene de la base de datos.
+ * @return string El texto puro y original, listo para mostrarse al usuario o en APIs.
+ * @throws InvalidArgumentException Si el dato ingresado no es una cadena de texto.
+ */
+function decodeUniversalText(string $encodedText): string
+{
+    // Validación estricta
+    if (!is_string($encodedText)) {
+        throw new InvalidArgumentException("Error de validación: Se esperaba una cadena de texto.");
+    }
+
+    $decodedText = $encodedText;
+    $previousText = '';
+
+    // El bucle se repetirá automáticamente hasta que el texto ya no sufra cambios
+    // Esto destruye cualquier nivel de codificación (doble, triple, cuádruple...)
+    while ($decodedText !== $previousText) {
+        $previousText = $decodedText;
+        $decodedText = html_entity_decode($decodedText, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    }
+
+    return $decodedText;
+}
 //Genera una contraseña de 10 caracteres
 function passGenerator($length = 10)
 {

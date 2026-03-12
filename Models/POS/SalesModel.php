@@ -45,6 +45,10 @@ class SalesModel extends Mysql
                     GROUP BY p.idProduct;
         SQL;
         $result = $this->select_all($sql, [$this->idBusiness, $this->idBusiness]);
+        //recorremos para decondificar el nombre y la descripcion
+        foreach ($result as $key => $value) {
+            $result[$key]['product'] = decodeUniversalText($value['product']);
+        }
         return $result;
     }
 
