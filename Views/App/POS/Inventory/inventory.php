@@ -38,33 +38,27 @@
                     <p class="text-muted fw-semibold small mb-2">
                         <i class="bi bi-question-circle me-1"></i> ¿Qué significan los colores de las filas?
                     </p>
-                    <div class="row g-2" style="overflow-x: auto; flex-wrap: wrap;">
-                        <div class="col-12 col-sm-auto">
-                            <span class="d-flex align-items-center flex-wrap gap-1 badge bg-danger-subtle text-danger-emphasis border border-danger-subtle rounded-3 px-3 py-2 w-100 fw-normal" style="font-size: 0.85rem;">
-                                <i class="bi bi-exclamation-octagon-fill flex-shrink-0"></i>
-                                <span>Poco stock o vence pronto — <strong>atención inmediata</strong></span>
-                                <span class="vr opacity-50 mx-1 d-none d-sm-inline"></span>
-                                <span class="opacity-75 w-100 d-sm-none" style="font-size: 0.78rem;">Stock ≤ 5 &nbsp;|&nbsp; Vence en ≤ 5 días</span>
-                                <span class="opacity-75 d-none d-sm-inline">Stock ≤ 5 &nbsp;|&nbsp; Vence en ≤ 5 días</span>
-                            </span>
+                    <div class="d-flex flex-wrap gap-2">
+                        <!-- Leyenda: Peligro -->
+                        <div class="d-flex align-items-center flex-wrap gap-1 bg-danger-subtle text-danger-emphasis border border-danger-subtle rounded-3 px-3 py-2 fw-normal small">
+                            <i class="bi bi-exclamation-octagon-fill flex-shrink-0"></i>
+                            <span>Poco stock o vence pronto — <strong>atención inmediata</strong></span>
+                            <span class="vr opacity-50 mx-1"></span>
+                            <span class="opacity-75">Stock ≤ 5 &nbsp;|&nbsp; Vence en ≤ 5 días</span>
                         </div>
-                        <div class="col-12 col-sm-auto">
-                            <span class="d-flex align-items-center flex-wrap gap-1 badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-3 px-3 py-2 w-100 fw-normal" style="font-size: 0.85rem;">
-                                <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
-                                <span>Stock o vencimiento en <strong>nivel de alerta</strong></span>
-                                <span class="vr opacity-50 mx-1 d-none d-sm-inline"></span>
-                                <span class="opacity-75 w-100 d-sm-none" style="font-size: 0.78rem;">Stock ≤ 10 &nbsp;|&nbsp; Vence en ≤ 10 días</span>
-                                <span class="opacity-75 d-none d-sm-inline">Stock ≤ 10 &nbsp;|&nbsp; Vence en ≤ 10 días</span>
-                            </span>
+                        <!-- Leyenda: Advertencia -->
+                        <div class="d-flex align-items-center flex-wrap gap-1 bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-3 px-3 py-2 fw-normal small">
+                            <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+                            <span>Stock o vencimiento en <strong>nivel de alerta</strong></span>
+                            <span class="vr opacity-50 mx-1"></span>
+                            <span class="opacity-75">Stock ≤ 10 &nbsp;|&nbsp; Vence en ≤ 10 días</span>
                         </div>
-                        <div class="col-12 col-sm-auto">
-                            <span class="d-flex align-items-center flex-wrap gap-1 badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-3 px-3 py-2 w-100 fw-normal" style="font-size: 0.85rem;">
-                                <i class="bi bi-info-circle-fill flex-shrink-0"></i>
-                                <span>Stock o vencimiento a <strong>tener en cuenta</strong></span>
-                                <span class="vr opacity-50 mx-1 d-none d-sm-inline"></span>
-                                <span class="opacity-75 w-100 d-sm-none" style="font-size: 0.78rem;">Stock ≤ 15 &nbsp;|&nbsp; Vence en ≤ 15 días</span>
-                                <span class="opacity-75 d-none d-sm-inline">Stock ≤ 15 &nbsp;|&nbsp; Vence en ≤ 15 días</span>
-                            </span>
+                        <!-- Leyenda: Informacion -->
+                        <div class="d-flex align-items-center flex-wrap gap-1 bg-info-subtle text-info-emphasis border border-info-subtle rounded-3 px-3 py-2 fw-normal small">
+                            <i class="bi bi-info-circle-fill flex-shrink-0"></i>
+                            <span>Stock o vencimiento a <strong>tener en cuenta</strong></span>
+                            <span class="vr opacity-50 mx-1"></span>
+                            <span class="opacity-75">Stock ≤ 15 &nbsp;|&nbsp; Vence en ≤ 15 días</span>
                         </div>
                     </div>
                 </div>
