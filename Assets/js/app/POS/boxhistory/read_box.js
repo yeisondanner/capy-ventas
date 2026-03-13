@@ -40,7 +40,7 @@ export default class ReadBox {
       },
       columns: [
         {
-          data: "",
+          data: null,
           className: "dtr-control",
           orderable: false,
           searchable: false,
@@ -208,7 +208,7 @@ export default class ReadBox {
             const endDate = new Date(
               today.getFullYear(),
               today.getMonth() + 1,
-              0
+              0,
             ).getDate();
             minDate = startDate;
             maxDate =
