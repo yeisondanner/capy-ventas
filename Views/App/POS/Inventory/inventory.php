@@ -157,31 +157,31 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
-                        <label for="txtProductCategory" class="form-label">Categoría <span
+                        <label for="slctProductCategory" class="form-label">Categoría <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-collection"></i> </span>
-                            <select class="form-select" id="txtProductCategory" name="txtProductCategory" required>
+                            <select class="form-select" id="slctProductCategory" name="slctProductCategory" required>
                                 <option value="" selected disabled>Selecciona una categoría</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
-                        <label for="txtProductSupplier" class="form-label">Proveedor <span
+                        <label for="slctProductSupplier" class="form-label">Proveedor <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-people"></i></span>
-                            <select class="form-select" id="txtProductSupplier" name="txtProductSupplier" required>
+                            <select class="form-select" id="slctProductSupplier" name="slctProductSupplier" required>
                                 <option value="" selected disabled>Selecciona un proveedor</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
-                        <label for="txtProductMeasurement" class="form-label">Unidad de medida <span
+                        <label for="slctProductMeasurement" class="form-label">Unidad de medida <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-tag"></i></span>
-                            <select class="form-select" id="txtProductMeasurement" name="txtProductMeasurement"
+                            <select class="form-select" id="slctProductMeasurement" name="slctProductMeasurement"
                                 required>
                                 <option value="" selected disabled>Selecciona una unidad</option>
                             </select>

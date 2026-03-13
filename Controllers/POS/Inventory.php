@@ -120,6 +120,7 @@ class Inventory extends Controllers
     {
         //VALIDACION DE PERMISOS
         validate_permission_app(3, "c", false, false, false);
+        toJson($_POST);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
@@ -274,7 +275,7 @@ class Inventory extends Controllers
 
         $data = [
             'title' => 'Registro exitoso',
-            'message' => 'El producto se registró correctamente.',
+            'text' => 'El producto se registró correctamente.',
             'type' => 'success',
             'icon' => 'success',
             'status' => true,
@@ -528,7 +529,7 @@ class Inventory extends Controllers
         }
         $data = [
             'title' => 'Actualización exitosa',
-            'message' => 'La información del producto se actualizó correctamente.',
+            'text' => 'La información del producto se actualizó correctamente.',
             'type' => 'success',
             'icon' => 'success',
             'status' => true,
@@ -580,7 +581,7 @@ class Inventory extends Controllers
 
         $data = [
             'title' => 'Producto eliminado',
-            'message' => 'El producto se eliminó correctamente.',
+            'text' => 'El producto se eliminó correctamente.',
             'type' => 'success',
             'icon' => 'success',
             'status' => true,
@@ -598,7 +599,9 @@ class Inventory extends Controllers
     {
         $businessId = $this->getBusinessId();
         $data = $this->model->selectCategories($businessId);
-
+        if (empty($data)) {
+            $this->responseError('No se encontraron categorías.');
+        }
         toJson([
             'status' => true,
             'data' => $data,
@@ -663,7 +666,7 @@ class Inventory extends Controllers
 
         toJson([
             'title' => 'Categoría registrada',
-            'message' => 'La categoría se registró correctamente.',
+            'text' => 'La categoría se registró correctamente.',
             'type' => 'success',
             'icon' => 'success',
             'status' => true,
@@ -721,7 +724,7 @@ class Inventory extends Controllers
 
         toJson([
             'title' => 'Categoría actualizada',
-            'message' => 'La categoría se actualizó correctamente.',
+            'text' => 'La categoría se actualizó correctamente.',
             'type' => 'success',
             'icon' => 'success',
             'status' => true,
@@ -779,7 +782,7 @@ class Inventory extends Controllers
 
             toJson([
                 'title' => 'Categoría desactivada',
-                'message' => 'La categoría tiene registros asociados, por lo que se desactivó y se ocultó del listado.',
+                'text' => 'La categoría tiene registros asociados, por lo que se desactivó y se ocultó del listado.',
                 'type' => 'success',
                 'icon' => 'success',
                 'status' => true,
@@ -795,7 +798,7 @@ class Inventory extends Controllers
 
         toJson([
             'title' => 'Categoría eliminada',
-            'message' => 'La categoría se eliminó correctamente.',
+            'text' => 'La categoría se eliminó correctamente.',
             'type' => 'success',
             'icon' => 'success',
             'status' => true,
@@ -1095,7 +1098,7 @@ class Inventory extends Controllers
         if ($updateStatus) {
             toJson([
                 'title' => 'Imagen eliminada',
-                'message' => 'La imagen se elimino correctamente.',
+                'text' => 'La imagen se elimino correctamente.',
                 'type' => 'success',
                 'icon' => 'success',
                 'status' => true,
@@ -1116,10 +1119,11 @@ class Inventory extends Controllers
     {
         $data = [
             'title' => 'Ocurrió un error',
-            'message' => $message,
+            'text' => $message,
             'type' => 'error',
             'icon' => 'error',
             'status' => false,
+            'timer' => 2000
         ];
 
         toJson($data);

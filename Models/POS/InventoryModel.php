@@ -307,7 +307,7 @@ class InventoryModel extends Mysql
     public function selectCategories(int $businessId): array
     {
         $sql = <<<SQL
-            SELECT idCategory, name
+            SELECT idCategory as 'id', name as 'name'
             FROM category
             WHERE business_id = ?
               AND status = 'Activo'
@@ -421,10 +421,18 @@ class InventoryModel extends Mysql
     public function selectMeasurements(): array
     {
         $sql = <<<SQL
-            SELECT idMeasurement, concat(`name`, ' (', `description`, ')') AS `name`
-            FROM measurement
-            WHERE status = 'Activo'
-            ORDER BY name ASC;
+            SELECT
+                m.idMeasurement AS 'id',
+                CONCAT(m.`name`, ' (', m.`description`, ')') AS `name`,
+                COUNT(p.measurement_id) AS 'popularity'
+            FROM
+                measurement AS m
+                LEFT JOIN product AS p ON p.measurement_id= m.idMeasurement
+            WHERE
+                m.`status` = 'Activo'
+            GROUP BY m.idMeasurement
+            ORDER BY
+                popularity  DESC;
         SQL;
 
         return $this->select_all($sql);
@@ -509,7 +517,7 @@ class InventoryModel extends Mysql
     public function selectSuppliers(int $businessId): array
     {
         $sql = <<<SQL
-            SELECT idSupplier, company_name
+            SELECT idSupplier as 'id', company_name as 'name'
             FROM supplier
             WHERE business_id = ?
               AND status = 'Activo'
