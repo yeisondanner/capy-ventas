@@ -19,14 +19,23 @@
                             href="<?= base_url() ?>/pos/movements"><i class="bi bi-pc-display-horizontal fs-4"></i>
                             Movimientos</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link border border-primary shadow-sm rounded-5"
-                            href="<?= base_url() ?>/pos/boxhistory"><i class="bi bi-cash fs-4"></i> Cierrres de caja</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link border border-primary shadow-sm rounded-5"
-                            href="<?= base_url() ?>/pos/credits"><i class="bi bi-wallet fs-4"></i> Creditos</a>
-                    </li>
+                    <?php
+                    $readHC = validate_permission_app(12, "r", false)['read'];
+                    if ($readHC === 1): ?>
+                        <li class="nav-item">
+                            <a class="nav-link border border-primary shadow-sm rounded-5"
+                                href="<?= base_url() ?>/pos/boxhistory"><i class="bi bi-cash fs-4"></i> Historial de
+                                cierres de caja</a>
+                        </li>
+                    <?php endif; ?>
+                    <?php
+                    $readCR = validate_permission_app(15, "r", false)['read'];
+                    if ($readCR === 1): ?>
+                        <li class="nav-item">
+                            <a class="nav-link border border-primary shadow-sm rounded-5"
+                                href="<?= base_url() ?>/pos/credits"><i class="bi bi-wallet fs-4"></i> Creditos</a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>

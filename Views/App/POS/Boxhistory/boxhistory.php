@@ -14,19 +14,28 @@
         <div class="col-md-12">
             <div class="tile rounded-5 border shadow-sm">
                 <ul class="nav nav-pills nav-fill gap-2">
-                    <li class="nav-item">
-                        <a class="nav-link border border-primary shadow-sm rounded-5"
-                            href="<?= base_url() ?>/pos/movements"><i class="bi bi-pc-display-horizontal fs-4"></i>
-                            Movimientos</a>
-                    </li>
+                    <?php
+                    $readM = validate_permission_app(2, "r", false)['read'];
+                    if ($readM === 1): ?>
+                        <li class="nav-item">
+                            <a class="nav-link border border-primary shadow-sm rounded-5"
+                                href="<?= base_url() ?>/pos/movements"><i class="bi bi-pc-display-horizontal fs-4"></i>
+                                Movimientos</a>
+                        </li>
+                    <?php endif; ?>
                     <li class="nav-item">
                         <a class="nav-link border border-primary shadow-sm rounded-5 active" aria-current="page"
-                            href="<?= base_url() ?>/pos/boxhistory"><i class="bi bi-cash fs-4"></i> Cierrres de caja</a>
+                            href="<?= base_url() ?>/pos/boxhistory"><i class="bi bi-cash fs-4"></i> Historial de
+                            cierres de caja</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link border border-primary shadow-sm rounded-5"
-                            href="<?= base_url() ?>/pos/credits"><i class="bi bi-wallet fs-4"></i> Creditos</a>
-                    </li>
+                    <?php
+                    $readCR = validate_permission_app(15, "r", false)['read'];
+                    if ($readCR === 1): ?>
+                        <li class="nav-item">
+                            <a class="nav-link border border-primary shadow-sm rounded-5"
+                                href="<?= base_url() ?>/pos/credits"><i class="bi bi-wallet fs-4"></i> Creditos</a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>
