@@ -66,7 +66,7 @@ class Inventory extends Controllers
             $categoryName = htmlspecialchars($product['category'], ENT_QUOTES, 'UTF-8');
             $measurementName = htmlspecialchars($product['measurement'], ENT_QUOTES, 'UTF-8');
             $supplierName = htmlspecialchars($product['supplier'], ENT_QUOTES, 'UTF-8');
-            $formattedStock = number_format((float) $product['stock'], 2, SPD, SPM);
+            $formattedStock = (float) $product['stock'];
             $gain = formatMoney((float) $product['sales_price'] - $product['purchase_price']);
             //obtenemos los dias que faltan por vencer
             $days_expiration = $product['expiration_date'] == "-" ? "-" : dateDifference(date("Y-m-d"), $product['expiration_date']);
@@ -78,7 +78,8 @@ class Inventory extends Controllers
             $products[$key]['category'] = $categoryName;
             $products[$key]['supplier'] = $supplierName;
             $products[$key]['measurement'] = $measurementName;
-            $products[$key]['stock'] = $formattedStock . ' ' . $measurementName;
+            $products[$key]['stock'] = $formattedStock;
+            $products[$key]['stock_mesurement'] = $formattedStock . ' ' . $measurementName;
             $products[$key]['purchase_price'] = $currency . ' ' . formatMoney((float) $product['purchase_price']);
             $products[$key]['sales_price'] = $currency . ' ' . formatMoney((float) $product['sales_price']);
             $products[$key]['gain'] = $gainIcon . $currency . ' ' . $gain;
@@ -230,7 +231,7 @@ class Inventory extends Controllers
             'is_public' => $statusChbx,
             'code' => $code,
             'expiration_date' => $dateExpiration,
-            'user_id' => $this->getUserId(),
+            'user_id' => $userId,
             'idProduct' => 0
         ];
 
@@ -615,6 +616,10 @@ class Inventory extends Controllers
         validate_permission_app(10, "r", false, false, false);
         $businessId = $this->getBusinessId();
         $data = $this->model->selectCategoryList($businessId);
+        foreach ($data as $key => $value) {
+            $data[$key]['name'] = decodeUniversalText($value['name']);
+        }
+
         toJson([
             'status' => true,
             'data' => $data,
@@ -637,7 +642,7 @@ class Inventory extends Controllers
         $userId = $this->getUserId();
 
 
-        $rawName = $_POST['txtCategoryName'] ?? '';
+        $rawName = strClean($_POST['txtCategoryName'] ?? '');
         $name = ucwords(strClean($rawName));
 
         if ($name === '') {
@@ -682,7 +687,7 @@ class Inventory extends Controllers
 
 
         $categoryId = (int) ($_POST['categoryId'] ?? 0);
-        $rawName = $_POST['txtCategoryName'] ?? '';
+        $rawName = strClean($_POST['txtCategoryName'] ?? '');
         $name = ucwords(strClean($rawName));
 
         if ($categoryId <= 0) {

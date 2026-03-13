@@ -32,14 +32,50 @@
                 </div>
             </div>
         </div>
+        <div class="col-12">
+            <div class="tile rounded-3">
+                <div class="tile-body py-2 px-3">
+                    <p class="text-muted fw-semibold small mb-2">
+                        <i class="bi bi-question-circle me-1"></i> ¿Qué significan los colores de las filas?
+                    </p>
+                    <div class="row g-2">
+                        <div class="col-12 col-sm-auto">
+                            <span class="d-flex align-items-center gap-2 badge bg-danger-subtle text-danger-emphasis border border-danger-subtle rounded-3 px-3 py-2 w-100 fw-normal fs-6">
+                                <i class="bi bi-exclamation-octagon-fill flex-shrink-0"></i>
+                                Poco stock o vence pronto — <strong>atención inmediata</strong>
+                                <span class="vr opacity-50 mx-1"></span>
+                                <span class="opacity-75">Stock ≤ 5 &nbsp;|&nbsp; Vence en ≤ 5 días</span>
+                            </span>
+                        </div>
+                        <div class="col-12 col-sm-auto">
+                            <span class="d-flex align-items-center gap-2 badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-3 px-3 py-2 w-100 fw-normal fs-6">
+                                <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
+                                Stock o vencimiento en <strong>nivel de alerta</strong>
+                                <span class="vr opacity-50 mx-1"></span>
+                                <span class="opacity-75">Stock ≤ 10 &nbsp;|&nbsp; Vence en ≤ 10 días</span>
+                            </span>
+                        </div>
+                        <div class="col-12 col-sm-auto">
+                            <span class="d-flex align-items-center gap-2 badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-3 px-3 py-2 w-100 fw-normal fs-6">
+                                <i class="bi bi-info-circle-fill flex-shrink-0"></i>
+                                Stock o vencimiento a <strong>tener en cuenta</strong>
+                                <span class="vr opacity-50 mx-1"></span>
+                                <span class="opacity-75">Stock ≤ 15 &nbsp;|&nbsp; Vence en ≤ 15 días</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-md-12">
             <div class="tile rounded-3">
                 <div class="tile-body">
-                    <div class="table-responsive table-responsive-sm bg-light rounded-3 border p-1">
-                        <table class="table table-sm table-hover table-bordered table-striped table-responsive"
-                            id="table" data-token="<?= csrf(false); ?>">
+                    <div class="bg-light rounded-3 border p-1">
+                        <table class="table table-sm table-hover table-bordered table-striped display nowrap w-100"
+                            id="table">
                             <thead class="thead-light">
                                 <tr>
+                                    <th></th>
                                     <th>#</th>
                                     <th>Acciones</th>
                                     <th>Código</th>
@@ -468,14 +504,16 @@
                 <div class="mb-3">
                     <h6 class="fw-semibold">Registrar nueva categoría</h6>
                     <form class="row g-2 align-items-center" id="formCreateCategory" autocomplete="off">
-                        <?= csrf(); ?>
                         <div class="col-sm-8 col-md-9">
                             <label for="txtCategoryName" class="visually-hidden">Nombre de la categoría</label>
-                            <input type="text" class="form-control form-control-sm" id="txtCategoryName"
-                                name="txtCategoryName" maxlength="255" required placeholder="Ej. Bebidas calientes">
+                            <div class="input-group input-group-md">
+                                <span class="input-group-text"><i class="bi bi-collection"></i></span>
+                                <input type="text" class="form-control" id="txtCategoryName"
+                                    name="txtCategoryName" maxlength="255" required placeholder="Ej. Bebidas calientes">
+                            </div>
                         </div>
                         <div class="col-sm-4 col-md-3 d-grid">
-                            <button class="btn btn-sm btn-outline-info" type="submit">
+                            <button class="btn btn-md btn-outline-info" type="submit">
                                 <i class="bi bi-plus-lg"></i> Registrar
                             </button>
                         </div>
