@@ -40,21 +40,24 @@
                     </p>
                     <div class="d-flex flex-wrap gap-2">
                         <!-- Leyenda: Peligro -->
-                        <div class="d-flex align-items-center flex-wrap gap-1 bg-danger-subtle text-danger-emphasis border border-danger-subtle rounded-3 px-3 py-2 fw-normal small">
+                        <div
+                            class="d-flex align-items-center flex-wrap gap-1 bg-danger-subtle text-danger-emphasis border border-danger-subtle rounded-3 px-3 py-2 fw-normal small">
                             <i class="bi bi-exclamation-octagon-fill flex-shrink-0"></i>
                             <span>Poco stock o vence pronto — <strong>atención inmediata</strong></span>
                             <span class="vr opacity-50 mx-1"></span>
                             <span class="opacity-75">Stock ≤ 5 &nbsp;|&nbsp; Vence en ≤ 5 días</span>
                         </div>
                         <!-- Leyenda: Advertencia -->
-                        <div class="d-flex align-items-center flex-wrap gap-1 bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-3 px-3 py-2 fw-normal small">
+                        <div
+                            class="d-flex align-items-center flex-wrap gap-1 bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-3 px-3 py-2 fw-normal small">
                             <i class="bi bi-exclamation-triangle-fill flex-shrink-0"></i>
                             <span>Stock o vencimiento en <strong>nivel de alerta</strong></span>
                             <span class="vr opacity-50 mx-1"></span>
                             <span class="opacity-75">Stock ≤ 10 &nbsp;|&nbsp; Vence en ≤ 10 días</span>
                         </div>
                         <!-- Leyenda: Informacion -->
-                        <div class="d-flex align-items-center flex-wrap gap-1 bg-info-subtle text-info-emphasis border border-info-subtle rounded-3 px-3 py-2 fw-normal small">
+                        <div
+                            class="d-flex align-items-center flex-wrap gap-1 bg-info-subtle text-info-emphasis border border-info-subtle rounded-3 px-3 py-2 fw-normal small">
                             <i class="bi bi-info-circle-fill flex-shrink-0"></i>
                             <span>Stock o vencimiento a <strong>tener en cuenta</strong></span>
                             <span class="vr opacity-50 mx-1"></span>
@@ -498,24 +501,28 @@
                 </div>
             </div>
             <div class="modal-body">
-                <div class="mb-3">
-                    <h6 class="fw-semibold">Registrar nueva categoría</h6>
-                    <form class="row g-2 align-items-center" id="formCreateCategory" autocomplete="off">
-                        <div class="col-sm-8 col-md-9">
-                            <label for="txtCategoryName" class="visually-hidden">Nombre de la categoría</label>
-                            <div class="input-group input-group-md">
-                                <span class="input-group-text"><i class="bi bi-collection"></i></span>
-                                <input type="text" class="form-control" id="txtCategoryName"
-                                    name="txtCategoryName" maxlength="255" required placeholder="Ej. Bebidas calientes">
+                <?php
+                $category = validate_permission_app(10, "c", false)['create'];
+                if ($category == 1): ?>
+                    <div class="mb-3">
+                        <h6 class="fw-semibold">Registrar nueva categoría</h6>
+                        <form class="row g-2 align-items-center" id="formCreateCategory" autocomplete="off">
+                            <div class="col-sm-8 col-md-9">
+                                <label for="txtCategoryName" class="visually-hidden">Nombre de la categoría</label>
+                                <div class="input-group input-group-md">
+                                    <span class="input-group-text"><i class="bi bi-collection"></i></span>
+                                    <input type="text" class="form-control" id="txtCategoryName" name="txtCategoryName"
+                                        maxlength="255" required placeholder="Ej. Bebidas calientes">
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-4 col-md-3 d-grid">
-                            <button class="btn btn-md btn-outline-info" type="submit">
-                                <i class="bi bi-plus-lg"></i> Registrar
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                            <div class="col-sm-4 col-md-3 d-grid">
+                                <button class="btn btn-md btn-outline-info" type="submit">
+                                    <i class="bi bi-plus-lg"></i> Registrar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                <?php endif; ?>
                 <div>
                     <h6 class="fw-semibold">Categorías registradas</h6>
                     <ul class="list-group" id="categoryList">
