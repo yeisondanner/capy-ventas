@@ -26,6 +26,7 @@
   const ENDPOINT_GET_MEASUREMENTS = `${base_url}/pos/Inventory/getMeasurements`;
   const ENDPOINT_GET_SUPPLIERS = `${base_url}/pos/Inventory/getSuppliers`;
   const ENDPOINT_SAVE_PRODUCT = `${base_url}/pos/Inventory/setProduct`;
+  const ENDPOINT_DELETE_PRODUCT = `${base_url}/pos/Inventory/deleteProduct`;
   document.addEventListener("DOMContentLoaded", function () {
     loadTable();
     //inicializamos los eventos
@@ -37,61 +38,65 @@
    */
   async function initEvents() {
     /**
-     * Inicializamos el select de categorias
-     */
-    if (slctProductCategory) {
-      slctProductCategory.innerHTML = await getAndRenderOptionsSelect(
-        ENDPOINT_GET_CATEGORIES,
-        {
-          method: "GET",
-        }
-      );
-    }
-    /**
-     * Inicializamos el select de proveedores
-     */
-    if (slctProductSupplier) {
-      slctProductSupplier.innerHTML = await getAndRenderOptionsSelect(
-        ENDPOINT_GET_SUPPLIERS,
-        {
-          method: "GET",
-        }
-      );
-    }
-    /**
-     * Inicializamos el select de medidas
-     */
-    if (slctProductMeasurement) {
-      slctProductMeasurement.innerHTML = await getAndRenderOptionsSelect(
-        ENDPOINT_GET_MEASUREMENTS,
-        {
-          method: "GET",
-        }
-      );
-    }
-    /**
-     * Inicializamos el input de imagen
-     */
-    if (flInput) {
-      flInput.addEventListener("change", function (e) {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = function (e) {
-            renderPreviewImage(e.target.result, "logoPreview");
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-    }
-    /**
      * Inicializamos el modal de productos
      */
     if (btnOpenProductModal) {
-      btnOpenProductModal.addEventListener("click", function () {
+      btnOpenProductModal.addEventListener("click", async function () {
+        /**
+         * Inicializamos el select de categorias
+         */
+        if (slctProductCategory) {
+          slctProductCategory.innerHTML = await getAndRenderOptionsSelect(
+            ENDPOINT_GET_CATEGORIES,
+            {
+              method: "GET",
+            },
+          );
+        }
+        /**
+         * Inicializamos el select de proveedores
+         */
+        if (slctProductSupplier) {
+          slctProductSupplier.innerHTML = await getAndRenderOptionsSelect(
+            ENDPOINT_GET_SUPPLIERS,
+            {
+              method: "GET",
+            },
+          );
+        }
+        /**
+         * Inicializamos el select de medidas
+         */
+        if (slctProductMeasurement) {
+          slctProductMeasurement.innerHTML = await getAndRenderOptionsSelect(
+            ENDPOINT_GET_MEASUREMENTS,
+            {
+              method: "GET",
+            },
+          );
+        }
+        /**
+         * Inicializamos el input de imagen
+         */
+        if (flInput) {
+          flInput.addEventListener("change", function (e) {
+            const file = e.target.files[0];
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = function (e) {
+                renderPreviewImage(e.target.result, "logoPreview");
+              };
+              reader.readAsDataURL(file);
+            }
+          });
+        }
         $("#modalProduct").modal("show");
       });
     }
+    /**
+     * Metodo que se encarga de enviar el formulario de registro de productos
+     * y procesarlo por completo
+     */
     if (formSaveProduct) {
       formSaveProduct.addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -101,9 +106,29 @@
           body: form,
         };
         const data = await sendData(ENDPOINT_SAVE_PRODUCT, config);
-        if (!data.status) {
-          showAlert(data);
-          return;
+        //mostramos la alerta de exito
+        showAlert({
+          title: data.title,
+          message: data.message,
+          icon: data.icon,
+          timer: data.timer,
+        });
+        if (data.status) {
+          //limpiamos el formulario
+          formSaveProduct.reset();
+          //establecemos la imagen por default
+          const defaultImage = `${base_url}/Loadfile/iconproducts?f=product.png`;
+          //limpiamos la imagen
+          renderPreviewImage(defaultImage, "logoPreview");
+          //actualizamos la tabla
+          productsTable.ajax.reload(null, false);
+          //cerramos el modal
+          $("#modalProduct").modal("hide");
+        }
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1500);
         }
       });
     }
@@ -158,24 +183,24 @@
             if (data != "-") {
               const totalDays = row.days_expiration.total_dias;
               if (totalDays <= 15) {
-                let badgeClass = "bg-info text-dark";
+                let badgeClass = "bg-info message-dark";
                 let icon = "bi-info-circle";
-                let textDays = `${totalDays} ${totalDays === 1 ? "día" : "días"}`;
+                let messageDays = `${totalDays} ${totalDays === 1 ? "día" : "días"}`;
 
                 if (totalDays < 0) {
                   badgeClass = "bg-danger";
                   icon = "bi-exclamation-octagon";
                   const pastDays = Math.abs(totalDays);
-                  textDays = `Vencido hace ${pastDays} ${pastDays === 1 ? "día" : "días"}`;
+                  messageDays = `Vencido hace ${pastDays} ${pastDays === 1 ? "día" : "días"}`;
                 } else if (totalDays === 0) {
                   badgeClass = "bg-danger";
                   icon = "bi-exclamation-octagon";
-                  textDays = "Vence hoy";
+                  messageDays = "Vence hoy";
                 } else if (totalDays <= 5) {
                   badgeClass = "bg-danger";
                   icon = "bi-exclamation-octagon";
                 } else if (totalDays <= 10) {
-                  badgeClass = "bg-warning text-dark";
+                  badgeClass = "bg-warning message-dark";
                   icon = "bi-exclamation-triangle";
                 }
 
@@ -183,7 +208,7 @@
                   <div class="d-flex flex-column align-items-center justify-content-center">
                     <span class="fw-bold mb-1 small">${data}</span>
                     <span class="badge rounded-pill ${badgeClass}" title="Próximo a vencer">
-                      <i class="bi ${icon} me-1"></i>${textDays}
+                      <i class="bi ${icon} me-1"></i>${messageDays}
                     </span>
                   </div>
                 `;
@@ -250,27 +275,27 @@
       buttons: [
         {
           extend: "copyHtml5",
-          text: "<i class='bi bi-clipboard'></i> Copiar",
+          message: "<i class='bi bi-clipboard'></i> Copiar",
           className: "btn btn-sm btn-outline-secondary my-2",
           exportOptions: { columns: [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
         },
         {
           extend: "excelHtml5",
-          text: "<i class='bi bi-file-earmark-excel'></i> Excel",
+          message: "<i class='bi bi-file-earmark-excel'></i> Excel",
           className: "btn btn-sm btn-outline-success my-2",
           title: "Productos",
           exportOptions: { columns: [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
         },
         {
           extend: "csvHtml5",
-          text: "<i class='bi bi-filetype-csv'></i> CSV",
+          message: "<i class='bi bi-filetype-csv'></i> CSV",
           className: "btn btn-sm btn-outline-info my-2",
           title: "Productos",
           exportOptions: { columns: [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
         },
         {
           extend: "pdfHtml5",
-          text: "<i class='bi bi-filetype-pdf'></i> PDF",
+          message: "<i class='bi bi-filetype-pdf'></i> PDF",
           className: "btn btn-sm btn-outline-danger my-2",
           orientation: "portrait",
           pageSize: "A4",
@@ -295,6 +320,64 @@
           .forEach((el) => {
             el.classList.add("pagination-sm", "mt-2");
           });
+
+        const deleteProduct = document.querySelectorAll(".delete-product");
+        deleteProduct.forEach((el) => {
+          el.addEventListener("click", function () {
+            const idProduct = this.getAttribute("data-id");
+            const nameProduct = this.getAttribute("data-name");
+            Swal.fire({
+              title: "¿Está seguro de eliminar el producto?",
+              html: `El producto <strong>"${nameProduct}"</strong> será eliminado`,
+              footer: `<div style="border: 1px dashed #dc3545"><span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Esta acción no se puede deshacer</span></div>`,
+              icon: "warning",
+              showCancelButton: true,
+              reverseButtons: true,
+              confirmButtonColor: "#dc3545",
+              cancelButtonColor: "#6c757d",
+              confirmButtonText: "<i class='bi bi-trash'></i> Si, eliminar",
+              cancelButtonText: "<i class='bi bi-x-lg'></i> No, cancelar",
+              //hacemos que no se cierre el modal
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              //preConfirm es una funcion que se ejecuta antes de que se cierre el modal
+              preConfirm: async () => {
+                //preparamos los datos para enviar al backend
+                const formData = new FormData();
+                formData.append("id", idProduct);
+                formData.append("name", nameProduct);
+                const config = {
+                  method: "POST",
+                  body: formData,
+                };
+                //enviamos los datos al backend
+                const data = await sendData(ENDPOINT_DELETE_PRODUCT, config);
+                return data;
+              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                //obtenemos los valores que devuelve el backend
+                const data = result.value;
+                showAlert({
+                  title: data.title,
+                  message: data.message,
+                  icon: data.icon,
+                  timer: data.timer,
+                });
+                if (data.status) {
+                  //recargamos la tabla
+                  productsTable.ajax.reload(null, false);
+                }
+                //validamos si existe una url para redirigir
+                if (data.url) {
+                  setTimeout(() => {
+                    window.location.href = data.url;
+                  }, 1000);
+                }
+              }
+            });
+          });
+        });
       },
     });
   }
@@ -308,10 +391,10 @@
     showAlert(
       {
         title: "Procesando...",
-        text: "Por favor espere un momento",
+        message: "Por favor espere un momento",
         icon: "info",
       },
-      "loading"
+      "loading",
     );
     try {
       const response = await fetch(urlEndpoint, config);
@@ -320,7 +403,7 @@
           "Ocurrio un error al procesar la solicitud " +
             response.status +
             " " +
-            response.statusText
+            response.statusText,
         );
       }
       const result = await response.json();
@@ -328,7 +411,7 @@
     } catch (error) {
       showAlert({
         title: "Error inesperado",
-        text: error,
+        message: error,
         icon: "error",
       });
     } finally {
@@ -347,7 +430,7 @@
     if (!data.status) {
       showAlert({
         title: data.title,
-        text: data.text,
+        message: data.message,
         icon: data.icon,
       });
       return false;

@@ -622,6 +622,7 @@ class InventoryModel extends Mysql
             INNER JOIN category AS c ON c.idCategory = p.category_id
             WHERE c.business_id = ?
               AND p.name = ?
+              AND p.`status` = 'Activo'
             LIMIT 1;
         SQL;
 
@@ -646,6 +647,7 @@ class InventoryModel extends Mysql
             INNER JOIN category AS c ON c.idCategory = p.category_id
             WHERE c.business_id = ?
               AND p.bar_code = ?
+              AND p.`status` = 'Activo'
             LIMIT 1;
         SQL;
 
