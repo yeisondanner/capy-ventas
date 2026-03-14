@@ -1661,17 +1661,17 @@ function get_widget_plan(string $plan)
     $arrWidgetPlan = array(
         'Gratis' => [
             'sm' => <<<HTML
-                <span class="badge bg-warning text-dark shadow"><i class="bi bi-star-fill"></i> Gratis</span>
+                <span class="badge bg-warning text-dark shadow"><i class="bi bi-star-fill"></i> <span class="d-none d-md-inline">Gratis</span></span>
             HTML,
         ],
         'Pro' => [
             'sm' => <<<HTML
-                <span class="badge bg-success text-white shadow"><i class="bi bi-award-fill"></i> Pro Mensual</span>
+                <span class="badge bg-success text-white shadow"><i class="bi bi-award-fill"></i> <span class="d-none d-md-inline">Pro Mensual</span></span>
             HTML,
         ],
         'Pro Anual' => [
             'sm' => <<<HTML
-                <span class="badge bg-success text-white shadow"><i class="bi -award-fill"></i> Pro Anual</span>
+                <span class="badge bg-success text-white shadow"><i class="bi bi-gem"></i> <span class="d-none d-md-inline">Pro Anual</span></span>
             HTML,
         ]
     );

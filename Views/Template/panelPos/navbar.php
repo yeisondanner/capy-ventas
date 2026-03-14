@@ -11,14 +11,14 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
 <header class="app-header">
     <a class="app-header__logo" href="<?= base_url() ?>/pos/dashboard">
         <img class="p-1 bg-white rounded-5" style="width: 2rem;" src="<?= media() ?>/capysm.png" alt="">
-        Capy Ventas
+        <span>C<span class="d-none d-md-inline">apy</span> V<span class="d-none d-md-inline">entas</span></span>
     </a>
     <!-- Sidebar toggle button-->
     <a class="app-sidebar__toggle" href="#" data-toggle="sidebar" aria-label="Hide Sidebar"></a>
     <!-- Navbar Right Menu-->
     <ul class="app-nav gap-2">
         <?php if ($validationCreateBox === 1):
-        ?>
+            ?>
             <div class="d-flex gap-2" id="divOpenBox">
             </div>
         <?php endif;
@@ -242,10 +242,12 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         </div>
                         <div class="d-flex flex-column gap-2">
                             <div class="d-flex gap-2 w-100">
-                                <button id="btnOpenModalMovement" data-header="1" class="btn btn-primary w-50 rounded-pill py-2 fw-bold">
+                                <button id="btnOpenModalMovement" data-header="1"
+                                    class="btn btn-primary w-50 rounded-pill py-2 fw-bold">
                                     <i class="bi bi-arrow-left-right me-2"></i> Ingreso
                                 </button>
-                                <button id="btnOpenModalRetireCash" data-header="1" class="btn btn-danger w-50 rounded-pill py-2 fw-bold">
+                                <button id="btnOpenModalRetireCash" data-header="1"
+                                    class="btn btn-danger w-50 rounded-pill py-2 fw-bold">
                                     <i class="bi bi-dash-circle me-2"></i> Retiro
                                 </button>
                             </div>
@@ -608,7 +610,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </div>
                     <div>
                         <h5 class="modal-title fw-bold mb-0" id="voucherModalLabel">Registrar venta libre</h5>
-                        <p class="mb-0 small text-white text-opacity-75">Aqui podras registrar las ventas libres que no afectan el inventario, son ventas rapidas</p>
+                        <p class="mb-0 small text-white text-opacity-75">Aqui podras registrar las ventas libres que no
+                            afectan el inventario, son ventas rapidas</p>
                     </div>
                     <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
                         aria-label="Cerrar"></button>
@@ -658,10 +661,12 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                         <div class="mb-4 item-box">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="" id="movement_check_tax">
-                                <label id="label_tax_name" class="small text-muted fw-bold text-uppercase mb-2">IGV</label>
+                                <label id="label_tax_name"
+                                    class="small text-muted fw-bold text-uppercase mb-2">IGV</label>
                             </div>
                             <div class="input-group">
-                                <span id="span_tax" class="input-group-text bg-dark-subtle text-muted fw-bold">18%</span>
+                                <span id="span_tax"
+                                    class="input-group-text bg-dark-subtle text-muted fw-bold">18%</span>
                                 <input disabled type="text" id="movement_tax"
                                     class="form-control fw-bold bg-dark-subtle shadow-none text-end" value="S/ 0.00"
                                     placeholder="0.0">
@@ -681,8 +686,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="small text-muted fw-bold text-uppercase mb-2" for="movement_payment_method">Metodo de pago (<span
-                            class="text-danger">*</span>)</label>
+                    <label class="small text-muted fw-bold text-uppercase mb-2" for="movement_payment_method">Metodo de
+                        pago (<span class="text-danger">*</span>)</label>
                     <select class="form-select" id="movement_payment_method" name="movement_payment_method">
                         <option disabled>Seleccionar</option>
                         <option value="1" selected>Efectivo</option>
@@ -719,7 +724,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </div>
                     <div>
                         <h5 class="modal-title fw-bold mb-0" id="voucherModalLabel">Registrar gasto</h5>
-                        <p class="mb-0 small text-dark text-opacity-75">Aqui podras registrar los gastos que se realizan en el dia</p>
+                        <p class="mb-0 small text-dark text-opacity-75">Aqui podras registrar los gastos que se realizan
+                            en el dia</p>
                     </div>
                     <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
                         aria-label="Cerrar"></button>
@@ -754,8 +760,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </select>
                 </div>
                 <div class="mb-3">
-                    <label class="small text-muted fw-bold text-uppercase mb-2" for="retire_expense_category">Categoría de Gasto (<span
-                            class="text-danger">*</span>)</label>
+                    <label class="small text-muted fw-bold text-uppercase mb-2" for="retire_expense_category">Categoría
+                        de Gasto (<span class="text-danger">*</span>)</label>
                     <select class="form-select" id="retire_expense_category" name="retire_expense_category">
                     </select>
                 </div>
@@ -777,15 +783,15 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                             <label class="small text-muted fw-bold text-uppercase mb-2">Fecha (<span
                                     class="text-danger">*</span>)</label>
                             <div class="input-group">
-                                <input type="datetime-local" id="retire_date"
-                                    class="form-control shadow-none bg-white" value="<?= date('Y-m-d\TH:i'); ?>">
+                                <input type="datetime-local" id="retire_date" class="form-control shadow-none bg-white"
+                                    value="<?= date('Y-m-d\TH:i'); ?>">
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="mb-3">
-                            <label class="small text-muted fw-bold text-uppercase mb-2" for="retire_payment_method">Metodo de pago (<span
-                                    class="text-danger">*</span>)</label>
+                            <label class="small text-muted fw-bold text-uppercase mb-2"
+                                for="retire_payment_method">Metodo de pago (<span class="text-danger">*</span>)</label>
                             <select class="form-select" id="retire_payment_method" name="retire_payment_method">
                                 <option disabled>Seleccionar</option>
                                 <option value="1" selected>Efectivo</option>
@@ -806,8 +812,8 @@ if (empty($_SESSION[$nameVarBusiness]['logo'])) {
                     </div>
                 </div>
                 <div class="form-floating mb-3">
-                    <textarea class="form-control bg-white rounded-4" placeholder="Descripción o Comentario" id="retire_description"
-                        style="height: 100px; resize: none;"></textarea>
+                    <textarea class="form-control bg-white rounded-4" placeholder="Descripción o Comentario"
+                        id="retire_description" style="height: 100px; resize: none;"></textarea>
                     <label for="retire_description" class="text-muted">Descripción o Comentario</label>
                 </div>
                 <div class="d-grid">
