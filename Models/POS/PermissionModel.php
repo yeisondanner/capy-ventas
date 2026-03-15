@@ -255,6 +255,7 @@ class PermissionModel extends Mysql
         $this->idUserApp = $iduser;
         $this->idBusiness = $idbusiness;
         $this->idInterface = $idinterface;
+        //Obtiene los permisos de la interface de acuerdo al rol del usuario y al plan del usuario
         $sql = <<<SQL
             SELECT
                 e.bussines_id,
@@ -297,9 +298,28 @@ class PermissionModel extends Mysql
                         AND e.bussines_id = ?
                     LIMIT
                         1
+                )
+                AND pia.plan_id = (
+                    SELECT
+                        pl.idPlan
+                    FROM
+                        business AS b
+                        INNER JOIN user_app AS ua ON ua.idUserApp = b.userapp_id
+                        INNER JOIN subscriptions AS s ON (
+                            s.user_app_id = ua.idUserApp
+                            AND ua.plan_expiration_date = s.end_date
+                        )
+                        INNER JOIN plans AS pl ON pl.idPlan = s.plan_id
+                        INNER JOIN invoices AS i ON i.subscription_id = s.idSubscription
+                    WHERE
+                        b.idBusiness = ?
+                    ORDER BY
+                        s.idSubscription DESC
+                    LIMIT
+                        1
                 );
         SQL;
-        $request = $this->select($sql, [$this->idUserApp, $this->idBusiness, $this->idInterface, $this->idUserApp, $this->idBusiness]) ?? [];
+        $request = $this->select($sql, [$this->idUserApp, $this->idBusiness, $this->idInterface, $this->idUserApp, $this->idBusiness, $this->idBusiness]) ?? [];
         return $request;
     }
     /**

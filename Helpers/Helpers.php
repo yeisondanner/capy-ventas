@@ -266,7 +266,11 @@ function decodeUniversalText(string $encodedText): string
 
     return $decodedText;
 }
-//Genera una contraseña de 10 caracteres
+/**
+ * Genera una contraseña de 10 caracteres
+ * @param int $length Longitud de la contraseña
+ * @return string Contraseña generada
+ */
 function passGenerator($length = 10)
 {
     $pass = "";
@@ -280,7 +284,10 @@ function passGenerator($length = 10)
     }
     return $pass;
 }
-//Genera un token
+/**
+ * Genera un token
+ * @return string Token generado
+ */
 function token()
 {
     $r1 = bin2hex(random_bytes(10));
@@ -290,12 +297,22 @@ function token()
     $token = $r1 . '-' . $r2 . '-' . $r3 . '-' . $r4;
     return $token;
 }
-//Formato para valores monetarios
+/**
+ * Formato para valores monetarios
+ * @param float $cantidad Cantidad a formatear
+ * @return string Cantidad formateada
+ */
 function formatMoney($cantidad)
 {
     $cantidad = number_format($cantidad, 2, SPD, SPM);
     return $cantidad;
 }
+/**
+ * Activa un item en el menu
+ * @param int $idPage ID de la pagina
+ * @param int $idPageValue ID de la pagina
+ * @return string Active si es igual, vacio si no
+ */
 function activeItem($idPage, $idPageValue)
 {
     if ($idPage == $idPageValue) {
@@ -482,7 +499,11 @@ function config_sesion(int $sesion = 0)
             break;
     }
 }
-//Funcion que valida si un usuario  tiene validado el inicio de sesion correcto
+/**
+ * Funcion que valida si un usuario  tiene validado el inicio de sesion correcto
+ * @param int $sesion Sesion a validar
+ * @return void
+ */
 function isSession(int $sesion = 0)
 {
     switch ($sesion) {
@@ -533,7 +554,11 @@ function isSession(int $sesion = 0)
             break;
     }
 }
-//validacion de login de inicio si existe
+/**
+ * Validacion de login de inicio si existe
+ * @param int $sesion Sesion a validar
+ * @return void
+ */
 function existLogin(int $sesion = 0)
 {
     switch ($sesion) {
@@ -717,7 +742,12 @@ function delFolder(string $carpeta, string $val = "*", bool $deleteFolder = fals
     return false; // todo salió bien
 }
 
-//Funcion que carga las opciones del sidebar
+/**
+ * Funcion que carga las opciones del sidebar
+ * @param int $id_user ID del usuario
+ * @param array $data Datos adicionales
+ * @return void
+ */
 function loadOptions(int $id_user, $data = null)
 {
     //requerimos el modelo userModel
@@ -755,7 +785,12 @@ function loadOptions(int $id_user, $data = null)
     //limpiamos el objeto por seguridad
     unset($obj);
 }
-//Funcion que busca si el id de la inerfaz esta dentro para poder expandir el item
+/**
+ * Funcion que busca si el id de la inerfaz esta dentro para poder expandir el item
+ * @param int $idInterface ID de la interfaz
+ * @param array $array Array de interfaces
+ * @return string Active si es igual, vacio si no
+ */
 function isExpanded(int $idInterface, array $array)
 {
     foreach ($array as $interfaz) {
@@ -767,7 +802,11 @@ function isExpanded(int $idInterface, array $array)
     }
     return null; // Retorna null si no se encuentra
 }
-//Funcion que permite saber si el usuario tiene permisos para acceder a una interfaz
+/**
+ * Funcion que permite saber si el usuario tiene permisos para acceder a una interfaz
+ * @param int $idInterface ID de la interfaz
+ * @return bool True si tiene permisos, false si no
+ */
 function permissionInterface(int $idInterface)
 {
     $login_interface = $_SESSION['login_interface'] ?? [];
@@ -782,14 +821,21 @@ function permissionInterface(int $idInterface)
     //Revisar si se puede mejorar esta ruta, a una interfaz donde diga que la cuenta no tiene permisos, por eso nos fuerza a cerrar sesion
     echo '<script>window.location.href="' . base_url() . '/im/LogOut";</script>'; // Retorna null si no se encuentra
 }
-// Funcion que da formato a la fecha
+/**
+ * Funcion que da formato a la fecha
+ * @param string $date Fecha a formatear
+ * @return string Fecha formateada
+ */
 function dateFormat($date): string
 {
     $date = strtotime($date);
     $date = date("M d - Y", $date) . "  " . date("h:i:s a", $date);
     return $date;
 }
-//Funcion que devuelve la IP del usuario
+/**
+ * Funcion que devuelve la IP del usuario
+ * @return string IP del usuario
+ */
 function obtenerIP()
 {
     if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
@@ -804,7 +850,10 @@ function obtenerIP()
     }
     return $ip;
 }
-//Funcion que obtiene la informacion de sistema
+/**
+ * Funcion que obtiene la informacion de sistema
+ * @return array Informacion del sistema
+ */
 function getSystemInfo()
 {
     require_once "./Models/Admin/SystemModel.php";
@@ -814,7 +863,15 @@ function getSystemInfo()
     return $arrData;
 }
 
-//Funcion que redimensiona la imagen y tamaño de la imagen
+/**
+ * Funcion que redimensiona la imagen y tamaño de la imagen
+ * @param string $sourcePath Ruta de la imagen
+ * @param string $destinationPath Ruta de la imagen
+ * @param int $maxSizeMB Tamaño máximo de la imagen
+ * @param int $newWidth Nuevo ancho de la imagen
+ * @param int $newHeight Nuevo alto de la imagen
+ * @return array Array con la información de la imagen
+ */
 function resizeAndCompressImage($sourcePath, $destinationPath, $maxSizeMB = 2, $newWidth = null, $newHeight = null)
 {
     $maxSizeBytes = $maxSizeMB * 1024 * 1024; // Convertir MB a Bytes
