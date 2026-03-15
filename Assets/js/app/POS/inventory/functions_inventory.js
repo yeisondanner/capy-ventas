@@ -14,6 +14,7 @@
     document.getElementById("slctProductMeasurement") ?? null;
   //Elemento de imagenes de preview
   const flInput = document.getElementById("flInput") ?? null;
+  const update_flInput = document.getElementById("update_flInput") ?? null;
   //inicializamos la tabla
   let productsTable;
   //inicializamos el id del product
@@ -27,6 +28,7 @@
   const ENDPOINT_GET_SUPPLIERS = `${base_url}/pos/Inventory/getSuppliers`;
   const ENDPOINT_SAVE_PRODUCT = `${base_url}/pos/Inventory/setProduct`;
   const ENDPOINT_DELETE_PRODUCT = `${base_url}/pos/Inventory/deleteProduct`;
+  const ENDPOINT_GET_PRODUCT = `${base_url}/pos/Inventory/getProduct?id=`;
   document.addEventListener("DOMContentLoaded", function () {
     loadTable();
     //inicializamos los eventos
@@ -315,69 +317,106 @@
         url: `${base_url}/Assets/js/libraries/POS/Spanish-datatables.json`,
       },
       drawCallback: () => {
+        //agregamos estilos a la paginacion
         document
           .querySelectorAll(".dataTables_paginate > .pagination")
           .forEach((el) => {
             el.classList.add("pagination-sm", "mt-2");
           });
 
-        const deleteProduct = document.querySelectorAll(".delete-product");
-        deleteProduct.forEach((el) => {
-          el.addEventListener("click", function () {
-            const idProduct = this.getAttribute("data-id");
-            const nameProduct = this.getAttribute("data-name");
-            Swal.fire({
-              title: "¿Está seguro de eliminar el producto?",
-              html: `El producto <strong>"${nameProduct}"</strong> será eliminado`,
-              footer: `<div style="border: 1px dashed #dc3545"><span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Esta acción no se puede deshacer</span></div>`,
-              icon: "warning",
-              showCancelButton: true,
-              reverseButtons: true,
-              confirmButtonColor: "#dc3545",
-              cancelButtonColor: "#6c757d",
-              confirmButtonText: "<i class='bi bi-trash'></i> Si, eliminar",
-              cancelButtonText: "<i class='bi bi-x-lg'></i> No, cancelar",
-              //hacemos que no se cierre el modal
-              allowOutsideClick: false,
-              allowEscapeKey: false,
-              //preConfirm es una funcion que se ejecuta antes de que se cierre el modal
-              preConfirm: async () => {
-                //preparamos los datos para enviar al backend
-                const formData = new FormData();
-                formData.append("id", idProduct);
-                formData.append("name", nameProduct);
-                const config = {
-                  method: "POST",
-                  body: formData,
-                };
-                //enviamos los datos al backend
-                const data = await sendData(ENDPOINT_DELETE_PRODUCT, config);
-                return data;
-              },
-            }).then((result) => {
-              if (result.isConfirmed) {
-                //obtenemos los valores que devuelve el backend
-                const data = result.value;
-                showAlert({
-                  title: data.title,
-                  message: data.message,
-                  icon: data.icon,
-                  timer: data.timer,
-                });
-                if (data.status) {
-                  //recargamos la tabla
-                  productsTable.ajax.reload(null, false);
+        const btnDeleteProduct = document.querySelectorAll(".delete-product");
+        const btnEditProduct = document.querySelectorAll(".edit-product");
+        /**
+         * Metodo que se encarga de eliminar un producto
+         */
+        if (btnDeleteProduct.length > 0) {
+          btnDeleteProduct.forEach((el) => {
+            el.addEventListener("click", function () {
+              idProduct = this.getAttribute("data-id");
+              const nameProduct = this.getAttribute("data-name");
+              Swal.fire({
+                title: "¿Está seguro de eliminar el producto?",
+                html: `El producto <strong>"${nameProduct}"</strong> será eliminado`,
+                footer: `<div style="border: 1px dashed #dc3545"><span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Esta acción no se puede deshacer</span></div>`,
+                icon: "warning",
+                showCancelButton: true,
+                reverseButtons: true,
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "<i class='bi bi-trash'></i> Si, eliminar",
+                cancelButtonText: "<i class='bi bi-x-lg'></i> No, cancelar",
+                //hacemos que no se cierre el modal
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                //preConfirm es una funcion que se ejecuta antes de que se cierre el modal
+                preConfirm: async () => {
+                  //preparamos los datos para enviar al backend
+                  const formData = new FormData();
+                  formData.append("id", idProduct);
+                  formData.append("name", nameProduct);
+                  const config = {
+                    method: "POST",
+                    body: formData,
+                  };
+                  //enviamos los datos al backend
+                  const data = await sendData(ENDPOINT_DELETE_PRODUCT, config);
+                  return data;
+                },
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  //obtenemos los valores que devuelve el backend
+                  const data = result.value;
+                  showAlert({
+                    title: data.title,
+                    message: data.message,
+                    icon: data.icon,
+                    timer: data.timer,
+                  });
+                  if (data.status) {
+                    //recargamos la tabla
+                    productsTable.ajax.reload(null, false);
+                  }
+                  //validamos si existe una url para redirigir
+                  if (data.url) {
+                    setTimeout(() => {
+                      window.location.href = data.url;
+                    }, 1000);
+                  }
                 }
-                //validamos si existe una url para redirigir
-                if (data.url) {
-                  setTimeout(() => {
-                    window.location.href = data.url;
-                  }, 1000);
-                }
-              }
+              });
             });
           });
-        });
+        }
+        /**
+         * Metodo que se encarga de editar un producto
+         */
+        if (btnEditProduct.length > 0) {
+          btnEditProduct.forEach((edit) => {
+            edit.addEventListener("click", async (e) => {
+              e.preventDefault();
+              idProduct = edit.getAttribute("data-id");
+              const urlEndpoint = ENDPOINT_GET_PRODUCT + idProduct;
+              const data = await sendData(urlEndpoint, {
+                method: "GET",
+              });
+              /**
+               * Metodo que se encarga de obtener la imagen del producto
+               */
+              if (update_flInput) {
+                update_flInput.addEventListener("change", (e) => {
+                  const file = e.target.files[0];
+                  const reader = new FileReader();
+                  reader.onload = function (e) {
+                    renderPreviewImage(e.target.result, "update_logoPreview");
+                  };
+                  reader.readAsDataURL(file);
+                });
+              }
+              console.log(data);
+              $("#modalUpdateProduct").modal("show");
+            });
+          });
+        }
       },
     });
   }

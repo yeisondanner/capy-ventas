@@ -555,7 +555,6 @@
                 </div>
             </div>
             <div class="modal-body">
-                <?= csrf(); ?>
                 <input type="hidden" name="update_txtProductId" id="update_txtProductId">
                 <div class="row g-3">
                     <div class="col-12 col-md-6 col-lg-5 col-xl-4">
@@ -626,34 +625,34 @@
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
-                        <label for="update_txtProductCategory" class="form-label">Categoría <span
+                        <label for="update_slctProductCategory" class="form-label">Categoría <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-collection"></i></span>
-                            <select class="form-select" id="update_txtProductCategory" name="update_txtProductCategory"
+                            <select class="form-select" id="update_slctProductCategory" name="update_slctProductCategory"
                                 required>
                                 <option value="" selected disabled>Selecciona una categoría</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
-                        <label for="update_txtProductSupplier" class="form-label">Proveedor <span
+                        <label for="update_slctProductSupplier" class="form-label">Proveedor <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-people"></i></span>
-                            <select class="form-select" id="update_txtProductSupplier" name="update_txtProductSupplier"
+                            <select class="form-select" id="update_slctProductSupplier" name="update_slctProductSupplier"
                                 required>
                                 <option value="" selected disabled>Selecciona un proveedor</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
-                        <label for="update_txtProductMeasurement" class="form-label">Unidad de medida <span
+                        <label for="update_slctProductMeasurement" class="form-label">Unidad de medida <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-tag"></i></span>
-                            <select class="form-select" id="update_txtProductMeasurement"
-                                name="update_txtProductMeasurement" required>
+                            <select class="form-select" id="update_slctProductMeasurement"
+                                name="update_slctProductMeasurement" required>
                                 <option value="" selected disabled>Selecciona una unidad</option>
                             </select>
                         </div>
