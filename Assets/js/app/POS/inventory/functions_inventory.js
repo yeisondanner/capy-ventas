@@ -396,6 +396,9 @@
               e.preventDefault();
               idProduct = edit.getAttribute("data-id");
               const urlEndpoint = ENDPOINT_GET_PRODUCT + idProduct;
+              /**
+               * Metodo que se encarga de obtener los datos del producto
+               */
               const data = await sendData(urlEndpoint, {
                 method: "GET",
               });
