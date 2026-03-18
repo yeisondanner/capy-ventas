@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  # Servidor Web PHP 8.4
+  app_capyventas: # <--- Le puse nombre único para que no choque con otros proyectos
+    image: php:8.4-apache
+    container_name: capyventas_web
+    restart: always
+   # ports:
+    #  - "9000:80" # Para que entres por IP: 192.168.1.252:9000
+    command: >
+      sh -c "docker-php-ext-install pdo pdo_mysql && a2enmod rewrite && apache2-foreground"
+    volumes:
+      - ./:/var/www/html
+    networks:
+      - sersa-network
+
+  # Base de Datos MariaDB (Cambié 12.2 por 11.4 porque la 12 no es oficial todavía)
+  db_capyventas: # <--- ESTE ES EL NOMBRE CLAVE
+    image: mariadb:11.8
+    container_name: capyventas_db
+    restart: always
+    ports:
+      - "3307:3307"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_seguro
+      MYSQL_DATABASE: capyvent_bd
+      MYSQL_USER: capyvent_root
+      MYSQL_PASSWORD: mHJdusrQVTg4ch4
+    volumes:
+      - capyventas_data:/var/lib/mysql
+    networks:
+      - sersa-network
+
+  # Administrador Visual de BD
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: capyventas_pma
+    restart: always
+    #ports:
+      #- "8080:80" # Para que entres por IP: 192.168.1.252:8080
+    environment:
+      PMA_HOST: db_capyventas # <--- ¡AHORA SÍ! Coincide con el nombre de arriba
+    networks:
+      - sersa-network
+
+networks:
+  sersa-network:
+    external: true
+
+volumes:
+  ssoma_data:
+    driver: local
