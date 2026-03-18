@@ -213,9 +213,11 @@
     .menu-toggle.active .menu-icon span:nth-child(1) {
       transform: translateY(7px) rotate(45deg);
     }
+
     .menu-toggle.active .menu-icon span:nth-child(2) {
       opacity: 0;
     }
+
     .menu-toggle.active .menu-icon span:nth-child(3) {
       transform: translateY(-7px) rotate(-45deg);
     }
@@ -241,7 +243,7 @@
       margin: 0 auto;
     }
 
-    .qr-hero > div {
+    .qr-hero>div {
       min-width: 0;
     }
 
@@ -268,6 +270,7 @@
     .qr-tabs::-webkit-scrollbar {
       height: 6px;
     }
+
     .qr-tabs::-webkit-scrollbar-thumb {
       background-color: rgba(35, 67, 106, 0.15);
       border-radius: 10px;
@@ -312,8 +315,15 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .form-group {
@@ -371,7 +381,7 @@
       background: white;
       padding: 24px;
       border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -380,7 +390,8 @@
       margin-bottom: 24px;
     }
 
-    #qrcode-container img, #qrcode-container canvas {
+    #qrcode-container img,
+    #qrcode-container canvas {
       max-width: 100%;
       height: auto;
       border-radius: 8px;
@@ -394,6 +405,7 @@
       cursor: pointer;
       user-select: none;
     }
+
     .checkbox-container input {
       width: 18px;
       height: 18px;
@@ -449,21 +461,26 @@
         gap: 18px;
         padding: 15px var(--page-padding);
       }
+
       .menu-toggle {
         display: inline-flex;
         margin-left: auto;
       }
+
       nav,
       .header-actions {
         width: 100%;
       }
+
       header:not(.is-menu-open) nav,
       header:not(.is-menu-open) .header-actions {
         display: none;
       }
+
       header.is-menu-open {
         align-items: stretch;
       }
+
       header.is-menu-open nav {
         display: flex;
         flex-direction: column;
@@ -474,11 +491,13 @@
         border-radius: 18px;
         box-shadow: 0 18px 40px rgba(19, 47, 76, 0.16);
       }
+
       header.is-menu-open nav a {
         width: 100%;
         padding: 10px 16px;
         text-align: center;
       }
+
       header.is-menu-open .header-actions {
         display: flex;
         flex-direction: column;
@@ -489,6 +508,7 @@
         border-radius: 18px;
         box-shadow: 0 18px 40px rgba(19, 47, 76, 0.16);
       }
+
       header.is-menu-open .header-actions .btn {
         width: 100%;
         justify-content: center;
@@ -498,6 +518,7 @@
         grid-template-columns: 1fr;
         gap: 40px;
       }
+
       .qr-preview-card {
         position: static;
         margin-top: 0;
@@ -508,42 +529,54 @@
       main {
         padding: 20px var(--page-padding) 80px;
       }
+
       .qr-form {
         padding: 24px;
       }
+
       .qr-preview-card {
         padding: 24px;
       }
+
       .section-title {
         text-align: center !important;
       }
-      .qr-content > p {
+
+      .qr-content>p {
         text-align: center;
       }
+
       .form-row {
         flex-direction: column !important;
         gap: 16px !important;
       }
-      .form-row > div {
+
+      .form-row>div {
         width: 100% !important;
       }
     }
+
     @media (max-width: 520px) {
       header {
         padding: 12px var(--page-padding);
       }
+
       .qr-hero {
         gap: 32px;
       }
+
       .section-title {
         font-size: clamp(1.8rem, 8vw, 2.2rem);
       }
+
       .qr-form {
         padding: 20px;
       }
+
       .qr-preview-card {
         padding: 20px;
       }
+
       .features-grid {
         grid-template-columns: 1fr;
       }
@@ -593,7 +626,7 @@
         </p>
 
         <div class="qr-form">
-          
+
           <div class="qr-tabs">
             <button class="qr-tab active" data-tab="url"><i class="bi bi-link-45deg"></i> URL</button>
             <button class="qr-tab" data-tab="text"><i class="bi bi-fonts"></i> Texto</button>
@@ -707,7 +740,7 @@
           <hr style="border: 0; border-top: 1px solid rgba(35, 67, 106, 0.08); margin: 32px 0;">
 
           <h4 style="font-size: 1.1rem; color: var(--color-primary); margin-bottom: 16px;">Personalización y Estilo</h4>
-          
+
           <div class="form-row" style="display: flex; gap: 16px; flex-wrap: wrap;">
             <div class="form-group" style="flex: 1; min-width: 120px;">
               <label class="form-label" for="qr-color">Color del QR</label>
@@ -737,14 +770,14 @@
       <div class="qr-preview-card" data-aos="fade-left">
         <h3 style="color: var(--color-primary); margin-bottom: 16px; text-align: center; font-size: 1.5rem;">Visualizar QR</h3>
         <p style="color: var(--color-muted); text-align: center; margin-bottom: 24px; font-size: 0.95rem;">Aquí aparecerá tu código generado listo para su uso.</p>
-        
+
         <div id="qrcode-container">
           <div id="qr-placeholder" style="color: var(--color-muted); text-align: center; max-width: 80%;">
             <i class="bi bi-qr-code-scan" style="font-size: 3.5rem; display: block; margin-bottom: 16px; opacity: 0.3;"></i>
             Rellena los campos y presiona <b>Crear</b>
           </div>
         </div>
-        
+
         <button id="btn-download" class="btn btn-outline" style="width: 100%; justify-content: center; padding: 14px; font-size: 1.05rem;" disabled>
           <i class="bi bi-download" style="margin-right: 8px;"></i> Descargar QR (PNG)
         </button>
@@ -754,7 +787,7 @@
     <section class="features-section" style="margin-top: 80px;" data-aos="fade-up">
       <h2 class="section-title" style="text-align: center;">Generador QR Definitivo</h2>
       <p style="text-align: center; color: var(--color-muted); margin-bottom: 40px;">Disfruta de funciones premium sin costo ni límites de escaneos.</p>
-      
+
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon"><i class="bi bi-tablet"></i></div>
@@ -781,7 +814,8 @@
 
   <!-- Librería pura para generar QR de alta calidad y fácil uso -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3076714141618004"
+    crossorigin="anonymous"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       // Setup UI Basics
@@ -812,17 +846,17 @@
       // Tab Management
       const tabs = document.querySelectorAll('.qr-tab');
       const tabContents = document.querySelectorAll('.qr-tab-content');
-      
+
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
           // Remove active class from all
           tabs.forEach(t => t.classList.remove('active'));
           tabContents.forEach(c => c.classList.remove('active'));
-          
+
           // Add active class to current
           tab.classList.add('active');
           const target = document.getElementById(`tab-${tab.dataset.tab}`);
-          if(target) target.classList.add('active');
+          if (target) target.classList.add('active');
         });
       });
 
@@ -837,8 +871,8 @@
       // Extract form data based on active tab
       function getQRData() {
         const activeTab = document.querySelector('.qr-tab.active').dataset.tab;
-        
-        switch(activeTab) {
+
+        switch (activeTab) {
           case 'url':
             return document.getElementById('qr-input-url').value.trim();
           case 'text':
@@ -846,14 +880,14 @@
           case 'whatsapp':
             const phone = document.getElementById('qr-input-wa-num').value.replace(/\D/g, '');
             const msg = encodeURIComponent(document.getElementById('qr-input-wa-msg').value.trim());
-            if(!phone) return "";
+            if (!phone) return "";
             return `https://wa.me/${phone}${msg ? '?text=' + msg : ''}`;
           case 'wifi':
             const ssid = document.getElementById('qr-input-wifi-ssid').value.trim();
             const pass = document.getElementById('qr-input-wifi-pass').value.trim();
             const type = document.getElementById('qr-input-wifi-type').value;
             const hidden = document.getElementById('qr-input-wifi-hidden').checked ? "true" : "false";
-            if(!ssid) return "";
+            if (!ssid) return "";
             return `WIFI:T:${type};S:${ssid};P:${pass};H:${hidden};;`;
           case 'vcard':
             const vname = document.getElementById('qr-input-vc-name').value.trim();
@@ -861,18 +895,18 @@
             const vphone = document.getElementById('qr-input-vc-phone').value.trim();
             const vemail = document.getElementById('qr-input-vc-email').value.trim();
             const vcomp = document.getElementById('qr-input-vc-company').value.trim();
-            if(!vname && !vphone) return "";
+            if (!vname && !vphone) return "";
             let vcard = `BEGIN:VCARD\nVERSION:3.0\nN:${vlast};${vname};;;\nFN:${vname} ${vlast}\n`;
-            if(vcomp) vcard += `ORG:${vcomp}\n`;
-            if(vphone) vcard += `TEL;TYPE=work,voice:${vphone}\n`;
-            if(vemail) vcard += `EMAIL:${vemail}\n`;
+            if (vcomp) vcard += `ORG:${vcomp}\n`;
+            if (vphone) vcard += `TEL;TYPE=work,voice:${vphone}\n`;
+            if (vemail) vcard += `EMAIL:${vemail}\n`;
             vcard += `END:VCARD`;
             return vcard;
           case 'email':
             const address = document.getElementById('qr-input-em-address').value.trim();
             const sub = document.getElementById('qr-input-em-sub').value.trim();
             const body = document.getElementById('qr-input-em-body').value.trim();
-            if(!address) return "";
+            if (!address) return "";
             return `mailto:${address}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`;
           default:
             return "";
@@ -888,7 +922,7 @@
 
       btnGenerate.addEventListener("click", () => {
         const data = getQRData();
-        
+
         if (!data) {
           showError("Por favor completa los campos requeridos para este tipo de QR.");
           return;
@@ -914,7 +948,7 @@
           childElements.forEach(el => {
             el.style.maxWidth = '100%';
             el.style.height = 'auto';
-            el.style.maxHeight = '300px'; 
+            el.style.maxHeight = '300px';
             el.style.objectFit = 'contain';
           });
 
@@ -934,7 +968,7 @@
       btnDownload.addEventListener("click", () => {
         const canvas = qrcodeContainer.querySelector("canvas");
         const img = qrcodeContainer.querySelector("img");
-        
+
         if (canvas) {
           const url = canvas.toDataURL("image/png");
           descargarImagen(url, "capy-ventas-qr.png");
@@ -953,10 +987,15 @@
       }
     });
   </script>
-  
+
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    AOS.init({ duration: 800, once: false, mirror: true, offset: 50 });
+    AOS.init({
+      duration: 800,
+      once: false,
+      mirror: true,
+      offset: 50
+    });
   </script>
 </body>
 
