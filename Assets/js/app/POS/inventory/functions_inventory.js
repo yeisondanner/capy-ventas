@@ -5,13 +5,6 @@
     document.getElementById("btnOpenProductModal") ?? null;
   //elementos de formularios
   const formSaveProduct = document.getElementById("formSaveProduct") ?? null;
-  //elementos slct
-  const slctProductCategory =
-    document.getElementById("slctProductCategory") ?? null;
-  const slctProductSupplier =
-    document.getElementById("slctProductSupplier") ?? null;
-  const slctProductMeasurement =
-    document.getElementById("slctProductMeasurement") ?? null;
   //Elemento de imagenes de preview
   const flInput = document.getElementById("flInput") ?? null;
   const update_flInput = document.getElementById("update_flInput") ?? null;
@@ -69,6 +62,9 @@
             }
           });
         }
+        $("#slctProductCategory").html(categorys);
+        $("#slctProductSupplier").html(suppliers);
+        $("#slctProductMeasurement").html(measurements);
         $("#modalProduct").modal("show");
       });
     }
