@@ -20,6 +20,12 @@
   //inicializamos el id del product
   let idProduct = null;
   /**
+   * Variables de los selects
+   */
+  let categorys;
+  let suppliers;
+  let measurements;
+  /**
    * Variables de los endpoints
    */
   const ENDPOINT_GET_PRODUCTS = `${base_url}/pos/Inventory/getProducts`;
@@ -40,43 +46,14 @@
    */
   async function initEvents() {
     /**
+     * Inicializamos los selects
+     */
+    await loadSelects();
+    /**
      * Inicializamos el modal de productos
      */
     if (btnOpenProductModal) {
       btnOpenProductModal.addEventListener("click", async function () {
-        /**
-         * Inicializamos el select de categorias
-         */
-        if (slctProductCategory) {
-          slctProductCategory.innerHTML = await getAndRenderOptionsSelect(
-            ENDPOINT_GET_CATEGORIES,
-            {
-              method: "GET",
-            },
-          );
-        }
-        /**
-         * Inicializamos el select de proveedores
-         */
-        if (slctProductSupplier) {
-          slctProductSupplier.innerHTML = await getAndRenderOptionsSelect(
-            ENDPOINT_GET_SUPPLIERS,
-            {
-              method: "GET",
-            },
-          );
-        }
-        /**
-         * Inicializamos el select de medidas
-         */
-        if (slctProductMeasurement) {
-          slctProductMeasurement.innerHTML = await getAndRenderOptionsSelect(
-            ENDPOINT_GET_MEASUREMENTS,
-            {
-              method: "GET",
-            },
-          );
-        }
         /**
          * Inicializamos el input de imagen
          */
@@ -402,6 +379,7 @@
               const data = await sendData(urlEndpoint, {
                 method: "GET",
               });
+              const prodInf = data.data;
               /**
                * Metodo que se encarga de obtener la imagen del producto
                */
@@ -414,6 +392,24 @@
                   };
                   reader.readAsDataURL(file);
                 });
+              }
+              $("#update_slctProductCategory").html(categorys);
+              $("#update_slctProductSupplier").html(suppliers);
+              $("#update_slctProductMeasurement").html(measurements);
+              $("#update_txtProductCode").val(prodInf.bar_code);
+              $("#update_txtProductName").val(prodInf.name);
+              $("#update_slctProductCategory").val(prodInf.category_id);
+              $("#update_slctProductSupplier").val(prodInf.supplier_id);
+              $("#update_slctProductMeasurement").val(prodInf.measurement_id);
+              $("#update_txtProductDateExpirated").val(prodInf.expiration_date);
+              $("#update_txtProductStock").val(prodInf.stock);
+              $("#update_txtProductPurchasePrice").val(prodInf.purchase_price);
+              $("#update_txtProductSalesPrice").val(prodInf.sales_price);
+              $("#update_txtProductDescription").val(prodInf.description);
+              if (prodInf.is_public == "Si") {
+                $("#update_chkProductStatus").prop("checked", true);
+              } else if (prodInf.is_public == "No") {
+                $("#update_chkProductStatus").prop("checked", false);
               }
               console.log(data);
               $("#modalUpdateProduct").modal("show");
@@ -436,7 +432,7 @@
         message: "Por favor espere un momento",
         icon: "info",
       },
-      "loading",
+      "loading"
     );
     try {
       const response = await fetch(urlEndpoint, config);
@@ -445,7 +441,7 @@
           "Ocurrio un error al procesar la solicitud " +
             response.status +
             " " +
-            response.statusText,
+            response.statusText
         );
       }
       const result = await response.json();
@@ -492,5 +488,20 @@
   function renderPreviewImage(url, element) {
     const img = document.getElementById(element);
     img.src = url;
+  }
+  /**
+   * Metodo que se encarga de cargar los selects de crear y actualizar producto
+   * @returns {Promise<void>}
+   */
+  async function loadSelects() {
+    categorys = await getAndRenderOptionsSelect(ENDPOINT_GET_CATEGORIES, {
+      method: "GET",
+    });
+    suppliers = await getAndRenderOptionsSelect(ENDPOINT_GET_SUPPLIERS, {
+      method: "GET",
+    });
+    measurements = await getAndRenderOptionsSelect(ENDPOINT_GET_MEASUREMENTS, {
+      method: "GET",
+    });
   }
 })();

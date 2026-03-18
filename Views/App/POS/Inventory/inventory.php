@@ -253,7 +253,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i> Cancelar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>
+                    Cancelar</button>
                 <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Guardar</button>
             </div>
         </form>
@@ -629,8 +630,8 @@
                                 class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-collection"></i></span>
-                            <select class="form-select" id="update_slctProductCategory" name="update_slctProductCategory"
-                                required>
+                            <select class="form-select" id="update_slctProductCategory"
+                                name="update_slctProductCategory" required>
                                 <option value="" selected disabled>Selecciona una categoría</option>
                             </select>
                         </div>
@@ -640,8 +641,8 @@
                                 class="text-danger">*</span></label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-people"></i></span>
-                            <select class="form-select" id="update_slctProductSupplier" name="update_slctProductSupplier"
-                                required>
+                            <select class="form-select" id="update_slctProductSupplier"
+                                name="update_slctProductSupplier" required>
                                 <option value="" selected disabled>Selecciona un proveedor</option>
                             </select>
                         </div>
