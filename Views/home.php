@@ -1215,6 +1215,7 @@
       <a href="#metricas">Impacto</a>
       <a href="#funcionalidades">Funcionalidades</a>
       <a href="#clientes">Clientes</a>
+      <a href="#herramientas">Herramientas</a>
       <a href="#planes">Planes</a>
       <a href="#contacto">Contacto</a>
     </nav>
@@ -1380,6 +1381,22 @@
           <span class="client-field">Perfumería y moda femenina</span>
           <p class="client-quote">“La gestión de fidelización para nuestra boutique de perfumería ha mejorado la recompra y satisfacción de las clientas.”</p>
         </article>
+      </div>
+    </section>
+
+    <section id="herramientas" style="margin-top: 120px;" data-aos="fade-up">
+      <h2 class="section-title">Herramientas gratuitas</h2>
+      <p class="section-subtitle">
+        Potencia tu negocio con nuestras utilidades complementarias, totalmente gratis y sin registro.
+      </p>
+      <div class="features-grid">
+        <a href="<?= function_exists('base_url') ? base_url() : './' ?>/home/qr" style="text-decoration: none; color: inherit; display: block;">
+          <article class="feature-card" style="transition: transform 0.3s ease, box-shadow 0.3s ease; height: 100%; cursor: pointer;" onmouseover="this.style.transform='translateY(-6px)'; this.style.boxShadow='0 20px 48px rgba(17, 40, 66, 0.18)'" onmouseout="this.style.transform='none'; this.style.boxShadow='var(--shadow-soft)'">
+            <div class="feature-icon"><i class="bi bi-qr-code"></i></div>
+            <h4>Generador de QR</h4>
+            <p>Crea códigos QR personalizados para tus enlaces, textos o contactos. Rápidos y descargables al instante en alta calidad.</p>
+          </article>
+        </a>
       </div>
     </section>
 
