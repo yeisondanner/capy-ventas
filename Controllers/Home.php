@@ -23,4 +23,13 @@ class Home extends Controllers
                 $data['page_js_css'] = "home";
                 $this->views->getView($this, "home", $data);
         }
+
+        public function qr()
+        {
+                $data['page_id'] = 0;
+                $data['page_title'] = "Generador de Códigos QR Gratis | Capy Ventas";
+                $data['page_description'] = "Crea códigos QR personalizados gratis para páginas web, textos, enlaces, contactos y más con el generador de QR de Capy Ventas. Fácil, rápido y descargable al instante.";
+                $data['page_js_css'] = "qr";
+                $this->views->getView($this, "qr", $data);
+        }
 }
