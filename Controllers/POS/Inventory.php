@@ -316,8 +316,8 @@ class Inventory extends Controllers
         if ($history['status']) {
             $productHistory = $this->model->selectProductHistory($productId);
         }
-
         $currencySymbol = getCurrency();
+        //obtenemos todas la imagenes del producto
         $images = $this->model->selectProductFile($productId);
 
         $data = [
@@ -345,6 +345,7 @@ class Inventory extends Controllers
                 'currency_symbol' => $currencySymbol,
                 'images' => $images ?? [],
                 'image_main' => $product['image_main'] ?? '',
+                'image_main_url' => base_url() . '/Loadfile/iconproducts?f=' . $product['image_main'] ?? '',
                 'is_public' => $product['is_public'] ?? 'No',
                 'bar_code' => $product['bar_code'] ?? '',
                 'expiration_date' => $product['expiration_date'] ?? '',
@@ -378,27 +379,21 @@ class Inventory extends Controllers
         $requiredFields = [
             'update_txtProductId',
             'update_txtProductName',
-            'update_txtProductCategory',
-            'update_txtProductMeasurement',
-            'update_txtProductSupplier',
+            'update_slctProductCategory',
+            'update_slctProductMeasurement',
+            'update_slctProductSupplier',
             'update_txtProductStock',
             'update_txtProductPurchasePrice',
             'update_txtProductSalesPrice',
             'update_txtProductCode'
         ];
-
-        foreach ($requiredFields as $field) {
-            if (!isset($_POST[$field])) {
-                $this->responseError('El campo ' . $field . ' es obligatorio.');
-            }
-        }
-
+        validateFields($requiredFields);
         $businessId = $this->getBusinessId();
         $productId = (int) ($_POST['update_txtProductId'] ?? 0);
         $name = ucwords(strClean($_POST['update_txtProductName'] ?? ''));
-        $categoryId = (int) ($_POST['update_txtProductCategory'] ?? 0);
-        $measurementId = (int) ($_POST['update_txtProductMeasurement'] ?? 0);
-        $supplierId = (int) ($_POST['update_txtProductSupplier'] ?? 0);
+        $categoryId = (int) ($_POST['update_slctProductCategory'] ?? 0);
+        $measurementId = (int) ($_POST['update_slctProductMeasurement'] ?? 0);
+        $supplierId = (int) ($_POST['update_slctProductSupplier'] ?? 0);
         $stock = $this->resolveOptionalStock($_POST['update_txtProductStock'] ?? null);
         $purchase = $this->sanitizeDecimal($_POST['update_txtProductPurchasePrice'] ?? '0', 'precio de compra');
         $sales = $this->sanitizeDecimal($_POST['update_txtProductSalesPrice'] ?? '0', 'precio de venta');

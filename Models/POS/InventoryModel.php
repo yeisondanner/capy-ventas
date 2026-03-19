@@ -738,9 +738,11 @@ class InventoryModel extends Mysql
         $sql = <<<SQL
             SELECT*FROM product_file AS pf WHERE pf.product_id=? AND pf.`status`='Activo';
         SQL;
-
+        //recorremos para colocar la url de la imagen
         $result = $this->select_all($sql, [$idproduct]);
-
+        foreach ($result as $key => $value) {
+            $result[$key]['url'] = base_url() . '/Loadfile/iconproducts?f=' . $value['name'];
+        }
         return $result;
     }
     /**

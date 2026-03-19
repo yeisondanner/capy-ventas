@@ -5,6 +5,8 @@
     document.getElementById("btnOpenProductModal") ?? null;
   //elementos de formularios
   const formSaveProduct = document.getElementById("formSaveProduct") ?? null;
+  const formUpdateProduct =
+    document.getElementById("formUpdateProduct") ?? null;
   //Elemento de imagenes de preview
   const flInput = document.getElementById("flInput") ?? null;
   const update_flInput = document.getElementById("update_flInput") ?? null;
@@ -28,6 +30,9 @@
   const ENDPOINT_SAVE_PRODUCT = `${base_url}/pos/Inventory/setProduct`;
   const ENDPOINT_DELETE_PRODUCT = `${base_url}/pos/Inventory/deleteProduct`;
   const ENDPOINT_GET_PRODUCT = `${base_url}/pos/Inventory/getProduct?id=`;
+  const ENDPOINT_UPDATE_PRODUCT = `${base_url}/pos/Inventory/updateProduct`;
+  const DEFAULT_IMAGE = `${base_url}/Loadfile/iconproducts?f=product.png`;
+
   document.addEventListener("DOMContentLoaded", function () {
     loadTable();
     //inicializamos los eventos
@@ -99,6 +104,45 @@
           productsTable.ajax.reload(null, false);
           //cerramos el modal
           $("#modalProduct").modal("hide");
+        }
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1500);
+        }
+      });
+    }
+    /**
+     * Metodo que se encarga de enviar los datos del fomulario del productos
+     * para actualizar la informacion
+     */
+    if (formUpdateProduct) {
+      formUpdateProduct.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const form = new FormData(formUpdateProduct);
+        //adicionamos el id del producto
+        form.append("update_txtProductId", idProduct);
+        const config = {
+          method: "POST",
+          body: form,
+        };
+        const data = await sendData(ENDPOINT_UPDATE_PRODUCT, config);
+        //mostramos la alerta de exito
+        showAlert({
+          title: data.title,
+          message: data.message,
+          icon: data.icon,
+          timer: data.timer,
+        });
+        if (data.status) {
+          //limpiamos el formulario
+          formUpdateProduct.reset();
+          //limpiamos la imagen
+          renderPreviewImage(DEFAULT_IMAGE, "update_logoPreview");
+          //actualizamos la tabla
+          productsTable.ajax.reload(null, false);
+          //cerramos el modal
+          $("#modalUpdateProduct").modal("hide");
         }
         if (data.url) {
           setTimeout(() => {
@@ -389,9 +433,15 @@
                   reader.readAsDataURL(file);
                 });
               }
+              /**
+               * cargamos los selects con los datos obtenidos
+               */
               $("#update_slctProductCategory").html(categorys);
               $("#update_slctProductSupplier").html(suppliers);
               $("#update_slctProductMeasurement").html(measurements);
+              /**
+               * cargamos los inputs con los datos obtenidos
+               */
               $("#update_txtProductCode").val(prodInf.bar_code);
               $("#update_txtProductName").val(prodInf.name);
               $("#update_slctProductCategory").val(prodInf.category_id);
@@ -402,6 +452,8 @@
               $("#update_txtProductPurchasePrice").val(prodInf.purchase_price);
               $("#update_txtProductSalesPrice").val(prodInf.sales_price);
               $("#update_txtProductDescription").val(prodInf.description);
+              $("#update_logoPreview").attr("src", prodInf.image_main_url);
+              $("#listImagesContainer").html(renderAllImages(prodInf.images));
               if (prodInf.is_public == "Si") {
                 $("#update_chkProductStatus").prop("checked", true);
               } else if (prodInf.is_public == "No") {
@@ -416,20 +468,56 @@
     });
   }
   /**
+   * Metodo que se encarga de renderizar todas las imágenes del producto
+   * @param {*} images
+   * @returns
+   */
+  function renderAllImages(images) {
+    if (images.length == 0) {
+      return `
+        <div class="col-12 p-2">
+            <div class="d-flex flex-column align-items-center justify-content-center text-muted p-4 rounded-3 bg-light w-100" style="border: 2px dashed #ced4da;">
+                <i class="bi bi-images text-secondary mb-2" style="font-size: 2.5rem;"></i>
+                <h6 class="fw-bold text-secondary mb-1">No se encontraron imágenes</h6>
+                <p class="small mb-0 text-center">Este producto aún no cuenta con imágenes en su galería.</p>
+            </div>
+        </div>
+      `;
+    }
+    let html = "";
+    images.forEach((image) => {
+      const urlImage = image.url;
+      const nameImage = image.name;
+      html += `
+                    <div class="col-4 p-2">
+                        <div class="border rounded-3 bg-white shadow-sm position-relative">
+                            <img src="${urlImage}" class="img-fluid rounded-3 p-1" alt="${nameImage}" loading="lazy" style="object-fit: contain; width: 100%; aspect-ratio: 1/1;">
+                            <button type="button" class="btn btn-danger position-absolute rounded-circle shadow-sm border border-2 border-white d-flex align-items-center justify-content-center" style="top: -8px; right: -8px; width: 26px; height: 26px; padding: 0; z-index: 10; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'" title="Eliminar imagen">
+                                <i class="bi bi-x-lg" style="font-size: 12px; -webkit-text-stroke: 0.5px;"></i>
+                            </button>
+                        </div>
+                    </div>
+      `;
+    });
+    return html;
+  }
+  /**
    * Creamos el metodo que se encarga de enviar todo al backend asi como tambien obtener los datos
    * @param {string} urlEndpoint - URL del endpoint
    * @param {Object} config - Configuración de la solicitud
    * @returns {Promise<Object>} - Resultado de la solicitud
    */
-  async function sendData(urlEndpoint, config) {
-    showAlert(
-      {
-        title: "Procesando...",
-        message: "Por favor espere un momento",
-        icon: "info",
-      },
-      "loading"
-    );
+  async function sendData(urlEndpoint, config, showLoading = true) {
+    if (showLoading) {
+      showAlert(
+        {
+          title: "Procesando...",
+          message: "Por favor espere un momento",
+          icon: "info",
+        },
+        "loading",
+      );
+    }
     try {
       const response = await fetch(urlEndpoint, config);
       if (!response.ok) {
@@ -437,7 +525,7 @@
           "Ocurrio un error al procesar la solicitud " +
             response.status +
             " " +
-            response.statusText
+            response.statusText,
         );
       }
       const result = await response.json();
@@ -449,7 +537,9 @@
         icon: "error",
       });
     } finally {
-      swal.close();
+      if (showLoading) {
+        swal.close();
+      }
     }
   }
   /**
@@ -459,8 +549,12 @@
    * @param {object} config - Configuracion de la peticion
    * @returns {string} - Opciones del select
    */
-  async function getAndRenderOptionsSelect(urlEndpoint, config) {
-    const data = await sendData(urlEndpoint, config);
+  async function getAndRenderOptionsSelect(
+    urlEndpoint,
+    config,
+    showLoading = true,
+  ) {
+    const data = await sendData(urlEndpoint, config, showLoading);
     if (!data.status) {
       showAlert({
         title: data.title,
@@ -490,14 +584,36 @@
    * @returns {Promise<void>}
    */
   async function loadSelects() {
-    categorys = await getAndRenderOptionsSelect(ENDPOINT_GET_CATEGORIES, {
-      method: "GET",
-    });
-    suppliers = await getAndRenderOptionsSelect(ENDPOINT_GET_SUPPLIERS, {
-      method: "GET",
-    });
-    measurements = await getAndRenderOptionsSelect(ENDPOINT_GET_MEASUREMENTS, {
-      method: "GET",
-    });
+    showAlert(
+      {
+        title: "Espere un momento",
+        message:
+          "Estamos procesando su solicitud de visualización de su inventario...",
+        icon: "info",
+      },
+      "loading",
+    );
+    categorys = await getAndRenderOptionsSelect(
+      ENDPOINT_GET_CATEGORIES,
+      {
+        method: "GET",
+      },
+      false,
+    );
+    suppliers = await getAndRenderOptionsSelect(
+      ENDPOINT_GET_SUPPLIERS,
+      {
+        method: "GET",
+      },
+      false,
+    );
+    measurements = await getAndRenderOptionsSelect(
+      ENDPOINT_GET_MEASUREMENTS,
+      {
+        method: "GET",
+      },
+      false,
+    );
+    swal.close();
   }
 })();
