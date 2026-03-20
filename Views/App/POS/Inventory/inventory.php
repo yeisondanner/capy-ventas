@@ -122,12 +122,18 @@
                 <div class="row g-3">
                     <div class="col-12 col-md-12 d-flex justify-content-center">
                         <div class="card-body p-4">
-                            <div class="logo-upload-area mb-3" onclick="document.getElementById('flInput').click()">
+                            <div class="logo-upload-area mb-3 position-relative" onclick="document.getElementById('flInput').click()">
+                                <!-- Skeleton / Spinner -->
+                                <div class="d-flex justify-content-center align-items-center bg-light position-absolute w-100 h-100 top-0 start-0 z-1" style="border-radius: inherit;">
+                                    <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                </div>
                                 <img src="<?= base_url(); ?>/Loadfile/iconproducts?f=product.png" id="logoPreview"
-                                    class="logo-preview-img mb-2" alt="Logo">
-                                <div class="text-primary fw-medium small"><i class="bi bi-cloud-upload me-1"></i> Subir
+                                    class="logo-preview-img mb-2 position-relative z-2 opacity-0" alt="Logo" loading="lazy" style="transition: opacity 0.3s ease;" onload="this.classList.remove('opacity-0'); this.previousElementSibling.classList.add('d-none');">
+                                <div class="text-primary fw-medium small position-relative z-2"><i class="bi bi-cloud-upload me-1"></i> Subir
                                     foto del producto</div>
-                                <div class="text-muted small mt-1" style="font-size: 0.75rem;">Click para subir (Max
+                                <div class="text-muted small mt-1 position-relative z-2" style="font-size: 0.75rem;">Click para subir (Max
                                     2MB)</div>
                             </div>
                             <input type="file" class="d-none" id="flInput" name="flInput" accept="image/*">
@@ -292,10 +298,16 @@
                     <div class="col-12 col-md-6 col-xl-3">
                         <div class="bg-white p-3 border rounded shadow-sm h-100">
                             <!-- Contenedor con proporción fija 4:3 para la imagen principal -->
-                            <div class="ratio ratio-4x3 mb-3">
+                            <div class="ratio ratio-4x3 mb-3 position-relative">
+                                <!-- Skeleton / Spinner -->
+                                <div class="d-flex justify-content-center align-items-center bg-light position-absolute w-100 h-100 top-0 start-0 z-1 rounded border">
+                                    <div class="spinner-border text-secondary" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                </div>
                                 <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop"
-                                    class="rounded border object-fit-cover" id="reportImageMain" loading="lazy"
-                                    alt="Producto Principal">
+                                    class="rounded border object-fit-cover position-relative z-2 opacity-0" id="reportImageMain" loading="lazy"
+                                    alt="Producto Principal" style="transition: opacity 0.3s ease;" onload="this.classList.remove('opacity-0'); this.previousElementSibling.classList.add('d-none');">
                             </div>
 
                             <div class="mb-3 border-bottom pb-2">
@@ -560,13 +572,19 @@
                 <div class="row g-3">
                     <div class="col-12 col-md-6 col-lg-5 col-xl-4">
                         <div class="card-body p-4">
-                            <div class="logo-upload-area mb-3"
+                            <div class="logo-upload-area mb-3 position-relative"
                                 onclick="document.getElementById('update_flInput').click()">
+                                <!-- Skeleton / Spinner -->
+                                <div class="d-flex justify-content-center align-items-center bg-light position-absolute w-100 h-100 top-0 start-0 z-1" style="border-radius: inherit;">
+                                    <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                                        <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                </div>
                                 <img src="<?= base_url(); ?>/Loadfile/iconproducts?f=product.png"
-                                    id="update_logoPreview" class="logo-preview-img mb-2" alt="Logo">
-                                <div class="text-primary fw-medium small"><i class="bi bi-cloud-upload me-1"></i> Subir
+                                    id="update_logoPreview" class="logo-preview-img mb-2 position-relative z-2 opacity-0" loading="lazy" style="object-fit: contain; aspect-ratio: 1/1; transition: opacity 0.3s ease;" onload="this.classList.remove('opacity-0'); this.previousElementSibling.classList.add('d-none');">
+                                <div class="text-primary fw-medium small position-relative z-2"><i class="bi bi-cloud-upload me-1"></i> Subir
                                     foto del producto</div>
-                                <div class="text-muted small mt-1" style="font-size: 0.75rem;">Click para subir (Max
+                                <div class="text-muted small mt-1 position-relative z-2" style="font-size: 0.75rem;">Click para subir (Max
                                     2MB)</div>
                             </div>
                             <input type="file" class="d-none" id="update_flInput" name="update_flInput"

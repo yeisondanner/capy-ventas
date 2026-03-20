@@ -12,8 +12,10 @@
   const update_flInput = document.getElementById("update_flInput") ?? null;
   //inicializamos la tabla
   let productsTable;
-  //inicializamos el id del product
+  //inicializamos el id del product y de la imagen
   let idProduct = null;
+  let idImage = null;
+  let nameImage = null;
   /**
    * Variables de los selects
    */
@@ -32,6 +34,7 @@
   const ENDPOINT_GET_PRODUCT = `${base_url}/pos/Inventory/getProduct?id=`;
   const ENDPOINT_UPDATE_PRODUCT = `${base_url}/pos/Inventory/updateProduct`;
   const DEFAULT_IMAGE = `${base_url}/Loadfile/iconproducts?f=product.png`;
+  const ENDPOINT_DELETE_IMAGE = `${base_url}/pos/Inventory/deletePhotoImage`;
 
   document.addEventListener("DOMContentLoaded", function () {
     loadTable();
@@ -454,6 +457,7 @@
               $("#update_txtProductDescription").val(prodInf.description);
               $("#update_logoPreview").attr("src", prodInf.image_main_url);
               $("#listImagesContainer").html(renderAllImages(prodInf.images));
+              deleteImage();
               if (prodInf.is_public == "Si") {
                 $("#update_chkProductStatus").prop("checked", true);
               } else if (prodInf.is_public == "No") {
@@ -476,8 +480,8 @@
     if (images.length == 0) {
       return `
         <div class="col-12 p-2">
-            <div class="d-flex flex-column align-items-center justify-content-center text-muted p-4 rounded-3 bg-light w-100" style="border: 2px dashed #ced4da;">
-                <i class="bi bi-images text-secondary mb-2" style="font-size: 2.5rem;"></i>
+            <div class="d-flex flex-column align-items-center justify-content-center text-muted p-4 rounded-3 bg-light w-100 border border-2 border-secondary" style="border-style: dashed; --bs-border-opacity: .3;">
+                <i class="bi bi-images text-secondary mb-2 fs-1"></i>
                 <h6 class="fw-bold text-secondary mb-1">No se encontraron imágenes</h6>
                 <p class="small mb-0 text-center">Este producto aún no cuenta con imágenes en su galería.</p>
             </div>
@@ -485,14 +489,24 @@
       `;
     }
     let html = "";
+    // Iteramos sobre las imágenes
     images.forEach((image) => {
       const urlImage = image.url;
       const nameImage = image.name;
+      const idImage = image.idProduct_file;
       html += `
-                    <div class="col-4 p-2">
-                        <div class="border rounded-3 bg-white shadow-sm position-relative">
-                            <img src="${urlImage}" class="img-fluid rounded-3 p-1" alt="${nameImage}" loading="lazy" style="object-fit: contain; width: 100%; aspect-ratio: 1/1;">
-                            <button type="button" class="btn btn-danger position-absolute rounded-circle shadow-sm border border-2 border-white d-flex align-items-center justify-content-center" style="top: -8px; right: -8px; width: 26px; height: 26px; padding: 0; z-index: 10; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'" title="Eliminar imagen">
+                    <div class="col-6 col-md-5 col-lg-4 col-xl-3 p-2 image-item">
+                        <div class="border rounded-3 bg-white shadow-sm position-relative h-100">
+                            <!-- Skeleton / Spinner -->
+                            <div class="d-flex justify-content-center align-items-center bg-light rounded-3 position-absolute w-100 h-100 top-0 start-0 z-1">
+                                <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                                    <span class="visually-hidden">Cargando...</span>
+                                </div>
+                            </div>
+                            <!-- Imagen de producto -->
+                            <img src="${urlImage}" class="img-fluid rounded-3 p-1 w-100 position-relative z-2 opacity-0" alt="${nameImage}" loading="lazy" style="object-fit: contain; aspect-ratio: 1/1; transition: opacity 0.3s ease;" onload="this.classList.remove('opacity-0'); this.previousElementSibling.classList.add('d-none');">
+                            <!-- Botón eliminar -->
+                            <button type="button" data-id=${idImage} data-name=${nameImage} class="btn-delete-image btn btn-danger position-absolute top-0 start-100 translate-middle rounded-circle shadow-sm border border-2 border-white d-flex align-items-center justify-content-center p-0 z-3" style="width: 28px; height: 28px; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'" title="Eliminar imagen">
                                 <i class="bi bi-x-lg" style="font-size: 12px; -webkit-text-stroke: 0.5px;"></i>
                             </button>
                         </div>
@@ -500,6 +514,70 @@
       `;
     });
     return html;
+  }
+  /**
+   * Metodo que se encarga de eliminar una imagen del producto
+   * @returns {void}
+   */
+  function deleteImage() {
+    const btnsDeletes = document.querySelectorAll(".btn-delete-image");
+    btnsDeletes.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        //obtenemos los datos del boton
+        idImage = btn.dataset.id;
+        nameImage = btn.dataset.name;
+        Swal.fire({
+          title: "¿Está seguro de eliminar la imagen?",
+          html: `La imagen <strong>"${nameImage}"</strong> será eliminada`,
+          footer: `<div style="border: 1px dashed #dc3545"><span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Esta acción no se puede deshacer</span></div>`,
+          icon: "warning",
+          showCancelButton: true,
+          reverseButtons: true,
+          confirmButtonColor: "#dc3545",
+          cancelButtonColor: "#6c757d",
+          confirmButtonText: "<i class='bi bi-trash'></i> Si, eliminar",
+          cancelButtonText: "<i class='bi bi-x-lg'></i> No, cancelar",
+          //hacemos que no se cierre el modal
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          //preConfirm es una funcion que se ejecuta antes de que se cierre el modal
+          preConfirm: async () => {
+            //preparamos los datos para enviar al backend
+            const form = new FormData();
+            form.append("id", idImage);
+            form.append("name", nameImage);
+            const config = {
+              method: "POST",
+              body: form,
+            };
+            //enviamos los datos al backend
+            const data = await sendData(ENDPOINT_DELETE_IMAGE, config);
+            return data;
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const data = result.value;
+            showAlert({
+              title: data.title,
+              message: data.message,
+              icon: data.icon,
+              timer: data.timer,
+            });
+            if (data.status) {
+              //quitamos el elemento del dom
+              const image = btn.closest(".image-item");
+              image.remove();
+            }
+            //validamos si existe una url para redirigir
+            if (data.url) {
+              setTimeout(() => {
+                window.location.href = data.url;
+              }, 1000);
+            }
+          }
+        });
+      });
+    });
   }
   /**
    * Creamos el metodo que se encarga de enviar todo al backend asi como tambien obtener los datos

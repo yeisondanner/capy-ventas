@@ -1077,7 +1077,7 @@ class Inventory extends Controllers
     public function deletePhotoImage()
     {
         //VALIDACION DE PERMISOS
-        toJson(validate_permission_app(3, "u", false));
+        validate_permission_app(3, "u", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
