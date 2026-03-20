@@ -235,138 +235,136 @@
                 </div>
             </div>
 
-            <div class="modal-body" id="voucherContainer">
-                <div class="receipt-container report-card-movements p-4 border rounded shadow-sm bg-white">
-                    <!-- Header -->
-                    <div class="row align-items-center mb-4 border-bottom pb-3">
-                        <div class="col-3 text-center">
-                            <img id="logo_voucher" src="" alt="Logo" class="img-fluid"
-                                style="max-height: 80px; filter: grayscale(100%);">
-                        </div>
-                        <div class="col-9 text-end">
-                            <h4 class="fw-bold text-uppercase mb-1" id="name_bussines">--</h4>
-                            <p class="mb-0 text-muted small" id="direction_bussines">--</p>
-                            <p class="mb-0 text-muted small">RUC: <span id="document_bussines">--</span></p>
-                        </div>
-                    </div>
-
-                    <!-- Title & Date -->
-                    <div class="row mb-4">
-                        <div class="col-12 text-center border border-dark">
-                            <h5 class="fw-bold text-decoration-underline text-uppercase">Comprobante de Venta</h5>
-                        </div>
-                    </div>
-
-                    <!-- Details Grid -->
-                    <div class="row mb-4">
-                        <div class="col-6 border-left border-top border-dark bg-light">
-                            <label class="small text-uppercase text-muted fw-bold">Codigo de Venta:</label>
-                            <div class="fw-bold small" id="voucher_code">--</div>
-                        </div>
-                        <div class="col-3 border-top border-dark bg-light">
-                            <label class="small text-uppercase text-muted fw-bold">Estado:</label>
-                            <div class="fw-bold small" id="voucher_state">----</div>
-                        </div>
-                        <div class="col-3 border-right border-top border-dark bg-light">
-                            <label class="small text-uppercase text-muted fw-bold">Tipo Venta:</label>
-                            <div class="fw-bold small" id="voucher_type">------</div>
-                        </div>
-                        <div class="col-6 border-left border-bottom border-dark bg-light">
-                            <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión/pago:</label>
-                            <div class="fw-bold small" id="date_time">--</div>
-                        </div>
-                        <div class="col-6 border-right border-bottom border-dark bg-light">
-                            <label class="small text-uppercase text-muted fw-bold">Fecha de Vencimiento:</label>
-                            <div class="fw-bold small" id="voucher_expiration_date">--</div>
-                        </div>
-                        <div class="col-12 text-end">
-                            <label class="small text-uppercase text-muted fw-bold">Vendedor:</label>
-                            <div class="fw-bold small" id="fullname">--</div>
+            <div class="modal-body" id="voucherContainer" style="background-color: #f8f9fa; border-radius: 0 0 8px 8px;">
+                <div class="ticket-wrapper">
+                    <div class="ticket-58">
+                        <!-- Cabecera -->
+                        <div class="text-center">
+                            <img id="logo_voucher" src="" alt="Logo" style="max-height: 60px; filter: grayscale(100%); margin-bottom: 5px;">
+                            <div class="fw-bold fs-title" id="name_bussines">--</div>
+                            <div class="fs-subtitle" id="direction_bussines">--</div>
+                            <div>RUC: <span id="document_bussines">--</span></div>
+                            <div class="separator"></div>
+                            <div class="fw-bold fs-title">COMPROBANTE DE VENTA</div>
+                            <div class="separator"></div>
                         </div>
 
-                        <div class="col-12 mt-3">
-                            <label class="small text-uppercase text-muted fw-bold">Cliente:</label>
-                            <div class="border-bottom border-dark pb-1 fs-5" id="name_customer">--</div>
-                            <div class="small text-muted" id="direction_customer">--</div>
-                        </div>
-                    </div>
-
-                    <!-- Product Details Table -->
-                    <div class="table-responsive mb-4">
-                        <table class="table table-bordered border-dark table-sm mb-0">
-                            <thead class="bg-light text-center">
+                        <!-- Datos Generales -->
+                        <div>
+                            <table style="width: 100%;">
                                 <tr>
-                                    <th style="width: 10%;">Cant.</th>
-                                    <th style="width: 50%;">Descripción</th>
-                                    <th style="width: 20%;">P. Unit</th>
-                                    <th style="width: 20%;">Total</th>
+                                    <td><span class="fw-bold">Código:</span></td>
+                                    <td class="text-right" id="voucher_code">--</td>
                                 </tr>
-                            </thead>
-                            <tbody id="tbodyVoucherDetails">
-                                <!-- Dynamic Items -->
-                            </tbody>
-                        </table>
-                    </div>
+                                <tr>
+                                    <td><span class="fw-bold">Fecha:</span></td>
+                                    <td class="text-right" id="date_time">--</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="fw-bold">Estado:</span></td>
+                                    <td class="text-right" id="voucher_state">----</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="fw-bold">T. Venta:</span></td>
+                                    <td class="text-right" id="voucher_type">------</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="fw-bold">Vencim.:</span></td>
+                                    <td class="text-right" id="voucher_expiration_date">--</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="fw-bold">Vendedor:</span></td>
+                                    <td class="text-right" id="fullname">--</td>
+                                </tr>
+                            </table>
+                            <div class="separator-solid"></div>
+                            <div><span class="fw-bold">Cliente:</span></div>
+                            <div id="name_customer">--</div>
+                            <div id="direction_customer">--</div>
+                            <div class="separator-solid"></div>
+                        </div>
 
-                    <!-- Totals Section -->
-                    <div class="row justify-content-end">
-                        <div class="col-8">
-                            <table class="table table-sm table-borderless mb-0">
-                                <tbody>
+                        <!-- Detalles del Producto -->
+                        <div>
+                            <table>
+                                <thead>
                                     <tr>
-                                        <td class="text-end fw-bold small py-0">Subtotal:</td>
-                                        <td class="text-end small py-0" style="width: 120px;"><span
-                                                id="subtotal_amount">--</span></td>
+                                        <th style="width: 15%; text-align: left;">CANT</th>
+                                        <th style="width: 50%; text-align: left;">DESCRIPCIÓN</th>
+                                        <th style="width: 35%; text-align: right;">TOTAL</th>
                                     </tr>
-                                    <tr class="border-top border-dark">
-                                        <td class="text-end fw-bold small py-0">Descuento (<span
-                                                id="percentage_discount">0</span>%):</td>
-                                        <td class="text-end text-danger small py-0"><span id="discount_amount">--</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end fw-bold small py-0"><span id="tax_name">IGV</span> (<span
-                                                id="tax_percentage">0</span>%):</td>
-                                        <td class="text-end small py-0"><span id="tax_amount">--</span></td>
-                                    </tr>
-                                    <!--Inpuestos -->
-                                    <tr class="border-top border-dark">
-                                        <td class="text-end fw-bold small py-0" title="Impuesto de financiamiento">
-                                            <span>Imp. Finac.</span> (<span id="input_finac_percentage">0</span>%):
-                                        </td>
-                                        <td class="text-end small py-0"><span id="input_finac_amount">--</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end fw-bold small py-0" title="Impuesto por mora Mensual">
-                                            <span>Imp. Mor. Mens.</span> (<span id="input_mora_percentage">0</span>%):
-                                        </td>
-                                        <td class="text-end small py-0"><span id="input_mora_amount">--</span></td>
-                                    </tr>
+                                </thead>
+                                <tbody id="tbodyVoucherDetails">
+                                    <!-- Dynamic Items -->
                                 </tbody>
                             </table>
-                            <div class="p-2 border border-2 border-dark rounded bg-light mt-2 text-end">
-                                <label class="small text-uppercase text-muted fw-bold d-block">Total a Pagar</label>
-                                <span class="fs-4 fw-bold text-dark" id="total_amount">--</span>
-                            </div>
+                            <div class="separator-solid"></div>
                         </div>
-                    </div>
-                    <!-- System Footer -->
-                    <div class="row mt-4">
-                        <div class="col-12 text-center d-flex align-items-center justify-content-center">
-                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo"
-                                style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
-                            <small class="text-muted fst-italic">Generado por Capy Ventas</small>
-                        </div>
-                    </div>
 
+                        <!-- Totales Section -->
+                        <div>
+                            <table class="totals-table">
+                                <tr>
+                                    <td class="fw-bold text-right" style="width: 60%">Subtotal:</td>
+                                    <td class="text-right" id="subtotal_amount">--</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-right">Descto (<span id="percentage_discount">0</span>%):</td>
+                                    <td class="text-right" id="discount_amount">--</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-right"><span id="tax_name">IGV</span> (<span id="tax_percentage">0</span>%):</td>
+                                    <td class="text-right" id="tax_amount">--</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-right">Imp. Finac (<span id="input_finac_percentage">0</span>%):</td>
+                                    <td class="text-right" id="input_finac_amount">--</td>
+                                </tr>
+                                <tr>
+                                    <td class="fw-bold text-right">Imp. Mora (<span id="input_mora_percentage">0</span>%):</td>
+                                    <td class="text-right" id="input_mora_amount">--</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><div class="separator"></div></td>
+                                </tr>
+                                <tr>
+                                    <td class="grand-total text-right">TOTAL:</td>
+                                    <td class="grand-total text-right" id="total_amount">--</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- System Footer -->
+                        <div class="brand-footer mt-4">
+                            <div class="separator"></div>
+                            <div class="text-center mb-2">
+                                <!-- Placeholder de Código de barras simulado con texto -->
+                                <div style="font-size: 16px; letter-spacing: 2px; line-height: 1;">
+                                    || ||| | ||| || ||
+                                </div>
+                            </div>
+                            <div class="text-center fw-bold" style="font-size: 12px; margin-bottom: 5px;">¡Gracias por su preferencia!</div>
+                            <div class="separator"></div>
+                            <div style="margin-top: 5px; display: flex; align-items: center; justify-content: center;">
+                                <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 12px; margin-right: 5px; opacity: 0.8; filter: grayscale(100%);">
+                                <span style="font-weight: bold;">CapyVentas</span>
+                            </div>
+                            <div style="font-weight: 600;">capyventas.com</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" id="download-png"><i class="bi bi-card-image"></i>
-                    Exportar PNG</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>
-                    Cerrar</button>
+                <button type="button" class="btn btn-outline-dark" id="btnPrintVoucherMovements">
+                    <i class="bi bi-printer"></i> Imprimir (P)
+                </button>
+                <button type="button" class="btn btn-outline-warning" id="download-png">
+                    <i class="bi bi-card-image"></i> Exportar PNG
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cerrar
+                </button>
             </div>
         </div>
     </div>
@@ -391,111 +389,117 @@
                 </div>
             </div>
 
-            <div class="modal-body" id="expenseContainer">
-                <div class="receipt-container report-card-movements p-4 border rounded shadow-sm bg-white">
-                    <!-- Header -->
-                    <div class="row align-items-center mb-4 border-bottom pb-3">
-                        <div class="col-3 text-center">
-                            <img id="logo_expense" src="" alt="Logo" class="img-fluid"
-                                style="max-height: 80px; filter: grayscale(100%);">
-                        </div>
-                        <div class="col-9 text-end">
-                            <h4 class="fw-bold text-uppercase mb-1" id="name_business_expense">--</h4>
-                            <p class="mb-0 text-muted small" id="direction_business_expense">--</p>
-                            <p class="mb-0 text-muted small">RUC: <span id="document_business_expense">--</span></p>
-                        </div>
-                    </div>
-
-                    <!-- Title & Date -->
-                    <div class="row mb-4">
-                        <div class="col-12 text-center">
-                            <h5 class="fw-bold text-decoration-underline text-uppercase" id="expense_title">Comprobante
-                                de Gasto/Egreso</h5>
-                        </div>
-                    </div>
-
-                    <!-- Details Grid -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-12">
-                            <label class="small text-uppercase text-muted fw-bold">Codigo de Gasto/Egreso:</label>
-                            <div class="fw-bold" id="expense_code">--</div>
-                        </div>
-                        <div class="col-6">
-                            <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión:</label>
-                            <div class="fw-bold" id="expense_date">--</div>
-                        </div>
-                        <div class="col-6 text-end">
-                            <label class="small text-uppercase text-muted fw-bold">Estado:</label>
-                            <div><span id="expense_status" class="badge bg-light text-dark border">--</span></div>
+            <div class="modal-body" id="expenseContainer" style="background-color: #f8f9fa; border-radius: 0 0 8px 8px;">
+                <div class="ticket-wrapper">
+                    <div class="ticket-58">
+                        <!-- Cabecera -->
+                        <div class="text-center">
+                            <img id="logo_expense" src="" alt="Logo" style="max-height: 60px; filter: grayscale(100%); margin-bottom: 5px;">
+                            <div class="fw-bold fs-title" id="name_business_expense">--</div>
+                            <div class="fs-subtitle" id="direction_business_expense">--</div>
+                            <div>RUC: <span id="document_business_expense">--</span></div>
+                            <div class="separator"></div>
+                            <div class="fw-bold fs-title" id="expense_title">COMPROBANTE DE GASTO</div>
+                            <div class="separator"></div>
                         </div>
 
-                        <div class="col-12 mt-3">
-                            <label class="small text-uppercase text-muted fw-bold">Referencia / Comprobante:</label>
-                            <div class="border-bottom border-dark pb-1" id="expense_voucher_reference">--</div>
-                        </div>
-
-                        <div class="col-12 mt-3">
-                            <label class="small text-uppercase text-muted fw-bold">Beneficiario / Proveedor:</label>
-                            <div class="border-bottom border-dark pb-1 fs-5" id="expense_supplier">--</div>
-                        </div>
-
-                        <div class="col-12 mt-3">
-                            <label class="small text-uppercase text-muted fw-bold">Registrado Por:</label>
-                            <div class="border-bottom pb-1" id="expense_fullname">--</div>
-                        </div>
-                    </div>
-
-                    <!-- Concept & Category Table -->
-                    <div class="table-responsive mb-4">
-                        <table class="table table-bordered border-dark table-sm mb-0">
-                            <thead class="bg-light text-center">
+                        <!-- Details Grid -->
+                        <div>
+                            <table style="width: 100%;">
                                 <tr>
-                                    <th style="width: 30%;">Categoría</th>
-                                    <th style="width: 70%;">Concepto / Descripción</th>
+                                    <td><span class="fw-bold">Código:</span></td>
+                                    <td class="text-right" id="expense_code">--</td>
                                 </tr>
-                            </thead>
-                            <tbody>
                                 <tr>
-                                    <td class="text-center align-middle" id="expense_category">--</td>
-                                    <td>
-                                        <strong id="expense_name">--</strong><br>
-                                        <small class="text-muted" id="expense_description">--</small>
-                                    </td>
+                                    <td><span class="fw-bold">Fecha:</span></td>
+                                    <td class="text-right" id="expense_date">--</td>
                                 </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Payment Info & Total -->
-                    <div class="row">
-                        <div class="col-6">
-                            <label class="small text-uppercase text-muted fw-bold">Método de Pago:</label>
-                            <div class="fw-bold" id="expense_payment_method">--</div>
-                        </div>
-                        <div class="col-6 text-end">
-                            <div class="p-2 border border-2 border-dark rounded d-inline-block bg-light">
-                                <label class="small text-uppercase text-muted fw-bold d-block">Monto Total</label>
-                                <span class="fs-4 fw-bold text-dark" id="expense_total_amount">--</span>
+                                <tr>
+                                    <td><span class="fw-bold">Registrado:</span></td>
+                                    <td class="text-right" id="expense_fullname">--</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="fw-bold">M. Pago:</span></td>
+                                    <td class="text-right" id="expense_payment_method">--</td>
+                                </tr>
+                            </table>
+                            
+                            <div class="separator"></div>
+                            <div class="text-center">
+                                <span id="expense_status" class="fs-subtitle fw-bold">--</span>
                             </div>
-                        </div>
-                    </div>
-                    <!-- System Footer -->
-                    <div class="row mt-4">
-                        <div class="col-12 text-center d-flex align-items-center justify-content-center">
-                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo"
-                                style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
-                            <small class="text-muted fst-italic">Generado por Capy Ventas</small>
-                        </div>
-                    </div>
+                            <div class="separator"></div>
 
+                            <div><span class="fw-bold">Referencia:</span></div>
+                            <div id="expense_voucher_reference">--</div>
+                            <div class="separator-solid"></div>
+                            <div><span class="fw-bold">Proveedor:</span></div>
+                            <div id="expense_supplier">--</div>
+                            <div class="separator-solid"></div>
+                        </div>
+
+                        <!-- Concept & Category Table -->
+                        <div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 40%; text-align: left;">CATEGORÍA</th>
+                                        <th style="width: 60%; text-align: right;">CONCEPTO</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td id="expense_category">--</td>
+                                        <td class="text-right">
+                                            <strong id="expense_name">--</strong><br>
+                                            <span style="font-size: 10px;" id="expense_description">--</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="separator-solid"></div>
+                        </div>
+
+                        <!-- Payment Info & Total -->
+                        <div>
+                            <table class="totals-table mt-2">
+                                <tr>
+                                    <td class="grand-total text-right">TOTAL:</td>
+                                    <td class="grand-total text-right" id="expense_total_amount">--</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- System Footer -->
+                        <div class="brand-footer mt-4">
+                            <div class="separator"></div>
+                            <div class="text-center mb-2">
+                                <div style="font-size: 16px; letter-spacing: 2px; line-height: 1;">
+                                    || ||| | ||| || ||
+                                </div>
+                            </div>
+                            <div class="text-center fw-bold" style="font-size: 12px; margin-bottom: 5px;">Comprobante Interno</div>
+                            <div class="separator"></div>
+                            <div style="margin-top: 5px; display: flex; align-items: center; justify-content: center;">
+                                <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 12px; margin-right: 5px; opacity: 0.8; filter: grayscale(100%);">
+                                <span style="font-weight: bold;">CapyVentas</span>
+                            </div>
+                            <div style="font-weight: 600;">capyventas.com</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-warning" id="download-expense-png"><i
-                        class="bi bi-card-image"></i>
-                    Exportar PNG</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-outline-dark" id="btnPrintExpenseMovements">
+                    <i class="bi bi-printer"></i> Imprimir (P)
+                </button>
+                <button type="button" class="btn btn-outline-warning" id="download-expense-png">
+                    <i class="bi bi-card-image"></i> Exportar PNG
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i> Cerrar
+                </button>
             </div>
         </div>
     </div>

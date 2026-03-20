@@ -843,6 +843,13 @@
             return;
           }
 
+          const printVoucherShortcut = (event) => {
+            if (event.key.toLowerCase() === "p" && Swal.isVisible()) {
+              event.preventDefault();
+              printElement("voucherContainer", `Comprobante de Venta CV-${String(res.header.id).padStart(8, "0")}`);
+            }
+          };
+
           Swal.fire({
             target: document.getElementById("creditsReportModal"),
             html: renderHtmlVoucherPayment(res.header, res.details),
@@ -850,9 +857,12 @@
             cancelButtonText: '<i class="bi bi-x-lg"></i> Cerrar',
             showConfirmButton: true,
             confirmButtonText: `<i class="bi bi-card-image"></i> Exportar PNG`,
+            showDenyButton: true,
+            denyButtonText: `<i class="bi bi-printer"></i> Imprimir (P)`,
             buttonsStyling: false,
             customClass: {
               confirmButton: "btn btn-outline-warning me-2",
+              denyButton: "btn btn-outline-info me-2",
               cancelButton: "btn btn-secondary",
             },
             preConfirm: () => {
@@ -862,6 +872,16 @@
               );
               return false; // Evita que se cierre el modal
             },
+            preDeny: () => {
+              printElement("voucherContainer", `Comprobante de Venta CV-${String(res.header.id).padStart(8, "0")}`);
+              return false; // Evita que se cierre el modal
+            },
+            didOpen: () => {
+              document.addEventListener("keydown", printVoucherShortcut);
+            },
+            willClose: () => {
+              document.removeEventListener("keydown", printVoucherShortcut);
+            }
           });
         } catch (error) {
           showAlert({
@@ -1023,12 +1043,15 @@
     let detailsHtml = "";
     d.forEach((item) => {
       subtotal += Number(item.sales_price_product) * item.stock_product;
+      const total = Number(item.sales_price_product * item.stock_product).toFixed(2);
       detailsHtml += `
         <tr>
           <td>${item.stock_product}</td>
-          <td>${item.name_product} (${item.unit_of_measurement})</td>
-          <td class="text-end">${getcurrency} ${Number(item.sales_price_product)}</td>
-          <td class="text-end">${getcurrency} ${Number(item.sales_price_product * item.stock_product).toFixed(2)}</td>
+          <td>
+            ${item.name_product} (${item.unit_of_measurement})<br>
+            <span style="font-size: 9px; color: #555;">S/ ${Number(item.sales_price_product).toFixed(2)} x ${item.stock_product}</span>
+          </td>
+          <td class="text-right">S/ ${total}</td>
         </tr>
       `;
     });
@@ -1036,130 +1059,121 @@
     const descuento = (subtotal * Number(h.percentage_discount || 0)) / 100;
 
     return `
-           <div id="voucherContainer" class="receipt-container report-card-movements p-4 border rounded shadow-sm bg-white text-start">
-                    <!-- Header -->
-                    <div class="row align-items-center mb-4 border-bottom pb-3">
-                        <div class="col-3 text-center">
-                            <img id="logo_voucher" src="${h.logo}" alt="Logo" class="img-fluid"
-                                style="max-height: 80px; filter: grayscale(100%);">
-                        </div>
-                        <div class="col-9 text-end">
-                            <h4 class="fw-bold text-uppercase mb-1" id="name_bussines">${h.name_bussines}</h4>
-                            <p class="mb-0 text-muted small" id="direction_bussines">${h.direction_bussines}</p>
-                            <p class="mb-0 text-muted small">RUC: <span id="document_bussines">${h.document_bussines}</span></p>
-                        </div>
-                    </div>
+      <div id="voucherContainer" class="ticket-wrapper">
+        <div class="ticket-58">
+          <!-- Cabecera -->
+          <div class="text-center">
+            <img id="logo_voucher" src="${h.logo}" alt="Logo" style="max-height: 60px; filter: grayscale(100%); margin-bottom: 5px;">
+            <div class="fw-bold fs-title" id="name_bussines">${h.name_bussines}</div>
+            <div class="fs-subtitle" id="direction_bussines">${h.direction_bussines}</div>
+            <div>RUC: <span id="document_bussines">${h.document_bussines}</span></div>
+            <div class="separator"></div>
+            <div class="fw-bold fs-title text-uppercase">Comprobante de Pago</div>
+            <div class="separator"></div>
+          </div>
 
-                    <!-- Title & Date -->
-                    <div class="row mb-4">
-                        <div class="col-12 text-center border border-dark">
-                            <h5 class="fw-bold text-decoration-underline text-uppercase mb-0 py-1">Comprobante de Venta</h5>
-                        </div>
-                    </div>
+          <!-- Datos Generales -->
+          <div>
+            <table style="width: 100%;">
+              <tr>
+                <td><span class="fw-bold">Código:</span></td>
+                <td class="text-right" id="voucher_code">${voucher_code}</td>
+              </tr>
+              <tr>
+                <td><span class="fw-bold">Fecha/Pago:</span></td>
+                <td class="text-right" id="date_time">${h.date_time}</td>
+              </tr>
+              <tr>
+                <td><span class="fw-bold">Vencimiento:</span></td>
+                <td class="text-right" id="voucher_expiration_date">${h.payment_deadline}</td>
+              </tr>
+              <tr>
+                <td><span class="fw-bold">Vendedor:</span></td>
+                <td class="text-right" id="fullname">${h.fullname}</td>
+              </tr>
+              <tr>
+                <td><span class="fw-bold">Condición:</span></td>
+                <td class="text-right text-uppercase" id="sale_type">${h.sale_type}</td>
+              </tr>
+              <tr>
+                <td><span class="fw-bold">Estado:</span></td>
+                <td class="text-right text-uppercase" id="voucher_state">${h.status}</td>
+              </tr>
+            </table>
+            <div class="separator-solid"></div>
+            <div><span class="fw-bold">Cliente:</span></div>
+            <div id="name_customer">${h.name_customer}</div>
+            <div id="direction_customer" style="font-size: 11px;">${h.direction_customer}</div>
+            <div class="separator-solid"></div>
+          </div>
 
-                    <!-- Details Grid -->
-                    <div class="row mb-4">
-                        <div class="col-6 border-start border-top border-dark bg-light p-2">
-                            <label class="small text-uppercase text-muted fw-bold">Codigo de Venta:</label>
-                            <div class="fw-bold small" id="voucher_code">${voucher_code}</div>
-                        </div>
-                        <div class="col-3 border-top border-dark bg-light p-2">
-                            <label class="small text-uppercase text-muted fw-bold">Estado:</label>
-                            <div class="fw-bold small" id="voucher_state">${h.status}</div>
-                        </div>
-                        <div class="col-3 border-end border-top border-dark bg-light p-2">
-                            <label class="small text-uppercase text-muted fw-bold">Tipo Venta:</label>
-                            <div class="fw-bold small" id="voucher_type">${h.sale_type}</div>
-                        </div>
-                        <div class="col-6 border-start border-bottom border-dark bg-light p-2">
-                            <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión/pago:</label>
-                            <div class="fw-bold small" id="date_time">${h.date_time}</div>
-                        </div>
-                        <div class="col-6 border-end border-bottom border-dark bg-light p-2">
-                            <label class="small text-uppercase text-muted fw-bold">Fecha de Vencimiento:</label>
-                            <div class="fw-bold small" id="voucher_expiration_date">${h.payment_deadline}</div>
-                        </div>
-                        <div class="col-12 text-end mt-2">
-                            <label class="small text-uppercase text-muted fw-bold">Vendedor:</label>
-                            <div class="fw-bold small" id="fullname">${h.fullname}</div>
-                        </div>
+          <!-- Detalles del Producto -->
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 15%; text-align: left;">CANT</th>
+                  <th style="width: 50%; text-align: left;">DESCRIPCIÓN</th>
+                  <th style="width: 35%; text-align: right;">TOTAL</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyVoucherDetails">
+                ${detailsHtml}
+              </tbody>
+            </table>
+            <div class="separator-solid"></div>
+          </div>
 
-                        <div class="col-12 mt-3">
-                            <label class="small text-uppercase text-muted fw-bold">Cliente:</label>
-                            <div class="border-bottom border-dark pb-1 fs-5" id="name_customer">${h.name_customer}</div>
-                            <div class="small text-muted" id="direction_customer">${h.direction_customer}</div>
-                        </div>
-                    </div>
+          <!-- Totales -->
+          <div>
+            <table class="totals-table" style="width:100%;">
+              <tr>
+                <td class="fw-bold text-right" style="width: 60%">Subtotal:</td>
+                <td class="text-right" id="subtotal_amount">${getcurrency} ${subtotal.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold text-right">Descto (<span id="percentage_discount">${h.percentage_discount}</span>%):</td>
+                <td class="text-right text-danger" id="discount_amount">-${getcurrency} ${descuento.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold text-right"><span id="tax_name">${h.tax_name}</span> (<span id="tax_percentage">${h.tax_percentage}</span>%):</td>
+                <td class="text-right" id="tax_amount">${getcurrency} ${parseFloat(h.tax_amount).toFixed(2)}</td>
+              </tr>
+              <!-- Impuestos extras para créditos -->
+              <tr>
+                <td class="fw-bold text-right">Imp. Finan. (${h.current_interest_rate}%):</td>
+                <td class="text-right" id="input_finac_amount">${getcurrency} ${parseFloat(h.amount_current_interest_rate).toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td class="fw-bold text-right">Imp. Mora (${h.default_interest_rate}%):</td>
+                <td class="text-right" id="input_mora_amount">${getcurrency} ${parseFloat(h.amount_default_interest_rate).toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td colspan="2"><div class="separator"></div></td>
+              </tr>
+              <tr>
+                <td class="grand-total text-right fw-bold fs-6">TOTAL:</td>
+                <td class="grand-total text-right fw-bold fs-6" id="total_amount">${getcurrency} ${Number(h.amount).toFixed(2)}</td>
+              </tr>
+            </table>
+          </div>
 
-                    <!-- Product Details Table -->
-                    <div class="table-responsive mb-4">
-                        <table class="table table-bordered border-dark table-sm mb-0">
-                            <thead class="bg-light text-center">
-                                <tr>
-                                    <th style="width: 10%;">Cant.</th>
-                                    <th style="width: 50%;">Descripción</th>
-                                    <th style="width: 20%;">P. Unit</th>
-                                    <th style="width: 20%;">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbodyVoucherDetails">
-                                ${detailsHtml}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Totals Section -->
-                    <div class="row justify-content-end">
-                        <div class="col-8">
-                            <table class="table table-sm table-borderless mb-0">
-                                <tbody>
-                                    <tr>
-                                        <td class="text-end fw-bold small py-0">Subtotal:</td>
-                                        <td class="text-end small py-0" style="width: 120px;"><span
-                                                id="subtotal_amount">${getcurrency} ${subtotal.toFixed(2)}</span></td>
-                                    </tr>
-                                    <tr class="border-top border-dark">
-                                        <td class="text-end fw-bold small py-0">Descuento (<span
-                                                id="percentage_discount">${h.percentage_discount}</span>%):</td>
-                                        <td class="text-end text-danger small py-0"><span id="discount_amount">${getcurrency} ${descuento.toFixed(2)}</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end fw-bold small py-0"><span id="tax_name">${h.tax_name}</span> (<span
-                                                id="tax_percentage">${h.tax_percentage}</span>%):</td>
-                                        <td class="text-end small py-0"><span id="tax_amount">${getcurrency} ${h.tax_amount}</span></td>
-                                    </tr>
-                                    <!--Inpuestos -->
-                                    <tr class="border-top border-dark">
-                                        <td class="text-end fw-bold small py-0" title="Impuesto de financiamiento">
-                                            <span>Imp. Finac.</span> (<span id="input_finac_percentage">${h.current_interest_rate}</span>%):
-                                        </td>
-                                        <td class="text-end small py-0"><span id="input_finac_amount">${getcurrency} ${h.amount_current_interest_rate}</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end fw-bold small py-0" title="Impuesto por mora Mensual">
-                                            <span>Imp. Mor. Mens.</span> (<span id="input_mora_percentage">${h.default_interest_rate}</span>%):
-                                        </td>
-                                        <td class="text-end small py-0"><span id="input_mora_amount">${getcurrency} ${h.amount_default_interest_rate}</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="p-2 border border-2 border-dark rounded bg-light mt-2 text-end">
-                                <label class="small text-uppercase text-muted fw-bold d-block">Total a Pagar</label>
-                                <span class="fs-4 fw-bold text-dark" id="total_amount">S/ ${Number(h.amount).toFixed(2)}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- System Footer -->
-                    <div class="row mt-4">
-                        <div class="col-12 text-center d-flex align-items-center justify-content-center">
-                            <img src="${base_url}/Assets/capysm.png" alt="Logo"
-                                style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
-                            <small class="text-muted fst-italic">Generado por Capy Ventas</small>
-                        </div>
-                    </div>
-
-                </div>
+          <!-- Footer del Sistema -->
+          <div class="brand-footer mt-4">
+            <div class="separator"></div>
+            <div class="text-center mb-2">
+              <div style="font-size: 16px; letter-spacing: 2px; line-height: 1;">
+                || ||| | ||| || ||
+              </div>
+            </div>
+            <div class="text-center fw-bold" style="font-size: 12px; margin-bottom: 5px;">¡Gracias por su preferencia!</div>
+            <div class="text-center" style="font-size: 10px;">
+              <img src="${base_url}/Assets/capysm.png" alt="Logo" style="height: 12px; filter: grayscale(100%); margin-right: 3px;">
+              <strong>capyventas.com</strong>
+            </div>
+          </div>
+        </div>
+      </div>
     `;
   }
 
@@ -1853,4 +1867,62 @@
       calculatorPaymentAll.classList.add("d-none");
     }
   }
+  /* Función para imprimir el contenido del recibo (Ticket Térmico de 58mm) */
+  const printElement = (elementId, title) => {
+    const originalElement = document.getElementById(elementId);
+    if (!originalElement) return;
+
+    const printWindow = window.open("", "PRINT", "height=600,width=800");
+    if (!printWindow) {
+      alert("La ventana de impresión fue bloqueada por el navegador.");
+      return;
+    }
+
+    // Copiamos las hojas de estilo actuales a la ventana de impresión
+    const stylesheets = Array.from(document.styleSheets)
+      .map((styleSheet) => {
+        try {
+          if (styleSheet.href) {
+            return `<link rel="stylesheet" href="${styleSheet.href}">`;
+          }
+          return "";
+        } catch (e) {
+          return "";
+        }
+      })
+      .join("\n");
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${title}</title>
+          ${stylesheets}
+          <style>
+            @page { margin: 0; }
+            body { 
+              margin: 0; 
+              padding: 0; 
+              width: 58mm !important;
+            }
+            #${elementId} { padding: 0 !important; background: transparent !important; }
+            .ticket-wrapper { padding: 0 !important; background: none !important; border-radius: 0 !important; align-items: flex-start !important; justify-content: flex-start !important;}
+            .ticket-58 { padding: 0 !important; box-shadow: none !important; margin: 0 !important; max-width: 100% !important; }
+          </style>
+        </head>
+        <body>
+          <div id="${elementId}">
+            ${originalElement.innerHTML}
+          </div>
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    // Timeout para dar tiempo a que los estilos y el logo se carguen
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 800);
+  };
 })();

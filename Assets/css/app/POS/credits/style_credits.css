@@ -45,3 +45,96 @@
   margin: 0 auto;
   font-family: "Courier New", Courier, monospace;
 }
+
+/* 
+===================================================
+Estilos Ticket de 58mm (Compartido con Sales/Movements)
+===================================================
+*/
+
+/* Contenedor que simula el fondo web */
+.ticket-wrapper {
+  background: radial-gradient(circle, #e6e9f0 0%, #eef1f5 100%);
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: auto;
+  border-radius: 8px;
+}
+
+/* El area del ticket */
+.ticket-58 {
+  width: 58mm;
+  max-width: 58mm;
+  background-color: #ffffff;
+  padding: 15px; /* Padding interno como margen de seguridad */
+  margin: 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  font-family: "Courier New", Courier, monospace, "Inconsolata";
+  font-size: 12px;
+  color: #000;
+  line-height: 1.2;
+}
+
+/* Utilidades del ticket */
+.ticket-58 h6 {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0 0 5px 0;
+  text-align: center;
+}
+
+.ticket-58 .text-center { text-align: center; }
+.ticket-58 .text-left { text-align: left; }
+.ticket-58 .text-right { text-align: right; }
+
+/* Separadores */
+.ticket-58 .separator {
+  border-top: 1px dashed #000;
+  margin: 5px 0;
+  width: 100%;
+}
+.ticket-58 .separator-solid {
+  border-top: 1px solid #000;
+  margin: 5px 0;
+  width: 100%;
+}
+
+.ticket-58 .fs-small { font-size: 10px; }
+.ticket-58 .fs-subtitle { font-size: 11px; }
+
+/* Flex utilities para el ticket */
+.ticket-58 .flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+.ticket-58 .flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ocultar elementos sobrantes en la impresion REAL */
+@media print {
+  @page { margin: 0; }
+  body {
+    background: none !important;
+    margin: 0;
+    padding: 0;
+    width: 58mm !important;
+  }
+  .ticket-wrapper {
+    background: none !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+  }
+  .ticket-58 {
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+}

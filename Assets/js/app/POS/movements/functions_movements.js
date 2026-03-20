@@ -9,6 +9,37 @@
     loadReportExpense();
     dowloadPNG();
 
+    // Eventos para botones de imprimir en el modal
+    const btnPrintVoucher = document.getElementById("btnPrintVoucherMovements");
+    if (btnPrintVoucher) {
+      btnPrintVoucher.addEventListener("click", () => {
+        printElement("voucherContainer", "Comprobante de Venta");
+      });
+    }
+
+    const btnPrintExpense = document.getElementById("btnPrintExpenseMovements");
+    if (btnPrintExpense) {
+      btnPrintExpense.addEventListener("click", () => {
+        printElement("expenseContainer", "Comprobante de Egreso");
+      });
+    }
+
+    // Atajo de teclado 'P' para imprimir mientras un modal está abierto
+    document.addEventListener("keydown", function (event) {
+      if (event.key.toLowerCase() === "p") {
+        const voucherModalEl = document.getElementById("voucherModal");
+        const expenseModalEl = document.getElementById("expenseModal");
+        
+        if (voucherModalEl && voucherModalEl.classList.contains("show")) {
+          event.preventDefault();
+          printElement("voucherContainer", "Comprobante de Venta");
+        } else if (expenseModalEl && expenseModalEl.classList.contains("show")) {
+          event.preventDefault();
+          printElement("expenseContainer", "Comprobante de Egreso");
+        }
+      }
+    });
+
     // Mostrar u ocultar campos de rango personalizado según selección y actualizar comportamiento del campo de fecha
     document
       .getElementById("filter-type")
@@ -584,11 +615,11 @@
             $tbody.append(`
             <tr>
               <td>${item.stock_product}</td>
-              <td>${item.name_product} (${item.unit_of_measurement})</td>
-              <td class="text-end">${getcurrency} ${Number(
-                item.sales_price_product
-              )}</td>
-              <td class="text-end">${getcurrency} ${Number(
+              <td>
+                ${item.name_product} (${item.unit_of_measurement})<br>
+                <span class="fs-subtitle fw-bold">${getcurrency} ${Number(item.sales_price_product)}</span>
+              </td>
+              <td class="text-right">${getcurrency} ${Number(
                 item.sales_price_product * item.stock_product
               ).toFixed(2)}</td>
             </tr>
@@ -802,4 +833,63 @@
       });
     });
   }
+
+  /* Función para imprimir el contenido del recibo (Ticket Térmico de 58mm) */
+  const printElement = (elementId, title) => {
+    const originalElement = document.getElementById(elementId);
+    if (!originalElement) return;
+
+    const printWindow = window.open("", "PRINT", "height=600,width=800");
+    if (!printWindow) {
+      alert("La ventana de impresión fue bloqueada por el navegador.");
+      return;
+    }
+
+    // Copiamos las hojas de estilo actuales a la ventana de impresión
+    const stylesheets = Array.from(document.styleSheets)
+      .map((styleSheet) => {
+        try {
+          if (styleSheet.href) {
+            return `<link rel="stylesheet" href="${styleSheet.href}">`;
+          }
+          return "";
+        } catch (e) {
+          return "";
+        }
+      })
+      .join("\n");
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${title}</title>
+          ${stylesheets}
+          <style>
+            @page { margin: 0; }
+            body { 
+              margin: 0; 
+              padding: 0; 
+              width: 58mm !important;
+            }
+            #${elementId} { padding: 0 !important; background: transparent !important; }
+            .ticket-wrapper { padding: 0 !important; background: none !important; border-radius: 0 !important; align-items: flex-start !important; justify-content: flex-start !important;}
+            .ticket-58 { padding: 0 !important; box-shadow: none !important; margin: 0 !important; max-width: 100% !important; }
+          </style>
+        </head>
+        <body>
+          <div id="${elementId}">
+            ${originalElement.innerHTML}
+          </div>
+        </body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    // Timeout para dar tiempo a que los estilos y el logo se carguen
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 500);
+  };
 })();
