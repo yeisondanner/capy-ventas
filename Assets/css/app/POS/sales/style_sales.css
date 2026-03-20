@@ -447,10 +447,104 @@
   }
 }
 
-/* Estilos para el comprobante (copiado de styles_movements.css) */
-.report-card-movements {
-  border: 2px solid #ddd;
-  max-width: 100%;
+/* Estilos para el comprobante térmico (voucher) de 58mm */
+/* Contenedor simulado para la pantalla */
+.ticket-wrapper {
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+}
+
+.ticket-58 {
+  width: 100%;
+  max-width: 58mm;
   margin: 0 auto;
   font-family: "Courier New", Courier, monospace;
+  font-size: 12px;
+  line-height: 1.2;
+  color: #000;
+  background-color: #fff;
+  padding: 10px; /* Padding interno solo visible en pantalla o impresoras que lo soporten, se remueve en JS si es necesario */
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Sombra en pantalla */
+}
+
+/* Ocultar sombras y márgenes al imprimir */
+@media print {
+  .ticket-wrapper {
+    background: none;
+    padding: 0;
+  }
+  .ticket-58 {
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+  }
+}
+
+.ticket-58 * {
+  box-sizing: border-box;
+}
+
+/* Alineaciones necesarias */
+.ticket-58 .text-center { text-align: center; }
+.ticket-58 .text-right { text-align: right; }
+.ticket-58 .text-left { text-align: left; }
+.ticket-58 .fw-bold { font-weight: bold; }
+.ticket-58 .fs-title { font-size: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+.ticket-58 .fs-subtitle { font-size: 12px; }
+
+/* Separadores punteados tipo ticket */
+.ticket-58 .separator {
+  border-top: 1px dashed #000;
+  margin: 8px 0;
+  width: 100%;
+}
+
+.ticket-58 .separator-solid {
+  border-top: 1px solid #000;
+  margin: 6px 0;
+  width: 100%;
+}
+
+/* Tablas en el ticket térmico */
+.ticket-58 table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.ticket-58 table th,
+.ticket-58 table td {
+  padding: 3px 0;
+  vertical-align: top;
+}
+
+.ticket-58 table th {
+  border-bottom: 1px dashed #000;
+  border-top: 1px dashed #000;
+  padding: 4px 0;
+}
+
+/* Filas de totales en el ticket térmico */
+.ticket-58 .totals-table {
+  margin-left: auto;
+  width: 100%;
+}
+
+.ticket-58 .totals-table td {
+  padding: 2px 0;
+}
+
+.ticket-58 .grand-total {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.ticket-58 .brand-footer {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 11px;
 }

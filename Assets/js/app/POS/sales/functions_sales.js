@@ -2100,16 +2100,15 @@
     $tbody.empty();
 
     d.forEach((item) => {
+      const total = Number(item.sales_price_product * item.stock_product).toFixed(2);
       $tbody.append(`
         <tr>
           <td>${item.stock_product}</td>
-          <td>${item.name_product} (${item.unit_of_measurement})</td>
-          <td class="text-end">S/ ${Number(item.sales_price_product).toFixed(
-            2,
-          )}</td>
-          <td class="text-end">S/ ${Number(
-            item.sales_price_product * item.stock_product,
-          ).toFixed(2)}</td>
+          <td>
+            ${item.name_product} (${item.unit_of_measurement})<br>
+            <span style="font-size: 9px; color: #555;">S/ ${Number(item.sales_price_product).toFixed(2)} x ${item.stock_product}</span>
+          </td>
+          <td class="text-right">S/ ${total}</td>
         </tr>
       `);
     });
@@ -2183,15 +2182,18 @@
     // Ajuste para forzar impresión de colores de fondo
     printWindow.document.write(`
       <style>
+        @page { margin: 0; }
         body { 
           -webkit-print-color-adjust: exact !important; 
           print-color-adjust: exact !important; 
           background-color: white;
+          margin: 0;
+          padding: 0;
         }
         /* Ajuste para que se vea bien en el papel */
         #${elementId} {
             margin: 0;
-            padding: 20px !important;
+            padding: 0 !important;
             border: none !important;
             box-shadow: none !important;
         }

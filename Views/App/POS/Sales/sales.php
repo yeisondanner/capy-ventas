@@ -424,109 +424,108 @@ headerPos($data); ?>
                 </div>
             </div>
 
-            <div class="modal-body" id="voucherContainer">
-                <div class="receipt-container report-card-movements p-4 border rounded shadow-sm bg-white">
-                    <!-- Header -->
-                    <div class="row align-items-center mb-4 border-bottom pb-3">
-                        <div class="col-3 text-center">
-                            <img id="logo_voucher" src="" alt="Logo" class="img-fluid"
-                                style="max-height: 80px; filter: grayscale(100%);">
-                        </div>
-                        <div class="col-9 text-end">
-                            <h4 class="fw-bold text-uppercase mb-1" id="name_bussines">--</h4>
-                            <p class="mb-0 text-muted small" id="direction_bussines">--</p>
-                            <p class="mb-0 text-muted small">RUC: <span id="document_bussines">--</span></p>
-                        </div>
+            <div class="modal-body" id="voucherContainer" style="background-color: #f8f9fa; border-radius: 0 0 8px 8px;">
+                <div class="ticket-wrapper">
+                    <!-- Wrapper del ticket térmico -->
+                    <div class="ticket-58">
+                        <!-- Cabecera -->
+                    <div class="text-center">
+                        <img id="logo_voucher" src="" alt="Logo" style="max-height: 60px; filter: grayscale(100%); margin-bottom: 5px;">
+                        <div class="fw-bold fs-title" id="name_bussines">--</div>
+                        <div class="fs-subtitle" id="direction_bussines">--</div>
+                        <div>RUC: <span id="document_bussines">--</span></div>
+                        <div class="separator"></div>
+                        <div class="fw-bold fs-title">COMPROBANTE DE VENTA</div>
+                        <div class="separator"></div>
                     </div>
 
-                    <!-- Title & Date -->
-                    <div class="row mb-4">
-                        <div class="col-12 text-center">
-                            <h5 class="fw-bold text-decoration-underline text-uppercase">Comprobante de Venta</h5>
-                        </div>
+                    <!-- Datos Generales -->
+                    <div>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td><span class="fw-bold">Código:</span></td>
+                                <td class="text-right" id="voucher_code">--</td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Fecha:</span></td>
+                                <td class="text-right" id="date_time">--</td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Vendedor:</span></td>
+                                <td class="text-right" id="fullname">--</td>
+                            </tr>
+                            <tr>
+                                <td><span class="fw-bold">Condición:</span></td>
+                                <td class="text-right text-uppercase" id="sale_type">--</td>
+                            </tr>
+                        </table>
+                        <div class="separator-solid"></div>
+                        <div><span class="fw-bold">Cliente:</span></div>
+                        <div id="name_customer">--</div>
+                        <div id="direction_customer">--</div>
+                        <div class="separator-solid"></div>
                     </div>
 
-                    <!-- Details Grid -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-12">
-                            <label class="small text-uppercase text-muted fw-bold">Codigo de Venta:</label>
-                            <div class="fw-bold" id="voucher_code">--</div>
-                        </div>
-                        <div class="col-6">
-                            <label class="small text-uppercase text-muted fw-bold">Fecha de Emisión:</label>
-                            <div class="fw-bold" id="date_time">--</div>
-                        </div>
-                        <div class="col-6 text-end">
-                            <label class="small text-uppercase text-muted fw-bold">Vendedor:</label>
-                            <div class="fw-bold" id="fullname">--</div>
-                        </div>
-                        <div class="col-12 mt-3">
-                            <label class="small text-uppercase text-muted fw-bold">Condición de Pago:</label>
-                            <div class="fw-bold text-uppercase" id="sale_type">--</div>
-                        </div>
-
-                        <div class="col-12 mt-3">
-                            <label class="small text-uppercase text-muted fw-bold">Cliente:</label>
-                            <div class="border-bottom border-dark pb-1 fs-5" id="name_customer">--</div>
-                            <div class="small text-muted" id="direction_customer">--</div>
-                        </div>
-                    </div>
-
-                    <!-- Product Details Table -->
-                    <div class="table-responsive mb-4">
-                        <table class="table table-bordered border-dark table-sm mb-0">
-                            <thead class="bg-light text-center">
+                    <!-- Detalles del Producto -->
+                    <div>
+                        <table>
+                            <thead>
                                 <tr>
-                                    <th style="width: 10%;">Cant.</th>
-                                    <th style="width: 50%;">Descripción</th>
-                                    <th style="width: 20%;">P. Unit</th>
-                                    <th style="width: 20%;">Total</th>
+                                    <th style="width: 15%; text-align: left;">CANT</th>
+                                    <th style="width: 50%; text-align: left;">DESCRIPCIÓN</th>
+                                    <th style="width: 35%; text-align: right;">TOTAL</th>
                                 </tr>
                             </thead>
                             <tbody id="tbodyVoucherDetails">
                                 <!-- Dynamic Items -->
                             </tbody>
                         </table>
+                        <div class="separator-solid"></div>
                     </div>
 
-                    <!-- Totals Section -->
-                    <div class="row justify-content-end">
-                        <div class="col-8">
-                            <table class="table table-sm table-borderless mb-0">
-                                <tbody>
-                                    <tr>
-                                        <td class="text-end fw-bold small py-0">Subtotal:</td>
-                                        <td class="text-end small py-0" style="width: 120px;"><span
-                                                id="subtotal_amount">--</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end fw-bold small py-0">Descuento (<span
-                                                id="percentage_discount">0</span>%):</td>
-                                        <td class="text-end text-danger small py-0"><span id="discount_amount">--</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-end fw-bold small py-0"><span id="tax_name">IGV</span> (<span
-                                                id="tax_percentage">0</span>%):</td>
-                                        <td class="text-end small py-0"><span id="tax_amount">--</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="p-2 border border-2 border-dark rounded bg-light mt-2 text-end">
-                                <label class="small text-uppercase text-muted fw-bold d-block">Total a Pagar</label>
-                                <span class="fs-4 fw-bold text-dark" id="total_amount">--</span>
+                    <!-- Totales -->
+                    <div>
+                        <table class="totals-table">
+                            <tr>
+                                <td class="fw-bold text-right" style="width: 60%">Subtotal:</td>
+                                <td class="text-right" id="subtotal_amount">--</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-right">Descto (<span id="percentage_discount">0</span>%):</td>
+                                <td class="text-right" id="discount_amount">--</td>
+                            </tr>
+                            <tr>
+                                <td class="fw-bold text-right"><span id="tax_name">IGV</span> (<span id="tax_percentage">0</span>%):</td>
+                                <td class="text-right" id="tax_amount">--</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><div class="separator"></div></td>
+                            </tr>
+                            <tr>
+                                <td class="grand-total text-right">TOTAL:</td>
+                                <td class="grand-total text-right" id="total_amount">--</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Footer del Sistema -->
+                    <div class="brand-footer mt-4">
+                        <div class="separator"></div>
+                        <div class="text-center mb-2">
+                            <!-- Placeholder de Código de barras simulado con texto -->
+                            <div style="font-size: 16px; letter-spacing: 2px; line-height: 1;">
+                                || ||| | ||| || ||
                             </div>
                         </div>
-                    </div>
-                    <!-- System Footer -->
-                    <div class="row mt-4">
-                        <div class="col-12 text-center d-flex align-items-center justify-content-center">
-                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo"
-                                style="height: 20px; width: auto; margin-right: 5px; opacity: 0.8;">
-                            <small class="text-muted fst-italic">Generado por Capy Ventas</small>
+                        <div class="text-center fw-bold" style="font-size: 12px; margin-bottom: 5px;">¡Gracias por su preferencia!</div>
+                        <div class="separator"></div>
+                        <div style="margin-top: 5px; display: flex; align-items: center; justify-content: center;">
+                            <img src="<?= base_url() ?>/Assets/capysm.png" alt="Logo" style="height: 12px; margin-right: 5px; opacity: 0.8; filter: grayscale(100%);">
+                            <span style="font-weight: bold;">CapyVentas</span>
                         </div>
+                        <div style="font-weight: 600;">capyventas.com</div>
                     </div>
-
+                </div>
                 </div>
             </div>
 
