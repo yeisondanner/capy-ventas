@@ -167,7 +167,7 @@
         title: "Cambiando negocio...",
         html: "Se esta cambiando de negocio por favor espere un momento",
       },
-      "loading"
+      "loading",
     );
     try {
       const response = await fetch(url, config);
@@ -218,7 +218,7 @@
 
     const nameElement = document.getElementById("currentBusinessName");
     const currentBusinessAvatar = document.getElementById(
-      "currentBusinessAvatar"
+      "currentBusinessAvatar",
     );
     const categoryElement = document.getElementById("currentBusinessCategory");
     const dropdownList = document.getElementById("businessListDropdown");
@@ -353,6 +353,7 @@ function showAlert(data = {}, type = "float") {
         html: data.message ?? "Por favor espera",
         allowOutsideClick: false,
         allowEscapeKey: false,
+        scrollbarPadding: false, // Se elimina el padding generado por animaciones previas (como SweetAlert) para evitar el encogimiento
         didOpen: () => {
           Swal.showLoading();
         },

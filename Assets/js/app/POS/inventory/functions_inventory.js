@@ -463,8 +463,12 @@
               } else if (prodInf.is_public == "No") {
                 $("#update_chkProductStatus").prop("checked", false);
               }
-              console.log(data);
-              $("#modalUpdateProduct").modal("show");
+
+              // Se elimina el padding generado por animaciones previas (como SweetAlert) para evitar el encogimiento
+              setTimeout(() => {
+                //document.body.style.paddingRight = ''; temporalmente se comento para ver como se comporta y si no ocurre el problema
+                $("#modalUpdateProduct").modal("show");
+              }, 200);
             });
           });
         }
