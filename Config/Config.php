@@ -47,11 +47,12 @@ const VERSION_SISTEMA = "0.0.9.1";
 date_default_timezone_set('America/Lima');
 
 //Datos de conexión a Base de Datos
-const DB_HOST = "localhost";
-const DB_NAME = "bd_capyventas";
-const DB_USER = "root";
-const DB_PASSWORD = "";
+const DB_HOST = "db_capyventas";
+const DB_NAME = "capyvent_bd";
+const DB_USER = "capyvent_root";
+const DB_PASSWORD = "mHJdusrQVTg4ch4";
 const DB_CHARSET = "utf8";
+const DB_PORT = "3306";
 
 //Deliminadores decimal y millar Ej. 24,1989.00
 const SPD = ".";
