@@ -306,7 +306,7 @@
 
                             <div class="mb-3 border-bottom pb-2">
                                 <h4 class="fw-bold mb-0 text-dark" id="reportProductName">Nombre del producto</h4>
-                                <span class="badge text-dark mt-1" id="reportProductStatus">Estado</span>
+                                <span class="mt-1" id="reportProductStatus">Estado</span>
                             </div>
 
                             <div class="small">
