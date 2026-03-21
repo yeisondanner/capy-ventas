@@ -2173,7 +2173,9 @@ function generateVerificationCode($longitud = 6)
 
     return $codigo;
 }
-
+/**
+ * Guarda el codigo de verificacion en la sesion
+ */
 function saveSessionVerification($correo, $codigo)
 {
     // 1. Validar si la sesión ya está iniciada
@@ -2240,4 +2242,31 @@ function validateVerificationCode($codigoInput)
         'type' => 'error',
         'icon' => 'error',
     ];
+}
+
+/**
+ * Extrae las iniciales de una cadena de texto.
+ * Ideal para generar avatares o abreviaturas de nombres completos.
+ *
+ * @param string $text  Texto del que se extraerán las iniciales.
+ * @param int    $limit Cantidad máxima de iniciales a devolver (0 para obtener todas, por defecto 2).
+ *
+ * @return string Iniciales extraídas en mayúsculas.
+ */
+function getInitials(string $text, int $limit = 2): string
+{
+    // Limpiamos los espacios múltiples por un solo espacio y los bordes
+    $text = trim(preg_replace('/\s+/', ' ', $text));
+    $words = explode(' ', $text);
+    $initials = '';
+
+    foreach ($words as $word) {
+        if (!empty($word)) {
+            // Obtenemos la primera letra de cada palabra soportando caracteres especiales (UTF-8)
+            $initials .= mb_strtoupper(mb_substr($word, 0, 1, 'UTF-8'), 'UTF-8');
+        }
+    }
+
+    // Si limit es mayor a 0, retornamos la cantidad deseada. Si es 0, retornamos todo.
+    return $limit > 0 ? mb_substr($initials, 0, $limit, 'UTF-8') : $initials;
 }

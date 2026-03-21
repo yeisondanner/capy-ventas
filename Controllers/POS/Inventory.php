@@ -588,6 +588,41 @@ class Inventory extends Controllers
 
         toJson($data);
     }
+    /**
+     * Metodo que se encarga de generar el codigo de producto
+     */
+    public function generateProductCode(): void
+    {
+        try {
+            //VALIDACION DE PERMISOS con el id 3 para lectura
+            validate_permission_app(3, "r", false, false, false);
+            //obtenemos el id del negocio
+            $userId = $this->getUserId();
+            //obtenemos el nombre del negocio
+            $businessName = $_SESSION[$this->nameVarBusiness]['business'];
+            //obtenemos solo las iniciales del nombre asegurándonos de que sea un string
+            $initialsBusiness = getInitials((string)$businessName, 0);
+            //obtenemos el año actual
+            $year = date('Y');
+            //obtenemos el año, mes,dia, hora, minuto, segundo y milisegundo
+            $date = date('YmdHis');
+            //ahora preparamos el codigo
+            $code = $userId . $year . "-" . $initialsBusiness . $date;
+
+            toJson([
+                'status' => true,
+                'title' => 'Código generado',
+                'timer' => 2500,
+                'message' => 'Código generado correctamente.',
+                'type' => 'success',
+                'icon' => 'success',
+                'code' => $code,
+            ]);
+        } catch (\Throwable $th) {
+            // Si ocurre algún error, retornamos un JSON manejando la excepción
+            $this->responseError('Ocurrió un error al generar el código. - ' . $th->getMessage());
+        }
+    }
 
     /**
      * Devuelve las categorías disponibles para el negocio activo.

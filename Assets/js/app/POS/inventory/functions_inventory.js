@@ -3,6 +3,8 @@
   //variables de los botones
   const btnOpenProductModal =
     document.getElementById("btnOpenProductModal") ?? null;
+  //Boton para generar codigo de barras
+  const btnGenerateCode = document.getElementById("btnGenerateCode") ?? null;
   //elementos de formularios
   const formSaveProduct = document.getElementById("formSaveProduct") ?? null;
   const formUpdateProduct =
@@ -35,6 +37,7 @@
   const ENDPOINT_UPDATE_PRODUCT = `${base_url}/pos/Inventory/updateProduct`;
   const DEFAULT_IMAGE = `${base_url}/Loadfile/iconproducts?f=product.png`;
   const ENDPOINT_DELETE_IMAGE = `${base_url}/pos/Inventory/deletePhotoImage`;
+  const ENDPOINT_GENERATE_PRODUCT_CODE = `${base_url}/pos/Inventory/generateProductCode`;
 
   document.addEventListener("DOMContentLoaded", function () {
     loadTable();
@@ -70,6 +73,29 @@
             }
           });
         }
+        /**
+         * Inicializamos el evento para generar el codigo de barras
+         */
+        if (btnGenerateCode) {
+          btnGenerateCode.addEventListener("click", async function () {
+            const data = await sendData(ENDPOINT_GENERATE_PRODUCT_CODE, {});
+            showAlert({
+              title: data.title,
+              message: data.message,
+              icon: data.icon,
+              timer: data.timer,
+            });
+            if (data.status) {
+              //limpiamos el input de codigo de barras
+              $("#txtProductCode").val("");
+              //establecemos el codigo de barras
+              $("#txtProductCode").val(data.code);
+              //aceptamos el foco en el input de codigo de barras
+              $("#txtProductCode").focus();
+            }
+          });
+        }
+
         $("#slctProductCategory").html(categorys);
         $("#slctProductSupplier").html(suppliers);
         $("#slctProductMeasurement").html(measurements);

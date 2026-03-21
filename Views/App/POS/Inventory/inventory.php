@@ -142,14 +142,12 @@
                     <div class="col-12 col-md-12 col-lg-6">
                         <label for="txtProductCode" class="form-label">Código <span class="text-danger">*</span></label>
                         <div class="input-group">
-                            <button class="btn btn-outline-secondary" type="button" id="btnGenerateCode"
-                                onclick="Swal.fire({title: 'En desarrollo'})">
+                            <button class="btn btn-outline-primary" type="button" id="btnGenerateCode" title="Generar código" data-bs-toggle="tooltip" data-bs-placement="top">
                                 <i class="bi bi-upc"></i>
                             </button>
                             <input type="text" class="form-control" id="txtProductCode" name="txtProductCode"
                                 maxlength="50" required placeholder="Ej. 123456789">
-                            <button class="btn btn-outline-secondary" type="button" id="btnScanCode"
-                                onclick="Swal.fire({title: 'En desarrollo'})">
+                            <button class="btn btn-outline-secondary" type="button" id="btnScanCode" title="Escanear código" data-bs-toggle="tooltip" data-bs-placement="top">
                                 <i class="bi bi-camera"></i>
                             </button>
                         </div>
