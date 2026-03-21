@@ -9,9 +9,8 @@ class Conexion
 		try {
 			$this->conect = new PDO($connectionString, DB_USER, DB_PASSWORD);
 			$this->conect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		//echo "conexión exitosa";
-		}
-		catch (PDOException $e) {
+			//echo "conexión exitosa";
+		} catch (PDOException $e) {
 			$this->conect = 'Conexion Cerrada';
 			$idUser = isset($_SESSION['login_info']) ? $_SESSION['login_info']['idUser'] : 0;
 			$message = "Error: " . $e->getMessage() . "<br>" . $this->conect . " - " . $e->getCode();
@@ -31,5 +30,3 @@ class Conexion
 		return $this->conect;
 	}
 }
-
-?>
