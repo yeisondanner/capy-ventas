@@ -2,21 +2,21 @@ version: "3.8"
 
 services:
   # Servidor Web PHP 8.4
-  app_capyventas: # <--- Le puse nombre único para que no choque con otros proyectos
+  app_capyventas:
+    # <--- Le puse nombre único para que no choque con otros proyectos
     image: php:8.4-apache
     container_name: capyventas_web
     restart: always
     ports:
       - "9000:80" # Para que entres por IP: 1127.0.0.1:9000
     command: >
-      sh -c "docker-php-ext-install pdo pdo_mysql 
-      && a2enmod rewrite 
-      && apache2-foreground"
+      sh -c "docker-php-ext-install pdo pdo_mysql  && a2enmod rewrite  && apache2-foreground"
     volumes:
       - ./:/var/www/html
 
   # Base de Datos MariaDB (Cambié 12.2 por 11.4 porque la 12 no es oficial todavía)
-  db_capyventas: # <--- ESTE ES EL NOMBRE CLAVE
+  db_capyventas:
+    # <--- ESTE ES EL NOMBRE CLAVE
     image: mariadb:11.8 #La version 12 no es oficial todavia
     container_name: capyventas_db
     restart: always
@@ -28,7 +28,15 @@ services:
       MYSQL_USER: capyvent_root
       MYSQL_PASSWORD: mHJdusrQVTg4ch4
     volumes:
-      - capyventas_data:/var/lib/mysql    
+      - capyventas_data:/var/lib/mysql
+  composer:
+    image: composer:latest
+    container_name: capyventas_composer
+    volumes:
+      - ./:/var/www/html
+    # Le decimos que trabaje directamente dentro de tu carpeta Libraries
+    working_dir: /var/www/html/Libraries
+
 #Los volumenes van fuera de services
 volumes:
   capyventas_data:

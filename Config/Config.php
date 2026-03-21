@@ -5,6 +5,11 @@
  */
 
 declare(strict_types=1);
+//Llamamos a Composer desde la carpeta Libraries
+require_once  './Libraries/vendor/autoload.php';
+//inicializamos el dotenv y llamamos o cargamos el archivo .en que esta en la raiz del proyecto
+$dotenv = Dotenv\Dotenv::createImmutable('./');
+$dotenv->load();
 /**
  * Generación dinámica de la URL base del proyecto.
  *
@@ -35,50 +40,51 @@ $scriptDir = rtrim(str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])), '/');
 $baseUrl = $protocol . '://' . $host . $scriptDir;
 define('BASE_URL', rtrim($baseUrl, '/'));
 //const BASE_URL = "http://192.168.1.12/sersa-ssoma";
+
 //Ruta de almacenamiento de archivos
-const RUTA_ARCHIVOS = "./Storage/";
+define('RUTA_ARCHIVOS', $_ENV['RUTA_ARCHIVOS']);
 //Nombre del sistema
-const NOMBRE_SISTEMA = "Sistema de Roles";
+define('NOMBRE_SISTEMA', $_ENV['NOMBRE_SISTEMA']);
 //Nombre de la compania
-const NOMBRE_COMPANIA = "CYD TECH";
+define('NOMBRE_COMPANIA', $_ENV['NOMBRE_COMPANIA']);
 //Version sistema
-const VERSION_SISTEMA = "0.0.9.1";
+define('VERSION_SISTEMA', $_ENV['VERSION_SISTEMA']);
 //Zona horaria
-date_default_timezone_set('America/Lima');
+date_default_timezone_set($_ENV['TIMEZONE']);
 
 //Datos de conexión a Base de Datos
-const DB_HOST = "db_capyventas";
-const DB_NAME = "capyvent_bd";
-const DB_USER = "capyvent_root";
-const DB_PASSWORD = "mHJdusrQVTg4ch4";
-const DB_CHARSET = "utf8";
-const DB_PORT = "3306";
+define('DB_HOST', $_ENV['DB_HOST']);
+define('DB_NAME', $_ENV['DB_NAME']);
+define('DB_USER', $_ENV['DB_USER']);
+define('DB_PASSWORD', $_ENV['DB_PASSWORD']);
+define('DB_CHARSET', $_ENV['DB_CHARSET']);
+define('DB_PORT', $_ENV['DB_PORT']);
 
-//Deliminadores decimal y millar Ej. 24,1989.00
-const SPD = ".";
-const SPM = ",";
+//Deliminadores decimal y millar
+define('SPD', $_ENV['SPD'] ?? '.');
+define('SPM', $_ENV['SPM'] ?? ',');
 
 //Simbolo de moneda
-const SMONEY = "S/";
+define('SMONEY', $_ENV['SMONEY']);
 
 //Datos envio de correo
-const MAIL_HOST = "mail.sersa.pe";
-const MAIL_PORT = 587;
-const MAIL_USER = "ycarhuapoma@sersa.pe";
-const MAIL_PASSWORD = "r,5GosMF=ORBT*GH";
-const MAIL_ENCRYPTION = "tls";
-const MAIL_FROM = "ycarhuapoma@sersa.pe"; //nombre del remitente
-const MAIL_REMITENTE = "CAPY VENTAS";
+define('MAIL_HOST', $_ENV['MAIL_HOST']);
+define('MAIL_PORT', $_ENV['MAIL_PORT']);
+define('MAIL_USER', $_ENV['MAIL_USER']);
+define('MAIL_PASSWORD', $_ENV['MAIL_PASSWORD']);
+define('MAIL_ENCRYPTION', $_ENV['MAIL_ENCRYPTION']);
+define('MAIL_FROM', $_ENV['MAIL_FROM']); //nombre del remitente
+define('MAIL_REMITENTE', $_ENV['MAIL_REMITENTE']);
 //Variables de encriptacion
-const METHOD = "AES-256-CBC";
-const SECRET_KEY = "SystemOfPredios2025";
-const SECRET_IV = "@2025BajoNaranjillo";
+define('METHOD', $_ENV['METHOD']);
+define('SECRET_KEY', $_ENV['SECRET_KEY']);
+define('SECRET_IV', $_ENV['SECRET_IV']);
 //nombre de la sesion
-const SESSION_NAME = "sesion_admin";
-const SESSION_NAME_POS = "sesion_pos";
+define('SESSION_NAME', $_ENV['SESSION_NAME']);
+define('SESSION_NAME_POS', $_ENV['SESSION_NAME_POS']);
 //Generador de perfiles mediante nombre
-const GENERAR_PERFIL = "https://ui-avatars.com/api/?name=";
+define('GENERAR_PERFIL', $_ENV['GENERAR_PERFIL']);
 //Variables de la API api.apis.net.pe
-const API_KEY = "apis-token-13092.cwy578uEtUFPCWYnJN5uI83i6WuTRvVM";
-const API_URL_RENIEC = "https://api.apis.net.pe/v2/reniec/dni?numero=";
-const API_URL_RUC = "https://api.apis.net.pe/v2/sunat/ruc?numero=";
+define('API_KEY', $_ENV['API_KEY']);
+define('API_URL_RENIEC', $_ENV['API_URL_RENIEC']);
+define('API_URL_RUC', $_ENV['API_URL_RUC']);
