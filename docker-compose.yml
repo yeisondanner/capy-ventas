@@ -32,6 +32,9 @@ services:
   composer:
     image: composer:latest
     container_name: capyventas_composer
+    # Instalamos las dependencias necesarias y la librería del .env
+    command: >
+      sh -c "composer install && composer require vlucas/phpdotenv"
     volumes:
       - ./:/var/www/html
     # Le decimos que trabaje directamente dentro de tu carpeta Libraries
