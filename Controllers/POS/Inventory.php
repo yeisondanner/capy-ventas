@@ -298,12 +298,11 @@ class Inventory extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
+        //obtenemos el id del producto
         $productId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
         if ($productId <= 0) {
             $this->responseError('Identificador de producto inválido.');
         }
-
         $businessId = $this->getBusinessId();
         $product = $this->model->selectProduct($productId, $businessId);
 
@@ -319,7 +318,12 @@ class Inventory extends Controllers
         $currencySymbol = getCurrency();
         //obtenemos todas la imagenes del producto
         $images = $this->model->selectProductFile($productId);
-
+        $stock = (float) round($product['stock'], 2);
+        $stockText = $stock . ' ' . ($product['measurement_name'] ?? '');
+        $purchasePrice = (float) round($product['purchase_price'], 2);
+        $purchasePriceText = $currencySymbol . ' ' . ($purchasePrice);
+        $salesPrice = (float) round($product['sales_price'], 2);
+        $salesPriceText = $currencySymbol . ' ' . ($salesPrice);
         $data = [
             'status' => true,
             'data' => [
@@ -331,15 +335,12 @@ class Inventory extends Controllers
                 'supplier_id' => (int) $product['supplier_id'],
                 'supplier_name' => $product['supplier_name'] ?? '',
                 'name' => decodeUniversalText($product['name']),
-                'stock' => (float) $product['stock'],
-                'stock_text' => number_format((float) $product['stock'], 2, SPD, SPM)
-                    . ' ' . ($product['measurement_name'] ?? ''),
-                'purchase_price' => (float) $product['purchase_price'],
-                'purchase_price_text' => $currencySymbol . ' '
-                    . formatMoney((float) $product['purchase_price']),
-                'sales_price' => (float) $product['sales_price'],
-                'sales_price_text' => $currencySymbol . ' '
-                    . formatMoney((float) $product['sales_price']),
+                'stock' => $stock,
+                'stock_text' => $stockText,
+                'purchase_price' => $purchasePrice,
+                'purchase_price_text' => $purchasePriceText,
+                'sales_price' => $salesPrice,
+                'sales_price_text' => $salesPriceText,
                 'description' => decodeUniversalText($product['description'] ?? ''),
                 'status' => $product['status'],
                 'currency_symbol' => $currencySymbol,
