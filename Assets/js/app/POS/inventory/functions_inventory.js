@@ -346,6 +346,7 @@
 
         const btnDeleteProduct = document.querySelectorAll(".delete-product");
         const btnEditProduct = document.querySelectorAll(".edit-product");
+        const btnReportProduct = document.querySelectorAll(".report-product");
         /**
          * Metodo que se encarga de eliminar un producto
          */
@@ -472,8 +473,55 @@
             });
           });
         }
+        /**
+         * Metodo que se encarga de mostrar el reporte del producto
+         */
+        if (btnReportProduct.length > 0) {
+          btnReportProduct.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+              idProduct = btn.getAttribute("data-id");
+              renderProductReport(idProduct);
+              $("#modalProductReport").modal("show");
+            });
+          });
+        }
       },
     });
+  }
+  /**
+   * Metodo que se encarga de renderizar el reporte del producto
+   * @param {*} idProduct
+   */
+  async function renderProductReport(idProduct) {
+    const config = {
+      method: "GET",
+    };
+    const data = await sendData(ENDPOINT_GET_PRODUCT + idProduct, config);
+    const info = data.data;
+    //cargamos la imagen principal
+    $("#reportImageMain").attr("src", info.image_main_url);
+    //cargamos la informacion principal del producto
+    $("#reportProductName").text(info.name);
+    $("#reportProductStatus").text(info.status);
+    $("#reportProductStatus").addClass(
+      info.status == "Activo"
+        ? "badge bg-success text-white"
+        : "badge bg-danger text-white",
+    );
+    $("#reportProductCategory").text(info.category_name);
+    $("#reportProductCode").text(info.bar_code);
+    $("#reportProductSupplier").text(info.supplier_name);
+    $("#reportProductMeasurement").text(info.measurement_name);
+    $("#reportProductDescription").text(info.description);
+    $("#reportProductExpirationDate").text(info.expiration_date);
+    $("#reportProductIsPublic").text(info.is_public);
+    //llenamos la informacion de los kpis
+    $("#reportProductStock").text(info.stock_text);
+    $("#reportProductPurchase").text(info.purchase_price_text);
+    $("#reportProductSale").text(info.sales_price_text);
+    //llenamos la descripcion
+    $("#reportProductDescription").text(info.description);
+    console.log(info);
   }
   /**
    * Metodo que se encarga de renderizar todas las imágenes del producto

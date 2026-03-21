@@ -297,22 +297,16 @@
                     <!-- Columna Izquierda: Imagen y Datos Básicos -->
                     <div class="col-12 col-md-6 col-xl-3">
                         <div class="bg-white p-3 border rounded shadow-sm h-100">
-                            <!-- Contenedor con proporción fija 4:3 para la imagen principal -->
-                            <div class="ratio ratio-4x3 mb-3 position-relative">
-                                <!-- Skeleton / Spinner -->
-                                <div class="d-flex justify-content-center align-items-center bg-light position-absolute w-100 h-100 top-0 start-0 z-1 rounded border">
-                                    <div class="spinner-border text-secondary" role="status">
-                                        <span class="visually-hidden">Cargando...</span>
-                                    </div>
-                                </div>
+                            <!-- Contenedor para la imagen principal -->
+                            <div class="mb-3 position-relative">
                                 <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=600&auto=format&fit=crop"
-                                    class="rounded border object-fit-cover position-relative z-2 opacity-0" id="reportImageMain" loading="lazy"
-                                    alt="Producto Principal" style="transition: opacity 0.3s ease;" onload="this.classList.remove('opacity-0'); this.previousElementSibling.classList.add('d-none');">
+                                    class="rounded border object-fit-cover w-100 position-relative z-2 opacity-1" id="reportImageMain" loading="lazy"
+                                    alt="Producto Principal" style="aspect-ratio: 4/3;">
                             </div>
 
                             <div class="mb-3 border-bottom pb-2">
                                 <h4 class="fw-bold mb-0 text-dark" id="reportProductName">Nombre del producto</h4>
-                                <span class="badge bg-info text-dark mt-1" id="reportProductStatus">Estado</span>
+                                <span class="badge text-dark mt-1" id="reportProductStatus">Estado</span>
                             </div>
 
                             <div class="small">
@@ -488,60 +482,8 @@
                 </div>
             </div>
             <div class="modal-footer bg-white border-top-0">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal: Gestionar categorías -->
-<div class="modal fade" id="modalCategory" aria-labelledby="modalCategoryLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-dark border-bottom-0 py-2">
-                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
-                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                        style="width: 48px; height: 48px;">
-                        <i class="bi bi-collection fs-3"></i>
-                    </div>
-                    <div>
-                        <h5 class="modal-title fw-bold mb-0" id="modalCategoryLabel">Categorías</h5>
-                        <p class="mb-0 small text-dark text-opacity-75">Aqui podras gestionar tus categorias de tus
-                            productos</p>
-                    </div>
-                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
-                        aria-label="Cerrar"></button>
-                </div>
-            </div>
-            <div class="modal-body">
-                <?php
-                $category = validate_permission_app(10, "c", false)['create'];
-                if ($category == 1): ?>
-                    <div class="mb-3">
-                        <h6 class="fw-semibold">Registrar nueva categoría</h6>
-                        <form class="row g-2 align-items-center" id="formCreateCategory" autocomplete="off">
-                            <div class="col-sm-8 col-md-9">
-                                <label for="txtCategoryName" class="visually-hidden">Nombre de la categoría</label>
-                                <div class="input-group input-group-md">
-                                    <span class="input-group-text"><i class="bi bi-collection"></i></span>
-                                    <input type="text" class="form-control" id="txtCategoryName" name="txtCategoryName"
-                                        maxlength="255" required placeholder="Ej. Bebidas calientes">
-                                </div>
-                            </div>
-                            <div class="col-sm-4 col-md-3 d-grid">
-                                <button class="btn btn-md btn-outline-info" type="submit">
-                                    <i class="bi bi-plus-lg"></i> Registrar
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                <?php endif; ?>
-                <div>
-                    <h6 class="fw-semibold">Categorías registradas</h6>
-                    <ul class="list-group" id="categoryList">
-                        <li class="list-group-item text-center text-muted">No hay categorías registradas.</li>
-                    </ul>
-                </div>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>
+                    Cancelar</button>
             </div>
         </div>
     </div>
@@ -743,9 +685,67 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>
+                    Cancelar</button>
                 <button type="submit" class="btn btn-success"><i class="bi bi-pencil-square"></i> Actualizar</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal: Gestionar categorías -->
+<div class="modal fade" id="modalCategory" aria-labelledby="modalCategoryLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-dark border-bottom-0 py-2">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
+                        <i class="bi bi-collection fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="modalCategoryLabel">Categorías</h5>
+                        <p class="mb-0 small text-dark text-opacity-75">Aqui podras gestionar tus categorias de tus
+                            productos</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <?php
+                $category = validate_permission_app(10, "c", false)['create'];
+                if ($category == 1): ?>
+                    <div class="mb-3">
+                        <h6 class="fw-semibold">Registrar nueva categoría</h6>
+                        <form class="row g-2 align-items-center" id="formCreateCategory" autocomplete="off">
+                            <div class="col-sm-8 col-md-9">
+                                <label for="txtCategoryName" class="visually-hidden">Nombre de la categoría</label>
+                                <div class="input-group input-group-md">
+                                    <span class="input-group-text"><i class="bi bi-collection"></i></span>
+                                    <input type="text" class="form-control" id="txtCategoryName" name="txtCategoryName"
+                                        maxlength="255" required placeholder="Ej. Bebidas calientes">
+                                </div>
+                            </div>
+                            <div class="col-sm-4 col-md-3 d-grid">
+                                <button class="btn btn-md btn-outline-info" type="submit">
+                                    <i class="bi bi-plus-lg"></i> Registrar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                <?php endif; ?>
+                <div>
+                    <h6 class="fw-semibold">Categorías registradas</h6>
+                    <ul class="list-group" id="categoryList">
+                        <li class="list-group-item text-center text-muted">No hay categorías registradas.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>
+                    Cancelar</button>
+            </div>
+        </div>
     </div>
 </div>
