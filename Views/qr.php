@@ -4,27 +4,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><?= isset($data['page_title']) ? $data['page_title'] : 'Generador de Códigos QR Gratis | Capy Ventas' ?></title>
+  <title>
+    <?= isset($data['page_title']) ? $data['page_title'] : 'Generador de Códigos QR Gratis | Capy Ventas'?>
+  </title>
 
   <!-- SEO Meta Tags -->
-  <meta name="description" content="<?= isset($data['page_description']) ? $data['page_description'] : 'Crea códigos QR personalizados gratis para páginas web, textos, enlaces, contactos y más con el generador de QR de Capy Ventas. Fácil, rápido y descargable al instante.' ?>">
-  <meta name="keywords" content="generador de qr, crear codigo qr, qr gratis, qr online, descargar qr, qr para pagina web, qr de texto, qr capy ventas, generador qr gratis, qr personalizado">
+  <meta name="description"
+    content="<?= isset($data['page_description']) ? $data['page_description'] : 'Crea códigos QR personalizados gratis para páginas web, textos, enlaces, contactos y más con el generador de QR de Capy Ventas. Fácil, rápido y descargable al instante.'?>">
+  <meta name="keywords"
+    content="generador de qr, crear codigo qr, qr gratis, qr online, descargar qr, qr para pagina web, qr de texto, qr capy ventas, generador qr gratis, qr personalizado">
   <meta name="author" content="Capy Ventas">
   <meta name="robots" content="index, follow">
-  <link rel="shortcut icon" href="<?= function_exists('base_url') ? base_url() : 'https://capyventas.shaday-pe.com' ?>/Assets/capysm.png" type="image/x-icon">
+  <link rel="shortcut icon"
+    href="<?= function_exists('base_url') ? base_url() : 'https://capyventas.shaday-pe.com'?>/Assets/capysm.png"
+    type="image/x-icon">
 
   <!-- Canonical URL -->
-  <link rel="canonical" href="<?= function_exists('base_url') ? base_url() : 'https://capyventas.shaday-pe.com' ?>/home/qr">
+  <link rel="canonical"
+    href="<?= function_exists('base_url') ? base_url() : 'https://capyventas.shaday-pe.com'?>/home/qr">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="<?= function_exists('base_url') ? base_url() : 'https://capyventas.shaday-pe.com' ?>/home/qr">
-  <meta property="og:title" content="<?= isset($data['page_title']) ? $data['page_title'] : 'Generador de Códigos QR Gratis | Capy Ventas' ?>">
-  <meta property="og:description" content="<?= isset($data['page_description']) ? $data['page_description'] : 'Crea códigos QR personalizados gratis para páginas web, textos y más. Fácil, rápido y descargable al instante.' ?>">
-  <meta property="og:image" content="<?= function_exists('base_url') ? base_url() : 'https://capyventas.shaday-pe.com' ?>/Assets/capylg.png">
-
+  <meta property="og:url"
+    content="<?= function_exists('base_url') ? base_url() : 'https://capyventas.shaday-pe.com'?>/home/qr">
+  <meta property="og:title"
+    content="<?= isset($data['page_title']) ? $data['page_title'] : 'Generador de Códigos QR Gratis | Capy Ventas'?>">
+  <meta property="og:description"
+    content="<?= isset($data['page_description']) ? $data['page_description'] : 'Crea códigos QR personalizados gratis para páginas web, textos y más. Fácil, rápido y descargable al instante.'?>">
+  <meta property="og:image"
+    content="<?= function_exists('base_url') ? base_url() : 'https://capyventas.shaday-pe.com'?>/Assets/capylg.png">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3076714141618004"
+    crossorigin="anonymous"></script>
   <style>
     :root {
       --color-primary: #4369F0;
@@ -586,8 +598,9 @@
 
 <body>
   <header>
-    <a href="<?= function_exists('base_url') ? base_url() : './' ?>" class="brand-container">
-      <img src="<?= function_exists('base_url') ? base_url() : 'https://capyventas.shaday-pe.com' ?>/Assets/capysm.png" alt="Capy Ventas Logo" class="logo-img" />
+    <a href="<?= function_exists('base_url') ? base_url() : './'?>" class="brand-container">
+      <img src="<?= function_exists('base_url') ? base_url() : 'https://capyventas.shaday-pe.com'?>/Assets/capysm.png"
+        alt="Capy Ventas Logo" class="logo-img" />
       <span class="brand-name">Capy Ventas</span>
     </a>
 
@@ -600,18 +613,20 @@
     </button>
 
     <nav id="primary-navigation">
-      <a href="<?= function_exists('base_url') ? base_url() : './' ?>">Inicio</a>
-      <a href="<?= function_exists('base_url') ? base_url() : './' ?>/home#funcionalidades">Funcionalidades</a>
-      <a href="<?= function_exists('base_url') ? base_url() : './' ?>/home#herramientas">Herramientas</a>
-      <a href="<?= function_exists('base_url') ? base_url() : './' ?>/home#planes">Planes</a>
+      <a href="<?= function_exists('base_url') ? base_url() : './'?>">Inicio</a>
+      <a href="<?= function_exists('base_url') ? base_url() : './'?>/home#funcionalidades">Funcionalidades</a>
+      <a href="<?= function_exists('base_url') ? base_url() : './'?>/home#herramientas">Herramientas</a>
+      <a href="<?= function_exists('base_url') ? base_url() : './'?>/home#planes">Planes</a>
       <a href="#" class="active">Generador QR</a>
     </nav>
 
     <div class="header-actions">
-      <a href="<?= function_exists('base_url') ? base_url() : './' ?>/pos/login" class="btn btn-outline" style="padding: 10px 20px; font-size: 0.9rem;">
+      <a href="<?= function_exists('base_url') ? base_url() : './'?>/pos/login" class="btn btn-outline"
+        style="padding: 10px 20px; font-size: 0.9rem;">
         Soy cliente
       </a>
-      <a href="<?= function_exists('base_url') ? base_url() : './' ?>/pos/account" class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">
+      <a href="<?= function_exists('base_url') ? base_url() : './'?>/pos/account" class="btn btn-primary"
+        style="padding: 10px 20px; font-size: 0.9rem;">
         Inicia gratis <i class="bi bi-box-arrow-in-right" style="margin-left: 6px;"></i>
       </a>
     </div>
@@ -620,9 +635,11 @@
   <main>
     <div class="qr-hero">
       <div class="qr-content" data-aos="fade-right">
-        <h1 class="section-title" style="text-align: left;">Generador de Códigos QR <span style="color: var(--color-secondary);">Múltiple</span></h1>
+        <h1 class="section-title" style="text-align: left;">Generador de Códigos QR <span
+            style="color: var(--color-secondary);">Múltiple</span></h1>
         <p style="color: var(--color-muted); font-size: 1.1rem; margin-bottom: 24px; line-height: 1.6;">
-          Crea todo tipo de códigos QR (enlaces, WiFi, VCard, WhatsApp y más). 100% responsivo, gratis y optimizado para tus campañas y negocios.
+          Crea todo tipo de códigos QR (enlaces, WiFi, VCard, WhatsApp y más). 100% responsivo, gratis y optimizado para
+          tus campañas y negocios.
         </p>
 
         <div class="qr-form">
@@ -648,7 +665,8 @@
           <div class="qr-tab-content" id="tab-text">
             <div class="form-group">
               <label class="form-label">Texto libre</label>
-              <textarea id="qr-input-text" class="form-input" placeholder="Escribe el mensaje o texto aquí..." rows="3"></textarea>
+              <textarea id="qr-input-text" class="form-input" placeholder="Escribe el mensaje o texto aquí..."
+                rows="3"></textarea>
             </div>
           </div>
 
@@ -662,7 +680,8 @@
             </div>
             <div class="form-group">
               <label class="form-label">Mensaje predeterminado</label>
-              <textarea id="qr-input-wa-msg" class="form-input" placeholder="Hola, me gustaría más información..." rows="2"></textarea>
+              <textarea id="qr-input-wa-msg" class="form-input" placeholder="Hola, me gustaría más información..."
+                rows="2"></textarea>
             </div>
           </div>
 
@@ -733,7 +752,8 @@
             </div>
             <div class="form-group">
               <label class="form-label">Cuerpo del correo</label>
-              <textarea id="qr-input-em-body" class="form-input" placeholder="Escribe el mensaje..." rows="3"></textarea>
+              <textarea id="qr-input-em-body" class="form-input" placeholder="Escribe el mensaje..."
+                rows="3"></textarea>
             </div>
           </div>
 
@@ -744,11 +764,13 @@
           <div class="form-row" style="display: flex; gap: 16px; flex-wrap: wrap;">
             <div class="form-group" style="flex: 1; min-width: 120px;">
               <label class="form-label" for="qr-color">Color del QR</label>
-              <input type="color" id="qr-color" class="form-input" value="#142235" style="padding: 4px; height: 50px; cursor: pointer;">
+              <input type="color" id="qr-color" class="form-input" value="#142235"
+                style="padding: 4px; height: 50px; cursor: pointer;">
             </div>
             <div class="form-group" style="flex: 1; min-width: 120px;">
               <label class="form-label" for="qr-bg">Color de Fondo</label>
-              <input type="color" id="qr-bg" class="form-input" value="#ffffff" style="padding: 4px; height: 50px; cursor: pointer;">
+              <input type="color" id="qr-bg" class="form-input" value="#ffffff"
+                style="padding: 4px; height: 50px; cursor: pointer;">
             </div>
             <div class="form-group" style="flex: 1.5; min-width: 150px;">
               <label class="form-label" for="qr-size">Calidad / Tamaño</label>
@@ -761,24 +783,29 @@
             </div>
           </div>
 
-          <button id="btn-generate" class="btn btn-primary" style="width: 100%; justify-content: center; font-size: 1.1rem; padding: 16px; margin-top: 10px;">
+          <button id="btn-generate" class="btn btn-primary"
+            style="width: 100%; justify-content: center; font-size: 1.1rem; padding: 16px; margin-top: 10px;">
             <i class="bi bi-qr-code" style="margin-right: 8px;"></i> Crear mi Código QR
           </button>
         </div>
       </div>
 
       <div class="qr-preview-card" data-aos="fade-left">
-        <h3 style="color: var(--color-primary); margin-bottom: 16px; text-align: center; font-size: 1.5rem;">Visualizar QR</h3>
-        <p style="color: var(--color-muted); text-align: center; margin-bottom: 24px; font-size: 0.95rem;">Aquí aparecerá tu código generado listo para su uso.</p>
+        <h3 style="color: var(--color-primary); margin-bottom: 16px; text-align: center; font-size: 1.5rem;">Visualizar
+          QR</h3>
+        <p style="color: var(--color-muted); text-align: center; margin-bottom: 24px; font-size: 0.95rem;">Aquí
+          aparecerá tu código generado listo para su uso.</p>
 
         <div id="qrcode-container">
           <div id="qr-placeholder" style="color: var(--color-muted); text-align: center; max-width: 80%;">
-            <i class="bi bi-qr-code-scan" style="font-size: 3.5rem; display: block; margin-bottom: 16px; opacity: 0.3;"></i>
+            <i class="bi bi-qr-code-scan"
+              style="font-size: 3.5rem; display: block; margin-bottom: 16px; opacity: 0.3;"></i>
             Rellena los campos y presiona <b>Crear</b>
           </div>
         </div>
 
-        <button id="btn-download" class="btn btn-outline" style="width: 100%; justify-content: center; padding: 14px; font-size: 1.05rem;" disabled>
+        <button id="btn-download" class="btn btn-outline"
+          style="width: 100%; justify-content: center; padding: 14px; font-size: 1.05rem;" disabled>
           <i class="bi bi-download" style="margin-right: 8px;"></i> Descargar QR (PNG)
         </button>
       </div>
@@ -786,23 +813,27 @@
 
     <section class="features-section" style="margin-top: 80px;" data-aos="fade-up">
       <h2 class="section-title" style="text-align: center;">Generador QR Definitivo</h2>
-      <p style="text-align: center; color: var(--color-muted); margin-bottom: 40px;">Disfruta de funciones premium sin costo ni límites de escaneos.</p>
+      <p style="text-align: center; color: var(--color-muted); margin-bottom: 40px;">Disfruta de funciones premium sin
+        costo ni límites de escaneos.</p>
 
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon"><i class="bi bi-tablet"></i></div>
           <h4>Diseño Responsivo</h4>
-          <p>La vista se adapta perfectamente a celulares, tablets y ordenadores. Genera y guarda códigos en donde sea que estés.</p>
+          <p>La vista se adapta perfectamente a celulares, tablets y ordenadores. Genera y guarda códigos en donde sea
+            que estés.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><i class="bi bi-grid-1x2"></i></div>
           <h4>Múltiples formatos</h4>
-          <p>Soporte para enlaces, contraseñas de WiFi, tarjetas de contacto vCard, correos electrónicos o envíos de WhatsApp directo.</p>
+          <p>Soporte para enlaces, contraseñas de WiFi, tarjetas de contacto vCard, correos electrónicos o envíos de
+            WhatsApp directo.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon"><i class="bi bi-images"></i></div>
           <h4>Descarga de Alta Resolución</h4>
-          <p>Exporta tu QR con tamaño hasta de 1200px. Especialmente diseñado para carteles físicos, menús de restaurante e impresos HD.</p>
+          <p>Exporta tu QR con tamaño hasta de 1200px. Especialmente diseñado para carteles físicos, menús de
+            restaurante e impresos HD.</p>
         </div>
       </div>
     </section>
