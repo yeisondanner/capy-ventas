@@ -71,6 +71,29 @@ get_option_and_permission_app();
 </head>
 
 <body class="app sidebar-mini">
+    <!-- Preloader Bootstrap + Logo -->
+    <div id="full-page-loader" class="position-fixed top-0 start-0 bg-white opacity-75 d-flex flex-column justify-content-center align-items-center" style="width: 100vw; height: 100vh; z-index: 9999999; transition: opacity 0.5s ease-out, visibility 0.5s ease-out;">
+
+        <!-- Logo animado circular y responsivo -->
+        <img src="<?= media() ?>/capylg.png" alt="Capy Ventas Logo" class="mb-4 img-fluid rounded-circle shadow-sm bg-white border border-3 border-primary border-opacity-25 p-3" style="width: 100px; height: 100px; max-width: 45vw; max-height: 45vw; object-fit: contain; animation: bounceLogo 2s infinite;">
+
+        <!-- Spinners de Bootstrap -->
+        <div class="d-flex justify-content-center align-items-center gap-2">
+            <div class="spinner-grow text-primary" role="status" style="width: 1.2rem; height: 1.2rem;">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <div class="spinner-grow text-primary" role="status" style="width: 1.2rem; height: 1.2rem; animation-delay: 0.15s;">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <div class="spinner-grow text-primary" role="status" style="width: 1.2rem; height: 1.2rem; animation-delay: 0.3s;">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+
+        <h5 class="mt-4 text-primary fw-bolder text-uppercase" style="letter-spacing: 2px;">Cargando</h5>
+    </div>
+    <!-- End Preloader -->
+
     <div class="position-fixed bottom-0 end-0 p-1 rounded-top-2 bg-dark bg-opacity-50 border border-white text-white"
         onclick="showAlert({title:'Identificador de Usuario', message:'Código único e invariable que identifica al usuario dentro de la plataforma.', type:'info', icon:'info',position:'bottom-left', timer:1000, status:true, url:''})"
         style="z-index: 9999;">

@@ -290,6 +290,17 @@
     }
   }
   document.addEventListener("DOMContentLoaded", () => {
+    /**
+     * Elimina el preloader
+     */
+    const loader = document.getElementById("full-page-loader") ?? null;
+    if (loader) {
+      loader.style.opacity = "0";
+      loader.style.visibility = "hidden";
+      setTimeout(() => {
+        loader.remove();
+      }, 500);
+    }
     loadBusinessTypes();
     loadUserBusinesses();
     createBusiness();
