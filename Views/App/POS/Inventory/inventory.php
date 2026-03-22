@@ -685,20 +685,16 @@
                 <?php
                 $category = validate_permission_app(10, "c", false)['create'];
                 if ($category == 1): ?>
-                    <div class="mb-3">
-                        <h6 class="fw-semibold">Registrar nueva categoría</h6>
-                        <form class="row g-2 align-items-center" id="formCreateCategory" autocomplete="off">
-                            <div class="col-sm-8 col-md-9">
-                                <label for="txtCategoryName" class="visually-hidden">Nombre de la categoría</label>
-                                <div class="input-group input-group-md">
-                                    <span class="input-group-text"><i class="bi bi-collection"></i></span>
-                                    <input type="text" class="form-control" id="txtCategoryName" name="txtCategoryName"
-                                        maxlength="255" required placeholder="Ej. Bebidas calientes">
-                                </div>
-                            </div>
-                            <div class="col-sm-4 col-md-3 d-grid">
-                                <button class="btn btn-md btn-outline-info" type="submit">
-                                    <i class="bi bi-plus-lg"></i> Registrar
+                    <div class="mb-4 p-3 bg-light border rounded-3 position-relative">
+                        <h6 class="fw-semibold mb-3 text-dark"><i class="bi bi-plus-circle text-info me-1"></i> Registrar nueva categoría</h6>
+                        <form id="formCreateCategory" autocomplete="off">
+                            <label for="txtCategoryName" class="visually-hidden">Nombre de la categoría</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0"><i class="bi bi-collection text-muted"></i></span>
+                                <input type="text" class="form-control border-start-0 ps-0" id="txtCategoryName" name="txtCategoryName"
+                                    maxlength="255" required placeholder="Ej. Bebidas calientes">
+                                <button class="btn btn-info text-white px-4 fw-medium" type="submit">
+                                    <i class="bi bi-check2-circle d-none d-sm-inline-block me-1"></i> Registrar
                                 </button>
                             </div>
                         </form>
@@ -706,9 +702,22 @@
                 <?php endif; ?>
                 <div>
                     <h6 class="fw-semibold">Categorías registradas</h6>
-                    <ul class="list-group" id="categoryList">
-                        <li class="list-group-item text-center text-muted">No hay categorías registradas.</li>
-                    </ul>
+                    <div class="bg-light rounded-3 border p-1">
+                        <table class="table table-sm table-hover table-bordered table-striped display nowrap w-100" id="tableCategorys">
+                            <thead class="table-light">
+                                <tr>
+                                    <th></th>
+                                    <th>Nombre de la categoría</th>
+                                    <th class="text-center">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-2">No hay categorías registradas.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">

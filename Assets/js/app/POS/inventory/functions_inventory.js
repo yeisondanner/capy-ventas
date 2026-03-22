@@ -3,6 +3,9 @@
   //variables de los botones
   const btnOpenProductModal =
     document.getElementById("btnOpenProductModal") ?? null;
+  //Variable para abrir el modal de categorias
+  const btnOpenCategoryModal =
+    document.getElementById("btnOpenCategoryModal") ?? null;
   //Boton para generar codigo de barras
   const btnGenerateCode = document.getElementById("btnGenerateCode") ?? null;
   //elementos de formularios
@@ -14,8 +17,12 @@
   const update_flInput = document.getElementById("update_flInput") ?? null;
   const update_btnGenerateCode =
     document.getElementById("update_btnGenerateCode") ?? null;
+  //formulario de registro de categorias
+  const formCreateCategory =
+    document.getElementById("formCreateCategory") ?? null;
   //inicializamos la tabla
   let productsTable;
+  let categorysTable;
   //inicializamos el id del product y de la imagen
   let idProduct = null;
   let idImage = null;
@@ -40,7 +47,15 @@
   const DEFAULT_IMAGE = `${base_url}/Loadfile/iconproducts?f=product.png`;
   const ENDPOINT_DELETE_IMAGE = `${base_url}/pos/Inventory/deletePhotoImage`;
   const ENDPOINT_GENERATE_PRODUCT_CODE = `${base_url}/pos/Inventory/generateProductCode`;
+  const ENDPOINT_GET_CATEGORY_LIST = `${base_url}/pos/Inventory/getCategoryList`;
+  const ENDPOINT_SAVE_CATEGORY = `${base_url}/pos/Inventory/setCategory`;
+  const ENDPOINT_UPDATE_CATEGORY = `${base_url}/pos/Inventory/updateCategory`;
+  const ENDPOINT_DELETE_CATEGORY = `${base_url}/pos/Inventory/deleteCategory`;
 
+  /**
+   * Variable de protegida
+   */
+  const PROTECTED_CATEGORY = "Sin categoría";
   document.addEventListener("DOMContentLoaded", function () {
     loadTable();
     //inicializamos los eventos
@@ -60,48 +75,47 @@
      */
     if (btnOpenProductModal) {
       btnOpenProductModal.addEventListener("click", async function () {
-        /**
-         * Inicializamos el input de imagen
-         */
-        if (flInput) {
-          flInput.addEventListener("change", function (e) {
-            const file = e.target.files[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onload = function (e) {
-                renderPreviewImage(e.target.result, "logoPreview");
-              };
-              reader.readAsDataURL(file);
-            }
-          });
-        }
-        /**
-         * Inicializamos el evento para generar el codigo de barras
-         */
-        if (btnGenerateCode) {
-          btnGenerateCode.addEventListener("click", async function () {
-            const data = await sendData(ENDPOINT_GENERATE_PRODUCT_CODE, {});
-            showAlert({
-              title: data.title,
-              message: data.message,
-              icon: data.icon,
-              timer: data.timer,
-            });
-            if (data.status) {
-              //limpiamos el input de codigo de barras
-              $("#txtProductCode").val("");
-              //establecemos el codigo de barras
-              $("#txtProductCode").val(data.code);
-              //aceptamos el foco en el input de codigo de barras
-              $("#txtProductCode").focus();
-            }
-          });
-        }
-
         $("#slctProductCategory").html(categorys);
         $("#slctProductSupplier").html(suppliers);
         $("#slctProductMeasurement").html(measurements);
         $("#modalProduct").modal("show");
+      });
+    }
+    /**
+     * Inicializamos el input de imagen
+     */
+    if (flInput) {
+      flInput.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            renderPreviewImage(e.target.result, "logoPreview");
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+    /**
+     * Inicializamos el evento para generar el codigo de barras
+     */
+    if (btnGenerateCode) {
+      btnGenerateCode.addEventListener("click", async function () {
+        const data = await sendData(ENDPOINT_GENERATE_PRODUCT_CODE, {});
+        showAlert({
+          title: data.title,
+          message: data.message,
+          icon: data.icon,
+          timer: data.timer,
+        });
+        if (data.status) {
+          //limpiamos el input de codigo de barras
+          $("#txtProductCode").val("");
+          //establecemos el codigo de barras
+          $("#txtProductCode").val(data.code);
+          //aceptamos el foco en el input de codigo de barras
+          $("#txtProductCode").focus();
+        }
       });
     }
     /**
@@ -182,6 +196,339 @@
         }
       });
     }
+    /**
+     * Metodo que se encarga de abrir el modal de categorias
+     * y cargar la tabla de categorias y todo el CRUD completo
+     */
+    if (btnOpenCategoryModal) {
+      btnOpenCategoryModal.addEventListener("click", function () {
+        loadTableCategorys();
+        $("#modalCategory").modal("show");
+      });
+    }
+    /**
+     * Metodo que se encarga de registrar una nueva categoria
+     */
+    if (formCreateCategory) {
+      formCreateCategory.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const form = new FormData(formCreateCategory);
+        const config = {
+          method: "POST",
+          body: form,
+        };
+        const data = await sendData(ENDPOINT_SAVE_CATEGORY, config);
+        showAlert({
+          title: data.title,
+          message: data.message,
+          icon: data.icon,
+          timer: data.timer,
+        });
+        if (data.status) {
+          formCreateCategory.reset();
+          categorysTable.ajax.reload(null, false);
+        }
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1500);
+        }
+      });
+    }
+    /**
+     * Metodo que se encarga de obtener la imagen del producto
+     */
+    if (update_flInput) {
+      update_flInput.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          renderPreviewImage(e.target.result, "update_logoPreview");
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    /**
+     * Inicializamos el evento para generar el codigo de barras
+     */
+    if (update_btnGenerateCode) {
+      update_btnGenerateCode.addEventListener("click", async function () {
+        const data = await sendData(ENDPOINT_GENERATE_PRODUCT_CODE, {});
+        showAlert({
+          title: data.title,
+          message: data.message,
+          icon: data.icon,
+          timer: data.timer,
+        });
+        if (data.status) {
+          //limpiamos el input de codigo de barras
+          $("#update_txtProductCode").val("");
+          //establecemos el codigo de barras
+          $("#update_txtProductCode").val(data.code);
+          //aceptamos el foco en el input de codigo de barras
+          $("#update_txtProductCode").focus();
+        }
+      });
+    }
+  }
+  /**
+   * Metodo que se encarga de cargar la tabla de categorias
+   * @returns {void}
+   */
+  function loadTableCategorys() {
+    categorysTable = $("#tableCategorys").DataTable({
+      responsive: true,
+      processing: true,
+      ajax: {
+        url: ENDPOINT_GET_CATEGORY_LIST,
+        dataSrc: function (json) {
+          if (json.url) {
+            setTimeout(() => {
+              window.location.href = json.url;
+            }, 1000);
+          }
+          // Importante: serverSide espera que los datos vengan en json.data
+          return json;
+        },
+      },
+      columns: [
+        {
+          data: "",
+          className: "dtr-control",
+          orderable: false,
+          searchable: false,
+          width: "10px",
+          defaultContent: `<i class="bi bi-plus text-primary h3"></i>`,
+        },
+        {
+          data: "name",
+        },
+        {
+          data: null,
+          orderable: false,
+          searchable: false,
+          className: "text-center",
+          render: function (data, type, row) {
+            if (row.name === PROTECTED_CATEGORY) {
+              return `
+                
+              `;
+            }
+            return `
+              <div class="btn-group btn-group-sm" role="group">
+                <button type="button" class="btn btn-outline-primary text-primary edit-category" data-id="${row.idCategory}" data-name="${row.name}"><i class="bi bi-pencil-square"></i></button>
+                <button type="button" class="btn btn-outline-danger text-danger delete-category" data-id="${row.idCategory}" data-name="${row.name}"><i class="bi bi-trash"></i></button>
+              </div>
+            `;
+          },
+        },
+      ],
+      dom: "lBfrtip",
+      buttons: [
+        {
+          extend: "copyHtml5",
+          text: "<i class='bi bi-clipboard'></i> Copiar",
+          className: "btn btn-sm btn-outline-secondary my-2",
+          title: "Listado de categorias",
+          exportOptions: { columns: [1] },
+        },
+        {
+          extend: "excelHtml5",
+          text: "<i class='bi bi-file-earmark-excel'></i> Excel",
+          className: "btn btn-sm btn-outline-success my-2",
+          title: "Listado de categorias",
+          exportOptions: { columns: [1] },
+        },
+        {
+          extend: "csvHtml5",
+          text: "<i class='bi bi-filetype-csv'></i> CSV",
+          className: "btn btn-sm btn-outline-info my-2",
+          title: "Listado de categorias",
+          exportOptions: { columns: [1] },
+        },
+        {
+          extend: "pdfHtml5",
+          text: "<i class='bi bi-filetype-pdf'></i> PDF",
+          className: "btn btn-sm btn-outline-danger my-2",
+          orientation: "portrait",
+          pageSize: "A4",
+          title: "Listado de categorias",
+          exportOptions: { columns: [1] },
+        },
+      ],
+      keyTable: true,
+      destroy: true,
+      colReorder: true,
+      stateSave: true,
+      autoFill: false,
+      searching: true,
+      iDisplayLength: 10,
+      order: [[0, "asc"]],
+      language: {
+        url: `${base_url}/Assets/js/libraries/POS/Spanish-datatables.json`,
+      },
+      drawCallback: () => {
+        //agregamos estilos a la paginacion
+        document
+          .querySelectorAll(".dataTables_paginate > .pagination")
+          .forEach((el) => {
+            el.classList.add("pagination-sm", "mt-2");
+          });
+        //botones de editar y eliminar
+        const btnEditCategory = document.querySelectorAll(".edit-category");
+        const btnDeleteCategory = document.querySelectorAll(".delete-category");
+        /**
+         * Metodo que se encarga de editar una categoria
+         */
+        if (btnEditCategory.length > 0) {
+          btnEditCategory.forEach((el) => {
+            el.addEventListener("click", function () {
+              const idCategory = this.getAttribute("data-id");
+              const categoryName = this.getAttribute("data-name") || "";
+              Swal.fire({
+                target: "#modalCategory",
+                title: "Editar categoría",
+                html: `
+                <div class="text-start mt-3">
+                  <form id="formUpdateCategory" autocomplete="off">
+                    <label for="update_txtCategoryName" class="form-label text-muted small mb-1">Nombre de la categoría <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-white border-end-0 text-primary">
+                        <i class="bi bi-collection"></i>
+                      </span>
+                      <input type="text" class="form-control border-start-0 ps-0 shadow-none" 
+                        id="update_txtCategoryName" 
+                        name="update_txtCategoryName"
+                        value="${categoryName}"
+                        maxlength="255" required placeholder="Ej. Bebidas calientes">                                
+                    </div>
+                  </form>
+                </div>
+              `,
+                footer:
+                  "<span class='text-danger'>*</span> Campos obligatorios",
+                showCancelButton: true,
+                reverseButtons: true,
+                confirmButtonColor: "#0d6efd",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "<i class='bi bi-save'></i> Guardar cambios",
+                cancelButtonText: "<i class='bi bi-x-lg'></i> Cancelar",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                  const input = $("#update_txtCategoryName");
+                  input.focus();
+                  input.select();
+                },
+                preConfirm: () => {
+                  const newCategoryName = $("#update_txtCategoryName").val();
+                  //validamos que el nombre de la categoría no esté vacío
+                  if (!newCategoryName.trim()) {
+                    Swal.showValidationMessage(
+                      "El nombre de la categoría es obligatorio",
+                    );
+                    const input = $("#update_txtCategoryName");
+                    input.focus();
+                    input.select();
+                    return false;
+                  }
+                  //preparamos los datos para enviar al backend
+                  const formdata = new FormData();
+                  formdata.append("categoryId", idCategory);
+                  formdata.append("txtCategoryName", newCategoryName.trim());
+                  const config = {
+                    method: "POST",
+                    body: formdata,
+                  };
+                  return sendData(ENDPOINT_UPDATE_CATEGORY, config);
+                },
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  const data = result.value;
+                  showAlert({
+                    title: data.title,
+                    message: data.message,
+                    icon: data.icon,
+                    timer: data.timer,
+                  });
+                  if (data.status) {
+                    formCreateCategory.reset();
+                    categorysTable.ajax.reload(null, false);
+                  }
+                  if (data.url) {
+                    setTimeout(() => {
+                      window.location.href = data.url;
+                    }, 1500);
+                  }
+                }
+              });
+            });
+          });
+        }
+
+        /**
+         * Metodo que se encarga de eliminar una categoria
+         */
+        if (btnDeleteCategory.length > 0) {
+          btnDeleteCategory.forEach((el) => {
+            el.addEventListener("click", function () {
+              const idCategory = this.getAttribute("data-id");
+              const categoryName = this.getAttribute("data-name");
+              Swal.fire({
+                title: "¿Está seguro de eliminar la categoría?",
+                html: `La categoría <strong>"${categoryName}"</strong> será eliminada`,
+                footer: `<div style="border: 1px dashed #dc3545"><span class="text-danger"><i class="bi bi-exclamation-triangle"></i> Esta acción no se puede deshacer</span></div>`,
+                icon: "warning",
+                showCancelButton: true,
+                reverseButtons: true,
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "<i class='bi bi-trash'></i> Si, eliminar",
+                cancelButtonText: "<i class='bi bi-x-lg'></i> No, cancelar",
+                //hacemos que no se cierre el modal
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                //preConfirm es una funcion que se ejecuta antes de que se cierre el modal
+                preConfirm: async () => {
+                  //preparamos los datos para enviar al backend
+                  const formData = new FormData();
+                  formData.append("id", idCategory);
+                  formData.append("name", categoryName);
+                  const config = {
+                    method: "POST",
+                    body: formData,
+                  };
+                  //enviamos los datos al backend
+                  const data = await sendData(ENDPOINT_DELETE_CATEGORY, config);
+                  return data;
+                },
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  //obtenemos los valores que devuelve el backend
+                  const data = result.value;
+                  showAlert({
+                    title: data.title,
+                    message: data.message,
+                    icon: data.icon,
+                    timer: data.timer,
+                  });
+                  if (data.status) {
+                    //recargamos la tabla
+                    categorysTable.ajax.reload(null, false);
+                  }
+                  //validamos si existe una url para redirigir
+                  if (data.url) {
+                    setTimeout(() => {
+                      window.location.href = data.url;
+                    }, 1000);
+                  }
+                }
+              });
+            });
+          });
+        }
+      },
+    });
   }
 
   /**
@@ -325,29 +672,29 @@
       buttons: [
         {
           extend: "copyHtml5",
-          message: "<i class='bi bi-clipboard'></i> Copiar",
+          text: "<i class='bi bi-clipboard'></i> Copiar",
           className: "btn btn-sm btn-outline-secondary my-2",
           exportOptions: { columns: [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
         },
         {
           extend: "excelHtml5",
-          message: "<i class='bi bi-file-earmark-excel'></i> Excel",
+          text: "<i class='bi bi-file-earmark-excel'></i> Excel",
           className: "btn btn-sm btn-outline-success my-2",
           title: "Productos",
           exportOptions: { columns: [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
         },
         {
           extend: "csvHtml5",
-          message: "<i class='bi bi-filetype-csv'></i> CSV",
+          text: "<i class='bi bi-filetype-csv'></i> CSV",
           className: "btn btn-sm btn-outline-info my-2",
           title: "Productos",
           exportOptions: { columns: [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
         },
         {
           extend: "pdfHtml5",
-          message: "<i class='bi bi-filetype-pdf'></i> PDF",
+          text: "<i class='bi bi-filetype-pdf'></i> PDF",
           className: "btn btn-sm btn-outline-danger my-2",
-          orientation: "portrait",
+          orientation: "landscape",
           pageSize: "A4",
           title: "Productos",
           exportOptions: { columns: [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
@@ -452,47 +799,6 @@
                 method: "GET",
               });
               const prodInf = data.data;
-              /**
-               * Metodo que se encarga de obtener la imagen del producto
-               */
-              if (update_flInput) {
-                update_flInput.addEventListener("change", (e) => {
-                  const file = e.target.files[0];
-                  const reader = new FileReader();
-                  reader.onload = function (e) {
-                    renderPreviewImage(e.target.result, "update_logoPreview");
-                  };
-                  reader.readAsDataURL(file);
-                });
-              }
-              /**
-               * Inicializamos el evento para generar el codigo de barras
-               */
-              if (update_btnGenerateCode) {
-                update_btnGenerateCode.addEventListener(
-                  "click",
-                  async function () {
-                    const data = await sendData(
-                      ENDPOINT_GENERATE_PRODUCT_CODE,
-                      {},
-                    );
-                    showAlert({
-                      title: data.title,
-                      message: data.message,
-                      icon: data.icon,
-                      timer: data.timer,
-                    });
-                    if (data.status) {
-                      //limpiamos el input de codigo de barras
-                      $("#update_txtProductCode").val("");
-                      //establecemos el codigo de barras
-                      $("#update_txtProductCode").val(data.code);
-                      //aceptamos el foco en el input de codigo de barras
-                      $("#update_txtProductCode").focus();
-                    }
-                  },
-                );
-              }
               /**
                * cargamos los selects con los datos obtenidos
                */

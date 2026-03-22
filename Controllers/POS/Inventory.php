@@ -21,7 +21,7 @@ class Inventory extends Controllers
      *
      * @var string|null
      */
-    private ?string $protectedCategoryKey = null;
+    private string $protectedCategoryKey = "Sin categoría";
 
     public function __construct()
     {
@@ -656,11 +656,7 @@ class Inventory extends Controllers
         foreach ($data as $key => $value) {
             $data[$key]['name'] = decodeUniversalText($value['name']);
         }
-
-        toJson([
-            'status' => true,
-            'data' => $data,
-        ]);
+        toJson($data);
     }
 
     /**
@@ -675,15 +671,14 @@ class Inventory extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
+        validateFields(['txtCategoryName']);
         $userId = $this->getUserId();
-
-
         $rawName = strClean($_POST['txtCategoryName'] ?? '');
         $name = ucwords(strClean($rawName));
-
-        if ($name === '') {
-            $this->responseError('El nombre de la categoría es obligatorio.');
+        validateFieldsEmpty(['Nombre de la categoría' => $name]);
+        //validamos que la categoria no sea mayor a  255 caracteres
+        if (strlen($name) > 255) {
+            $this->responseError('El nombre de la categoría no puede exceder los 255 caracteres.');
         }
 
         $businessId = $this->getBusinessId();
@@ -704,6 +699,7 @@ class Inventory extends Controllers
             'type' => 'success',
             'icon' => 'success',
             'status' => true,
+            'timer' => 2500,
         ]);
     }
 
@@ -719,10 +715,6 @@ class Inventory extends Controllers
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
-        $userId = $this->getUserId();
-
-
         $categoryId = (int) ($_POST['categoryId'] ?? 0);
         $rawName = strClean($_POST['txtCategoryName'] ?? '');
         $name = ucwords(strClean($rawName));
@@ -742,7 +734,7 @@ class Inventory extends Controllers
             $this->responseError('La categoría seleccionada no existe o no pertenece a tu negocio.');
         }
 
-        if ($this->isProtectedCategoryName($category['name'] ?? '')) {
+        if ($category['name'] === $this->protectedCategoryKey) {
             $this->responseError('No puedes modificar la categoría predeterminada del sistema.');
         }
 
@@ -762,6 +754,7 @@ class Inventory extends Controllers
             'type' => 'success',
             'icon' => 'success',
             'status' => true,
+            'timer' => 2500,
         ]);
     }
 
@@ -777,23 +770,16 @@ class Inventory extends Controllers
     {
         //VALIDACION DE PERMISOS
         validate_permission_app(10, "d", false, false, false);
-        if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
         }
-
-        $payload = json_decode(file_get_contents('php://input'), true);
-        if (!is_array($payload)) {
-            $this->responseError('Solicitud inválida.');
-        }
-
-        $categoryId = (int) ($payload['id'] ?? 0);
-        $token = (string) ($payload['token'] ?? '');
+        validateFields(['id']);
+        $categoryId = (int) ($_POST['id'] ?? 0);
+        $name = ($_POST['name'] ?? '');
 
         if ($categoryId <= 0) {
             $this->responseError('No fue posible identificar la categoría seleccionada.');
         }
-
-        $userId = $this->getUserId();
 
         $businessId = $this->getBusinessId();
         $category = $this->model->findCategory($categoryId, $businessId);
@@ -802,7 +788,7 @@ class Inventory extends Controllers
             $this->responseError('La categoría seleccionada no existe o no pertenece a tu negocio.');
         }
 
-        if ($this->isProtectedCategoryName($category['name'] ?? '')) {
+        if ($category['name'] === $this->protectedCategoryKey) {
             $this->responseError('No puedes eliminar la categoría predeterminada del sistema.');
         }
 
@@ -816,7 +802,7 @@ class Inventory extends Controllers
 
             toJson([
                 'title' => 'Categoría desactivada',
-                'message' => 'La categoría tiene registros asociados, por lo que se desactivó y se ocultó del listado.',
+                'message' => 'La categoría: "' . $name . '" se eliminó correctamente.',
                 'type' => 'success',
                 'icon' => 'success',
                 'status' => true,
@@ -832,7 +818,7 @@ class Inventory extends Controllers
 
         toJson([
             'title' => 'Categoría eliminada',
-            'message' => 'La categoría se eliminó correctamente.',
+            'message' => 'La categoría: "' . $name . '" se eliminó correctamente.',
             'type' => 'success',
             'icon' => 'success',
             'status' => true,
@@ -988,123 +974,6 @@ class Inventory extends Controllers
         if (empty($supplier)) {
             $this->responseError('El proveedor seleccionado no pertenece a tu negocio o está inactivo.');
         }
-    }
-
-    /**
-     * Determina si el nombre corresponde a la categoría protegida por defecto.
-     *
-     * @param string $name Nombre a evaluar.
-     *
-     * @return bool
-     */
-    private function isProtectedCategoryName(string $name): bool
-    {
-        if ($name === '') {
-            return false;
-        }
-
-        return $this->normalizeCategoryKey($name) === $this->getProtectedCategoryKey();
-    }
-
-    /**
-     * Obtiene la clave de comparación de la categoría protegida.
-     *
-     * @return string
-     */
-    private function getProtectedCategoryKey(): string
-    {
-        if ($this->protectedCategoryKey === null) {
-            $this->protectedCategoryKey = $this->normalizeCategoryKey('Sin Categoría');
-        }
-
-        return $this->protectedCategoryKey;
-    }
-
-    /**
-     * Normaliza un nombre de categoría para comparaciones internas.
-     *
-     * @param string $value Texto a normalizar.
-     *
-     * @return string
-     */
-    private function normalizeCategoryKey(string $value): string
-    {
-        $trimmed = trim($value);
-        if ($trimmed === '') {
-            return '';
-        }
-
-        $transliterated = $trimmed;
-
-        if (function_exists('iconv')) {
-            $converted = iconv('UTF-8', 'ASCII//TRANSLIT', $trimmed);
-            if ($converted !== false && $converted !== null) {
-                $transliterated = $converted;
-            }
-        }
-
-        if ($transliterated === $trimmed) {
-            $transliterated = strtr($transliterated, [
-                'Á' => 'A',
-                'À' => 'A',
-                'Â' => 'A',
-                'Ä' => 'A',
-                'Ã' => 'A',
-                'Å' => 'A',
-                'É' => 'E',
-                'È' => 'E',
-                'Ê' => 'E',
-                'Ë' => 'E',
-                'Í' => 'I',
-                'Ì' => 'I',
-                'Î' => 'I',
-                'Ï' => 'I',
-                'Ó' => 'O',
-                'Ò' => 'O',
-                'Ô' => 'O',
-                'Ö' => 'O',
-                'Õ' => 'O',
-                'Ú' => 'U',
-                'Ù' => 'U',
-                'Û' => 'U',
-                'Ü' => 'U',
-                'Ñ' => 'N',
-                'Ç' => 'C',
-                'á' => 'a',
-                'à' => 'a',
-                'â' => 'a',
-                'ä' => 'a',
-                'ã' => 'a',
-                'å' => 'a',
-                'é' => 'e',
-                'è' => 'e',
-                'ê' => 'e',
-                'ë' => 'e',
-                'í' => 'i',
-                'ì' => 'i',
-                'î' => 'i',
-                'ï' => 'i',
-                'ó' => 'o',
-                'ò' => 'o',
-                'ô' => 'o',
-                'ö' => 'o',
-                'õ' => 'o',
-                'ú' => 'u',
-                'ù' => 'u',
-                'û' => 'u',
-                'ü' => 'u',
-                'ñ' => 'n',
-                'ç' => 'c',
-            ]);
-        }
-
-        $lower = function_exists('mb_strtolower')
-            ? mb_strtolower($transliterated, 'UTF-8')
-            : strtolower($transliterated);
-
-        $normalizedSpaces = preg_replace('/\s+/', ' ', $lower ?? '');
-
-        return is_string($normalizedSpaces) ? $normalizedSpaces : '';
     }
     /**
      * Metodo que se encarga de eliminar la foto
