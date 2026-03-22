@@ -174,8 +174,8 @@ class Inventory extends Controllers
             $this->responseError('Debes seleccionar un proveedor válido.');
         }
         //verificamos que el codigo tenga una longitud de 50 caracteres
-        if (strlen($code) > 50) {
-            $this->responseError('El código no puede exceder los 50 caracteres.');
+        if (strlen($code) > 60) {
+            $this->responseError('El código no puede exceder los 60 caracteres.');
         }
         //validamos que el campo no este vacio
         if (!empty($flInput['name'])) {
@@ -413,8 +413,8 @@ class Inventory extends Controllers
             'PRECIO DE VENTA' => $sales
         ]);
         //verificamos que el codigo tenga una longitud de 50 caracteres
-        if (strlen($code) > 50) {
-            $this->responseError('El código no puede exceder los 50 caracteres.');
+        if (strlen($code) > 60) {
+            $this->responseError('El código no puede exceder los 60 caracteres.');
         }
         if ($productId <= 0) {
             $this->responseError('Identificador de producto inválido.');

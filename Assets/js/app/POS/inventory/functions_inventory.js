@@ -12,6 +12,8 @@
   //Elemento de imagenes de preview
   const flInput = document.getElementById("flInput") ?? null;
   const update_flInput = document.getElementById("update_flInput") ?? null;
+  const update_btnGenerateCode =
+    document.getElementById("update_btnGenerateCode") ?? null;
   //inicializamos la tabla
   let productsTable;
   //inicializamos el id del product y de la imagen
@@ -464,6 +466,34 @@
                 });
               }
               /**
+               * Inicializamos el evento para generar el codigo de barras
+               */
+              if (update_btnGenerateCode) {
+                update_btnGenerateCode.addEventListener(
+                  "click",
+                  async function () {
+                    const data = await sendData(
+                      ENDPOINT_GENERATE_PRODUCT_CODE,
+                      {},
+                    );
+                    showAlert({
+                      title: data.title,
+                      message: data.message,
+                      icon: data.icon,
+                      timer: data.timer,
+                    });
+                    if (data.status) {
+                      //limpiamos el input de codigo de barras
+                      $("#update_txtProductCode").val("");
+                      //establecemos el codigo de barras
+                      $("#update_txtProductCode").val(data.code);
+                      //aceptamos el foco en el input de codigo de barras
+                      $("#update_txtProductCode").focus();
+                    }
+                  },
+                );
+              }
+              /**
                * cargamos los selects con los datos obtenidos
                */
               $("#update_slctProductCategory").html(categorys);
@@ -547,7 +577,126 @@
     $("#reportProductSale").text(info.sales_price_text);
     //llenamos la descripcion
     $("#reportProductDescription").text(info.description);
+    /**
+     * Renderizamos las imagenes del producto
+     */
+    const images = info.images;
+    renderImagesReport(images);
+    /**
+     * Renderizamos el historial del producto
+     */
+    const product_history = info.product_history || [];
+    //inicializamos el data tables
+    if ($.fn.DataTable.isDataTable("#reportTableHistoryProduct")) {
+      $("#reportTableHistoryProduct").DataTable().clear().destroy();
+    }
+    $("#reportTableHistoryProduct").DataTable({
+      responsive: true,
+      data: product_history,
+      columns: [
+        {
+          data: "",
+          className: "dtr-control",
+          orderable: false,
+          searchable: false,
+          width: "10px",
+          defaultContent: `<i class="bi bi-plus text-primary h3"></i>`,
+        },
+        { data: "bar_code" },
+        { data: "name_product" },
+        { data: "stock_product_text" },
+        { data: "purchase_price_text" },
+        { data: "sales_price_text" },
+        { data: "category" },
+        { data: "expiration_date_product" },
+        { data: "fullname_user" },
+        { data: "registration_date_product" },
+      ],
+      columnDefs: [],
+      dom: "lBfrtip",
+      buttons: [
+        {
+          extend: "copyHtml5",
+          text: "<i class='bi bi-clipboard'></i> Copiar",
+          className: "btn btn-sm btn-outline-secondary my-2",
+          footer: true,
+          exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
+        },
+        {
+          extend: "excelHtml5",
+          text: "<i class='bi bi-file-earmark-excel'></i> Excel",
+          className: "btn btn-sm btn-outline-success my-2",
+          title: "Historial del Producto " + info.name,
+          //hacemos que tambien se exporte el total
+          footer: true,
+          exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
+        },
+        {
+          extend: "csvHtml5",
+          text: "<i class='bi bi-filetype-csv'></i> CSV",
+          className: "btn btn-sm btn-outline-info my-2",
+          title: "Historial del Producto " + info.name,
+          footer: true,
+          exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
+        },
+        {
+          extend: "pdfHtml5",
+          text: "<i class='bi bi-filetype-pdf'></i> PDF",
+          className: "btn btn-sm btn-outline-danger my-2",
+          orientation: "landscape",
+          pageSize: "A4",
+          title: "Historial del Producto " + info.name,
+          footer: true,
+          exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8, 9] },
+        },
+      ],
+      keyTable: true,
+      destroy: true,
+      colReorder: true,
+      stateSave: true,
+      autoFill: false,
+      searching: true,
+      iDisplayLength: 10,
+      order: [[0, "asc"]],
+      footerCallback: function (row, data, start, end, display) {
+        let api = this.api();
+
+        // Sumamos solo las filas que están visibles (después de cualquier filtro)
+        let totalStock = api
+          .rows({ search: "applied" })
+          .data()
+          .toArray()
+          .reduce(
+            (sum, item) => sum + (parseFloat(item.stock_product) || 0),
+            0,
+          );
+
+        $("#totalStockFooter").text(
+          totalStock.toFixed(2) + " " + info.measurement_name,
+        );
+      },
+      language: {
+        url: `${base_url}/Assets/js/libraries/POS/Spanish-datatables.json`,
+      },
+    });
     console.log(info);
+  }
+  /**
+   * Metodo que se encarga de renderizar las imagenes del producto
+   * @param {*} images
+   */
+  function renderImagesReport(images) {
+    const listReportImages = document.getElementById("listReportImages");
+    listReportImages.innerHTML = "";
+    //recorremos todas las imagenes para mostrar
+    images.forEach((item) => {
+      const divcard = document.createElement("div");
+      divcard.classList.add("col-xl-2", "col-lg-3", "col-md-4", "col-6");
+      divcard.innerHTML = `<div class="ratio ratio-1x1">
+                             <img src="${base_url}/Loadfile/iconproducts?f=${item.name}" class="rounded border object-fit-cover" alt="Vista 1">
+                          </div>`;
+      listReportImages.appendChild(divcard);
+    });
   }
   /**
    * Metodo que se encarga de renderizar todas las imágenes del producto

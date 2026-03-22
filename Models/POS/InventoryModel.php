@@ -108,26 +108,35 @@ class InventoryModel extends Mysql
         $sql = <<<SQL
             SELECT
                 ph.idProductHistory,
+                ph.bar_code,
                 CONCAT(p.`names`, ' ', p.lastname) AS 'fullname_user',
                 ph.`name` AS 'name_product',
-                ph.expiration_date AS 'expiration_date_product',
+                IFNULL(DATE(ph.expiration_date),'-') AS 'expiration_date_product',
                 ph.stock AS 'stock_product',
                 ph.sales_price AS 'sales_price_product',
                 ph.purchase_price AS 'purchase_price_product',
                 ph.registration_date AS 'registration_date_product',
-                m.`name` AS 'measurement'
+                m.`name` AS 'measurement',
+                c.`name` AS 'category'
             FROM
                 product_history AS ph
                 INNER JOIN user_app AS ua ON ua.idUserApp = ph.userapp_id
                 INNER JOIN people AS p ON p.idPeople = ua.people_id
                 INNER JOIN measurement AS m ON m.idMeasurement = ph.measurement_id
+                INNER JOIN category AS c ON c.idCategory=ph.category_id
             WHERE 
                 ph.product_id=?
                 AND 
                 ph.`status`='Activo';
         SQL;
 
-        return $this->select_all($sql, [$productId]);
+        $data = $this->select_all($sql, [$productId]);
+        foreach ($data as $key => $value) {
+            $data[$key]['stock_product_text'] = $value['stock_product'] . ' ' . $value['measurement'];
+            $data[$key]['purchase_price_text'] = getCurrency() . ' ' . $value['purchase_price_product'];
+            $data[$key]['sales_price_text'] = getCurrency() . ' ' . $value['sales_price_product'];
+        }
+        return $data;
     }
 
     /**

@@ -146,7 +146,7 @@
                                 <i class="bi bi-upc"></i>
                             </button>
                             <input type="text" class="form-control" id="txtProductCode" name="txtProductCode"
-                                maxlength="50" required placeholder="Ej. 123456789">
+                                maxlength="60" minlength="1" required placeholder="Ej. 123456789">
                             <button class="btn btn-outline-secondary" type="button" id="btnScanCode" title="Escanear código" data-bs-toggle="tooltip" data-bs-placement="top">
                                 <i class="bi bi-camera"></i>
                             </button>
@@ -392,61 +392,32 @@
                                 <label class="text-muted fw-bold d-block text-uppercase small mb-2 border-bottom pb-1"
                                     style="font-size: 0.7rem;"><i class="bi bi-clock-history me-1"></i> Historial de
                                     modificaciones</label>
-                                <div id="sectionTableReport" class="table-responsive mt-2 h-100"
-                                    style="max-height: 350px; overflow-y: auto;">
-                                    <table class="table table-sm table-hover table-bordered mb-0 align-middle"
+                                <div id="sectionTableReport" class="bg-light rounded-3 border p-1"
+                                    style="max-height: 350px; overflow-y: auto; overflow-x: hidden;">
+                                    <table class="table table-sm table-hover table-bordered table-striped display nowrap w-100"
                                         style="font-size: 0.85rem;" id="reportTableHistoryProduct">
                                         <thead class="table-light" style="position: sticky; top: 0; z-index: 1;">
                                             <tr>
-                                                <th style="min-width: 120px;">Fecha / Hora</th>
-                                                <th>Usuario</th>
+                                                <th></th>
+                                                <th>Código</th>
                                                 <th>Nombre</th>
-                                                <th>Vencimiento</th>
                                                 <th>Stock</th>
-                                                <th>P. Compra</th>
-                                                <th>P. Venta</th>
-                                                <th class="text-center">Acciones</th>
+                                                <th>Precio Compra</th>
+                                                <th>Precio Venta</th>
+                                                <th>Categoría</th>
+                                                <th>Vencimiento</th>
+                                                <th>Usuario</th>
+                                                <th style="min-width: 120px;">Fecha / Hora</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tbodyProductHistory">
-                                            <!-- Ejemplos estáticos de cómo se vería el historial -->
-                                            <tr>
-                                                <td class="text-muted">10/03/2026 <br><small>10:30 AM</small></td>
-                                                <td><i class="bi bi-person-circle me-1"></i> Admin</td>
-                                                <td>Café molido premium</td>
-                                                <td>30/12/2026</td>
-                                                <td class="text-primary fw-bold">150.00</td>
-                                                <td>$5.00</td>
-                                                <td class="text-success fw-bold">$12.50</td>
-                                                <td class="text-center">
-                                                    <button class="btn btn-sm btn-outline-info" title="Ver detalle"
-                                                        type="button">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-muted">01/03/2026 <br><small>08:00 AM</small></td>
-                                                <td><i class="bi bi-person-circle me-1"></i> Admin</td>
-                                                <td>Café molido premium</td>
-                                                <td>30/12/2026</td>
-                                                <td>50.00</td>
-                                                <td>$5.00</td>
-                                                <td>$10.00</td>
-                                                <td class="text-center">
-                                                    <button class="btn btn-sm btn-outline-info" title="Ver detalle"
-                                                        type="button">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
                                         </tbody>
                                         <tfoot class="table-warning">
                                             <tr>
-                                                <th colspan="4" class="text-end text-uppercase">Total:</th>
+                                                <th colspan="3" class="text-end text-uppercase">Total:</th>
                                                 <th id="totalStockFooter" class="text-primary fw-bold text-start">0.00
                                                 </th>
-                                                <th colspan="3"></th>
+                                                <th colspan="6"></th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -564,12 +535,12 @@
                         <label for="update_txtProductCode" class="form-label">Código <span
                                 class="text-danger">*</span></label>
                         <div class="input-group">
-                            <button class="btn btn-outline-secondary" type="button" id="btnGenerateCode">
+                            <button class="btn btn-outline-primary" type="button" id="update_btnGenerateCode" title="Generar código" data-bs-toggle="tooltip" data-bs-placement="top">
                                 <i class="bi bi-upc"></i>
                             </button>
                             <input type="text" class="form-control" id="update_txtProductCode"
-                                name="update_txtProductCode" maxlength="50" required placeholder="Ej. 123456789">
-                            <button class="btn btn-outline-secondary" type="button" id="btnScanCode">
+                                name="update_txtProductCode" maxlength="60" minlength="1" required placeholder="Ej. 123456789">
+                            <button class="btn btn-outline-secondary" type="button" id="update_btnScanCode" title="Escanear código" data-bs-toggle="tooltip" data-bs-placement="top">
                                 <i class="bi bi-camera"></i>
                             </button>
                         </div>
