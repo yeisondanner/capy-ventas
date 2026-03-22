@@ -585,6 +585,13 @@
     /**
      * Renderizamos el historial del producto
      */
+    loatTableHistoryProduct(info);
+  }
+  /**
+   * Metodo que se encarga de cargar la tabla del historial del producto
+   * @param {*} info
+   */
+  function loatTableHistoryProduct(info) {
     const product_history = info.product_history || [];
     //inicializamos el data tables
     if ($.fn.DataTable.isDataTable("#reportTableHistoryProduct")) {
@@ -679,7 +686,6 @@
         url: `${base_url}/Assets/js/libraries/POS/Spanish-datatables.json`,
       },
     });
-    console.log(info);
   }
   /**
    * Metodo que se encarga de renderizar las imagenes del producto
