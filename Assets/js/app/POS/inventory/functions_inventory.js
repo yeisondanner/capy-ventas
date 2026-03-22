@@ -314,6 +314,25 @@
                 
               `;
             }
+            if (row.update === 0 && row.delete === 0) {
+              return `
+                <span class="badge badge-secondary bg-secondary"><i class="bi bi-slash-circle"></i> Sin permisos</span>
+              `;
+            }
+            if (row.update === 1 && row.delete === 0) {
+              return `
+                <div class="btn-group btn-group-sm" role="group">
+                  <button type="button" class="btn btn-outline-primary text-primary edit-category" data-id="${row.idCategory}" data-name="${row.name}"><i class="bi bi-pencil-square"></i></button>
+                </div>
+              `;
+            }
+            if (row.update === 0 && row.delete === 1) {
+              return `
+                <div class="btn-group btn-group-sm" role="group">
+                  <button type="button" class="btn btn-outline-danger text-danger delete-category" data-id="${row.idCategory}" data-name="${row.name}"><i class="bi bi-trash"></i></button>
+                </div>
+              `;
+            }
             return `
               <div class="btn-group btn-group-sm" role="group">
                 <button type="button" class="btn btn-outline-primary text-primary edit-category" data-id="${row.idCategory}" data-name="${row.name}"><i class="bi bi-pencil-square"></i></button>

@@ -653,8 +653,12 @@ class Inventory extends Controllers
         validate_permission_app(10, "r", false, false, false);
         $businessId = $this->getBusinessId();
         $data = $this->model->selectCategoryList($businessId);
+        $validationUpdate =  validate_permission_app(10, "u", false)['update'];
+        $validationDelete =  validate_permission_app(10, "d", false)['delete'];
         foreach ($data as $key => $value) {
             $data[$key]['name'] = decodeUniversalText($value['name']);
+            $data[$key]['update'] = $validationUpdate;
+            $data[$key]['delete'] = $validationDelete;
         }
         toJson($data);
     }

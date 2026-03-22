@@ -1941,7 +1941,7 @@ function validate_permission_app(int $idinterface, string $permission, bool $red
                     'icon' => 'error',
                     'timer' => 2000,
                     'url' => $no_permisos,
-                    $crudpermissionpia[$permission] => $result[$crudpermissionpia[$permission]]
+                    $crudpermission[$permission] => $result[$crudpermissionpia[$permission]]
                 ];
                 if (!$return) {
                     toJson($arrReturn);
