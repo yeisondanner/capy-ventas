@@ -870,6 +870,17 @@
               margin: 0; 
               padding: 0; 
               width: 58mm !important;
+              color: #000 !important;
+            }
+            .ticket-58, .ticket-58 * {
+              color: #000 !important;
+              font-family: "Courier New", Courier, monospace !important;
+              font-weight: 600 !important; /* Texto más oscuro y legible */
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            .ticket-58 .fw-bold, .ticket-58 strong, .ticket-58 b {
+              font-weight: 900 !important; /* Más resalte para texto en negrita */
             }
             #${elementId} { padding: 0 !important; background: transparent !important; }
             .ticket-wrapper { padding: 0 !important; background: none !important; border-radius: 0 !important; align-items: flex-start !important; justify-content: flex-start !important;}
