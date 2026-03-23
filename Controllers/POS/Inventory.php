@@ -73,6 +73,8 @@ class Inventory extends Controllers
             //agregamos un icono de una flechita arriba si la ganacia es mayor a 0 de color verde y una flechita abajo si la ganacia es menor a 0 de color rojo
             $gainIcon = $gain > 0 ? '<i class="bi bi-arrow-up text-success"></i>' : '<i class="bi bi-arrow-down text-danger"></i>';
 
+            $products[$key]['update'] = $validationUpdate;
+            $products[$key]['delete'] = $validationDelete;
             $products[$key]['cont'] = $counter;
             $products[$key]['name'] = $productName;
             $products[$key]['category'] = $categoryName;
@@ -84,27 +86,6 @@ class Inventory extends Controllers
             $products[$key]['sales_price'] = $currency . ' ' . formatMoney((float) $product['sales_price']);
             $products[$key]['gain'] = $gainIcon . $currency . ' ' . $gain;
             $products[$key]['days_expiration'] = $days_expiration;
-            $products[$key]['status'] = $product['status'] === 'Activo'
-                ? '<span class="badge badge-success bg-success"><i class="bi bi-check-circle"></i> Activo</span>'
-                : '<span class="badge badge-secondary bg-secondary"><i class="bi bi-slash-circle"></i> Inactivo</span>';
-            //definimos los botones de accion
-            $btnupdate = '';
-            $btnDelete = '';
-            if ($validationUpdate === 1) {
-                $btnupdate = '<button class="btn btn-outline-primary edit-product" data-id="' . (int) $product['idProduct'] . '">'
-                    . '<i class="bi bi-pencil-square"></i></button>';
-            }
-            if ($validationDelete === 1) {
-                $btnDelete = '<button class="btn btn-outline-danger delete-product" data-id="' . (int) $product['idProduct'] . '" data-name="' . $productName . '">'
-                    . '<i class="bi bi-trash"></i></button>';
-            }
-            $products[$key]['actions'] = '<div class="btn-group btn-group-sm" role="group">'
-                . '<button class="btn btn-outline-secondary report-product" data-id="' . (int) $product['idProduct'] . '" data-name="' . $productName . '" title="Ver reporte del producto">'
-                . '<i class="bi bi-file-earmark-text"></i></button>'
-                . $btnupdate
-                . $btnDelete
-                . '</div>';
-
             $counter++;
         }
 

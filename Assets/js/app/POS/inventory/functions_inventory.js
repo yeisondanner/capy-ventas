@@ -566,7 +566,26 @@
           defaultContent: `<i class="bi bi-plus text-primary h3"></i>`,
         },
         { data: "cont" },
-        { data: "actions", orderable: false, searchable: false },
+        {
+          data: null,
+          orderable: false,
+          searchable: false,
+          render: (data, type, row) => {
+            let buttons = "";
+
+            if (row.update === 1) {
+              buttons += `<button type="button" class="btn btn-outline-primary text-primary edit-product" data-id="${row.idProduct}" data-name="${row.name}"><i class="bi bi-pencil-square"></i></button>`;
+            }
+            if (row.delete === 1) {
+              buttons += `<button type="button" class="btn btn-outline-danger text-danger delete-product" data-id="${row.idProduct}" data-name="${row.name}"><i class="bi bi-trash"></i></button>`;
+            }
+
+            return `<div class="btn-group btn-group-sm" role="group">
+                      <button class="btn btn-outline-secondary report-product" data-id="${row.idProduct}" data-name="${row.name}" title="Ver reporte del producto"><i class="bi bi-file-earmark-text"></i></button>
+                      ${buttons}
+                    </div>`;
+          },
+        },
         {
           data: "bar_code",
           className: "text-center",
