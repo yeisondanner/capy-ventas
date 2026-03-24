@@ -895,7 +895,22 @@
         : "badge bg-danger text-white",
     );
     $("#reportProductCategory").text(info.category_name);
-    $("#reportProductCode").text(info.bar_code);
+    //generamos el codigo de barras con dimensiones nativas más pequeñas
+    //si en caso el codigo de barras llega vacio que limpie
+    $("#reportProductBarcode").empty();
+    $("#reportProductCode").removeClass("d-none");
+    $("#reportProductBarcode").addClass("d-none");
+    if (info.bar_code) {
+      $("#reportProductCode").addClass("d-none");
+      $("#reportProductBarcode").removeClass("d-none");
+      JsBarcode("#reportProductBarcode", info.bar_code, {
+        width: 1.5,
+        height: 40,
+        fontSize: 14,
+      margin: 0
+    });
+    }
+    $("#reportProductCode").text((info.bar_code)?info.bar_code:"-");
     $("#reportProductSupplier").text(info.supplier_name);
     $("#reportProductMeasurement").text(info.measurement_name);
     $("#reportProductDescription").text(info.description);

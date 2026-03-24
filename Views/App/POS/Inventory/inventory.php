@@ -308,10 +308,11 @@
                             </div>
 
                             <div class="small">
-                                <div class="mb-2">
+                                <div class="mb-3 text-center">
                                     <label class="text-muted fw-bold d-block text-uppercase small"
                                         style="font-size: 0.7rem;">Código</label>
-                                    <span id="reportProductCode">-</span>
+                                    <svg id="reportProductBarcode" class="img-fluid d-none"></svg>
+                                    <span id="reportProductCode" class="d-none">-</span>
                                 </div>
                                 <div class="mb-2">
                                     <label class="text-muted fw-bold d-block text-uppercase small"
