@@ -22,6 +22,9 @@
                             <i class="bi bi-plus-lg"></i> Agregar nuevo producto
                         </button>
                     <?php endif; ?>
+                    <button class="btn btn-outline-success btn-sm" type="button" id="btnGenerateAllBarcodes">
+                        <i class="bi bi-upc-scan"></i> Generar códigos de barras
+                    </button>
                     <?php
                     $category = validate_permission_app(10, "r", false)['read'];
                     if ($category == 1): ?>
@@ -824,6 +827,34 @@
                         </table>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>
+                    Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Generar códigos de barras masivos -->
+<div class="modal fade" id="modalGenerateAllBarcodes" tabindex="-1" aria-labelledby="modalGenerateAllBarcodesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content shadow border-0">
+            <div class="modal-header bg-success text-white border-bottom-0 py-2">
+                <div class="d-flex align-items-center gap-3 w-100 m-0 p-0">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                        style="width: 48px; height: 48px;">
+                        <i class="bi bi-upc-scan fs-3"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0" id="modalGenerateAllBarcodesLabel">Generar códigos de barras masivos</h5>
+                        <p class="mb-0 small text-dark text-opacity-75">Aqui podras generar códigos de barras masivos para tus productos</p>
+                    </div>
+                    <button type="button" class="btn-close ms-auto bg-white" data-bs-dismiss="modal"
+                        aria-label="Cerrar"></button>
+                </div>
+            </div>
+            <div class="modal-body">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i>

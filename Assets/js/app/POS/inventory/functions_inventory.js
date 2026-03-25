@@ -3,6 +3,9 @@
   //variables de los botones
   const btnOpenProductModal =
     document.getElementById("btnOpenProductModal") ?? null;
+  //variable para abrir el modal de generacion de codigos de barras masivos
+  const btnGenerateAllBarcodes =
+    document.getElementById("btnGenerateAllBarcodes") ?? null;
   //Variable para abrir el modal de categorias
   const btnOpenCategoryModal =
     document.getElementById("btnOpenCategoryModal") ?? null;
@@ -90,6 +93,14 @@
         $("#slctProductSupplier").html(suppliers);
         $("#slctProductMeasurement").html(measurements);
         $("#modalProduct").modal("show");
+      });
+    }
+    /**
+     * Inicializamos el modal de generacion de codigos de barras masivos
+     */
+    if (btnGenerateAllBarcodes) {
+      btnGenerateAllBarcodes.addEventListener("click", async function () {
+        $("#modalGenerateAllBarcodes").modal("show");
       });
     }
     /**
@@ -323,6 +334,7 @@
       });
     }
     /**
+     * 
      * Evento que se ejecuta cuando cambia el formato del código de barras
      */
     if (update_slctBarcodeFormat) {
