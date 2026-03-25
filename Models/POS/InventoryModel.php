@@ -109,6 +109,7 @@ class InventoryModel extends Mysql
         $sql = <<<SQL
             SELECT
                 ph.idProductHistory,
+                ph.bar_code_format,
                 ph.bar_code,
                 CONCAT(p.`names`, ' ', p.lastname) AS 'fullname_user',
                 ph.`name` AS 'name_product',

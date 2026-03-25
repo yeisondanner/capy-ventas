@@ -1042,7 +1042,20 @@
           width: "10px",
           defaultContent: `<i class="bi bi-plus text-primary h3"></i>`,
         },
-        { data: "bar_code" },
+        {
+          data: "bar_code",
+          className: "text-center",
+          render: function (data, type, row) {
+            if (!data || data === "Sin código") {
+              return `<span class="text-muted fst-italic small">Sin código</span>`;
+            }
+            return `
+              <div class="lh-sm">
+                <div class="fw-bold"><i class="bi bi-upc text-primary me-1"></i>${data}</div>
+                <div class="text-muted" style="font-size:0.7rem;">${row.bar_code_format}</div>
+              </div>`;
+          },
+        },
         { data: "name_product" },
         { data: "stock_product_text" },
         { data: "purchase_price_text" },
