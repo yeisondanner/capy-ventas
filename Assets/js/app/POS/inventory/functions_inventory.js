@@ -20,6 +20,17 @@
   //formulario de registro de categorias
   const formCreateCategory =
     document.getElementById("formCreateCategory") ?? null;
+  //input de codigo de producto
+  const txtProductCode = document.getElementById("txtProductCode") ?? null;
+  //input de formato de codigo de barras
+  const slctBarcodeFormat =
+    document.getElementById("slctBarcodeFormat") ?? null;
+  //input de formato de codigo de barras
+  const update_slctBarcodeFormat =
+    document.getElementById("update_slctBarcodeFormat") ?? null;
+  //input de codigo de producto
+  const update_txtProductCode =
+    document.getElementById("update_txtProductCode") ?? null;
   //inicializamos la tabla
   let productsTable;
   let categorysTable;
@@ -115,7 +126,40 @@
           $("#txtProductCode").val(data.code);
           //aceptamos el foco en el input de codigo de barras
           $("#txtProductCode").focus();
+          //renderizamos la previsualización del código de barras
+          renderBarcodePreview(data.code, "barcode", "barcodeEmptyState");
         }
+      });
+    }
+    /**
+     * Evento de escritura en el input de código del modal de creación.
+     * Renderiza en tiempo real la previsualización del código de barras.
+     */
+    if (txtProductCode) {
+      txtProductCode.addEventListener("input", function () {
+        renderBarcodePreview(
+          this.value.trim(),
+          "barcode",
+          "barcodeEmptyState",
+          "slctBarcodeFormat",
+        );
+      });
+    }
+    /**
+     * Evento de cambio en el selector de formato del código de barras.
+     * Re-renderiza la previsualización con el formato recién seleccionado
+     * y el código actualmente ingresado en el campo.
+     */
+    if (slctBarcodeFormat) {
+      slctBarcodeFormat.addEventListener("change", function () {
+        const currentCode =
+          document.getElementById("txtProductCode")?.value.trim() ?? "";
+        renderBarcodePreview(
+          currentCode,
+          "barcode",
+          "barcodeEmptyState",
+          "slctBarcodeFormat",
+        );
       });
     }
     /**
@@ -145,6 +189,8 @@
           const defaultImage = `${base_url}/Loadfile/iconproducts?f=product.png`;
           //limpiamos la imagen
           renderPreviewImage(defaultImage, "logoPreview");
+          //limpiamos la previsualización del código de barras
+          renderBarcodePreview("", "barcode", "barcodeEmptyState");
           //actualizamos la tabla
           productsTable.ajax.reload(null, false);
           //cerramos el modal
@@ -268,6 +314,32 @@
           //aceptamos el foco en el input de codigo de barras
           $("#update_txtProductCode").focus();
         }
+      });
+    }
+    /**
+     * Evento que se ejecuta cuando cambia el formato del código de barras
+     */
+    if (update_slctBarcodeFormat) {
+      update_slctBarcodeFormat.addEventListener("change", function () {
+        renderBarcodePreview(
+          $("#update_txtProductCode").val(),
+          "update_barcode",
+          "update_barcodeEmptyState",
+          "update_slctBarcodeFormat",
+        );
+      });
+    }
+    /**
+     * Evento que se ejecuta cuando cambia el codigo de barras
+     */
+    if (update_txtProductCode) {
+      update_txtProductCode.addEventListener("input", function () {
+        renderBarcodePreview(
+          this.value,
+          "update_barcode",
+          "update_barcodeEmptyState",
+          "update_slctBarcodeFormat",
+        );
       });
     }
   }
@@ -832,6 +904,7 @@
               /**
                * cargamos los inputs con los datos obtenidos
                */
+              $("#update_slctBarcodeFormat").val(prodInf.barcode_format);
               $("#update_txtProductCode").val(prodInf.bar_code);
               $("#update_txtProductName").val(prodInf.name);
               $("#update_slctProductCategory").val(prodInf.category_id);
@@ -844,6 +917,12 @@
               $("#update_txtProductDescription").val(prodInf.description);
               $("#update_logoPreview").attr("src", prodInf.image_main_url);
               $("#listImagesContainer").html(renderAllImages(prodInf.images));
+              renderBarcodePreview(
+                prodInf.bar_code,
+                "update_barcode",
+                "update_barcodeEmptyState",
+                "update_slctBarcodeFormat",
+              );
               deleteImage();
               if (prodInf.is_public == "Si") {
                 $("#update_chkProductStatus").prop("checked", true);
@@ -901,16 +980,25 @@
     $("#reportProductCode").removeClass("d-none");
     $("#reportProductBarcode").addClass("d-none");
     if (info.bar_code) {
+      const format = info.barcode_format || "CODE128";
       $("#reportProductCode").addClass("d-none");
       $("#reportProductBarcode").removeClass("d-none");
       JsBarcode("#reportProductBarcode", info.bar_code, {
+        format: format,
         width: 1.5,
         height: 40,
         fontSize: 14,
-      margin: 0
-    });
+        margin: 0,
+        valid: function (valid) {
+          if (!valid) {
+            showError(
+              `"${info.bar_code}" no es válido para el formato ${format}.`,
+            );
+          }
+        },
+      });
     }
-    $("#reportProductCode").text((info.bar_code)?info.bar_code:"-");
+    $("#reportProductCode").text(info.bar_code ? info.bar_code : "-");
     $("#reportProductSupplier").text(info.supplier_name);
     $("#reportProductMeasurement").text(info.measurement_name);
     $("#reportProductDescription").text(info.description);
@@ -1271,5 +1359,69 @@
       false,
     );
     swal.close();
+  }
+  /**
+   * Renderiza la previsualización del código de barras en el modal de creación de producto.
+   * Si el código está vacío o no es válido para el formato, muestra el estado vacío.
+   * @param {string} code  - Valor del código de barras a renderizar.
+   * @param {string} svgId - ID del elemento SVG donde se renderiza el barcode.
+   * @param {string} emptyStateId - ID del contenedor del estado vacío.
+   * @param {string} formatId - ID del select que contiene el formato del código de barras.
+   * @returns {void}
+   */
+  function renderBarcodePreview(code, svgId, emptyStateId, formatId) {
+    const svgEl = document.getElementById(svgId);
+    const emptyEl = document.getElementById(emptyStateId);
+    const formatEl = document.getElementById(formatId);
+
+    // Si no hay código, mostramos el estado vacío y ocultamos el SVG
+    if (!code || code.trim() === "") {
+      if (svgEl) {
+        svgEl.classList.add("d-none");
+        // Limpiamos el SVG para evitar residuos visuales
+        while (svgEl.firstChild) svgEl.removeChild(svgEl.firstChild);
+        svgEl.removeAttribute("style");
+      }
+      if (emptyEl) emptyEl.classList.remove("d-none");
+      return;
+    }
+
+    // Obtenemos el formato actualmente seleccionado (por defecto CODE128)
+    const format = formatEl ? formatEl.value : "CODE128";
+
+    try {
+      JsBarcode(`#${svgId}`, code, {
+        format: format,
+        width: 1.8,
+        height: 50,
+        fontSize: 13,
+        margin: 4,
+        displayValue: true,
+        valid: function (valid) {
+          if (!valid) {
+            // Código no válido para el formato: mostramos estado vacío
+            if (svgEl) svgEl.classList.add("d-none");
+            if (emptyEl) {
+              emptyEl.innerHTML = `<i class="bi bi-exclamation-triangle fs-3 d-block mb-1 text-warning"></i>
+                                   <span class="text-warning">Código no válido para el formato <strong>${format}</strong></span>`;
+              emptyEl.classList.remove("d-none");
+            }
+          } else {
+            // Código válido: ocultamos el estado vacío y mostramos el barcode
+            if (svgEl) svgEl.classList.remove("d-none");
+            if (emptyEl) {
+              // Restauramos el mensaje original del empty state por si se usó antes
+              emptyEl.innerHTML = `<i class="bi bi-upc fs-3 d-block mb-1 opacity-50"></i>
+                                   Ingresa o genera un código para previsualizar`;
+              emptyEl.classList.add("d-none");
+            }
+          }
+        },
+      });
+    } catch (e) {
+      // En caso de excepción (formato desconocido, etc.) mostramos estado vacío
+      if (svgEl) svgEl.classList.add("d-none");
+      if (emptyEl) emptyEl.classList.remove("d-none");
+    }
   }
 })();

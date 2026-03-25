@@ -139,6 +139,50 @@
                             <input type="file" class="d-none" id="flInput" name="flInput" accept="image/*">
                         </div>
                     </div>
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <label for="txtProductName" class="form-label">Nombre <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-box-seam"></i></span>
+                            <input type="text" class="form-control" id="txtProductName" name="txtProductName"
+                                maxlength="255" required placeholder="Ej. Café molido premium">
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-6">
+                        <label class="form-label" for="slctBarcodeFormat">Tipo de Código (Uso) <span class="text-danger">*</span> </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-upc"></i></span>
+                            <select id="slctBarcodeFormat" name="slctBarcodeFormat" class="form-select">
+                                <optgroup label="Estándares para Productos (Retail)">
+                                    <option value="EAN13" selected>EAN-13 (13 dígitos)</option>
+                                    <option value="EAN8">EAN-8 (8 dígitos)</option>
+                                    <option value="EAN5">EAN-5 (Suplemento 5 dígitos)</option>
+                                    <option value="EAN2">EAN-2 (Suplemento 2 dígitos)</option>
+                                    <option value="UPC">UPC-A (12 dígitos)</option>
+                                    <option value="UPCE">UPC-E (6 a 8 dígitos)</option>
+                                </optgroup>
+                                <optgroup label="Alfanuméricos (Versátiles)">
+                                    <option value="CODE128" selected>CODE 128 (Automático - Recomendado)</option>
+                                    <option value="CODE128A">CODE 128 A (Mayúsculas y control)</option>
+                                    <option value="CODE128B">CODE 128 B (Mayúsculas y minúsculas)</option>
+                                    <option value="CODE128C">CODE 128 C (Solo pares numéricos)</option>
+                                    <option value="CODE39">CODE 39 (Básico)</option>
+                                </optgroup>
+                                <optgroup label="Logística y Transporte">
+                                    <option value="ITF14">ITF-14 (Cajas de cartón)</option>
+                                    <option value="ITF">ITF / Interleaved 2 of 5</option>
+                                </optgroup>
+                                <optgroup label="Industriales y Especiales">
+                                    <option value="codabar">Codabar (Bibliotecas/Salud)</option>
+                                    <option value="PHARMACODE">Pharmacode (Fármacos)</option>
+                                    <option value="MSI">MSI (Inventarios)</option>
+                                    <option value="MSI10">MSI 10 (Mod 10)</option>
+                                    <option value="MSI11">MSI 11 (Mod 11)</option>
+                                    <option value="MSI1010">MSI 1010 (Mod 1010)</option>
+                                    <option value="MSI1110">MSI 1110 (Mod 1110)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-12 col-md-12 col-lg-6">
                         <label for="txtProductCode" class="form-label">Código <span class="text-danger">*</span></label>
                         <div class="input-group">
@@ -152,12 +196,20 @@
                             </button>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-6">
-                        <label for="txtProductName" class="form-label">Nombre <span class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-box-seam"></i></span>
-                            <input type="text" class="form-control" id="txtProductName" name="txtProductName"
-                                maxlength="255" required placeholder="Ej. Café molido premium">
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <!-- Previsualización del código de barras generado -->
+                        <div class="border rounded-3 bg-light p-3 text-center" id="barcodePreviewWrapper">
+                            <label class="text-muted fw-bold d-block text-uppercase mb-2"
+                                style="font-size: 0.7rem; letter-spacing: 0.05em;">
+                                <i class="bi bi-upc-scan me-1"></i> Previsualización del código de barras
+                            </label>
+                            <!-- Estado vacío: visible cuando aún no se ha ingresado un código -->
+                            <div id="barcodeEmptyState" class="text-muted small py-2">
+                                <i class="bi bi-upc fs-3 d-block mb-1 opacity-50"></i>
+                                Ingresa o genera un código para previsualizar
+                            </div>
+                            <!-- SVG del código de barras: se renderiza con JsBarcode -->
+                            <svg id="barcode" class="d-none img-fluid"></svg>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">
@@ -532,6 +584,51 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <label for="update_txtProductName" class="form-label">Nombre <span
+                                class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-box-seam"></i></span>
+                            <input type="text" class="form-control" id="update_txtProductName"
+                                name="update_txtProductName" maxlength="255" required>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-6">
+                        <label class="form-label" for="update_slctBarcodeFormat">Tipo de Código (Uso) <span class="text-danger">*</span> </label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-upc"></i></span>
+                            <select id="update_slctBarcodeFormat" name="update_slctBarcodeFormat" class="form-select">
+                                <optgroup label="Estándares para Productos (Retail)">
+                                    <option value="EAN13" selected>EAN-13 (13 dígitos)</option>
+                                    <option value="EAN8">EAN-8 (8 dígitos)</option>
+                                    <option value="EAN5">EAN-5 (Suplemento 5 dígitos)</option>
+                                    <option value="EAN2">EAN-2 (Suplemento 2 dígitos)</option>
+                                    <option value="UPC">UPC-A (12 dígitos)</option>
+                                    <option value="UPCE">UPC-E (6 a 8 dígitos)</option>
+                                </optgroup>
+                                <optgroup label="Alfanuméricos (Versátiles)">
+                                    <option value="CODE128" selected>CODE 128 (Automático - Recomendado)</option>
+                                    <option value="CODE128A">CODE 128 A (Mayúsculas y control)</option>
+                                    <option value="CODE128B">CODE 128 B (Mayúsculas y minúsculas)</option>
+                                    <option value="CODE128C">CODE 128 C (Solo pares numéricos)</option>
+                                    <option value="CODE39">CODE 39 (Básico)</option>
+                                </optgroup>
+                                <optgroup label="Logística y Transporte">
+                                    <option value="ITF14">ITF-14 (Cajas de cartón)</option>
+                                    <option value="ITF">ITF / Interleaved 2 of 5</option>
+                                </optgroup>
+                                <optgroup label="Industriales y Especiales">
+                                    <option value="codabar">Codabar (Bibliotecas/Salud)</option>
+                                    <option value="PHARMACODE">Pharmacode (Fármacos)</option>
+                                    <option value="MSI">MSI (Inventarios)</option>
+                                    <option value="MSI10">MSI 10 (Mod 10)</option>
+                                    <option value="MSI11">MSI 11 (Mod 11)</option>
+                                    <option value="MSI1010">MSI 1010 (Mod 1010)</option>
+                                    <option value="MSI1110">MSI 1110 (Mod 1110)</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
                     <div class="col-12 col-md-12 col-lg-6">
                         <label for="update_txtProductCode" class="form-label">Código <span
                                 class="text-danger">*</span></label>
@@ -546,13 +643,20 @@
                             </button>
                         </div>
                     </div>
-                    <div class="col-12 col-md-12 col-lg-6">
-                        <label for="update_txtProductName" class="form-label">Nombre <span
-                                class="text-danger">*</span></label>
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="bi bi-box-seam"></i></span>
-                            <input type="text" class="form-control" id="update_txtProductName"
-                                name="update_txtProductName" maxlength="255" required>
+                    <div class="col-12 col-md-12 col-lg-12">
+                        <!-- Previsualización del código de barras generado -->
+                        <div class="border rounded-3 bg-light p-3 text-center" id="update_barcodePreviewWrapper">
+                            <label class="text-muted fw-bold d-block text-uppercase mb-2"
+                                style="font-size: 0.7rem; letter-spacing: 0.05em;">
+                                <i class="bi bi-upc-scan me-1"></i> Previsualización del código de barras
+                            </label>
+                            <!-- Estado vacío: visible cuando aún no se ha ingresado un código -->
+                            <div id="update_barcodeEmptyState" class="text-muted small py-2">
+                                <i class="bi bi-upc fs-3 d-block mb-1 opacity-50"></i>
+                                Ingresa o genera un código para previsualizar
+                            </div>
+                            <!-- SVG del código de barras: se renderiza con JsBarcode -->
+                            <svg id="update_barcode" class="d-none img-fluid"></svg>
                         </div>
                     </div>
                     <div class="col-12 col-md-6 col-lg-6">

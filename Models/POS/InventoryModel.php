@@ -15,6 +15,7 @@ class InventoryModel extends Mysql
     protected string $expiration_date;
     protected int $userapp_id;
     protected int $category_id;
+    protected string $bar_code_format;
     public function __construct()
     {
         parent::__construct();
@@ -150,9 +151,9 @@ class InventoryModel extends Mysql
     {
         $sql = <<<SQL
             INSERT INTO product
-                (category_id, name, stock, purchase_price, sales_price, measurement_id, description, status, supplier_id,is_public,bar_code,expiration_date)
+                (category_id, name, stock, purchase_price, sales_price, measurement_id, description, status, supplier_id,is_public,bar_code,expiration_date,bar_code_format)
             VALUES
-                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);
         SQL;
         $this->category_id = $data['category_id'];
         $this->name = $data['name'];
@@ -166,6 +167,7 @@ class InventoryModel extends Mysql
         $this->is_public = $data['is_public'];
         $this->code = $data['code'];
         $this->expiration_date = $data['expiration_date'];
+        $this->bar_code_format = $data['barcode_format'];
 
         $params = [
             $this->category_id,
@@ -179,7 +181,8 @@ class InventoryModel extends Mysql
             $this->supplier_id,
             $this->is_public,
             $this->code,
-            $this->expiration_date !== '' ? $this->expiration_date : null
+            $this->expiration_date !== '' ? $this->expiration_date : null,
+            $this->bar_code_format
 
         ];
 
@@ -206,10 +209,11 @@ class InventoryModel extends Mysql
             `expiration_date`, 
             `supplier_id`, 
             `is_public`, 
-            `userapp_id`
+            `userapp_id`,
+            `bar_code_format`
             ) 
             VALUES 
-            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);
+            (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);
 
         SQL;
         $this->idProduct = $data['idProduct'];
@@ -226,6 +230,7 @@ class InventoryModel extends Mysql
         $this->supplier_id = $data['supplier_id'];
         $this->is_public = $data['is_public'];
         $this->userapp_id = $data['user_id'];
+        $this->bar_code_format = $data['barcode_format'];
         $params = [
             $this->idProduct,
             $this->category_id,
@@ -240,7 +245,8 @@ class InventoryModel extends Mysql
             $this->expiration_date !== '' ? $this->expiration_date : null,
             $this->supplier_id,
             $this->is_public,
-            $this->userapp_id
+            $this->userapp_id,
+            $this->bar_code_format
         ];
 
         return (int) $this->insert($sql, $params);
@@ -269,7 +275,8 @@ class InventoryModel extends Mysql
                 supplier_id = ?,
                 is_public = ?,
                 bar_code = ?,
-                expiration_date = ?
+                expiration_date = ?,
+                bar_code_format = ?
             WHERE idProduct = ?
             LIMIT 1;
         SQL;
@@ -287,6 +294,7 @@ class InventoryModel extends Mysql
             $data['is_public'],
             $data['code'],
             $data['expiration_date'] !== '' ? $data['expiration_date'] : null,
+            $data['barcode_format'],
             $data['idProduct'],
         ];
 

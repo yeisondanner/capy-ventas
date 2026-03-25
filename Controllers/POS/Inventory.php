@@ -118,7 +118,8 @@ class Inventory extends Controllers
             'slctProductSupplier',
             'txtProductPurchasePrice',
             'txtProductSalesPrice',
-            'txtProductCode'
+            'txtProductCode',
+            'slctBarcodeFormat'
         ];
         validateFields($requiredFields);
         $businessId = $this->getBusinessId();
@@ -133,6 +134,7 @@ class Inventory extends Controllers
         $description = strClean($_POST['txtProductDescription'] ?? '');
         $dateExpiration = strClean($_POST['txtProductDateExpirated'] ?? '');
         $code = strClean($_POST['txtProductCode'] ?? '');
+        $barcodeFormat = strClean($_POST['slctBarcodeFormat'] ?? 'CODE128');
         $flInput = $_FILES['flInput'];
         validateFieldsEmpty([
             'NOMBRE DEL PRODUCTO' => $name,
@@ -141,7 +143,8 @@ class Inventory extends Controllers
             'UNIDAD DE MEDIDA' => $measurementId,
             'PROVEEDOR' => $supplierId,
             'PRECIO DE COMPRA' => $purchase,
-            'PRECIO DE VENTA' => $sales
+            'PRECIO DE VENTA' => $sales,
+            'TIPO DE CODIGO' => $barcodeFormat
         ]);
         if ($categoryId <= 0) {
             $this->responseError('Debes seleccionar una categoría válida.');
@@ -215,7 +218,8 @@ class Inventory extends Controllers
             'code' => $code,
             'expiration_date' => $dateExpiration,
             'user_id' => $userId,
-            'idProduct' => 0
+            'idProduct' => 0,
+            'barcode_format' => $barcodeFormat
         ];
 
         $productId = $this->model->insertProduct($payload);
@@ -330,6 +334,7 @@ class Inventory extends Controllers
                 'image_main_url' => base_url() . '/Loadfile/iconproducts?f=' . $product['image_main'] ?? '',
                 'is_public' => $product['is_public'] ?? 'No',
                 'bar_code' => $product['bar_code'] ?? '',
+                'barcode_format' => $product['bar_code_format'] ?? 'CODE128',
                 'expiration_date' => $product['expiration_date'] ?? '',
                 'product_history' => $productHistory ?? [],
                 'permission_history' => $history
@@ -367,7 +372,8 @@ class Inventory extends Controllers
             'update_txtProductStock',
             'update_txtProductPurchasePrice',
             'update_txtProductSalesPrice',
-            'update_txtProductCode'
+            'update_txtProductCode',
+            'update_slctBarcodeFormat'
         ];
         validateFields($requiredFields);
         $businessId = $this->getBusinessId();
@@ -384,6 +390,7 @@ class Inventory extends Controllers
         $dateExpiration = strClean($_POST['update_txtProductDateExpirated'] ?? '');
         $flInput = $_FILES['update_flInput'];
         $code = strClean($_POST['update_txtProductCode'] ?? '');
+        $barcodeFormat = strClean($_POST['update_slctBarcodeFormat'] ?? 'CODE128');
         validateFieldsEmpty([
             'NOMBRE DEL PRODUCTO' => $name,
             'CODIGO DEL PRODUCTO' => $code,
@@ -391,7 +398,8 @@ class Inventory extends Controllers
             'UNIDAD DE MEDIDA' => $measurementId,
             'PROVEEDOR' => $supplierId,
             'PRECIO DE COMPRA' => $purchase,
-            'PRECIO DE VENTA' => $sales
+            'PRECIO DE VENTA' => $sales,
+            'FORMATO DE CODIGO DE BARRAS' => $barcodeFormat
         ]);
         //verificamos que el codigo tenga una longitud de 50 caracteres
         if (strlen($code) > 60) {
@@ -469,6 +477,7 @@ class Inventory extends Controllers
             'expiration_date' => $dateExpiration,
             'user_id' => $this->getUserId(),
             'idProduct' => $productId,
+            'barcode_format' => $barcodeFormat
         ];
 
         $updated = $this->model->updateProduct($payload);
