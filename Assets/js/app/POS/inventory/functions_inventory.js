@@ -313,6 +313,12 @@
           $("#update_txtProductCode").val(data.code);
           //aceptamos el foco en el input de codigo de barras
           $("#update_txtProductCode").focus();
+          renderBarcodePreview(
+            data.code,
+            "update_barcode",
+            "update_barcodeEmptyState",
+            "update_slctBarcodeFormat",
+          );
         }
       });
     }
