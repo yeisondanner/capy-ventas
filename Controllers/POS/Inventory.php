@@ -849,6 +849,24 @@ class Inventory extends Controllers
             'data' => $data,
         ]);
     }
+    /**
+     * Agrega un producto a la cola de impresión de códigos de barras.
+     *
+     * @return void
+     */
+    public function setProductInQueue(): void
+    {
+        validate_permission_app(17, "c", false, false, false);
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+        validateFields(['product', 'quantity']);
+        $product = strClean($_POST['product'] ?? '');
+        $quantity = (int) strClean($_POST['quantity'] ?? '');
+        validateFieldsEmpty(['PRODUCTO' => $product, 'CANTIDAD' => $quantity]);
+        if ($product === 'all') {
+        }
+    }
 
     /**
      * Obtiene el identificador del negocio activo desde la sesión.

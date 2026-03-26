@@ -34,6 +34,9 @@
   //input de codigo de producto
   const update_txtProductCode =
     document.getElementById("update_txtProductCode") ?? null;
+  //Variables para el modal de generacion de codigos de barras masivos
+  const print_slctProduct =
+    document.getElementById("print_slctProduct") ?? null;
   //inicializamos la tabla
   let productsTable;
   let categorysTable;
@@ -47,6 +50,8 @@
   let categorys;
   let suppliers;
   let measurements;
+  let productsAll = [];
+  let productsInQueue = [];
   /**
    * Variables de los endpoints
    */
@@ -65,7 +70,7 @@
   const ENDPOINT_SAVE_CATEGORY = `${base_url}/pos/Inventory/setCategory`;
   const ENDPOINT_UPDATE_CATEGORY = `${base_url}/pos/Inventory/updateCategory`;
   const ENDPOINT_DELETE_CATEGORY = `${base_url}/pos/Inventory/deleteCategory`;
-
+  const ENDPOINT_SET_PRODUCT_IN_QUEUE = `${base_url}/pos/Inventory/setProductInQueue`;
   /**
    * Variable de protegida
    */
@@ -100,6 +105,41 @@
      */
     if (btnGenerateAllBarcodes) {
       btnGenerateAllBarcodes.addEventListener("click", async function () {
+        /**
+         * Inicializamos el select de productos para generar codigos de barras masivos
+         */
+        if (print_slctProduct) {
+          const data = await sendData(ENDPOINT_GET_PRODUCTS, {}, true);
+          if (data.status) {
+            showAlert({
+              title: data.title,
+              message: data.message,
+              icon: data.icon,
+              timer: data.timer,
+            });
+          }
+          if (data.url) {
+            setTimeout(() => {
+              window.location.href = data.url;
+            }, 1000);
+            return;
+          }
+          print_slctProduct.innerHTML =
+            "<option value='' disabled selected>Sin productos disponibles</option>";
+          if (data.length > 0) {
+            productsAll = data;
+            let products =
+              "<option value='all' selected>Todos los productos</option>";
+            data.forEach(function (item) {
+              products += `<option value="${item.id}">${item.name}</option>`;
+            });
+            print_slctProduct.innerHTML = products;
+          }
+        }
+        /**
+         * Cargar la tabla de productos en cola
+         */
+        loadtTableProductsInQueue();
         $("#modalGenerateAllBarcodes").modal("show");
       });
     }
@@ -360,6 +400,48 @@
         );
       });
     }
+    /**
+     * Evento de agregar a la lista de impresion
+     * de codigos de barras
+     */
+    if (print_btnAddProduct) {
+      print_btnAddProduct.addEventListener("click", async function () {
+        const formdata = new FormData();
+        formdata.append("product", print_slctProduct.value);
+        formdata.append("quantity", print_txtQuantity.value);
+        const config = {
+          method: "POST",
+          body: formdata,
+        };
+        const data = await sendData(ENDPOINT_SET_PRODUCT_IN_QUEUE, config);
+        showAlert({
+          title: data.title,
+          message: data.message,
+          icon: data.icon,
+          timer: data.timer,
+        });
+        if (data.status) {
+          print_slctProduct.value = "";
+          print_txtQuantity.value = "";
+          productsInQueue.push(data.data);
+          loadtTableProductsInQueue();
+        }
+      });
+    }
+  }
+  /**
+   * Metodo que se encarga de cargar la tabla de productos en cola
+   * para imprimir codigos de barras
+   * @returns {void}
+   */
+  function loadtTableProductsInQueue() {
+    if (productsInQueue.length > 0) {
+      $("#barcodeEmptyResult").addClass("d-none");
+      $("#barcodeResultContainer").removeClass("d-none");
+      return;
+    }
+    $("#barcodeEmptyResult").removeClass("d-none");
+    $("#barcodeResultContainer").addClass("d-none");
   }
   /**
    * Metodo que se encarga de cargar la tabla de categorias

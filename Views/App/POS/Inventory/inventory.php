@@ -855,138 +855,146 @@
                 </div>
             </div>
             <div class="modal-body bg-light p-3">
-                <div class="row g-3">
-
-                    <!-- ===== SECCIÓN DE FILTROS ===== -->
-                    <div class="col-12">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-white py-2 border-bottom d-flex align-items-center gap-2">
-                                <i class="bi bi-funnel text-success"></i>
-                                <span class="fw-semibold small text-uppercase" style="letter-spacing:.05em;">Filtrar por tipo de código</span>
-                            </div>
-                            <div class="card-body py-3 px-3">
-                                <div class="row g-2" id="barcodeFilterGroup">
-
-                                    <!-- Opción: Todos -->
-                                    <div class="col-6 col-md-3 col-xl-2">
-                                        <input type="radio" class="btn-check" name="barcodeTypeFilter" id="filterAll" value="ALL" checked>
-                                        <label class="btn btn-outline-success w-100 d-flex flex-column align-items-center gap-1 py-2" for="filterAll">
-                                            <i class="bi bi-grid-3x3-gap fs-5"></i>
-                                            <span class="small fw-semibold">Todos</span>
-                                        </label>
-                                    </div>
-
-                                    <!-- Grupo: Retail -->
-                                    <div class="col-6 col-md-3 col-xl-2">
-                                        <input type="radio" class="btn-check" name="barcodeTypeFilter" id="filterRetail" value="RETAIL">
-                                        <label class="btn btn-outline-primary w-100 d-flex flex-column align-items-center gap-1 py-2" for="filterRetail">
-                                            <i class="bi bi-bag fs-5"></i>
-                                            <span class="small fw-semibold">Retail</span>
-                                            <span class="badge bg-primary-subtle text-primary" style="font-size:.65rem;">EAN · UPC</span>
-                                        </label>
-                                    </div>
-
-                                    <!-- Grupo: Alfanumérico -->
-                                    <div class="col-6 col-md-3 col-xl-2">
-                                        <input type="radio" class="btn-check" name="barcodeTypeFilter" id="filterAlpha" value="ALPHA">
-                                        <label class="btn btn-outline-info w-100 d-flex flex-column align-items-center gap-1 py-2" for="filterAlpha">
-                                            <i class="bi bi-fonts fs-5"></i>
-                                            <span class="small fw-semibold">Alfanumérico</span>
-                                            <span class="badge bg-info-subtle text-info" style="font-size:.65rem;">CODE 128 · 39</span>
-                                        </label>
-                                    </div>
-
-                                    <!-- Grupo: Logística -->
-                                    <div class="col-6 col-md-3 col-xl-2">
-                                        <input type="radio" class="btn-check" name="barcodeTypeFilter" id="filterLogistic" value="LOGISTIC">
-                                        <label class="btn btn-outline-warning w-100 d-flex flex-column align-items-center gap-1 py-2" for="filterLogistic">
-                                            <i class="bi bi-truck fs-5"></i>
-                                            <span class="small fw-semibold">Logística</span>
-                                            <span class="badge bg-warning-subtle text-warning" style="font-size:.65rem;">ITF-14 · ITF</span>
-                                        </label>
-                                    </div>
-
-                                    <!-- Grupo: Industrial -->
-                                    <div class="col-6 col-md-3 col-xl-2">
-                                        <input type="radio" class="btn-check" name="barcodeTypeFilter" id="filterIndustrial" value="INDUSTRIAL">
-                                        <label class="btn btn-outline-danger w-100 d-flex flex-column align-items-center gap-1 py-2" for="filterIndustrial">
-                                            <i class="bi bi-gear fs-5"></i>
-                                            <span class="small fw-semibold">Industrial</span>
-                                            <span class="badge bg-danger-subtle text-danger" style="font-size:.65rem;">MSI · Codabar</span>
-                                        </label>
-                                    </div>
-
-                                </div>
+                <!-- Formulario: seleccionar producto y cantidad a imprimir -->
+                <div class="bg-white border rounded-3 p-3 mb-3 shadow-sm">
+                    <p class="text-muted small mb-3">
+                        <i class="bi bi-info-circle me-1 text-primary"></i>
+                        Seleccione un producto, indique cuántas etiquetas necesita y presiónne <strong>Agregar</strong>. Repita el proceso para agregar más productos a la lista de impresión.
+                    </p>
+                    <div class="row g-3 align-items-end">
+                        <!-- Selector de producto -->
+                        <div class="col-8 col-md-12 col-lg-6 col-xl-8">
+                            <label for="print_slctProduct" class="form-label fw-medium">
+                                Producto <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-box-seam text-muted"></i>
+                                </span>
+                                <select name="print_slctProduct" id="print_slctProduct" class="form-select border-start-0">
+                                    <option value="" disabled selected>Seleccione un producto</option>
+                                </select>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- ===== VISTA PREVIA ESTILO PDF ===== -->
-                    <div class="col-12">
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-header bg-white py-2 border-bottom d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center gap-2">
-                                    <i class="bi bi-file-earmark-pdf text-danger"></i>
-                                    <span class="fw-semibold small text-uppercase" style="letter-spacing:.05em;">Vista previa del documento</span>
-                                </div>
-                                <span class="badge bg-secondary-subtle text-secondary small" id="barcodePdfCount">12 etiquetas</span>
+                        <!-- Cantidad de etiquetas -->
+                        <div class="col-4 col-md-6 col-lg-3 col-xl-2">
+                            <label for="print_txtQuantity" class="form-label fw-medium">
+                                Etiquetas <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-hash text-muted"></i>
+                                </span>
+                                <input type="number" class="form-control border-start-0" id="print_txtQuantity" name="print_txtQuantity" min="1" max="1000" value="1">
                             </div>
-                            <div class="card-body p-3">
-
-                                <!-- Hoja PDF simulada -->
-                                <div class="mx-auto bg-white border rounded-3 shadow-sm p-3" style="max-width: 794px; min-height: 400px;">
-
-                                    <!-- Cabecera de la hoja -->
-                                    <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
-                                        <div>
-                                            <p class="mb-0 fw-bold small text-dark">Reporte de Códigos de Barras</p>
-                                            <p class="mb-0 text-muted" style="font-size:.7rem;">Generado el: <span id="barcodePdfDate">25/03/2026</span></p>
-                                        </div>
-                                        <div class="text-end">
-                                            <p class="mb-0 text-muted" style="font-size:.7rem;">Formato: <span id="barcodePdfFormat" class="fw-semibold text-dark">Todos los tipos</span></p>
-                                            <p class="mb-0 text-muted" style="font-size:.7rem;">Productos: <span id="barcodePdfTotal" class="fw-semibold text-dark">12</span></p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Grilla de etiquetas -->
-                                    <div class="row g-2" id="barcodePdfGrid">
-
-                                        <!-- Etiqueta de muestra × 12 (se reemplazarán dinámicamente) -->
-                                        <?php for ($i = 1; $i <= 12; $i++): ?>
-                                        <div class="col-6 col-md-4 col-xl-3 barcode-label-item">
-                                            <div class="border rounded-2 p-2 text-center bg-white" style="min-height: 90px;">
-                                                <!-- Nombre del producto -->
-                                                <p class="mb-1 fw-semibold text-truncate text-dark" style="font-size:.68rem;">
-                                                    Producto de muestra #<?= $i ?>
-                                                </p>
-                                                <!-- SVG placeholder del código de barras -->
-                                                <svg class="barcode-pdf-svg img-fluid" data-code="<?= str_pad($i * 111111, 13, '0', STR_PAD_LEFT) ?>" data-format="CODE128" style="max-height: 45px; width: 100%;"></svg>
-                                                <!-- Código numérico -->
-                                                <p class="mt-1 mb-0 text-muted" style="font-size:.65rem; letter-spacing:.03em;">
-                                                    <?= str_pad($i * 111111, 13, '0', STR_PAD_LEFT) ?>
-                                                </p>
+                        </div>
+                        <!-- Botón agregar -->
+                        <div class="col-12 col-md-6 col-lg-3 col-xl-2 d-flex">
+                            <button type="button" class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2" id="print_btnAddProduct">
+                                <i class="bi bi-plus-lg"></i>
+                                <span>Agregar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Lista de productos a imprimir -->
+                <div class="bg-white border rounded-3 shadow-sm">
+                    <div class="border-bottom px-3 py-2 d-flex align-items-center justify-content-between">
+                        <span class="fw-semibold small text-uppercase text-muted" style="letter-spacing: 0.05em;">
+                            <i class="bi bi-list-ul me-1"></i> Productos en cola de impresión
+                        </span>
+                        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill" id="badgeBarcodeCount">0 productos</span>
+                    </div>
+                    <!-- Estado vacío -->
+                    <div id="barcodeEmptyResult" class="text-center text-muted py-4">
+                        <i class="bi bi-inbox fs-2 d-block mb-2 opacity-25"></i>
+                        <p class="mb-0 small">Aún no ha agregado ningún producto. Use el formulario de arriba para agregar productos a la lista.</p>
+                    </div>
+                    <!-- Tabla de productos agregados -->
+                    <div id="barcodeResultContainer" class="d-none">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover align-middle mb-0" id="tablePrintQueue">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="ps-3">Producto</th>
+                                        <th class="text-center" style="width: 130px;">Etiquetas a imprimir</th>
+                                        <th style="width: 50px;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodyPrintQueue">
+                                    <!-- COMPONENTE: fila de producto en cola de impresión -->
+                                    <tr data-product-id="1">
+                                        <!-- Nombre del producto -->
+                                        <td class="ps-3">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                                    style="width:32px; height:32px;">
+                                                    <i class="bi bi-box-seam" style="font-size:0.8rem;"></i>
+                                                </span>
+                                                <div>
+                                                    <div class="fw-medium text-dark small">Café molido premium</div>
+                                                    <div class="text-muted" style="font-size:0.72rem;">
+                                                        <span class="font-monospace">123456789012</span>
+                                                        &middot;
+                                                        <span>EAN-13</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <?php endfor; ?>
-
-                                    </div>
-                                    <!-- /Grilla de etiquetas -->
-
-                                    <!-- Pie de página de la hoja -->
-                                    <div class="border-top pt-2 mt-3 text-center">
-                                        <p class="mb-0 text-muted" style="font-size:.65rem;">Capy Ventas &mdash; Sistema de gestión de inventario</p>
-                                    </div>
-
-                                </div>
-                                <!-- /Hoja PDF simulada -->
-
-                            </div>
+                                        </td>
+                                        <!-- Cantidad de etiquetas a imprimir -->
+                                        <td class="text-center">
+                                            <input type="number"
+                                                class="form-control form-control-sm text-center mx-auto"
+                                                value="2" min="1" max="1000"
+                                                style="width:80px;">
+                                        </td>
+                                        <!-- Acción: quitar de la lista -->
+                                        <td class="text-center">
+                                            <button type="button"
+                                                class="btn btn-sm btn-outline-danger border-0"
+                                                title="Quitar producto">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <!-- Segunda fila de ejemplo -->
+                                    <tr data-product-id="2">
+                                        <td class="ps-3">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                                    style="width:32px; height:32px;">
+                                                    <i class="bi bi-box-seam" style="font-size:0.8rem;"></i>
+                                                </span>
+                                                <div>
+                                                    <div class="fw-medium text-dark small">Leche entera 1L</div>
+                                                    <div class="text-muted" style="font-size:0.72rem;">
+                                                        <span class="font-monospace">7501234567890</span>
+                                                        &middot;
+                                                        <span>EAN-13</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <input type="number"
+                                                class="form-control form-control-sm text-center mx-auto"
+                                                value="5" min="1" max="1000"
+                                                style="width:80px;">
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button"
+                                                class="btn btn-sm btn-outline-danger border-0"
+                                                title="Quitar producto">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-
                 </div>
             </div>
-
             <!-- ===== FOOTER CON ACCIONES ===== -->
             <div class="modal-footer bg-white border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">

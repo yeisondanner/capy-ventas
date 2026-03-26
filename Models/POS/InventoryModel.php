@@ -129,7 +129,9 @@ class InventoryModel extends Mysql
             WHERE 
                 ph.product_id=?
                 AND 
-                ph.`status`='Activo';
+                ph.`status`='Activo'
+            ORDER BY 
+                ph.idProductHistory DESC;
         SQL;
 
         $data = $this->select_all($sql, [$productId]);
