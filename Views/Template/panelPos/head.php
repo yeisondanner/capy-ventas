@@ -35,7 +35,6 @@ get_option_and_permission_app();
     <meta name="description" content="<?= getSystemInfo()["c_description"] ?>">
     <!-- Main CSS-->
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/main.css?<?= versionSystem() ?>">
-    <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.7/dataTables.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/DataTables/v2.3.4/dataTables.bootstrap.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/Responsive/v3.0.8/responsive.bootstrap5.min.css?<?= versionSystem() ?>">
     <link rel="stylesheet" type="text/css" href="<?= media() ?>/css/libraries/POS/plugins/Buttons/v3.2.6/buttons.bootstrap5.min.css?<?= versionSystem() ?>">

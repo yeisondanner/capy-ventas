@@ -559,7 +559,7 @@
           orderable: false,
           searchable: false,
           width: "10px",
-          defaultContent: `<i class="bi bi-plus text-primary h3"></i>`,
+          defaultContent: `<i class="bi bi-info-circle text-primary h3"></i>`,
         },
         {
           data: "name",
@@ -824,7 +824,7 @@
           orderable: false,
           searchable: false,
           width: "10px",
-          defaultContent: `<i class="bi bi-plus text-primary h3"></i>`,
+          defaultContent: `<i class="bi bi-info-circle text-primary h3"></i>`,
         },
         { data: "cont" },
         {
@@ -1229,7 +1229,7 @@
           orderable: false,
           searchable: false,
           width: "10px",
-          defaultContent: `<i class="bi bi-plus text-primary h3"></i>`,
+          defaultContent: `<i class="bi bi-info-circle text-primary h3"></i>`,
         },
         {
           data: "bar_code",
