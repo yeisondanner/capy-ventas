@@ -923,6 +923,38 @@ class Inventory extends Controllers
         ]);
     }
     /**
+     * Metodo que se encarga de actualizar la cantidad
+     * de un producto que se va imprimir su codigo de barras
+     * @return void
+     */
+    public function updateItemInQueue(): void{
+        validate_permission_app(17, "u", false, false, false);
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+        validateFields(['product', 'quantity']);
+        $productValue = strClean($_POST['product'] ?? '');
+        $quantity = (int) strClean($_POST['quantity'] ?? '');
+        validateFieldsEmpty(['PRODUCTO' => $productValue, 'CANTIDAD' => $quantity]);
+        //validamos que la variable de sesion exista
+        if(isset($_SESSION['productsInQueue'])){
+            foreach($_SESSION['productsInQueue'] as $key =>$value){
+                if($value['id'] == $productValue){
+                    $_SESSION['productsInQueue'][$key]['quantity'] = $quantity;
+                    toJson([
+                        'status' => true,
+                        'message' => 'Cantidad actualizada correctamente.',
+                        'title' => 'Cantidad actualizada',
+                        'type' => 'success',
+                        'icon' => 'success',
+                        'timer' => 2500,
+                    ]);
+                }
+            }
+        }
+        $this->responseError('No se encontró el producto en la cola de impresión.');
+    }
+    /**
      * Obtiene la cola de impresión de códigos de barras.
      *
      * @return void

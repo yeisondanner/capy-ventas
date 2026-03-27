@@ -72,6 +72,7 @@
   const ENDPOINT_DELETE_CATEGORY = `${base_url}/pos/Inventory/deleteCategory`;
   const ENDPOINT_SET_PRODUCT_IN_QUEUE = `${base_url}/pos/Inventory/setProductInQueue`;
   const ENDPOINT_GET_PRODUCTS_IN_QUEUE = `${base_url}/pos/Inventory/getProductsInQueue`;
+  const ENDPOINT_UPDATE_ITEM_IN_QUEUE = `${base_url}/pos/Inventory/updateItemInQueue`;
   /**
    * Variable de protegida
    */
@@ -132,6 +133,7 @@
             let products =
               "<option value='all' selected>Todos los productos</option>";
             data.forEach(function (item) {
+              //si el producto tiene codigo de barras
               if (item.bar_code_origin !== null) {
                 products += `<option value="${item.idProduct}">${item.name}</option>`;
               }
@@ -142,7 +144,11 @@
         /**
          * Cargar la tabla de productos en cola
          */
-        loadtTableProductsInQueue();
+        await loadtTableProductsInQueue();
+        /**
+         * Inicializamos el item que actulizara 
+         */
+        updateItemInQueue();
         $("#modalGenerateAllBarcodes").modal("show");
       });
     }
@@ -424,7 +430,8 @@
           timer: data.timer,
         });
         if (data.status) {
-          loadtTableProductsInQueue();
+         await loadtTableProductsInQueue();
+         updateItemInQueue();
         }
         if (data.url) {
           setTimeout(() => {
@@ -474,14 +481,15 @@
                                         <!-- Cantidad de etiquetas a imprimir -->
                                         <td class="text-center">
                                             <input type="number"
-                                                class="form-control form-control-sm text-center mx-auto"
-                                                value="2" min="1" max="1000"
+                                                data-id="${item.id}"
+                                                class="form-control form-control-sm text-center mx-auto print-update-item-queue"
+                                                value="${item.quantity}" min="1" max="1000"
                                                 style="width:80px;">
                                         </td>
                                         <!-- Acción: quitar de la lista -->
                                         <td class="text-center">
                                             <button type="button"
-                                                class="btn btn-sm btn-outline-danger border-0"
+                                                class="btn btn-sm btn-outline-danger border-0 print-delete-item-queue"
                                                 title="Quitar producto">
                                                 <i class="bi bi-trash3"></i>
                                             </button>
@@ -494,6 +502,35 @@
     }
     $("#barcodeEmptyResult").removeClass("d-none");
     $("#barcodeResultContainer").addClass("d-none");
+  }
+  /**
+   *Metodo que se encarga de actualizar la cantidad de un producto en la cola de impresion
+   * @returns {void}
+   */
+  function updateItemInQueue() {
+    const printUpdateItemQueue = document.querySelectorAll(".print-update-item-queue");
+    printUpdateItemQueue.forEach(function (item) {
+      item.addEventListener("change", async function () {
+        const formdata = new FormData();
+        formdata.append("product", item.dataset.id);
+        formdata.append("quantity", item.value);
+        const config = {
+          method: "POST",
+          body: formdata,
+        };
+        const data = await sendData(ENDPOINT_UPDATE_ITEM_IN_QUEUE, config);
+        showAlert({
+          title: data.title,
+          message: data.message,
+          icon: data.icon,
+          timer: data.timer,
+        });
+        if (data.status) {
+         await loadtTableProductsInQueue();
+          updateItemInQueue();
+        }
+      });
+    });
   }
   /**
    * Metodo que se encarga de cargar la tabla de categorias
