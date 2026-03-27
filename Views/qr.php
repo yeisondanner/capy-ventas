@@ -24,7 +24,7 @@
     href="<?= function_exists('base_url') ? base_url() : 'https://capyventas.shaday-pe.com'?>/home/qr">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-
+<meta name="google-adsense-account" content="ca-pub-3076714141618004">
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:url"
@@ -36,7 +36,7 @@
   <meta property="og:image"
     content="<?= function_exists('base_url') ? base_url() : 'https://capyventas.shaday-pe.com'?>/Assets/capylg.png">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3076714141618004"
-    crossorigin="anonymous"></script>
+     crossorigin="anonymous"></script>
   <style>
     :root {
       --color-primary: #4369F0;

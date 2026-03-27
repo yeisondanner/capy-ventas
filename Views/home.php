@@ -28,7 +28,9 @@
   <meta property="og:description" content="La plataforma todo en uno para gestionar y escalar tus ventas omnicanal. Integra POS, inventario y CRM fácilmente.">
   <!-- Asegúrate de reemplazar 'URL_DE_TU_IMAGEN_OG.png' con la URL de una imagen representativa (ej. 1200x630px) -->
   <meta property="og:image" content="https://capyventas.com/Assets/capylg.png">
-
+  <meta name="google-adsense-account" content="ca-pub-3076714141618004">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3076714141618004"
+     crossorigin="anonymous"></script>
   <style>
     :root {
       --color-primary: #4369F0;
