@@ -865,7 +865,7 @@
                         <!-- Selector de producto -->
                         <div class="col-8 col-md-12 col-lg-6 col-xl-8">
                             <label for="print_slctProduct" class="form-label fw-medium">
-                                Producto <span class="text-danger">*</span>
+                                Producto con codigo de barras <span class="text-danger">*</span>
                             </label>
                             <div class="input-group">
                                 <span class="input-group-text bg-light border-end-0">

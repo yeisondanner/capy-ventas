@@ -71,6 +71,7 @@
   const ENDPOINT_UPDATE_CATEGORY = `${base_url}/pos/Inventory/updateCategory`;
   const ENDPOINT_DELETE_CATEGORY = `${base_url}/pos/Inventory/deleteCategory`;
   const ENDPOINT_SET_PRODUCT_IN_QUEUE = `${base_url}/pos/Inventory/setProductInQueue`;
+  const ENDPOINT_GET_PRODUCTS_IN_QUEUE = `${base_url}/pos/Inventory/getProductsInQueue`;
   /**
    * Variable de protegida
    */
@@ -131,7 +132,9 @@
             let products =
               "<option value='all' selected>Todos los productos</option>";
             data.forEach(function (item) {
-              products += `<option value="${item.id}">${item.name}</option>`;
+              if (item.bar_code_origin !== null) {
+                products += `<option value="${item.idProduct}">${item.name}</option>`;
+              }
             });
             print_slctProduct.innerHTML = products;
           }
@@ -421,10 +424,12 @@
           timer: data.timer,
         });
         if (data.status) {
-          print_slctProduct.value = "";
-          print_txtQuantity.value = "";
-          productsInQueue.push(data.data);
           loadtTableProductsInQueue();
+        }
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1500);
         }
       });
     }
@@ -434,10 +439,57 @@
    * para imprimir codigos de barras
    * @returns {void}
    */
-  function loadtTableProductsInQueue() {
+  async function loadtTableProductsInQueue() {
+    const data = await sendData(ENDPOINT_GET_PRODUCTS_IN_QUEUE, {}, false);
+    if (data.status) {
+      productsInQueue = data.data;
+    }
     if (productsInQueue.length > 0) {
       $("#barcodeEmptyResult").addClass("d-none");
       $("#barcodeResultContainer").removeClass("d-none");
+      $("#badgeBarcodeCount").text(
+        `${productsInQueue.length} ${productsInQueue.length > 1 ? "productos" : "producto"}`,
+      );
+      $("#tbodyPrintQueue").html("");
+      productsInQueue.forEach(function (item) {
+        $("#tbodyPrintQueue").append(`         
+                                    <tr>
+                                        <!-- Nombre del producto -->
+                                        <td class="ps-3">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                                                    style="width:32px; height:32px;">
+                                                    <i class="bi bi-box-seam" style="font-size:0.8rem;"></i>
+                                                </span>
+                                                <div>
+                                                    <div class="fw-medium text-dark small">${item.name}</div>
+                                                    <div class="text-muted" style="font-size:0.72rem;">
+                                                        <span class="font-monospace">${item.code}</span>
+                                                        &middot;
+                                                        <span>${item.format}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <!-- Cantidad de etiquetas a imprimir -->
+                                        <td class="text-center">
+                                            <input type="number"
+                                                class="form-control form-control-sm text-center mx-auto"
+                                                value="2" min="1" max="1000"
+                                                style="width:80px;">
+                                        </td>
+                                        <!-- Acción: quitar de la lista -->
+                                        <td class="text-center">
+                                            <button type="button"
+                                                class="btn btn-sm btn-outline-danger border-0"
+                                                title="Quitar producto">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+            
+        `);
+      });
       return;
     }
     $("#barcodeEmptyResult").removeClass("d-none");

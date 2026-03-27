@@ -861,11 +861,85 @@ class Inventory extends Controllers
             $this->responseError('Método de solicitud no permitido.');
         }
         validateFields(['product', 'quantity']);
-        $product = strClean($_POST['product'] ?? '');
+        $productValue = strClean($_POST['product'] ?? '');
         $quantity = (int) strClean($_POST['quantity'] ?? '');
-        validateFieldsEmpty(['PRODUCTO' => $product, 'CANTIDAD' => $quantity]);
-        if ($product === 'all') {
+        validateFieldsEmpty(['PRODUCTO' => $productValue, 'CANTIDAD' => $quantity]);
+        //proceso para agregar todos los productos a la cola de impresion
+        if ($productValue === 'all') {
+            $productsAll = $this->model->selectProducts($this->getBusinessId());
+            //validamos si existe la variable de sesion
+            if (isset($_SESSION['productsInQueue'])) {
+                //destruimos la variable de sesion para evitar duplicados
+                unset($_SESSION['productsInQueue']);
+            }
+            foreach ($productsAll as $key => $value) {
+                if (!empty($value['bar_code_origin'])) {
+                    $_SESSION['productsInQueue'][] = [
+                        'id' => $value['idProduct'],
+                        'name' => $value['name'],
+                        'code' => $value['bar_code_origin'],
+                        'format' => $value['bar_code_format'],
+                        'quantity' => $quantity,
+                    ];
+                }
+            }
+            toJson([
+                'status' => true,
+                'message' => 'Se han agregado todos los productos a la cola de impresión.',
+                'title' => 'Productos agregados',
+                'type' => 'success',
+                'icon' => 'success',
+                'timer' => 2500,
+            ]);
         }
+        //proceso de agregar un producto a la cola de impresion
+        $productInfo = $this->model->selectProduct($productValue, $this->getBusinessId());
+        if (empty($productInfo)) {
+            $this->responseError('El producto seleccionado no existe o no pertenece a tu negocio.');
+        }
+        if (isset($_SESSION['productsInQueue'])) {
+            //verificamos si el producto ya existe dentro de la cola de impresion
+            foreach ($_SESSION['productsInQueue'] as $key => $value) {
+                if ($value['id'] == $productInfo['idProduct']) {
+                    $this->responseError('El producto ya existe dentro de la cola de impresion.');
+                }
+            }
+        }
+        $_SESSION['productsInQueue'][] = [
+            'id' => $productInfo['idProduct'],
+            'name' => $productInfo['name'],
+            'code' => $productInfo['bar_code_origin'],
+            'format' => $productInfo['bar_code_format'],
+            'quantity' => $quantity,
+        ];
+
+        toJson([
+            'status' => true,
+            'message' => 'Producto agregado a la cola de impresión.',
+            'title' => 'Producto agregado',
+            'type' => 'success',
+            'icon' => 'success',
+            'timer' => 2500,
+        ]);
+    }
+    /**
+     * Obtiene la cola de impresión de códigos de barras.
+     *
+     * @return void
+     */
+    public function getProductsInQueue(): void
+    {
+        validate_permission_app(17, "r", false, false, false);
+        if (isset($_SESSION['productsInQueue'])) {
+            toJson([
+                'status' => true,
+                'data' => $_SESSION['productsInQueue'],
+            ]);
+        }
+        toJson([
+            'status' => false,
+            'data' => [],
+        ]);
     }
 
     /**

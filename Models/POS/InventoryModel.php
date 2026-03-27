@@ -34,6 +34,8 @@ class InventoryModel extends Mysql
             SELECT
                 p.idProduct,
                 IFNULL(p.bar_code, 'Sin código') AS bar_code,
+                p.bar_code AS bar_code_origin,
+                p.bar_code_format,
                 p.category_id,
                 p.name,
                 p.stock,
@@ -74,6 +76,8 @@ class InventoryModel extends Mysql
         $sql = <<<SQL
             SELECT
                 p.*,
+                IFNULL(p.bar_code, 'Sin código') AS bar_code,
+                p.bar_code AS bar_code_origin,
                 c.name AS category_name,
                 m.name AS measurement_name,
                 s.company_name AS supplier_name,
