@@ -22,9 +22,13 @@
                             <i class="bi bi-plus-lg"></i> Agregar nuevo producto
                         </button>
                     <?php endif; ?>
-                    <button class="btn btn-outline-success btn-sm" type="button" id="btnGenerateAllBarcodes">
-                        <i class="bi bi-upc-scan"></i> Generar códigos de barras
-                    </button>
+                    <?php
+                    $print = validate_permission_app(17, "r", false)['read'];
+                    if ($print == 1): ?>
+                        <button class="btn btn-outline-success btn-sm" type="button" id="btnGenerateAllBarcodes">
+                            <i class="bi bi-upc-scan"></i> Generar códigos de barras
+                        </button>
+                    <?php endif; ?>
                     <?php
                     $category = validate_permission_app(10, "r", false)['read'];
                     if ($category == 1): ?>
@@ -855,48 +859,55 @@
                 </div>
             </div>
             <div class="modal-body bg-light p-3">
-                <!-- Formulario: seleccionar producto y cantidad a imprimir -->
-                <div class="bg-white border rounded-3 p-3 mb-3 shadow-sm">
-                    <p class="text-muted small mb-3">
-                        <i class="bi bi-info-circle me-1 text-primary"></i>
-                        Seleccione un producto, indique cuántas etiquetas necesita y presiónne <strong>Agregar</strong>. Repita el proceso para agregar más productos a la lista de impresión.
-                    </p>
-                    <div class="row g-3 align-items-end">
-                        <!-- Selector de producto -->
-                        <div class="col-8 col-md-12 col-lg-6 col-xl-8">
-                            <label for="print_slctProduct" class="form-label fw-medium">
-                                Producto con codigo de barras <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="bi bi-box-seam text-muted"></i>
-                                </span>
-                                <select name="print_slctProduct" id="print_slctProduct" class="form-select border-start-0">
-                                    <option value="" disabled selected>Seleccione un producto</option>
-                                </select>
+                <?php
+                $printCreate = validate_permission_app(17, "c", false)['create'];
+                if ($printCreate) :
+                ?>
+                    <!-- Formulario: seleccionar producto y cantidad a imprimir -->
+                    <div class="bg-white border rounded-3 p-3 mb-3 shadow-sm">
+                        <p class="text-muted small mb-3">
+                            <i class="bi bi-info-circle me-1 text-primary"></i>
+                            Seleccione un producto, indique cuántas etiquetas necesita y presiónne <strong>Agregar</strong>. Repita el proceso para agregar más productos a la lista de impresión.
+                        </p>
+                        <div class="row g-3 align-items-end">
+                            <!-- Selector de producto -->
+                            <div class="col-8 col-md-12 col-lg-6 col-xl-8">
+                                <label for="print_slctProduct" class="form-label fw-medium">
+                                    Producto con codigo de barras <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="bi bi-box-seam text-muted"></i>
+                                    </span>
+                                    <select name="print_slctProduct" id="print_slctProduct" class="form-select border-start-0">
+                                        <option value="" disabled selected>Seleccione un producto</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <!-- Cantidad de etiquetas -->
-                        <div class="col-4 col-md-6 col-lg-3 col-xl-2">
-                            <label for="print_txtQuantity" class="form-label fw-medium">
-                                Etiquetas <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <span class="input-group-text bg-light border-end-0">
-                                    <i class="bi bi-hash text-muted"></i>
-                                </span>
-                                <input type="number" class="form-control border-start-0" id="print_txtQuantity" name="print_txtQuantity" min="1" max="1000" value="1">
+                            <!-- Cantidad de etiquetas -->
+                            <div class="col-4 col-md-6 col-lg-3 col-xl-2">
+                                <label for="print_txtQuantity" class="form-label fw-medium">
+                                    Etiquetas <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="bi bi-hash text-muted"></i>
+                                    </span>
+                                    <input type="number" class="form-control border-start-0" id="print_txtQuantity" name="print_txtQuantity" min="1" max="1000" value="1">
+                                </div>
                             </div>
-                        </div>
-                        <!-- Botón agregar -->
-                        <div class="col-12 col-md-6 col-lg-3 col-xl-2 d-flex">
-                            <button type="button" class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2" id="print_btnAddProduct">
-                                <i class="bi bi-plus-lg"></i>
-                                <span>Agregar</span>
-                            </button>
+                            <!-- Botón agregar -->
+                            <div class="col-12 col-md-6 col-lg-3 col-xl-2 d-flex">
+                                <button type="button" class="btn btn-success w-100 d-flex align-items-center justify-content-center gap-2" id="print_btnAddProduct">
+                                    <i class="bi bi-plus-lg"></i>
+                                    <span>Agregar</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php
+                endif;
+                ?>
                 <!-- Lista de productos a imprimir -->
                 <div class="bg-white border rounded-3 shadow-sm">
                     <div class="border-bottom px-3 py-2 d-flex align-items-center justify-content-between">
@@ -918,7 +929,19 @@
                                     <tr>
                                         <th class="ps-3">Producto</th>
                                         <th class="text-center" style="width: 130px;">Etiquetas a imprimir</th>
-                                        <th style="width: 50px;"></th>
+                                        <th style="width: 50px;">
+                                            <?php
+                                            $printDelete = validate_permission_app(17, "d", false)['delete'];
+                                            if ($printDelete) :
+                                            ?>
+                                                <button class="btn btn-danger btn-sm" title="Eliminar todos los productos" id="btnDeleteAllProducts">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            <?php
+                                            endif;
+                                            ?>
+
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody id="tbodyPrintQueue">
@@ -982,11 +1005,18 @@
                                                 style="width:80px;">
                                         </td>
                                         <td class="text-center">
-                                            <button type="button"
-                                                class="btn btn-sm btn-outline-danger border-0"
-                                                title="Quitar producto">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
+                                            <?php
+                                            $printDelete = validate_permission_app(17, "d", false)['delete'];
+                                            if ($printDelete) :
+                                            ?>
+                                                <button type="button"
+                                                    class="btn btn-sm btn-outline-danger border-0"
+                                                    title="Quitar producto">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            <?php
+                                            endif;
+                                            ?>
                                         </td>
                                     </tr>
                                 </tbody>

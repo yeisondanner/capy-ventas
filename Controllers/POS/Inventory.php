@@ -22,6 +22,12 @@ class Inventory extends Controllers
      * @var string|null
      */
     private string $protectedCategoryKey = "Sin categoría";
+    /**
+     * Nombre de la variable de sesión que almacena la cola de impresión de códigos de barras.
+     *
+     * @var string
+     */
+    private string $productsInQueue = 'products_in_queue';
 
     public function __construct()
     {
@@ -868,13 +874,13 @@ class Inventory extends Controllers
         if ($productValue === 'all') {
             $productsAll = $this->model->selectProducts($this->getBusinessId());
             //validamos si existe la variable de sesion
-            if (isset($_SESSION['productsInQueue'])) {
+            if (isset($_SESSION[$this->productsInQueue])) {
                 //destruimos la variable de sesion para evitar duplicados
-                unset($_SESSION['productsInQueue']);
+                unset($_SESSION[$this->productsInQueue]);
             }
             foreach ($productsAll as $key => $value) {
                 if (!empty($value['bar_code_origin'])) {
-                    $_SESSION['productsInQueue'][] = [
+                    $_SESSION[$this->productsInQueue][] = [
                         'id' => $value['idProduct'],
                         'name' => $value['name'],
                         'code' => $value['bar_code_origin'],
@@ -897,15 +903,15 @@ class Inventory extends Controllers
         if (empty($productInfo)) {
             $this->responseError('El producto seleccionado no existe o no pertenece a tu negocio.');
         }
-        if (isset($_SESSION['productsInQueue'])) {
+        if (isset($_SESSION[$this->productsInQueue])) {
             //verificamos si el producto ya existe dentro de la cola de impresion
-            foreach ($_SESSION['productsInQueue'] as $key => $value) {
+            foreach ($_SESSION[$this->productsInQueue] as $key => $value) {
                 if ($value['id'] == $productInfo['idProduct']) {
                     $this->responseError('El producto ya existe dentro de la cola de impresion.');
                 }
             }
         }
-        $_SESSION['productsInQueue'][] = [
+        $_SESSION[$this->productsInQueue][] = [
             'id' => $productInfo['idProduct'],
             'name' => $productInfo['name'],
             'code' => $productInfo['bar_code_origin'],
@@ -927,7 +933,8 @@ class Inventory extends Controllers
      * de un producto que se va imprimir su codigo de barras
      * @return void
      */
-    public function updateItemInQueue(): void{
+    public function updateItemInQueue(): void
+    {
         validate_permission_app(17, "u", false, false, false);
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->responseError('Método de solicitud no permitido.');
@@ -936,11 +943,15 @@ class Inventory extends Controllers
         $productValue = strClean($_POST['product'] ?? '');
         $quantity = (int) strClean($_POST['quantity'] ?? '');
         validateFieldsEmpty(['PRODUCTO' => $productValue, 'CANTIDAD' => $quantity]);
+        //validamos que el  la cantidad sea mayor a 0
+        if ($quantity <= 0) {
+            $quantity = 1;
+        }
         //validamos que la variable de sesion exista
-        if(isset($_SESSION['productsInQueue'])){
-            foreach($_SESSION['productsInQueue'] as $key =>$value){
-                if($value['id'] == $productValue){
-                    $_SESSION['productsInQueue'][$key]['quantity'] = $quantity;
+        if (isset($_SESSION[$this->productsInQueue])) {
+            foreach ($_SESSION[$this->productsInQueue] as $key => $value) {
+                if ($value['id'] == $productValue) {
+                    $_SESSION[$this->productsInQueue][$key]['quantity'] = $quantity;
                     toJson([
                         'status' => true,
                         'message' => 'Cantidad actualizada correctamente.',
@@ -955,6 +966,62 @@ class Inventory extends Controllers
         $this->responseError('No se encontró el producto en la cola de impresión.');
     }
     /**
+     * Metodo que se encarga de eliminar un producto de la cola de impresion
+     * @return void
+     */
+    public function deleteItemInQueue(): void
+    {
+        validate_permission_app(17, "d", false, false, false);
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+        validateFields(['product']);
+        $productValue = strClean($_POST['product'] ?? '');
+        validateFieldsEmpty(['PRODUCTO' => $productValue]);
+        //validamos que la variable de sesion exista
+        if (isset($_SESSION[$this->productsInQueue])) {
+            $productQueue = $_SESSION[$this->productsInQueue];
+            foreach ($productQueue as $key => $value) {
+                if ($value['id'] == $productValue) {
+                    unset($productQueue[$key]);
+                    $_SESSION[$this->productsInQueue] = array_values($productQueue);
+                    toJson([
+                        'status' => true,
+                        'message' => 'Producto eliminado de la cola de impresión.',
+                        'title' => 'Producto eliminado',
+                        'type' => 'success',
+                        'icon' => 'success',
+                        'timer' => 2500,
+                    ]);
+                }
+            }
+        }
+        $this->responseError('No se encontró el producto en la cola de impresión.');
+    }
+    /**
+     * Metodo que se encarga de eliminar todos los productos de la cola de impresion
+     * @return void
+     */
+    public function deleteAllProductsInQueue(): void
+    {
+        validate_permission_app(17, "d", false, false, false);
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->responseError('Método de solicitud no permitido.');
+        }
+        //validamos que la variable de sesion exista
+        if (isset($_SESSION[$this->productsInQueue])) {
+            unset($_SESSION[$this->productsInQueue]);
+        }
+        toJson([
+            'status' => true,
+            'message' => 'Todos los productos han sido eliminados de la cola de impresión.',
+            'title' => 'Productos eliminados',
+            'type' => 'success',
+            'icon' => 'success',
+            'timer' => 2500,
+        ]);
+    }
+    /**
      * Obtiene la cola de impresión de códigos de barras.
      *
      * @return void
@@ -962,14 +1029,20 @@ class Inventory extends Controllers
     public function getProductsInQueue(): void
     {
         validate_permission_app(17, "r", false, false, false);
-        if (isset($_SESSION['productsInQueue'])) {
+        $validationUpdate = (int) validate_permission_app(17, "u", false)['update'];
+        $validationDelete = (int) validate_permission_app(17, "d", false)['delete'];
+        if (isset($_SESSION[$this->productsInQueue])) {
+            foreach ($_SESSION[$this->productsInQueue] as $key => $value) {
+                $_SESSION[$this->productsInQueue][$key]['update'] = $validationUpdate;
+                $_SESSION[$this->productsInQueue][$key]['delete'] = $validationDelete;
+            }
             toJson([
                 'status' => true,
-                'data' => $_SESSION['productsInQueue'],
+                'data' => $_SESSION[$this->productsInQueue],
             ]);
         }
         toJson([
-            'status' => false,
+            'status' => true,
             'data' => [],
         ]);
     }

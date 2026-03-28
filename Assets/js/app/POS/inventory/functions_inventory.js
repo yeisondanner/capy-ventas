@@ -37,6 +37,10 @@
   //Variables para el modal de generacion de codigos de barras masivos
   const print_slctProduct =
     document.getElementById("print_slctProduct") ?? null;
+  const btnDeleteAllProducts =
+    document.getElementById("btnDeleteAllProducts") ?? null;
+  const print_btnAddProduct =
+    document.getElementById("print_btnAddProduct") ?? null;
   //inicializamos la tabla
   let productsTable;
   let categorysTable;
@@ -72,7 +76,9 @@
   const ENDPOINT_DELETE_CATEGORY = `${base_url}/pos/Inventory/deleteCategory`;
   const ENDPOINT_SET_PRODUCT_IN_QUEUE = `${base_url}/pos/Inventory/setProductInQueue`;
   const ENDPOINT_GET_PRODUCTS_IN_QUEUE = `${base_url}/pos/Inventory/getProductsInQueue`;
-  const ENDPOINT_UPDATE_ITEM_IN_QUEUE = `${base_url}/pos/Inventory/updateItemInQueue`;
+  const ENDPOINT_UPDATE_PRODUCT_IN_QUEUE = `${base_url}/pos/Inventory/updateItemInQueue`;
+  const ENDPOINT_DELETE_PRODUCT_IN_QUEUE = `${base_url}/pos/Inventory/deleteItemInQueue`;
+  const ENDPOINT_DELETE_ALL_PRODUCTS_IN_QUEUE = `${base_url}/pos/Inventory/deleteAllProductsInQueue`;
   /**
    * Variable de protegida
    */
@@ -146,9 +152,13 @@
          */
         await loadtTableProductsInQueue();
         /**
-         * Inicializamos el item que actulizara 
+         * Inicializamos el item que actualizará
          */
         updateItemInQueue();
+        /**
+         * Inicializamos el item que eliminará
+         */
+        deleteItemQueue();
         $("#modalGenerateAllBarcodes").modal("show");
       });
     }
@@ -430,8 +440,39 @@
           timer: data.timer,
         });
         if (data.status) {
-         await loadtTableProductsInQueue();
-         updateItemInQueue();
+          await loadtTableProductsInQueue();
+          updateItemInQueue();
+          deleteItemQueue();
+        }
+        if (data.url) {
+          setTimeout(() => {
+            window.location.href = data.url;
+          }, 1500);
+        }
+      });
+    }
+    /**
+     * Evento que se encarga de eliminar todos los productos de la cola de impresion
+     */
+    if (btnDeleteAllProducts) {
+      btnDeleteAllProducts.addEventListener("click", async function () {
+        const data = await sendData(
+          ENDPOINT_DELETE_ALL_PRODUCTS_IN_QUEUE,
+          {
+            method: "POST",
+          },
+          false,
+        );
+        showAlert({
+          title: data.title,
+          message: data.message,
+          icon: data.icon,
+          timer: data.timer,
+        });
+        if (data.status) {
+          await loadtTableProductsInQueue();
+          updateItemInQueue();
+          deleteItemQueue();
         }
         if (data.url) {
           setTimeout(() => {
@@ -459,6 +500,24 @@
       );
       $("#tbodyPrintQueue").html("");
       productsInQueue.forEach(function (item) {
+        const updateButton =
+          item.update === 1
+            ? ` <input type="number"
+                                                data-id="${item.id}"
+                                                class="form-control form-control-sm text-center mx-auto print-update-item-queue"
+                                                value="${item.quantity}" min="1" max="1000"
+                                                style="width:80px;">`
+            : "";
+        const deleteButton =
+          item.delete === 1
+            ? ` <button type="button"
+                                                data-id="${item.id}"
+                                                data-name="${item.name}"
+                                                class="btn btn-sm btn-outline-danger border-0 print-delete-item-queue"
+                                                title="Quitar producto">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>`
+            : "";
         $("#tbodyPrintQueue").append(`         
                                     <tr>
                                         <!-- Nombre del producto -->
@@ -480,19 +539,11 @@
                                         </td>
                                         <!-- Cantidad de etiquetas a imprimir -->
                                         <td class="text-center">
-                                            <input type="number"
-                                                data-id="${item.id}"
-                                                class="form-control form-control-sm text-center mx-auto print-update-item-queue"
-                                                value="${item.quantity}" min="1" max="1000"
-                                                style="width:80px;">
+                                           ${updateButton}
                                         </td>
                                         <!-- Acción: quitar de la lista -->
                                         <td class="text-center">
-                                            <button type="button"
-                                                class="btn btn-sm btn-outline-danger border-0 print-delete-item-queue"
-                                                title="Quitar producto">
-                                                <i class="bi bi-trash3"></i>
-                                            </button>
+                                           ${deleteButton}
                                         </td>
                                     </tr>
             
@@ -508,29 +559,63 @@
    * @returns {void}
    */
   function updateItemInQueue() {
-    const printUpdateItemQueue = document.querySelectorAll(".print-update-item-queue");
-    printUpdateItemQueue.forEach(function (item) {
-      item.addEventListener("change", async function () {
-        const formdata = new FormData();
-        formdata.append("product", item.dataset.id);
-        formdata.append("quantity", item.value);
-        const config = {
-          method: "POST",
-          body: formdata,
-        };
-        const data = await sendData(ENDPOINT_UPDATE_ITEM_IN_QUEUE, config);
-        showAlert({
-          title: data.title,
-          message: data.message,
-          icon: data.icon,
-          timer: data.timer,
+    if (productsInQueue.length > 0) {
+      const printUpdateItemQueue = document.querySelectorAll(
+        ".print-update-item-queue",
+      );
+      printUpdateItemQueue.forEach(function (item) {
+        item.addEventListener("change", async function () {
+          const formdata = new FormData();
+          formdata.append("product", item.dataset.id);
+          formdata.append("quantity", item.value);
+          const config = {
+            method: "POST",
+            body: formdata,
+          };
+          const data = await sendData(
+            ENDPOINT_UPDATE_PRODUCT_IN_QUEUE,
+            config,
+            false,
+          );
+          if (data.status) {
+            await loadtTableProductsInQueue();
+            updateItemInQueue();
+            deleteItemQueue();
+          }
         });
-        if (data.status) {
-         await loadtTableProductsInQueue();
-          updateItemInQueue();
-        }
       });
-    });
+    }
+  }
+  /**
+   * Metodo que se encarga de eliminar un producto de la cola de impresion
+   * @returns {void}
+   */
+  function deleteItemQueue() {
+    if (productsInQueue.length > 0) {
+      const printDeleteQueue = document.querySelectorAll(
+        ".print-delete-item-queue",
+      );
+      printDeleteQueue.forEach(function (item) {
+        item.addEventListener("click", async function () {
+          const formdata = new FormData();
+          formdata.append("product", item.dataset.id);
+          const config = {
+            method: "POST",
+            body: formdata,
+          };
+          const data = await sendData(
+            ENDPOINT_DELETE_PRODUCT_IN_QUEUE,
+            config,
+            false,
+          );
+          if (data.status) {
+            await loadtTableProductsInQueue();
+            updateItemInQueue();
+            deleteItemQueue();
+          }
+        });
+      });
+    }
   }
   /**
    * Metodo que se encarga de cargar la tabla de categorias
