@@ -908,6 +908,15 @@
                 <?php
                 endif;
                 ?>
+                <div class="mb-3 w-100">
+                    <div class="alert alert-warning alert-dismissible fade show d-flex align-items-start m-0 p-2 small border-warning-subtle bg-warning-subtle text-dark" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill fs-5 me-2 flex-shrink-0 text-warning"></i>
+                        <div>
+                            Toda la información de esta tabla es <strong>temporal</strong>. Si cierra sesión de la cuenta o borra la cola de impresión, los datos de la cola de impresión se eliminarán ya que no se guardan en el sistema.
+                        </div>
+                        <button type="button" class="btn-close p-2 mt-1" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
                 <!-- Lista de productos a imprimir -->
                 <div class="bg-white border rounded-3 shadow-sm">
                     <div class="border-bottom px-3 py-2 d-flex align-items-center justify-content-between">
@@ -1031,14 +1040,17 @@
                     <i class="bi bi-x-lg me-1"></i>Cancelar
                 </button>
                 <div class="d-flex gap-2">
-                    <a href="<?= base_url() ?>/pos/Pdf/code_bar_products" target="_blank" class="btn btn-outline-danger" id="btnPrintBarcodes" title="Imprimir códigos de barras">
+                    <!-- <button class="btn btn-outline-danger" id="btnPrintBarcodes" title="Imprimir códigos de barras">
                         <i class="bi bi-printer me-1"></i>Imprimir
-                    </a>
-                    <a href="<?= base_url() ?>/pos/Pdf/code_bar_products" target="_blank" class="btn btn-success" id="btnDownloadBarcodesPdf" title="Descargar PDF con los códigos de barras">
-                        <i class="bi bi-file-earmark-arrow-down me-1"></i>Descargar PDF
-                    </a>
+                    </button>-->
+                    <button class="btn btn-info" id="btnDownloadBarcodesPdf" title="Descargar PDF con los códigos de barras">
+                        <i class="bi bi-file-earmark-arrow-down me-1"></i>Descargar PDF para imprimir
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<!-- Elementos para procesamiento en segundo plano -->
+<canvas id="worker-canvas" class="d-none"></canvas>
+<svg id="hidden-barcode" class="d-none"></svg>

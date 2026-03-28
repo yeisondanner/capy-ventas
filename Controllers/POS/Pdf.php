@@ -23,21 +23,7 @@ class Pdf extends Controllers
         $this->nameVarBusiness = $this->sessionName . 'business_active';
         $this->nameVarLoginInfo = $this->sessionName . 'login_info';
     }
-    /**
-     * Obtiene todos los codigo de barras de los productos que se va imprimir
-     */
-    public function code_bar_products()
-    {
-        isSession(1);
-        validate_permission_app(17, "r");
-        $productsInQueue = "products_in_queue";
-        //validamos si existe la variable de sesion
-        if (!isset($_SESSION[$productsInQueue])) {
-            $this->responseError('No se encontró la cola de impresión de códigos de barras en la sesión.');
-        }
-        $productsInQueue = $_SESSION[$productsInQueue];
-        toJson($productsInQueue);
-    }
+
     /**
      * Obtiene el identificador del negocio activo desde la sesión.
      *

@@ -41,6 +41,14 @@
     document.getElementById("btnDeleteAllProducts") ?? null;
   const print_btnAddProduct =
     document.getElementById("print_btnAddProduct") ?? null;
+  const btnDownloadBarcodesPdf =
+    document.getElementById("btnDownloadBarcodesPdf") ?? null;
+  /**
+   * Elementos para el procesamiento en segundo plano
+   * para la generacion de codigos de barras masivos
+   */
+  const canvas = document.getElementById("worker-canvas");
+  const ctx = canvas.getContext("2d");
   //inicializamos la tabla
   let productsTable;
   let categorysTable;
@@ -56,6 +64,7 @@
   let measurements;
   let productsAll = [];
   let productsInQueue = [];
+  const { jsPDF } = window.jspdf;
   /**
    * Variables de los endpoints
    */
@@ -473,6 +482,9 @@
           await loadtTableProductsInQueue();
           updateItemInQueue();
           deleteItemQueue();
+          badgeBarcodeCount.textContent = "0 productos";
+          //limpiamos la variable productsAll
+          productsAll = [];
         }
         if (data.url) {
           setTimeout(() => {
@@ -481,6 +493,147 @@
         }
       });
     }
+    /**
+     * Evento que se encarga de descagar el pdf de los codigo masivos
+     */
+    if (btnDownloadBarcodesPdf) {
+      btnDownloadBarcodesPdf.addEventListener("click", async () => {
+        try {
+          //verificamos que la cola no este vacia
+          if (productsInQueue.length === 0) {
+            showAlert({
+              title: "Ocurrio un error",
+              message:
+                "No se pudo generar el pdf, intente nuevamente porque la cola esta vacia",
+              icon: "error",
+              timer: 1500,
+            });
+            return;
+          }
+          showAlert(
+            {
+              title: "GENERANDO CODIGOS DE BARRAS",
+              message:
+                "Por favor espere, se esta generando los codigos de barras y empaquetando en un pdf...",
+            },
+            "loading",
+          );
+          //Estandarizamos las medidas de la etiqueta (50x25mm)
+          const standardWidth = 50;
+          const standardHeight = 25;
+          //preparamos la configuracion de la hoja del pdf
+          const configPdf = {
+            orientation: "1",
+            unit: "mm",
+            format: [standardWidth, standardHeight],
+          };
+          //creamos una instalacia de la libreria JsPdf
+          const doc = new jsPDF(configPdf);
+          //controlamos la primera pagina
+          let firstPage = true;
+          console.log(productsInQueue);
+          for (const item of productsInQueue) {
+            const imgData = await generateImageTagsBarcode(
+              item.name,
+              item.code,
+              item.format,
+              standardWidth,
+              standardHeight,
+            );
+            for (let index = 0; index < item.quantity; index++) {
+              if (!firstPage) {
+                doc.addPage([standardWidth, standardHeight], "1");
+              }
+              doc.addImage(imgData, "PNG", 0, 0, standardWidth, standardHeight);
+              firstPage = false;
+            }
+          }
+          doc.save(`Codigos_barras_imprimir_${new Date().getTime()}.pdf`);
+          Swal.close();
+        } catch (error) {
+          Swal.close();
+          showAlert({
+            title: "Ocurrio un error",
+            message:
+              "No se pudo generar el pdf, intente nuevamente porque la cola esta vacia",
+            icon: "error",
+            timer: 1500,
+          });
+        }
+      });
+    }
+  }
+  /**
+   * Metodo que se encarga de generar los codigos de barras
+   */
+  function generateImageTagsBarcode(
+    name,
+    code,
+    format = "CODE128",
+    mmWidth = 50,
+    mmHeight = 25,
+  ) {
+    //retornamos una promesa
+    return new Promise((resolve) => {
+      //convertimos las medidas de milimetros a pixeles
+      const pxWidth = mmWidth * 10;
+      const pxHeight = mmHeight * 10;
+      //establecemos las medidas del canvas
+      canvas.width = pxWidth;
+      canvas.height = pxHeight;
+      //limpiamos el canvas
+      ctx.fillStyle = "white";
+      //pintamos el fondo del canvas
+      ctx.fillRect(0, 0, pxWidth, pxHeight);
+      //establecemos el color de la tinta
+      ctx.fillStyle = "black";
+      //establecemos la alineacion del texto
+      ctx.textAlign = "center";
+      //establecemos el tipo de letra
+      ctx.font = `bold ${pxHeight * 0.05}px sans-serif`;
+      //agregamos el nombre del producto
+      ctx.fillText(name.toUpperCase(), pxWidth / 2, pxHeight * 0.25);
+      //obtenemos el elemento svg
+      const tempSVG = document.getElementById("hidden-barcode");
+      //generamos el codigo de barras
+      JsBarcode(tempSVG, code, {
+        format: format,
+        displayValue: true,
+        margin: 0,
+        font: "monospace",
+        textAlign: "center",
+      });
+      //convertimos el svg a string
+      const xml = new XMLSerializer().serializeToString(tempSVG);
+      //convertimos el svg a base64
+      const svg64 = btoa(xml);
+      //creamos una imagen
+      const img = new Image();
+      img.onload = function () {
+        //calculamos el ancho y el alto del codigo de barras
+        const bcWidth = img.width * 1;
+        const bcHeight = img.height * 0.65;
+        /**
+         * Dibujamos el codigo de barras en el canvas
+         * @param {Image} img - Imagen del codigo de barras
+         * @param {number} x - Posicion en el eje x
+         * @param {number} y - Posicion en el eje y
+         * @param {number} width - Ancho del codigo de barras
+         * @param {number} height - Alto del codigo de barras
+         */
+        ctx.drawImage(
+          img,
+          (pxWidth - bcWidth) / 2,
+          pxHeight * 0.32,
+          bcWidth,
+          bcHeight,
+        );
+        //retornamos el canvas como data url
+        resolve(canvas.toDataURL("image/png"));
+      };
+      //establecemos la fuente de la imagen
+      img.src = `data:image/svg+xml;base64,${svg64}`;
+    });
   }
   /**
    * Metodo que se encarga de cargar la tabla de productos en cola
