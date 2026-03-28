@@ -1031,12 +1031,12 @@
                     <i class="bi bi-x-lg me-1"></i>Cancelar
                 </button>
                 <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-outline-danger" id="btnPrintBarcodes" title="Imprimir códigos de barras">
+                    <a href="<?= base_url() ?>/pos/Pdf/code_bar_products" target="_blank" class="btn btn-outline-danger" id="btnPrintBarcodes" title="Imprimir códigos de barras">
                         <i class="bi bi-printer me-1"></i>Imprimir
-                    </button>
-                    <button type="button" class="btn btn-success" id="btnDownloadBarcodesPdf" title="Descargar PDF con los códigos de barras">
+                    </a>
+                    <a href="<?= base_url() ?>/pos/Pdf/code_bar_products" target="_blank" class="btn btn-success" id="btnDownloadBarcodesPdf" title="Descargar PDF con los códigos de barras">
                         <i class="bi bi-file-earmark-arrow-down me-1"></i>Descargar PDF
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

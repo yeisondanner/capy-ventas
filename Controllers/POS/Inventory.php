@@ -1201,7 +1201,6 @@ class Inventory extends Controllers
             $this->responseError('No fue posible eliminar la imagen, inténtalo nuevamente.');
         }
     }
-
     /**
      * Envía una respuesta de error estándar en formato JSON y finaliza la ejecución.
      *
