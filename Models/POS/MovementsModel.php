@@ -190,6 +190,7 @@ class MovementsModel extends Mysql
      */
     public function getTotals(int $businessId, $minDate = null, $maxDate = null, $searchConcept = null): array
     {
+        //seccion de obtener el total de ventas
         $sqlTotalSales = <<<SQL
                 SELECT
                     COALESCE(SUM(vh.amount), 0) AS total_sales
@@ -198,6 +199,7 @@ class MovementsModel extends Mysql
                     vh.`status`='Pagado' AND
                     vh.business_id = ? 
         SQL;
+        //seccion de obtener el total de gastos
         $sqlTotalExpenses = <<<SQL
                 SELECT
                     COALESCE(
@@ -212,12 +214,12 @@ class MovementsModel extends Mysql
         SQL;
 
         $arrValues = [$businessId];
-
         // Si se proporcionan fechas, añadir la condición de rango
         if ($minDate != null && $maxDate != null) {
-            $sqlTotalSales .= " AND DATE(vh.date_time) BETWEEN ? AND ?";
-            $sqlTotalExpenses .= " AND DATE(ee.expense_date) BETWEEN ? AND ?";
-            array_push($arrValues, $minDate, $maxDate);
+            $sqlTotalSales .= " AND (DATE(vh.date_time) BETWEEN ? AND ? OR DATE(vh.payment_date) BETWEEN ? AND ?)";
+            //duplicamos la condicion para que se pueda obtener el total de gastos usando la compuerta OR
+            $sqlTotalExpenses .= " AND (DATE(ee.expense_date) BETWEEN ? AND ? OR DATE(ee.expense_date) BETWEEN ? AND ?)";
+            array_push($arrValues, $minDate, $maxDate, $minDate, $maxDate);
         }
 
         // Agregar filtro por concepto si se proporciona
