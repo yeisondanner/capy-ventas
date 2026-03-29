@@ -565,6 +565,12 @@
   }
   /**
    * Metodo que se encarga de generar los codigos de barras
+   * @param {string} name - Nombre del producto
+   * @param {string} code - Codigo de barras
+   * @param {string} format - Formato del codigo de barras
+   * @param {number} mmWidth - Ancho en milimetros
+   * @param {number} mmHeight - Alto en milimetros
+   * @returns {Promise<string>} - Imagen del codigo de barras en base64
    */
   function generateImageTagsBarcode(
     name,
