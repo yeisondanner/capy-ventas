@@ -107,38 +107,21 @@ class Movements extends Controllers
 
         $cont = 1; // Contador para la tabla
 
-
+        $validateRead = (int) validate_permission_app(2, "r", false)['read'];
+        $validateUpdate = (int) validate_permission_app(2, "u", false)['update'];
+        $validateDelete = (int) validate_permission_app(2, "d", false)['delete'];
         foreach ($arrData as $key => $value) {
             $arrData[$key]['cont'] = $cont;
             $arrData[$key]['date_time'] = dateFormat($value['date_time']);
-            $arrData[$key]['actions'] = $this->renderGroupButtons($value);
-
+            $arrData[$key]['read'] = $validateRead;
+            $arrData[$key]['update'] = $validateUpdate;
+            $arrData[$key]['delete'] = $validateDelete;
             $cont++;
         }
 
         toJson($arrData);
     }
-    /**
-     * Renderiza los botones de acción para cada fila de la tabla.
-     *
-     * @param array $data Datos de la fila.
-     * @return string HTML con los botones de acción.
-     */
-    protected function renderGroupButtons($data)
-    {
-        $validationReport = (int) validate_permission_app(2, "r", false)['read'];
-        $type = $data['type'];
-        $id = $data['id'];
-        $btnReport = '';
-        if ($validationReport === 1) {
-            $btnReport = '<button class="btn btn-outline-secondary btn-sm  report-item-' . $type . '"' . 'title="Ver reporte"' . 'type="button"' . 'data-id="' . $id . '">' . '<i class="bi bi-file-earmark-text"></i></button>';
-        }
-        return <<<HTML
-                <div class="btn-group">
-                    $btnReport
-                </div>
-        HTML;
-    }
+
 
     /**
      * Devuelve el detalle de un comprobante (voucher) del negocio activo.

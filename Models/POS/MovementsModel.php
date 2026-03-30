@@ -245,7 +245,12 @@ class MovementsModel extends Mysql
 
         return $totals;
     }
-
+    /**
+     * Metodo que se encarga de obtener los detalles de un gasto
+     * @param int $expenseId
+     * @param int $businessId
+     * @return array
+     */
     public function select_expense(int $expenseId, int $businessId): array
     {
         $sql = <<<SQL
